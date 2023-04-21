@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>U</title>
+    <url>/17/</url>
+    <content><![CDATA[<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>增加Docker-CE安装源并安装20.10.17版本:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">curl</span> <span class="token parameter variable">-fsSL</span> http://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg <span class="token operator">|</span> <span class="token function">sudo</span> apt-key <span class="token function">add</span> -
+add-apt-repository <span class="token parameter variable">-y</span> <span class="token string">"deb [arch=amd64] http://mirrors.aliyun.com/docker-ce/linux/ubuntu <span class="token variable"><span class="token variable">$(</span>lsb_release <span class="token parameter variable">-cs</span><span class="token variable">)</span></span> stable"</span>
+<span class="token function">apt</span> <span class="token function">install</span> <span class="token parameter variable">-y</span> docker-ce<span class="token operator">=</span><span class="token number">5</span>:20.10.17~3-0~ubuntu-jammy docker-ce-cli<span class="token operator">=</span><span class="token number">5</span>:20.10.17~3-0~ubuntu-jammy containerd.io <span class="token function">docker-compose</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><p>新建docker配置文件:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">mkdir</span> /etc/docker/ <span class="token punctuation">;</span> <span class="token function">tee</span> /etc/docker/daemon.json <span class="token operator">&lt;&lt;-</span><span class="token string">'EOF'
+&#123;
+  "exec-opts": [
+      "native.cgroupdriver=systemd"
+      ],
+  "log-driver": "json-file",
+  "log-opts": &#123;
+    "max-size": "10m",
+    "max-file": "3"
+  &#125;,
+  "registry-mirrors": [
+      "http://192.168.2.253:10007",
+      "http://f1361db2.m.daocloud.io",
+      "https://m9f30s9x.mirror.aliyuncs.com"
+      ],
+  "insecure-registries": [
+      "192.168.2.253:10007",
+      "192.168.2.253:10008"
+      ]
+&#125;
+EOF</span>
+systemctl daemon-reload
+systemctl <span class="token builtin class-name">enable</span> <span class="token parameter variable">--now</span> <span class="token function">docker</span>
+<span class="token function">docker-compose</span> <span class="token parameter variable">-v</span>
+<span class="token function">docker</span> <span class="token parameter variable">-v</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+]]></content>
+      <categories>
+        <category>大类</category>
+        <category>小类1</category>
+      </categories>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/16/</url>
+    <content><![CDATA[<h1 id="系统安装"><a href="#系统安装" class="headerlink" title="系统安装"></a>系统安装</h1><p>线上服务器无需要手动安装系统,只需要配置好硬盘分区,选择镜像CentOS 7.9.2009.,一分钟即可完成安装.</p>
+<h2 id="更换系统"><a href="#更换系统" class="headerlink" title="更换系统"></a>更换系统</h2><p>更换系统或重装系统步骤如下:</p>
+<ul>
+<li>在实例详情页面选择停止,来停止实例.</li>
+<li>在实例详情页面点击更换操作系统,</li>
+<li>在更换操作系统页面,镜像类别选择CentOS,版本为7.9 64位.选择自定义root密码,输入登录密码.</li>
+<li>勾选同一服务协议,点击确认订单,等待安装完成.</li>
+</ul>
+<h2 id="账户配置"><a href="#账户配置" class="headerlink" title="账户配置"></a>账户配置</h2><p>安装完毕的系统,无法通过ssh直接连接.需要修改ssh端口和用于跳板机登录的账号.</p>
+<p>点击远程连接,选择发送命令,在下面命令内容中执行脚本添加用户nanruan并设置密码,密码是&#x2F;etc&#x2F;shadow中哈希值:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#!/bin/bash</span>
+<span class="token function">useradd</span> <span class="token parameter variable">-p</span> <span class="token punctuation">\</span><span class="token variable">$6</span><span class="token punctuation">\</span><span class="token variable">$YVLnCcQL</span><span class="token punctuation">\</span><span class="token variable">$NlbdFMzHHzw9Byk2EFjl4BNCm0riq22HnJKTVcccZv</span>/FQ/Y2HgvSeavPCUbdgzTmA3T3ksn7SYkq96An12oBW0 nanruan<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>修改默认端口由22改为2222,重启sshd服务便可以通过堡垒机来访问登录了:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#!/bin/bash</span>
+<span class="token function">sed</span> <span class="token parameter variable">-i</span> <span class="token string">"s/#Port 22/Port 2222/g"</span> /etc/ssh/sshd_config
+<span class="token function">sed</span> <span class="token parameter variable">-i</span> <span class="token string">"s/PasswordAuthentication no/PasswordAuthentication yes/g"</span> /etc/ssh/sshd_config
+systemctl restart sshd<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>通过脚本的方式修改密码:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#!/bin/bash</span>
+<span class="token builtin class-name">echo</span> <span class="token string">"qv4YB7#x9WhPj?i4E1DRgu1dlOWR"</span> <span class="token operator">|</span> <span class="token function">passwd</span> root <span class="token parameter variable">--stdin</span> <span class="token operator">></span> /dev/null <span class="token operator"><span class="token file-descriptor important">2</span>></span><span class="token file-descriptor important">&amp;1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+
+<h2 id="安全组配置"><a href="#安全组配置" class="headerlink" title="安全组配置"></a>安全组配置</h2><p>登录阿里云控制台,在云服务器ECS的安全组中,将服务器加入到安全组线上服务器k8s(安全组ID:sg-uf64fg98yuqdtdjfjt5z).</p>
+<p>再从其他安全组中剔除服务器.</p>
+<h1 id="系统配置"><a href="#系统配置" class="headerlink" title="系统配置"></a>系统配置</h1><p>需要对系统做一些初始化配置工作.</p>
+<h2 id="升级内核"><a href="#升级内核" class="headerlink" title="升级内核"></a>升级内核</h2><p>安装5.4版本内核:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-s1 ~<span class="token punctuation">]</span><span class="token comment"># rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org</span>
+<span class="token punctuation">[</span>root@k8s-s1 ~<span class="token punctuation">]</span><span class="token comment"># yum install -y https://www.elrepo.org/elrepo-release-7.el7.elrepo.noarch.rpm</span>
+<span class="token punctuation">[</span>root@k8s-s1 ~<span class="token punctuation">]</span><span class="token comment"># yum --disablerepo="*" --enablerepo="elrepo-kernel" list available</span>
+<span class="token punctuation">[</span>root@k8s-s1 ~<span class="token punctuation">]</span><span class="token comment"># yum install -y kernel-lt-5.4.236-1.el7.elrepo --enablerepo=elrepo-kernel</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>设置内核启动顺序并重新生成引导文件:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-s1 ~<span class="token punctuation">]</span><span class="token comment"># grub2-set-default 0</span>
+<span class="token punctuation">[</span>root@k8s-s1 ~<span class="token punctuation">]</span><span class="token comment"># grub2-mkconfig -o /boot/grub2/grub.cfg</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+
+<h2 id="内核调整"><a href="#内核调整" class="headerlink" title="内核调整"></a>内核调整</h2><p>需要修改内核参数,否则安装运行K8s会失败:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-s1 ~<span class="token punctuation">]</span><span class="token comment"># ulimit -SHn 65536</span>
+<span class="token punctuation">[</span>root@k8s-s1 ~<span class="token punctuation">]</span><span class="token comment"># modprobe br_netfilter</span>
+<span class="token punctuation">[</span>root@k8s-s1 ~<span class="token punctuation">]</span><span class="token comment"># echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf</span>
+<span class="token punctuation">[</span>root@k8s-s1 ~<span class="token punctuation">]</span><span class="token comment"># echo "net.ipv4.ip_nonlocal_bind = 1" >> /etc/sysctl.conf</span>
+<span class="token punctuation">[</span>root@k8s-s1 ~<span class="token punctuation">]</span><span class="token comment"># echo "net.ipv4.ip_local_port_range = 1024 65535" >> /etc/sysctl.conf</span>
+<span class="token punctuation">[</span>root@k8s-s1 ~<span class="token punctuation">]</span><span class="token comment"># echo "net.bridge.bridge-nf-call-ip6tables = 1" >> /etc/sysctl.conf</span>
+<span class="token punctuation">[</span>root@k8s-s1 ~<span class="token punctuation">]</span><span class="token comment"># echo "net.bridge.bridge-nf-call-iptables = 1" >> /etc/sysctl.conf</span>
+<span class="token punctuation">[</span>root@k8s-s1 ~<span class="token punctuation">]</span><span class="token comment"># echo "10000 65535" > /proc/sys/net/ipv4/ip_local_port_range</span>
+<span class="token punctuation">[</span>root@k8s-s1 ~<span class="token punctuation">]</span><span class="token comment"># echo "* soft nofile 655350" >> /etc/security/limits.conf</span>
+<span class="token punctuation">[</span>root@k8s-s1 ~<span class="token punctuation">]</span><span class="token comment"># echo "* hard nofile 655350" >> /etc/security/limits.conf</span>
+<span class="token punctuation">[</span>root@k8s-s1 ~<span class="token punctuation">]</span><span class="token comment"># echo "vm.max_map_count = 524288" >> /etc/sysctl.conf</span>
+<span class="token punctuation">[</span>root@k8s-s1 ~<span class="token punctuation">]</span><span class="token comment"># echo "fs.file-max = 6553560" >> /etc/sysctl.conf</span>
+<span class="token punctuation">[</span>root@k8s-s1 ~<span class="token punctuation">]</span><span class="token comment"># echo "fs.inotify.max_user_instances=8192" >> /etc/sysctl.conf</span>
+<span class="token punctuation">[</span>root@k8s-s1 ~<span class="token punctuation">]</span><span class="token comment"># sysctl --system</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h2 id="登录限制"><a href="#登录限制" class="headerlink" title="登录限制"></a>登录限制</h2><p>服务器ssh连接方式为,先直连nanruan@k8s-m1-pro节点,然后再跳转连接到其他服务器.</p>
+<h3 id="主节点"><a href="#主节点" class="headerlink" title="主节点"></a>主节点</h3><p>主节点k8s-m1-pro连接端口是2222,修改sshd配置,禁止root用户登录.只能通过nanruan用户登录:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-s1 ~<span class="token punctuation">]</span><span class="token comment"># sed -i "s/PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config</span>
+<span class="token punctuation">[</span>root@k8s-s1 ~<span class="token punctuation">]</span><span class="token comment"># systemctl restart sshd</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>安装Fail2ban来阻止恶意登录:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-m1-pro ~<span class="token punctuation">]</span><span class="token comment"># yum install fail2ban</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>修改配置启用通过iptables防护非法sshd登录.规则为在300秒内输错5次密码,IP被禁止连接2222端口1个小时:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-m1-pro ~<span class="token punctuation">]</span><span class="token comment"># vi /etc/fail2ban/jail.conf</span>
+<span class="token punctuation">..</span>.
+<span class="token punctuation">[</span>sshd<span class="token punctuation">]</span>
+
+<span class="token comment"># To use more aggressive sshd modes set filter parameter "mode" in jail.local:</span>
+<span class="token comment"># normal (default), ddos, extra or aggressive (combines all).</span>
+<span class="token comment"># See "tests/files/logs/sshd" or "filter.d/sshd.conf" for usage example and details.</span>
+<span class="token comment">#mode   = normal</span>
+enabled <span class="token operator">=</span> <span class="token boolean">true</span>
+filter <span class="token operator">=</span> sshd
+port    <span class="token operator">=</span> <span class="token number">2222</span>
+action <span class="token operator">=</span> iptables<span class="token punctuation">[</span>name<span class="token operator">=</span>SSH, <span class="token assign-left variable">port</span><span class="token operator">=</span><span class="token number">2222</span>, <span class="token assign-left variable">protocol</span><span class="token operator">=</span>tcp<span class="token punctuation">]</span>
+logpath <span class="token operator">=</span> %<span class="token punctuation">(</span>sshd_log<span class="token punctuation">)</span>s
+backend <span class="token operator">=</span> %<span class="token punctuation">(</span>sshd_backend<span class="token punctuation">)</span>s
+bantime <span class="token operator">=</span> <span class="token number">3600</span>
+findtime <span class="token operator">=</span> <span class="token number">300</span>
+maxretry <span class="token operator">=</span> <span class="token number">5</span>
+<span class="token punctuation">..</span>.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>启动服务:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-m1-pro fail2ban<span class="token punctuation">]</span><span class="token comment"># systemctl enable --now fail2ban</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>如果需要限制Nginx访问可以参考: <a href="https://zhuanlan.zhihu.com/p/71911717/">https://zhuanlan.zhihu.com/p/71911717/</a></p>
+<h3 id="其他节点"><a href="#其他节点" class="headerlink" title="其他节点"></a>其他节点</h3><p>除了k8s-m1-pro节点外,修改系统&#x2F;etc&#x2F;hosts.deny和&#x2F;etc&#x2F;hosts.allow文件,只允许通过内网ssh连接,其他拒绝地址:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-w2-pro ~<span class="token punctuation">]</span><span class="token comment"># echo "sshd:ALL:deny" >> /etc/hosts.deny</span>
+<span class="token punctuation">[</span>root@k8s-w2-pro ~<span class="token punctuation">]</span><span class="token comment"># echo "sshd:172.16.0.0/255.255.0.0:allow" >> /etc/hosts.allow</span>
+<span class="token punctuation">[</span>root@k8s-w2-pro ~<span class="token punctuation">]</span><span class="token comment"># systemctl restart sshd</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="查询异常登录"><a href="#查询异常登录" class="headerlink" title="查询异常登录"></a>查询异常登录</h3><p>&#x2F;var&#x2F;log&#x2F;secure文件记录有异常登录信息:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-m1-pro ~<span class="token punctuation">]</span><span class="token comment"># tail -n 30 /var/log/secure</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>在主节点上可以通过fail2ban-client命令查看被ban列表:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-m1-pro fail2ban<span class="token punctuation">]</span><span class="token comment"># fail2ban-client status</span>
+<span class="token punctuation">[</span>root@k8s-m1-pro fail2ban<span class="token punctuation">]</span><span class="token comment"># fail2ban-client status sshd</span>
+<span class="token punctuation">[</span>root@k8s-m1-pro fail2ban<span class="token punctuation">]</span><span class="token comment"># iptables -nvL</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>解除被ban的IP地址:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-m1-pro fail2ban<span class="token punctuation">]</span><span class="token comment"># fail2ban-client set sshd unbanip 47.101.138.100</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h2 id="个性化设置"><a href="#个性化设置" class="headerlink" title="个性化设置"></a>个性化设置</h2><p>一些系统设置.</p>
+<h3 id="修改主机名"><a href="#修改主机名" class="headerlink" title="修改主机名"></a>修改主机名</h3><p>修改主机名,并加入到hosts域名解析:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-m1-pro ~<span class="token punctuation">]</span><span class="token comment"># hostnamectl set-hostname k8s-m1-pro</span>
+<span class="token punctuation">[</span>root@k8s-m1-pro ~<span class="token punctuation">]</span><span class="token comment"># echo "127.0.0.1   $(hostname)" >> /etc/hosts</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="限制日志大小"><a href="#限制日志大小" class="headerlink" title="限制日志大小"></a>限制日志大小</h3><p>限制系统journal日志保留时常为1周:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-m1-pro ~<span class="token punctuation">]</span><span class="token comment"># journalctl --vacuum-time=1w</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="安装工具"><a href="#安装工具" class="headerlink" title="安装工具"></a>安装工具</h3><p>安装基本工具:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-m1-pro ~<span class="token punctuation">]</span><span class="token comment"># yum install -y git wget net-tools bind-utils vim bash-completion nfs-utils jq nc telnet lvm2</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="设置变量"><a href="#设置变量" class="headerlink" title="设置变量"></a>设置变量</h3><p>修改&#x2F;etc&#x2F;profile文件,添加一些常用变量:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-m2-pro ~<span class="token punctuation">]</span><span class="token comment"># echo "export HISTTIMEFORMAT='`whoami` : %F %T :'" >> /etc/profile</span>
+<span class="token punctuation">[</span>root@k8s-m2-pro ~<span class="token punctuation">]</span><span class="token comment"># echo "export NFS_SERVER_NANRUAN=172.16.17.100" >> /etc/profile</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="免密登录"><a href="#免密登录" class="headerlink" title="免密登录"></a>免密登录</h3><p>在主节点上设置免密登录目标服务器:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-m1-pro ~<span class="token punctuation">]</span><span class="token comment"># ssh-keygen</span>
+<span class="token punctuation">[</span>root@k8s-m1-pro ~<span class="token punctuation">]</span><span class="token comment"># ssh-copy-id -p 2222 root@172.16.17.97</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="重启"><a href="#重启" class="headerlink" title="重启"></a>重启</h3><p>最后重启目标服务器:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-w3-pro ~<span class="token punctuation">]</span><span class="token comment"># reboot</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>重启后检查主机名和内核版本.</p>
+<h1 id="磁盘管理"><a href="#磁盘管理" class="headerlink" title="磁盘管理"></a>磁盘管理</h1><p>对k8s-m1-pro,k8s-m2-pro和k8s-m3-pro节点上储存专用云盘进行初始化.</p>
+<h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><p>使用fdisk来操作:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@pro-k8s-storage1 ~<span class="token punctuation">]</span><span class="token comment"># fdisk /dev/vdb</span>
+Command <span class="token punctuation">(</span>m <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: n
+Select <span class="token punctuation">(</span>default p<span class="token punctuation">)</span>: p
+Partition number <span class="token punctuation">(</span><span class="token number">1</span>-4, default <span class="token number">1</span><span class="token punctuation">)</span>: 
+First sector <span class="token punctuation">(</span><span class="token number">2048</span>-1953525167, default <span class="token number">2048</span><span class="token punctuation">)</span>: 
+Last sector, +sectors or +size<span class="token punctuation">&#123;</span>K,M,G<span class="token punctuation">&#125;</span> <span class="token punctuation">(</span><span class="token number">2048</span>-1953525167, default <span class="token number">1953525167</span><span class="token punctuation">)</span>: <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>修改分区system ID为lvm并退出:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">Command <span class="token punctuation">(</span>m <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: t
+Selected partition <span class="token number">1</span>
+Hex code <span class="token punctuation">(</span>type L to list all codes<span class="token punctuation">)</span>: 8e
+Command <span class="token punctuation">(</span>m <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: w
+<span class="token punctuation">[</span>root@pro-k8s-storage1 ~<span class="token punctuation">]</span><span class="token comment"># partprobe</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h2 id="创建卷"><a href="#创建卷" class="headerlink" title="创建卷"></a>创建卷</h2><p>依次创建PV,VG和LV:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@pro-k8s-storage1 ~<span class="token punctuation">]</span><span class="token comment"># export DIR=ssd</span>
+<span class="token punctuation">[</span>root@pro-k8s-storage1 ~<span class="token punctuation">]</span><span class="token comment"># pvcreate /dev/vdb1</span>
+<span class="token punctuation">[</span>root@pro-k8s-storage1 ~<span class="token punctuation">]</span><span class="token comment"># vgcreate $&#123;DIR&#125; /dev/vdb1</span>
+<span class="token punctuation">[</span>root@pro-k8s-storage1 ~<span class="token punctuation">]</span><span class="token comment"># lvcreate -l +100%FREE -n $&#123;DIR&#125; $&#123;DIR&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h2 id="格式化"><a href="#格式化" class="headerlink" title="格式化"></a>格式化</h2><p>格式化成xfs并挂载到指定目录下面:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@pro-k8s-storage1 ~<span class="token punctuation">]</span><span class="token comment"># mkfs.xfs /dev/$&#123;DIR&#125;/$&#123;DIR&#125;</span>
+<span class="token punctuation">[</span>root@pro-k8s-storage1 ~<span class="token punctuation">]</span><span class="token comment"># mkdir /$&#123;DIR&#125;; mount /dev/$&#123;DIR&#125;/$&#123;DIR&#125; /$&#123;DIR&#125;/</span>
+<span class="token punctuation">[</span>root@pro-k8s-storage1 ~<span class="token punctuation">]</span><span class="token comment"># echo "/dev/mapper/$&#123;DIR&#125;-$&#123;DIR&#125; /$&#123;DIR&#125; xfs defaults 0 0" >> /etc/fstab</span>
+<span class="token punctuation">[</span>root@pro-k8s-storage1 ~<span class="token punctuation">]</span><span class="token comment"># df -hT</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+]]></content>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/16107/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><p><img data-src="../../images/2b2eef0cdf47e13e.jpg"></p>
+<h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo new <span class="token string">"My New Post"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo server<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo generate<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites-Generate-static-files-Generate-static-files"><a href="#Deploy-to-remote-sites-Generate-static-files-Generate-static-files" class="headerlink" title="Deploy to remote sites Generate static files Generate static files"></a>Deploy to remote sites Generate static files Generate static files</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo deploy<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+      <categories>
+        <category>大类</category>
+        <category>小类</category>
+      </categories>
+  </entry>
+</search>
