@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#922">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CPalatino:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"x2b.net","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"flat"},"bookmark":{"enable":true,"color":"#922","save":"auto"},"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":null,"activeClass":"gitalk"},"stickytabs":true,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/./public/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="容器操作创建容器创建容器可以使用docker create命令或docker run命令. 创建静止容器使用docker create命令可以创建一个处于停止状态的容器: [root@server4 ~]# docker create alpine 53b658ada694f5d5a5a5ba8e1bf656db4de8bacd79d4ae49857fe1ce27f60292">
+<meta property="og:type" content="article">
+<meta property="og:title" content="容器操作">
+<meta property="og:url" content="https://x2b.net/583/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="容器操作创建容器创建容器可以使用docker create命令或docker run命令. 创建静止容器使用docker create命令可以创建一个处于停止状态的容器: [root@server4 ~]# docker create alpine 53b658ada694f5d5a5a5ba8e1bf656db4de8bacd79d4ae49857fe1ce27f60292">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-10-21T13:23:15.000Z">
+<meta property="article:modified_time" content="2023-04-22T11:14:18.289Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://x2b.net/583/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://x2b.net/583/","path":"583/","title":"容器操作"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>容器操作 | X to Bytes</title>
+  
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>地图</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%E6%93%8D%E4%BD%9C"><span class="nav-number">1.</span> <span class="nav-text">容器操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%AE%B9%E5%99%A8"><span class="nav-number">1.1.</span> <span class="nav-text">创建容器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E9%9D%99%E6%AD%A2%E5%AE%B9%E5%99%A8"><span class="nav-number">1.1.1.</span> <span class="nav-text">创建静止容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E8%BF%90%E8%A1%8C%E5%AE%B9%E5%99%A8"><span class="nav-number">1.1.2.</span> <span class="nav-text">创建运行容器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%90%AF%E5%8A%A8%E5%8F%82%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">创建启动参数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%8F%82%E6%95%B0"><span class="nav-number">1.2.1.</span> <span class="nav-text">常用参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%8F%82%E6%95%B0"><span class="nav-number">1.2.2.</span> <span class="nav-text">网络参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E5%8F%82%E6%95%B0"><span class="nav-number">1.2.3.</span> <span class="nav-text">文件参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E5%8F%82%E6%95%B0"><span class="nav-number">1.2.4.</span> <span class="nav-text">其他参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%A1%E7%90%86%E5%AE%B9%E5%99%A8"><span class="nav-number">1.3.</span> <span class="nav-text">管理容器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E5%AE%B9%E5%99%A8"><span class="nav-number">1.3.1.</span> <span class="nav-text">启动容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%81%9C%E6%AD%A2%E5%AE%B9%E5%99%A8"><span class="nav-number">1.3.2.</span> <span class="nav-text">停止容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E5%AE%B9%E5%99%A8"><span class="nav-number">1.3.3.</span> <span class="nav-text">删除容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E5%91%BD%E5%90%8D%E5%AE%B9%E5%99%A8"><span class="nav-number">1.3.4.</span> <span class="nav-text">重命名容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%85%E7%90%86%E5%AE%B9%E5%99%A8"><span class="nav-number">1.3.5.</span> <span class="nav-text">清理容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BC%E5%87%BA%E5%AE%B9%E5%99%A8"><span class="nav-number">1.3.6.</span> <span class="nav-text">导出容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5%E5%AE%B9%E5%99%A8"><span class="nav-number">1.3.7.</span> <span class="nav-text">导入容器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E5%AE%B9%E5%99%A8"><span class="nav-number">1.4.</span> <span class="nav-text">查询容器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E5%AE%B9%E5%99%A8%E5%88%97%E8%A1%A8"><span class="nav-number">1.4.1.</span> <span class="nav-text">查询容器列表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E5%AE%B9%E5%99%A8%E8%BF%9B%E7%A8%8B"><span class="nav-number">1.4.2.</span> <span class="nav-text">查询容器进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E7%BB%9F%E8%AE%A1%E4%BF%A1%E6%81%AF"><span class="nav-number">1.4.3.</span> <span class="nav-text">查询统计信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E5%AE%B9%E5%99%A8%E8%AF%A6%E6%83%85"><span class="nav-number">1.4.4.</span> <span class="nav-text">查询容器详情</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E5%AE%B9%E5%99%A8%E6%97%A5%E5%BF%97"><span class="nav-number">1.4.5.</span> <span class="nav-text">查询容器日志</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E5%AE%B9%E5%99%A8"><span class="nav-number">1.5.</span> <span class="nav-text">操作容器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%9D%E9%99%84%E5%AE%B9%E5%99%A8"><span class="nav-number">1.5.1.</span> <span class="nav-text">依附容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%E5%86%85%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4"><span class="nav-number">1.5.2.</span> <span class="nav-text">容器内执行命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%E6%96%87%E4%BB%B6"><span class="nav-number">1.5.3.</span> <span class="nav-text">复制文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%84%E6%BA%90%E9%99%90%E5%88%B6"><span class="nav-number">1.6.</span> <span class="nav-text">资源限制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E9%99%90%E9%A2%9D"><span class="nav-number">1.6.1.</span> <span class="nav-text">内存限额</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CPU%E9%99%90%E9%A2%9D"><span class="nav-number">1.6.2.</span> <span class="nav-text">CPU限额</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%86%99%E9%99%90%E5%88%B6"><span class="nav-number">1.6.3.</span> <span class="nav-text">读写限制</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i>YouTube</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc/4.0/" class="cc-opacity" rel="noopener external nofollow noreferrer" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.douban.com/people/Cyber.DraFonS" title="https:&#x2F;&#x2F;www.douban.com&#x2F;people&#x2F;Cyber.DraFonS" rel="noopener external nofollow noreferrer" target="_blank">豆瓣</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://x2b.net/583/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="容器操作 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          容器操作
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-10-21 21:23:15" itemprop="dateCreated datePublished" datetime="2021-10-21T21:23:15+08:00">2021-10-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-04-22 19:14:18" itemprop="dateModified" datetime="2023-04-22T19:14:18+08:00">2023-04-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Docker/1-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">1.基本操作</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/583/" class="post-meta-item leancloud_visitors" data-flag-title="容器操作" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="容器操作"><a href="#容器操作" class="headerlink" title="容器操作"></a>容器操作</h1><h2 id="创建容器"><a href="#创建容器" class="headerlink" title="创建容器"></a>创建容器</h2><p>创建容器可以使用docker create命令或docker run命令.</p>
+<h3 id="创建静止容器"><a href="#创建静止容器" class="headerlink" title="创建静止容器"></a>创建静止容器</h3><p>使用docker create命令可以创建一个处于停止状态的容器:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker create alpine</span>
+53b658ada694f5d5a5a5ba8e1bf656db4de8bacd79d4ae49857fe1ce27f60292<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>创建容器后,Docker会立即返回容器的ID.每个容器的ID都是唯一的.</p>
+<p>在大多数镜像中已经设定了基于这个镜像的容器,在启动时要运行的程序,也可以在创建容器时重新指定容器所绑定的应用程序.例如指定运行tail -f &#x2F;var&#x2F;log&#x2F;messages命令:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker create ubuntu:18.04 tail -f /var/log/messages</span>
+a7420c78df7388b3317364e0089491928ff0e2d184261d49b8315bc4fce8ed0d<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="创建运行容器"><a href="#创建运行容器" class="headerlink" title="创建运行容器"></a>创建运行容器</h3><p>使用docker run命令可以创建两种类型的容器:</p>
+<ul>
+<li><p><strong>交互型容器</strong></p>
+<p>容器运行默认在前台,通常会指定有交互的控制台,可以给容器输入,得到容器输出.如果创建容器的终端被关闭,容器内部使用exit命令退出,或调用docker stop(kill)命令后,容器会变成停止状态.</p>
+<p>创建一个交互式容器,需要加入-t选项让Docker为容器创建一个伪终端并绑定到容器标准输入上.加入-i选项让容器的标准输入保持打开.例如创建启动一个名为myshell的Ubuntu容器:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker run -i -t --name=myshell ubuntu:18.04 /bin/bash</span>
+root@fffa37ac6638:/<span class="token comment"># </span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>容器启动以后进入bash shell,由提示符可得用户名为root,主机名也就是容器短ID为fffa37ac6638.</p>
+<p>要退出容器可以使用快捷键Ctrl+D或exit命令,之后容器会停止.要让容器继续运行可以使用快捷键Ctrl+PQ来退出交互模式.</p>
+</li>
+<li><p><strong>后台型容器</strong></p>
+<p>容器运行在后台,创建启动之后和终端无关.只有调用docker stop或docker kill命令才能使容器变成停止状态.</p>
+<p>在实际应用中,大多数容器都是后台运行式容器,在创建时使用-d参数.例如创建后台运行的ubuntu容器,并指定一个不会终止的命令:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker run --restart=always --name dshell -d ubuntu:18.04 /bin/sh -c "while true; do echo sleeping; sleep 1; done"</span>
+bb018e9f0619a23f0e4cdc23cee2b738ecc3dc34dc8c7d3eaa4b93c9ddcd2b7e<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></li>
+</ul>
+<h2 id="创建启动参数"><a href="#创建启动参数" class="headerlink" title="创建启动参数"></a>创建启动参数</h2><p>使用docker run命令启动容器时可以指定一些启动参数.</p>
+<h3 id="常用参数"><a href="#常用参数" class="headerlink" title="常用参数"></a>常用参数</h3><p>常用启动参数如下:</p>
+<ul>
+<li><strong>-d</strong>: 设置容器在后台运行.</li>
+<li><strong>-i</strong>: 保持标准输入打开.</li>
+<li><strong>-t</strong>: 分配一个伪终端.</li>
+<li><strong>–name&#x3D;’’</strong>: 设定容器名称,如果不指定系统会随机分配一个名称.最大用途是用在两个容器之间建立link通信.</li>
+<li><strong>–restart&#x3D;””</strong>: 重启策略,可以设置为以下几种策略:<ul>
+<li>No: 默认选项,没有任何重启操作.</li>
+<li>Always: 无论容器处于什么状态都执行重启.同时容器会在Docker服务端启动时自启动.</li>
+<li>On-failure: 当容器的命令返回非0值时重启.</li>
+<li>Unless-stopped: 和Always类似,但不会自启动.</li>
+</ul>
+</li>
+<li><strong>–rm</strong>: 容器退出后,自动删除容器.不能和-d与-rm同时使用.</li>
+<li><strong>–privileged</strong>: 特权模式.容器可以访问除AppArmor和SELinux之外的主机所有进程.</li>
+<li><strong>–env&#x3D;[]</strong>: 指定容器内环境变量.</li>
+</ul>
+<h3 id="网络参数"><a href="#网络参数" class="headerlink" title="网络参数"></a>网络参数</h3><p>和网络有关启动参数如下:</p>
+<ul>
+<li><strong>–net&#x3D;””</strong>: 设置容器采用的网络方式,默认为bridge.有以下几种模式:<ul>
+<li>none: 不使用网络.容器不能访问外部网络,内部存在回路地址.</li>
+<li>bridge: 桥接模式.容器通常连接到docker0网桥的veth口,网桥再连接到宿主机网络端口上.</li>
+<li>host: 主机模式.直接使用宿主机网络,共享端口.容器所有暴露端口和容器连接将失效.</li>
+<li>container: 容器模式.将容器的网络栈合并在一起,容器可以不需要IP来通信.</li>
+<li>自定义网络: 对于Overlay和用户定义的multi-host模式可以被Docker采用.</li>
+</ul>
+</li>
+<li><strong>-p</strong>: 设置容器映射到主机的端口,设置格式为<code>-p 主机端口:容器端口</code>.</li>
+<li>–link&#x3D;””: 链接到其他容器.更推荐使用–net参数来为需要连接的容器分配一个专有网络.</li>
+<li>–expose&#x3D;[]: 设置容器暴露的端口或端口范围.</li>
+<li>-P: 通过NAT将容器设置暴露的端口自动映射到本机临时端口,默认选取端口号范围49153~65535.</li>
+<li>–dns&#x3D;[]: 设置容器使用的DNS服务器.</li>
+<li>–add-host&#x3D;””: 在容器内&#x2F;etc&#x2F;hosts文件中加入自定义主机名解析.</li>
+<li>–ip&#x3D;””: 设置容器的IP地址.</li>
+<li>–hostname&#x3D;””: 设置容器主机名</li>
+</ul>
+<h3 id="文件参数"><a href="#文件参数" class="headerlink" title="文件参数"></a>文件参数</h3><p>和文件系统挂载有关的参数如下:</p>
+<ul>
+<li><strong>-v</strong>: 挂载主机上的文件到容器,设置格式为<code>-v 主机路径:容器路径</code>.</li>
+<li><strong>–tmpfs&#x3D;[]</strong>: 挂载临时文件系统到容器.</li>
+<li>–device&#x3D;””: 挂载宿主机设备到容器内,默认可读写,可以自定义权限.</li>
+<li>–volumes-from&#x3D;[]: 从其他容器挂载卷.</li>
+<li>–workdir&#x3D;””: 设置容器内的默认工作目录.</li>
+</ul>
+<h3 id="其他参数"><a href="#其他参数" class="headerlink" title="其他参数"></a>其他参数</h3><p>其他一些不常用启动参数:</p>
+<ul>
+<li>–pid&#x3D;””: 控制容器中进程使用什么pid.容器中执行程序pid从1开始算起.常用–pid&#x3D;host来和宿主机共享PID.</li>
+<li>–ust&#x3D;””: 设置容器中使用的hostname和domain模式.</li>
+<li>–ipc&#x3D;””: 设置进程间通信模式.</li>
+<li>–log-driver: 设置容器日志等级,可以设置成以下等级:<ul>
+<li>none: 不显示日志.</li>
+<li>json-file: 默认输出格式.</li>
+<li>syslog: 将日志输出到系统日志&#x2F;var&#x2F;log&#x2F;message中.</li>
+<li>journald: 将日志写入到journald.</li>
+</ul>
+</li>
+<li>–isolation&#x3D;””: 设置容器使用的隔离机制.</li>
+<li>-h: 设置容器主机名.</li>
+</ul>
+<h2 id="管理容器"><a href="#管理容器" class="headerlink" title="管理容器"></a>管理容器</h2><p>除了创建容器之外的管理容器命令.</p>
+<h3 id="启动容器"><a href="#启动容器" class="headerlink" title="启动容器"></a>启动容器</h3><p>想要启动一个停止状态的容器,使用docker start命令:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker start fffa37ac663</span>
+fffa37ac663<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>针对一个运行中的容器,可以使用docker restart命令来重启:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker restart myshell</span>
+myshell<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>此外使用docker unpause命令来恢复一个暂停的容器运行.</p>
+<h3 id="停止容器"><a href="#停止容器" class="headerlink" title="停止容器"></a>停止容器</h3><p>使用docker stop命令可以给容器中的进程发送SIGTERM信号,默认等待10秒后,会发送SIGKILL信号来终止容器:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker stop 74b23cb72</span>
+74b23cb72<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>要发送SIGKILL信号来立即强行停止容器,使用docker kill命令:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker kill fffa37a</span>
+fffa37a<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>此外还可以使用docker pause命令来暂停容器.</p>
+<h3 id="删除容器"><a href="#删除容器" class="headerlink" title="删除容器"></a>删除容器</h3><p>当容器不再被需要时,可以使用docker rm命令删除停止状态的容器:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker rm 74b23cb722 myshell</span>
+74b23cb722
+myshell<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>当然支持-f参数来强行删除运行中的容器.</p>
+<h3 id="重命名容器"><a href="#重命名容器" class="headerlink" title="重命名容器"></a>重命名容器</h3><p>可以使用docker rename命令来对容器进行重命名:</p>
+<pre class="line-numbers language-none"><code class="language-none">[root@server4 .docker]# docker rename 86e7325c7729 cent<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="清理容器"><a href="#清理容器" class="headerlink" title="清理容器"></a>清理容器</h3><p>使用docker container prune命令会清除所有处于停止状态的容器:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker container prune</span>
+WARNING<span class="token operator">!</span> This will remove all stopped containers.
+Are you sure you want to continue? <span class="token punctuation">[</span>y/N<span class="token punctuation">]</span> y
+Deleted Containers:
+525899c2d8701ca12d44ac21d28beca50356c92cefe7d2c7159904c15dc41344
+
+Total reclaimed space: 0B<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="导出容器"><a href="#导出容器" class="headerlink" title="导出容器"></a>导出容器</h3><p>导出容器使用docker export命令.正在运行中的容器也可以导出,并且不用担心容器依赖的镜像问题:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker export 53b658ada > a.tar</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>同导出镜像一样,可以同时导出多个容器到一个文件.</p>
+<h3 id="导入容器"><a href="#导入容器" class="headerlink" title="导入容器"></a>导入容器</h3><p>可以使用docker import命令导入通过docker export命令导出的容器作为镜像:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker import a.tar user1:0.1</span>
+sha256:7549e3270b729e1e908cde70ba3e0f2f9bf1b5abff2482fefa13775c2c62de2e
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker images</span>
+REPOSITORY                TAG       IMAGE ID       CREATED         SIZE
+user1                     <span class="token number">0.1</span>       7549e3270b72   <span class="token number">7</span> seconds ago   <span class="token number">5</span>.6MB<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>和导入镜像的功能相比,容器快照文件会丢弃所有的历史记录和元数据信息.</p>
+<p>另外docker import命令还可以用来导入模板创建镜像.</p>
+<h2 id="查询容器"><a href="#查询容器" class="headerlink" title="查询容器"></a>查询容器</h2><p>查询容器信息的常用操作如下.</p>
+<h3 id="查询容器列表"><a href="#查询容器列表" class="headerlink" title="查询容器列表"></a>查询容器列表</h3><p>查看正在运行中的容器使用docker ps命令:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker ps</span>
+CONTAINER ID IMAGE        COMMAND                CREATED        STATUS    PORTS    NAMES
+74b23cb722cb ubuntu:18.04 <span class="token string">"/bin/sh -c 'while t…"</span> <span class="token number">22</span> seconds ago Up <span class="token number">21</span> seconds      dshell<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>其结果显示标头含义如下:</p>
+<ul>
+<li>CONTAINER ID: 容器ID,全长为64位的十六进制.可以使用容器ID前几位来操作容器.</li>
+<li>IMAGE: 创建容器时使用的镜像.</li>
+<li>COMMAND: 容器最后运行的命令.</li>
+<li>CREATED: 创建容器的时间.</li>
+<li>STATUS: 容器的状态,其UP后时间表示容器已经运行的时长.如果是Exited(0)的形式,括号内的数字表示容器退出时的状态码,常见的有:0(执行完正常退出), 125(docker命令参数错误), 126(权限限制命令无法执行), 127(容器内的命令无法找到).</li>
+<li>PORTS: 对外开放的端口.</li>
+<li>NAMES: 容器名,和容器ID一样标识容器,所以不能重名.</li>
+</ul>
+<p>查看所有容器使用-a参数:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker ps -a</span>
+CONTAINER ID IMAGE         COMMAND           CREATED        STATUS  PORTS  NAMES
+74b23cb722cb ubuntu:18.04  <span class="token string">"/bin/sh -c 'wh"</span>  <span class="token number">9</span> minutes ago  Up <span class="token number">9</span> minutes   dshell
+fffa37ac6638 ubuntu:18.04  <span class="token string">"/bin/bash"</span>       <span class="token number">25</span> minutes ago Exited <span class="token punctuation">(</span><span class="token number">130</span><span class="token punctuation">)</span>   myshell
+53b658ada694 alpine        <span class="token string">"/bin/sh"</span>         <span class="token number">36</span> minutes ago Created        charming_jones<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>查看最近创建的2个容器使用-n&#x3D;x参数:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker ps -n=2</span>
+CONTAINER ID IMAGE         COMMAND           CREATED        STATUS  PORTS  NAMES
+74b23cb722cb ubuntu:18.04  <span class="token string">"/bin/sh -c 'wh"</span>  <span class="token number">9</span> minutes ago  Up <span class="token number">9</span> minutes   dshell
+fffa37ac6638 ubuntu:18.04  <span class="token string">"/bin/bash"</span>       <span class="token number">25</span> minutes ago Exited <span class="token punctuation">(</span><span class="token number">130</span><span class="token punctuation">)</span>   myshell<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>此外还有-f过滤参数,在镜像多的时候可以快速过滤镜像.可以过滤的方法有:</p>
+<ul>
+<li>id: 容器ID.</li>
+<li>label: 容器的标记,可以来源于创建容器的镜像,或者在创建容器时通过–label参数设置.</li>
+<li>name: 容器的名称.</li>
+<li>exited: 容器停止时主进程的返回码.注意要与-a参数配合使用.</li>
+<li>status: 容器的状态,可以是以下状态中一种:created, restarting, running, paused, exited, dead.</li>
+<li>ancestor: 创建容器的镜像,可以指定镜像名或镜像ID.</li>
+<li>before: 给出一个容器名或容器ID,返回给定容器之前创建的容器.</li>
+<li>since: 给出一个容器名或容器ID,返回给定容器之后创建的容器.</li>
+<li>isolation: 隔离性,可以是default, process, hyperv等机制,只对Windows有用.</li>
+<li>volume: 显示使用指定数据卷或挂载点的容器.</li>
+<li>network: 显示使用指定网络ID或网络名称的容器.</li>
+</ul>
+<h3 id="查询容器进程"><a href="#查询容器进程" class="headerlink" title="查询容器进程"></a>查询容器进程</h3><p>使用docker top命令,可以查看容器中正在运行的进程:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker top dshell </span>
+<span class="token environment constant">UID</span>  PID   <span class="token environment constant">PPID</span>  C  STIME  TTY TIME      CMD
+root <span class="token number">6625</span>  <span class="token number">6605</span>  <span class="token number">0</span>  <span class="token number">22</span>:29  ?   00:00:00  /bin/sh <span class="token parameter variable">-c</span> <span class="token keyword">while</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token keyword">do</span> <span class="token builtin class-name">echo</span> sp<span class="token punctuation">;</span> <span class="token function">sleep</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token keyword">done</span>
+root <span class="token number">7736</span>  <span class="token number">6625</span>  <span class="token number">0</span>  <span class="token number">22</span>:38  ?   00:00:00  <span class="token function">sleep</span> <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>dock top命令显示结果类似于ps命令,它还可以套用ps命令的参数.</p>
+<h3 id="查询统计信息"><a href="#查询统计信息" class="headerlink" title="查询统计信息"></a>查询统计信息</h3><p>使用docker stats命令来实时查询容器内进程对系统资源使用情况:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker stats</span>
+CONTAINER ID NAME             CPU %  MEM USAGE / LIMIT MEM %  NET I/O     BLOCK I/O  PIDS
+69e11c2ea066 reverent_vaughan <span class="token number">0.00</span>%  408KiB / <span class="token number">3</span>.682GiB <span class="token number">0.01</span>%  656B / 0B   0B / 0B       <span class="token number">1</span>
+c2382935fd0b dshell           <span class="token number">0.16</span>%  600KiB / <span class="token number">3</span>.682GiB <span class="token number">0.02</span>%  656B / 0B   <span class="token number">2</span>.26MB / 0B   <span class="token number">2</span>
+099bc0337b97 myshell          <span class="token number">0.00</span>%  404KiB / <span class="token number">3</span>.682GiB <span class="token number">0.01</span>%  656B / 0B   0B / 0B       <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="查询容器详情"><a href="#查询容器详情" class="headerlink" title="查询容器详情"></a>查询容器详情</h3><p>同样可以使用docker inspect来查看容器的配置信息:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker inspect dshell</span>
+<span class="token punctuation">[</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token string">"Id"</span><span class="token builtin class-name">:</span> <span class="token string">"c2382935fd0b1ea40949266e0818da70c0518c0ed340558c68fd97987be5fc2f"</span>,
+        <span class="token string">"Created"</span><span class="token builtin class-name">:</span> <span class="token string">"2021-10-21T14:29:54.535612575Z"</span>,
+        <span class="token string">"Path"</span><span class="token builtin class-name">:</span> <span class="token string">"/bin/sh"</span>,
+        <span class="token string">"Args"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
+            <span class="token string">"-c"</span>,
+            <span class="token string">"while true; do echo sleeping; sleep 1; done"</span>
+        <span class="token punctuation">]</span>,
+        <span class="token string">"State"</span><span class="token builtin class-name">:</span> <span class="token punctuation">&#123;</span>
+            <span class="token string">"Status"</span><span class="token builtin class-name">:</span> <span class="token string">"running"</span>,<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="查询容器日志"><a href="#查询容器日志" class="headerlink" title="查询容器日志"></a>查询容器日志</h3><p>对于后台型容器,可以使用docker logs命令来查看容器日志.它将输出到标准输出的数据作为日志输出到运行docker logs命令的终端上.</p>
+<p>默认情况下,logs输出的是从容器启动到调用执行logs命令时的所有输出.使用-f参数持续打印输出日志:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker logs -f dshell</span>
+sleeping
+sleeping<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>也可以使用–tail参数来查看日志末尾输出行:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker logs --tail=5 dshell </span>
+sleeping
+sleeping<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>加入-t参数能显示日志输出时间:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker logs --tail=5 -t dshell </span>
+<span class="token number">2021</span>-10-21T14:36:55.905640558Z sleeping
+<span class="token number">2021</span>-10-21T14:36:56.907301372Z sleeping
+<span class="token number">2021</span>-10-21T14:36:57.908906032Z sleeping<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h2 id="操作容器"><a href="#操作容器" class="headerlink" title="操作容器"></a>操作容器</h2><p>一些常用的操作容器方式.</p>
+<h3 id="依附容器"><a href="#依附容器" class="headerlink" title="依附容器"></a>依附容器</h3><p>在使用docker start或docker restart启动的交互型容器中并没有具体终端可以依附,这时需要通过docker attach命令来将终端依附到容器上.也就相当于将容器切换到前台交互模式:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker start 099bc03</span>
+099bc03
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker attach 099bc03</span>
+root@099bc0337b97:/<span class="token comment"># </span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>可以通过Ctrl+P+Q快捷键退出容器,这样容器会保持运行.</p>
+<p>后台型容器(只有-d没有-it参数)无法依附终端,因为它本身就不接受用户交互式输入.</p>
+<h3 id="容器内执行命令"><a href="#容器内执行命令" class="headerlink" title="容器内执行命令"></a>容器内执行命令</h3><p>可以使用docker exec命令在容器中运行新的任务.任务可以指定在后台运行或为交互型任务.</p>
+<p>例如在后台执行创建文件,使用-d参数:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker exec -d dshell touch /root/data.conf</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>创建一个交互型任务任务使用-it参数:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker exec -it dshell /bin/bash</span>
+root@c2382935fd0b:/<span class="token comment"># </span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="复制文件"><a href="#复制文件" class="headerlink" title="复制文件"></a>复制文件</h3><p>可以通过docker cp命令来操作容器与主机之间的文件复制.其格式命令如下:<code>docker cp 源地址 目标地址</code>.</p>
+<p>例如将本地文件&#x2F;root&#x2F;ftp.sh复制到容器myshell的&#x2F;home&#x2F;目录下面:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker cp /root/ftp.sh myshell:/home/</span>
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker exec myshell ls /home</span>
+ftp.sh<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>例如将容器myshell下的文件&#x2F;home&#x2F;ftp.sh取出到本地&#x2F;root&#x2F;bin&#x2F;目录下面:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker cp myshell:/home/ftp.sh /root/bin/</span>
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># ll /root/bin</span>
+total <span class="token number">4</span>
+-rw-r--r--. <span class="token number">1</span> root root <span class="token number">52</span> Sep <span class="token number">23</span> <span class="token number">19</span>:18 ftp.sh<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h2 id="资源限制"><a href="#资源限制" class="headerlink" title="资源限制"></a>资源限制</h2><p>Docker通过cgroup来限制容器可使用资源.</p>
+<h3 id="内存限额"><a href="#内存限额" class="headerlink" title="内存限额"></a>内存限额</h3><p>默认情况下对容器资源使用没有限制.可以在创建容器时通过-m参数限制容器占用最大内存,–memory-swap参数限制最大虚拟内存(默认为内存两倍):</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker run -m 20M --memory-swap=30M alpine</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="CPU限额"><a href="#CPU限额" class="headerlink" title="CPU限额"></a>CPU限额</h3><p>Docker通过设置CPU使用权重来分配容器可使用的CPU资源.通常只有CPU资源紧张情况下,才能得到实际限制.使用-c参数来设置,默认为1024:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker run -it -c 128 alpine</span>
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># cat /sys/fs/cgroup/cpu/docker/1ffdbd1af1c64/cpu.shares </span>
+<span class="token number">128</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="读写限制"><a href="#读写限制" class="headerlink" title="读写限制"></a>读写限制</h3><p>Docker可以通过Block IO来限制容器读写磁盘的宽带.设置方式有以下三种:</p>
+<ul>
+<li><p>设置权重</p>
+<p>默认情况下容器能平等地读写磁盘,可以通过设置–blkio-weight参数来改变读写优先级.默认值为500:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker run --blkio-weight 300 alpine</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>限制读写速度bps</p>
+<p>bps是byte per second,每秒读写的数据量.限制对某个设备的读写速度的参数为–device-read-bps和device-write-bps.</p>
+<p>例如限制容器写&#x2F;dev&#x2F;sda的速率为10MB&#x2F;s:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker run -it --device-write-bps /dev/sda:10MB alpine</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>限制iops次数</p>
+<p>iops是io per second,每秒IO的次数.限制参数为–device-read-iops和device-write-iops.</p>
+<p>例如限制容器对&#x2F;dev&#x2F;sda的每秒IO次数为100:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">root@server4 ~<span class="token punctuation">]</span><span class="token comment"># docker run -it --device-write-iops /dev/sda:100 alpine</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://x2b.net/583/" title="容器操作">https://x2b.net/583/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/19190/" rel="prev" title="仓库操作">
+                  <i class="fa fa-chevron-left"></i> 仓库操作
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/7899/" rel="next" title="数据管理">
+                  数据管理 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Pisces</a> on Kubernetes 1.21
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.0.8/medium-zoom.min.js" integrity="sha256-7PhEpEWEW0XXQ0k6kQrPKwuoIomz8R8IYyuU1Qew4P8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.4.3/mermaid.min.js","integrity":"sha256-e0o3JYsdjqKajf9eOe22FhioYSz9WofRY4dLKo3F6do="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+
+
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"5dtAAlBdTU43ug7enTGQ4IV6-gzGzoHsz","app_key":"t9O9Z1hYgt2KJoxhYfSLY3Sk","server_url":"https://5dtaalbd.lc-cn-n1-shared.com","security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://x2b.net/583/"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"1bd9935e2ad8caec3cafe18232030dfe"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>

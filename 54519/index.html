@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#922">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CPalatino:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"x2b.net","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"flat"},"bookmark":{"enable":true,"color":"#922","save":"auto"},"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":null,"activeClass":"gitalk"},"stickytabs":true,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/./public/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Docker APIRESTfulDocker API是一套基于RESTful(Rspresentational State Transfer, 表述性状态转移)设计的HTTP,用于操作Docker服务的接口.它实现在Docker服务程序中,也由Docker服务程序向外提供. RESTful设计中有几个比较关键的概念:  Resource(资源) RESTful接口操作或获取的对象就是资源,在Do">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker API">
+<meta property="og:url" content="https://x2b.net/54519/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="Docker APIRESTfulDocker API是一套基于RESTful(Rspresentational State Transfer, 表述性状态转移)设计的HTTP,用于操作Docker服务的接口.它实现在Docker服务程序中,也由Docker服务程序向外提供. RESTful设计中有几个比较关键的概念:  Resource(资源) RESTful接口操作或获取的对象就是资源,在Do">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-10-25T12:55:34.000Z">
+<meta property="article:modified_time" content="2023-04-22T11:14:18.295Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://x2b.net/54519/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://x2b.net/54519/","path":"54519/","title":"Docker API"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Docker API | X to Bytes</title>
+  
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>地图</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Docker-API"><span class="nav-number">1.</span> <span class="nav-text">Docker API</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#RESTful"><span class="nav-number">1.1.</span> <span class="nav-text">RESTful</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-API-1"><span class="nav-number">1.2.</span> <span class="nav-text">Docker API</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-Remote-API"><span class="nav-number">1.3.</span> <span class="nav-text">Docker Remote API</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-Registry-API"><span class="nav-number">1.4.</span> <span class="nav-text">Docker Registry API</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-py"><span class="nav-number">1.5.</span> <span class="nav-text">Docker-py</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">1.5.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E6%9F%A5%E8%AF%A2"><span class="nav-number">1.5.2.</span> <span class="nav-text">镜像查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA"><span class="nav-number">1.5.3.</span> <span class="nav-text">镜像构建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%AE%B9%E5%99%A8"><span class="nav-number">1.5.4.</span> <span class="nav-text">创建容器</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i>YouTube</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc/4.0/" class="cc-opacity" rel="noopener external nofollow noreferrer" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.douban.com/people/Cyber.DraFonS" title="https:&#x2F;&#x2F;www.douban.com&#x2F;people&#x2F;Cyber.DraFonS" rel="noopener external nofollow noreferrer" target="_blank">豆瓣</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://x2b.net/54519/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Docker API | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Docker API
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-10-25 20:55:34" itemprop="dateCreated datePublished" datetime="2021-10-25T20:55:34+08:00">2021-10-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-04-22 19:14:18" itemprop="dateModified" datetime="2023-04-22T19:14:18+08:00">2023-04-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Docker/2-%E9%AB%98%E7%BA%A7%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">2.高级操作</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/54519/" class="post-meta-item leancloud_visitors" data-flag-title="Docker API" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="Docker-API"><a href="#Docker-API" class="headerlink" title="Docker API"></a>Docker API</h1><h2 id="RESTful"><a href="#RESTful" class="headerlink" title="RESTful"></a>RESTful</h2><p>Docker API是一套基于RESTful(Rspresentational State Transfer, 表述性状态转移)设计的HTTP,用于操作Docker服务的接口.它实现在Docker服务程序中,也由Docker服务程序向外提供.</p>
+<p>RESTful设计中有几个比较关键的概念:</p>
+<ul>
+<li><p>Resource(资源)</p>
+<p>RESTful接口操作或获取的对象就是资源,在Docker里就是容器,镜像,数据卷等实体.</p>
+</li>
+<li><p>Representation(表述)</p>
+<p>因为资源形式各式各样,所以在RESTful设计中要求采用可读性的格式去展示资源.在Docker API中大都以JSON文本的形式表述资源.</p>
+</li>
+<li><p>State Transfer(状态转移)</p>
+<p>对于资源的修改可以理解为资源状态发生的变化,也就是状态转移.在RESTful设计中主张用HTTP中的方法确定资源的操作方式,例如用GET获取,POST新增,PUT修改,DELETE删除等.</p>
+</li>
+</ul>
+<h2 id="Docker-API-1"><a href="#Docker-API-1" class="headerlink" title="Docker API"></a>Docker API</h2><p>采用Docker API通信,可以免去Docker客户端安装,同时效率更高更自由.</p>
+<p>为了区分不同程序提供的接口,Docker API进行了划分.例如操作Docker镜像容器等模块接口称为Docker Remote API,操作管理Docker Registry远程仓库的服务接口称为Docker Registry API,操作Docker Cloud云服务的接口称为Docker Cloud API.</p>
+<h2 id="Docker-Remote-API"><a href="#Docker-Remote-API" class="headerlink" title="Docker Remote API"></a>Docker Remote API</h2><p>Docker Remote API由Docker服务程序提供,是Docker API最重要部分,它能控制Docker服务及其中镜像,容器,网络等功能的运行.</p>
+<p>其中常用操作方法如下:</p>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>列出容器</td>
+<td>GET &#x2F;containers&#x2F;json</td>
+</tr>
+<tr>
+<td>创建容器</td>
+<td>POST &#x2F;containers&#x2F;create</td>
+</tr>
+<tr>
+<td>查看容器信息</td>
+<td>GET &#x2F;containers&#x2F;(id)&#x2F;json</td>
+</tr>
+<tr>
+<td>查看容器进程</td>
+<td>GET &#x2F;containers&#x2F;(id)&#x2F;atop</td>
+</tr>
+<tr>
+<td>查看容器日志</td>
+<td>GET &#x2F;containers&#x2F;(id)&#x2F;logs</td>
+</tr>
+<tr>
+<td>查看文件变更</td>
+<td>GET &#x2F;containers&#x2F;(id)&#x2F;changes</td>
+</tr>
+<tr>
+<td>导出容器</td>
+<td>GET &#x2F;containers&#x2F;(id)&#x2F;export</td>
+</tr>
+<tr>
+<td>启动容器</td>
+<td>GET &#x2F;containers&#x2F;(id)&#x2F;start</td>
+</tr>
+<tr>
+<td>停止容器</td>
+<td>GET &#x2F;containers&#x2F;(id)&#x2F;stop</td>
+</tr>
+<tr>
+<td>重启容器</td>
+<td>GET &#x2F;containers&#x2F;(id)&#x2F;restart</td>
+</tr>
+<tr>
+<td>杀死容器</td>
+<td>GET &#x2F;containers&#x2F;(id)&#x2F;kill</td>
+</tr>
+<tr>
+<td>附加终端</td>
+<td>GET &#x2F;containers&#x2F;(id)&#x2F;attach</td>
+</tr>
+<tr>
+<td>暂停容器</td>
+<td>GET &#x2F;containers&#x2F;(id)&#x2F;pause</td>
+</tr>
+<tr>
+<td>恢复容器</td>
+<td>GET &#x2F;containers&#x2F;(id)&#x2F;unpause</td>
+</tr>
+<tr>
+<td>等待容器停止</td>
+<td>GET &#x2F;containers&#x2F;(id)&#x2F;wait</td>
+</tr>
+<tr>
+<td>删除容器</td>
+<td>DELETE &#x2F;containers&#x2F;(id)</td>
+</tr>
+<tr>
+<td>从容器复制</td>
+<td>POST &#x2F;containers&#x2F;(id)&#x2F;copy</td>
+</tr>
+<tr>
+<td>列出镜像</td>
+<td>GET &#x2F;images&#x2F;json</td>
+</tr>
+<tr>
+<td>创建镜像</td>
+<td>POST &#x2F;images&#x2F;create</td>
+</tr>
+<tr>
+<td>查看镜像信息</td>
+<td>GET &#x2F;images&#x2F;(name)&#x2F;json</td>
+</tr>
+<tr>
+<td>获取镜像历史</td>
+<td>GET &#x2F;images&#x2F;(name)&#x2F;history</td>
+</tr>
+<tr>
+<td>推送镜像</td>
+<td>POST &#x2F;images&#x2F;(name)&#x2F;push</td>
+</tr>
+<tr>
+<td>镜像贴标</td>
+<td>POST &#x2F;images&#x2F;(name)&#x2F;tag</td>
+</tr>
+<tr>
+<td>删除镜像</td>
+<td>DELETE &#x2F;images&#x2F;(name)</td>
+</tr>
+<tr>
+<td>搜索镜像</td>
+<td>GET &#x2F;images&#x2F;search</td>
+</tr>
+</tbody></table>
+<p>也可以使用curl -X发送请求来测试:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span><span class="token comment"># curl --unix-socket /var/run/docker.sock http://localhost/_ping</span>
+OK
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># curl -X GET http://192.168.2.234:5999/containers/json?all=1&amp;size=1</span>
+<span class="token punctuation">[</span><span class="token punctuation">&#123;</span><span class="token string">"Id"</span><span class="token builtin class-name">:</span><span class="token string">"4608034f24faa0fde74fe3a53f89bd98af58bcc98c1d82ff51d8f19a9493ce15"</span>,<span class="token string">"Names"</span>:<span class="token punctuation">[</span><span class="token string">"/heuristic_ishizaka"</span><span class="token punctuation">]</span>,<span class="token string">"Image"</span><span class="token builtin class-name">:</span><span class="token string">"alpine"</span>,<span class="token string">"ImageID"</span><span class="token builtin class-name">:</span><span class="token string">"sha256:14119a10abf4669e8cdbdff324a9f9605d99697215a0d21c360fe8dfa8471bab"</span>,<span class="token string">"Command"</span><span class="token builtin class-name">:</span><span class="token string">"/bin/sh"</span>,<span class="token string">"Created"</span>:1635662347,<span class="token string">"Ports"</span>:<span class="token punctuation">[</span><span class="token punctuation">]</span>,<span class="token string">"Labels"</span>:<span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>,<span class="token string">"State"</span><span class="token builtin class-name">:</span><span class="token string">"exited"</span>,<span class="token string">"Status"</span><span class="token builtin class-name">:</span><span class="token string">"Exited (0) 2 seconds ago"</span>,<span class="token string">"HostConfig"</span>:<span class="token punctuation">&#123;</span><span class="token string">"NetworkMode"</span><span class="token builtin class-name">:</span><span class="token string">"default"</span><span class="token punctuation">&#125;</span>,<span class="token string">"NetworkSettings"</span>:<span class="token punctuation">&#123;</span><span class="token string">"Networks"</span>:<span class="token punctuation">&#123;</span><span class="token string">"bridge"</span>:<span class="token punctuation">&#123;</span><span class="token string">"IPAMConfig"</span>:null,<span class="token string">"Links"</span>:null,<span class="token string">"Aliases"</span>:null,<span class="token string">"NetworkID"</span><span class="token builtin class-name">:</span><span class="token string">"c441e7f297764fe10f2ded3a955f4c86f263210a56e77b7a19ce36ef300f44c0"</span>,<span class="token string">"EndpointID"</span><span class="token builtin class-name">:</span><span class="token string">""</span>,<span class="token string">"Gateway"</span><span class="token builtin class-name">:</span><span class="token string">""</span>,<span class="token string">"IPAddress"</span><span class="token builtin class-name">:</span><span class="token string">""</span>,<span class="token string">"IPPrefixLen"</span>:0,<span class="token string">"IPv6Gateway"</span><span class="token builtin class-name">:</span><span class="token string">""</span>,<span class="token string">"GlobalIPv6Address"</span><span class="token builtin class-name">:</span><span class="token string">""</span>,<span class="token string">"GlobalIPv6PrefixLen"</span>:0,<span class="token string">"MacAddress"</span><span class="token builtin class-name">:</span><span class="token string">""</span>,<span class="token string">"DriverOpts"</span>:null<span class="token punctuation">&#125;</span><span class="token punctuation">&#125;</span><span class="token punctuation">&#125;</span>,<span class="token string">"Mounts"</span>:<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">&#125;</span><span class="token punctuation">]</span>
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># curl -X POST http://192.168.2.234:5999/containers/4608034f24faa/start</span>
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span><span class="token comment"># curl -X DELETE http://192.168.2.234:5999/containers/4608034?v=1&amp;force=1</span>
+<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token number">74386</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>详细用法可参考官网: <a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.docker.com/engine/api/">https://docs.docker.com/engine/api/</a></p>
+<h2 id="Docker-Registry-API"><a href="#Docker-Registry-API" class="headerlink" title="Docker Registry API"></a>Docker Registry API</h2><p>Docker Registry API可以管理与使用远程镜像仓库Docker Registry.主要提供以下功能:</p>
+<ul>
+<li><p>镜像信息操作</p>
+<p>镜像信息指镜像ID,仓库名,标签,启动命令等能全名描述镜像的内容.无论想要推送还是拉取镜像前,都要进行镜像信息的推送和拉取.</p>
+</li>
+<li><p>镜像验证</p>
+<p>可以通过Docker Registry API所给出的镜像信息中相关字段进行校验,保证镜像数据完整没有被修改.</p>
+</li>
+<li><p>镜像推送</p>
+<p>Docker Registry API提供了分块方式将镜像数据推送到Docker Registry服务器,有利于提高传输速度.镜像服务器收到镜像数据后先进行数据组装,对于缺失部分可以补充上传.</p>
+</li>
+<li><p>镜像拉取</p>
+<p>拉取镜像时同样通过分块方式拉取,再到本地进行组装,提高镜像传输效率.</p>
+</li>
+<li><p>镜像层控制</p>
+<p>当推送一个镜像层到仓库时,Docker Registry API会通过传输的镜像散列值,判断镜像层是否已经存在仓库中,有的话不必传输.</p>
+</li>
+</ul>
+<h2 id="Docker-py"><a href="#Docker-py" class="headerlink" title="Docker-py"></a>Docker-py</h2><p>docker-py为Docker官方提供的Python版本的API接口库,参考文档:<a target="_blank" rel="noopener external nofollow noreferrer" href="https://docker-py.readthedocs.io/en/stable/">https://docker-py.readthedocs.io/en/stable/</a></p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>使用pip install docker来安装:</p>
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell">C:\Users\assassing>pip install docker
+Successfully installed docker-5<span class="token punctuation">.</span>0<span class="token punctuation">.</span>3 pywin32-227 websocket-client-1<span class="token punctuation">.</span>2<span class="token punctuation">.</span>1
+C:\Users\assassing>python
+Python 3<span class="token punctuation">.</span>8<span class="token punctuation">.</span>1 <span class="token punctuation">(</span>tags/v3<span class="token punctuation">.</span>8<span class="token punctuation">.</span>1:1b293b6<span class="token punctuation">,</span> Dec 18 2019<span class="token punctuation">,</span> 23:11:46<span class="token punctuation">)</span> <span class="token namespace">[MSC v.1916 64 bit (AMD64)]</span> on win32
+<span class="token function">Type</span> <span class="token string">"help"</span><span class="token punctuation">,</span> <span class="token string">"copyright"</span><span class="token punctuation">,</span> <span class="token string">"credits"</span> or <span class="token string">"license"</span> <span class="token keyword">for</span> more information<span class="token punctuation">.</span>
+>>> import docker<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="镜像查询"><a href="#镜像查询" class="headerlink" title="镜像查询"></a>镜像查询</h3><p>简单查看一下服务端信息:</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> docker
+
+cli <span class="token operator">=</span> docker<span class="token punctuation">.</span>DockerClient<span class="token punctuation">(</span>base_url<span class="token operator">=</span><span class="token string">'tcp://192.168.2.234:5999'</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'docker info:'</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>cli<span class="token punctuation">.</span>info<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'docker images:'</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>cli<span class="token punctuation">.</span>images<span class="token punctuation">.</span><span class="token builtin">list</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="镜像构建"><a href="#镜像构建" class="headerlink" title="镜像构建"></a>镜像构建</h3><p>尝试使用dockerfile构建一个简单的镜像:</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> docker
+<span class="token keyword">from</span> io <span class="token keyword">import</span> BytesIO
+
+dockerfile <span class="token operator">=</span> <span class="token triple-quoted-string string">'''
+#Share
+FROM busybox
+VOLUME /data
+CMD ["/bin/sh"]
+'''</span>
+f <span class="token operator">=</span> BytesIO<span class="token punctuation">(</span>dockerfile<span class="token punctuation">.</span>encode<span class="token punctuation">(</span><span class="token string">'utf-8'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+cli <span class="token operator">=</span> docker<span class="token punctuation">.</span>DockerClient<span class="token punctuation">(</span>base_url<span class="token operator">=</span><span class="token string">'tcp://192.168.2.234:5999'</span><span class="token punctuation">)</span>
+response <span class="token operator">=</span> <span class="token punctuation">[</span>line <span class="token keyword">for</span> line <span class="token keyword">in</span> cli<span class="token punctuation">.</span>images<span class="token punctuation">.</span>build<span class="token punctuation">(</span>fileobj<span class="token operator">=</span>f<span class="token punctuation">,</span> rm<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span> tag<span class="token operator">=</span><span class="token string">'pytest/volume'</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="创建容器"><a href="#创建容器" class="headerlink" title="创建容器"></a>创建容器</h3><p>启动刚才建立的镜像:</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> docker
+
+cli <span class="token operator">=</span> docker<span class="token punctuation">.</span>DockerClient<span class="token punctuation">(</span>base_url<span class="token operator">=</span><span class="token string">'tcp://192.168.2.234:5999'</span><span class="token punctuation">)</span>
+container<span class="token operator">=</span>cli<span class="token punctuation">.</span>containers<span class="token punctuation">.</span>run<span class="token punctuation">(</span>image<span class="token operator">=</span><span class="token string">'pytest/volume'</span><span class="token punctuation">,</span>command<span class="token operator">=</span><span class="token string">'/bin/sleep 60'</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>container<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://x2b.net/54519/" title="Docker API">https://x2b.net/54519/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/63480/" rel="prev" title="数据库">
+                  <i class="fa fa-chevron-left"></i> 数据库
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/1645/" rel="next" title="容器编排">
+                  容器编排 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Pisces</a> on Kubernetes 1.21
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.0.8/medium-zoom.min.js" integrity="sha256-7PhEpEWEW0XXQ0k6kQrPKwuoIomz8R8IYyuU1Qew4P8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.4.3/mermaid.min.js","integrity":"sha256-e0o3JYsdjqKajf9eOe22FhioYSz9WofRY4dLKo3F6do="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+
+
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"5dtAAlBdTU43ug7enTGQ4IV6-gzGzoHsz","app_key":"t9O9Z1hYgt2KJoxhYfSLY3Sk","server_url":"https://5dtaalbd.lc-cn-n1-shared.com","security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://x2b.net/54519/"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"21888dd5d0b6ef107799a318b629c306"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>
