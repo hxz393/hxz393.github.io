@@ -426,8 +426,8 @@
       </categories>
   </entry>
   <entry>
-    <title></title>
-    <url>/0/</url>
+    <title>04.Linux 目录结构</title>
+    <url>/4087499240/</url>
     <content><![CDATA[<h1 id="目录配置标准"><a class="markdownIt-Anchor" href="#目录配置标准"></a> 目录配置标准</h1>
 <p>Linux采用将文件储存在单个目录结构中，这种目录被称为虚拟目录（Virtual Directory）。虚拟目录将安装在主机上的所有储存设备的文件路径纳入单个目录结构中。</p>
 <p>各种发行版遵循同一套文件系统层次结构标准（FHS，Filesystem Hierarchy Standard），目的在于规范每个特定目录应该放什么数据。FHS依据文件系统使用的频繁与否，以及是否允许使用者随意变更，将目录定义为四种交互形态：</p>
@@ -629,6 +629,206 @@
 </tbody>
 </table>
 ]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>0.基础概论</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>03.Linux 终端操作</title>
+    <url>/1784829336/</url>
+    <content><![CDATA[<h1 id="终端类型"><a class="markdownIt-Anchor" href="#终端类型"></a> 终端类型</h1>
+<p>只使用文本的终端被称为字符终端（Character Terminal）或基于文本的终端（Text-Based Terminal），统称命令行界面（CLI，命令行界面）。其硬件设备标准代表是 DEC 公司 1978 年生产的 VT100。</p>
+<p>图形终端(Graphics Terminal)不仅可以处理文本，还可以显示任何能使用小点在屏幕上进行绘制的内容，也就是可以通过图形用户界面（GUI，图形用户界面）和服务端交互。Unix 的 GUI 都基于 X 终端。</p>
+<p>可以通过查看 <code>$TERM</code> 变量来了解当前使用的终端配置文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span><span class="token comment"># echo $TERM</span>
+vt100<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h1 id="常用组合快捷键"><a class="markdownIt-Anchor" href="#常用组合快捷键"></a> 常用组合快捷键</h1>
+<p>在终端中常用的快捷键如下：</p>
+<table>
+<thead>
+<tr>
+<th>快捷键</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>【Tab】</td>
+<td>命令补全/文件名补齐</td>
+</tr>
+<tr>
+<td>【Ctrl】+C</td>
+<td>中断操作，停止程序运行</td>
+</tr>
+<tr>
+<td>【Ctrl】+D</td>
+<td>键盘输入结束/退出终端/删除光标后字符</td>
+</tr>
+<tr>
+<td>【Ctrl】+Z</td>
+<td>暂停当前进程并丢入后台</td>
+</tr>
+<tr>
+<td>【Ctrl】+S</td>
+<td>暂停当前程序，暂停后按下任意键恢复运行</td>
+</tr>
+<tr>
+<td>【Ctrl】+A</td>
+<td>将光标移动到命令行首</td>
+</tr>
+<tr>
+<td>【Ctrl】+E</td>
+<td>将光标移动到命令行尾</td>
+</tr>
+<tr>
+<td>【Ctrl】+L</td>
+<td>清屏</td>
+</tr>
+<tr>
+<td>【Ctrl】+【Shift】+N</td>
+<td>新建终端窗口</td>
+</tr>
+</tbody>
+</table>
+<h1 id="命令提示符"><a class="markdownIt-Anchor" href="#命令提示符"></a> 命令提示符</h1>
+<p>成功登录系统后显示如下:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment">#</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>各字段说明如下：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>root</td>
+<td>标识登录的用户</td>
+</tr>
+<tr>
+<td>101c7</td>
+<td>主机名</td>
+</tr>
+<tr>
+<td>~</td>
+<td>当前处于的目录。~表示当前用户目录，它是个变量</td>
+</tr>
+<tr>
+<td>#</td>
+<td>表示登录用户为root，如果是普通用户用$表示</td>
+</tr>
+</tbody>
+</table>
+<h1 id="命令格式"><a class="markdownIt-Anchor" href="#命令格式"></a> 命令格式</h1>
+<p>一般命令格式如下，中括号 [] 表示非必须输入：</p>
+<pre class="line-numbers language-none"><code class="language-none">命令名称 [-选项] [参数1] [参数2]...<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="命令名称"><a class="markdownIt-Anchor" href="#命令名称"></a> 命令名称</h2>
+<p>一行命令第一个输入的部分绝对是命令（command）或可执行文件。</p>
+<p>当命令太长时，可以使用反斜杠 \ 来转义回车（必须立刻接特殊字符才能转义），使命令输入连续到下一行。</p>
+<p>命令严格区分大小写，通常由小写字母构成。</p>
+<h2 id="选项"><a class="markdownIt-Anchor" href="#选项"></a> 选项</h2>
+<p>选项（options）前通常会加 - 号，例如 -h。</p>
+<p>有时表示输入选项完整全名，则使用 – 符号，例如 --help。</p>
+<p>多个选项可以用一个 - 连起来。</p>
+<h2 id="参数"><a class="markdownIt-Anchor" href="#参数"></a> 参数</h2>
+<p>参数（parameter）依附在选项或是命令后面，用来向希望运行的程序传递信息。</p>
+<p>通常参数是一些文件名，告诉命令从哪里可以得到输入，以及把输出送到什么地方。</p>
+<p>参数之间用空格隔开，多个空格会被视为一个空格。</p>
+<h1 id="执行命令"><a class="markdownIt-Anchor" href="#执行命令"></a> 执行命令</h1>
+<p>在命令行执行命令时，有两种情况：</p>
+<ul>
+<li>按下回车键后命令立即运行，直接显示结果，等待下一条命令输入。</li>
+<li>进入到该命令的环境，直到结束该命令才回到命令提示符的环境。</li>
+</ul>
+<p>命令在正常执行后返回一个0值，表示执行成功。如果命令执行过程中出错没有完成全部工作，则返回一个非零值(可用变量$?查看)。</p>
+<h2 id="命令执行顺序"><a class="markdownIt-Anchor" href="#命令执行顺序"></a> 命令执行顺序</h2>
+<p>按优先级排列:</p>
+<ol>
+<li>以相对/绝对路径执行命令，例如 /bin/ls 或 ls；</li>
+<li>由别名(alias)找到该命令来执行；</li>
+<li>由 bash 内置的(builtin)命令来执行；</li>
+<li>通过 $PATH 这个变量的顺序找到的第一个命令来执行。</li>
+</ol>
+<h2 id="执行多条命令"><a class="markdownIt-Anchor" href="#执行多条命令"></a> 执行多条命令</h2>
+<p>可以用分号**;**将多条命令写在同一行，这些命令将会依次执行。</p>
+<p>例如查看root.txt文件属性；修改其权限为6755；再次查看root.txt的属性：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ll root.txt ; chmod 6775 root.txt ; ll root.txt </span>
+-rw-r--r--. <span class="token number">1</span> root root <span class="token number">7549</span> Sep <span class="token number">11</span> <span class="token number">11</span>:59 root.txt
+-rwsrwsr-x. <span class="token number">1</span> root root <span class="token number">7549</span> Sep <span class="token number">11</span> <span class="token number">11</span>:59 root.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h2 id="报错信息"><a class="markdownIt-Anchor" href="#报错信息"></a> 报错信息</h2>
+<p>以下是两条报错信息:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">cat</span> nohup.out <span class="token punctuation">;</span> catt
+cat: nohup.out: Permission denied
+bash: catt: <span class="token builtin class-name">command</span> not found<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>其使用冒号:分隔成三段，分别表示：命令、参数和报错原因。</p>
+<h1 id="命令别名"><a class="markdownIt-Anchor" href="#命令别名"></a> 命令别名</h1>
+<p>使用命令alias可以为命令或一组命令指定自定义名称。例如，将命令<code>ll -a | more</code>设置为lm：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># alias lm='ll -a | more'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>要查询已定义的别名，可以使用-p参数：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># alias -p</span>
+<span class="token builtin class-name">alias</span> <span class="token assign-left variable">cp</span><span class="token operator">=</span><span class="token string">'cp -i'</span>
+<span class="token builtin class-name">alias</span> <span class="token assign-left variable">egrep</span><span class="token operator">=</span><span class="token string">'egrep --color=auto'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>要取消别名，使用unalias命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># unalias lm</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>如果要临时挂起别名，例如想要使用原始的ls命令，而不是带有–color=auto参数的别名ls，在命令前面加上\字符：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span><span class="token comment"># \ls -la</span>
+total <span class="token number">64</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h1 id="历史命令"><a class="markdownIt-Anchor" href="#历史命令"></a> 历史命令</h1>
+<p>使用快捷键[Ctrl]+r 可以搜索历史命令记录。搜索结果继续按[Ctrl]+r 显示上一个找到的命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">(</span>reverse-i-search<span class="token punctuation">)</span>`history': <span class="token function">history</span> <span class="token operator">|</span> <span class="token function">grep</span> dump<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>可以使用<code>history </code>命令查询输入过的历史命令列表。默认情况下，历史命令保存在 ~/.bash_history 中。只有在注销登录后，此次会话所执行的命令才会写入文件中。</p>
+<p>可用参数:</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-c</td>
+<td>清除所有记录。</td>
+</tr>
+<tr>
+<td>-d</td>
+<td>删除指定编号的命令记录。</td>
+</tr>
+<tr>
+<td>-a</td>
+<td>插入当前历史记录到指定文件末尾，默认会将此次会话的历史记录写入到.bash_history文件中。</td>
+</tr>
+<tr>
+<td>-w</td>
+<td>写入当前的历史记录到指定文件中。</td>
+</tr>
+</tbody>
+</table>
+<p>例如，要显示最近的5条历史记录：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># history 5</span>
+  <span class="token number">888</span>  <span class="token function">date</span>
+  <span class="token number">889</span>  <span class="token function">time</span>
+  <span class="token number">890</span>  w <span class="token parameter variable">-i</span>
+  <span class="token number">891</span>  <span class="token function">cat</span> .bash_history 
+  <span class="token number">892</span>  <span class="token function">history</span> <span class="token operator">|</span> <span class="token function">tail</span> <span class="token parameter variable">-n5</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以通过 !记录编号 直接执行对应的命令。例如，要重新运行第890条记录，可以输入：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># !890</span>
+w <span class="token parameter variable">-i</span>
+<span class="token number">23</span>:41:23 up <span class="token number">1</span> day,  <span class="token number">8</span>:32,  <span class="token number">2</span> users,  load average: <span class="token number">0.00</span>, <span class="token number">0.01</span>, <span class="token number">0.05</span>
+<span class="token environment constant">USER</span>     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+root     pts/0    <span class="token number">192.168</span>.2.101    04:01    <span class="token number">3</span>.00s  <span class="token number">0</span>.84s  <span class="token number">0</span>.00s w <span class="token parameter variable">-i</span>
+root     pts/1    <span class="token number">192.168</span>.2.101    <span class="token number">15</span>:12    <span class="token number">8</span>:28m  <span class="token number">0</span>.01s  <span class="token number">0</span>.01s <span class="token parameter variable">-bash</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果使用 !!，则会执行上一个命令。</p>
+<h1 id="清屏"><a class="markdownIt-Anchor" href="#清屏"></a> 清屏</h1>
+<p>直接输入clear命令能清屏：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># clear</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>0.基础概论</category>
+      </categories>
   </entry>
   <entry>
     <title>01.硬件基础</title>
@@ -988,202 +1188,6 @@
 <p>电源供应器（Power Supply Unit，PSU）用于给主板、CPU、显卡和硬盘等硬件供电。选择质量好的电源可以有效降低硬件意外损坏的概率。</p>
 <p>如果使用诸如 AIDA 等软件对未超频的电脑进行测试时，在测试过程中出现中途断电或重启等情况，说明电源的额定功率不够或者不稳定。需要减少设备连接或者更换更高功率的电源。</p>
 <p>在选购电源时，除了考虑电源的额定功率之外，还需要考虑能源转换率，也就是 $ 输入功率 / 输出功率 $ 的值。转换率值越大越好。</p>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>0.基础概论</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>03.Linux 终端操作</title>
-    <url>/1784829336/</url>
-    <content><![CDATA[<h1 id="终端类型"><a class="markdownIt-Anchor" href="#终端类型"></a> 终端类型</h1>
-<p>只使用文本的终端被称为字符终端（Character Terminal）或基于文本的终端（Text-Based Terminal），统称命令行界面（CLI，命令行界面）。其硬件设备标准代表是 DEC 公司 1978 年生产的 VT100。</p>
-<p>图形终端(Graphics Terminal)不仅可以处理文本，还可以显示任何能使用小点在屏幕上进行绘制的内容，也就是可以通过图形用户界面（GUI，图形用户界面）和服务端交互。Unix 的 GUI 都基于 X 终端。</p>
-<p>可以通过查看 <code>$TERM</code> 变量来了解当前使用的终端配置文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span><span class="token comment"># echo $TERM</span>
-vt100<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h1 id="常用组合快捷键"><a class="markdownIt-Anchor" href="#常用组合快捷键"></a> 常用组合快捷键</h1>
-<p>在终端中常用的快捷键如下：</p>
-<table>
-<thead>
-<tr>
-<th>快捷键</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>【Tab】</td>
-<td>命令补全/文件名补齐</td>
-</tr>
-<tr>
-<td>【Ctrl】+C</td>
-<td>中断操作，停止程序运行</td>
-</tr>
-<tr>
-<td>【Ctrl】+D</td>
-<td>键盘输入结束/退出终端/删除光标后字符</td>
-</tr>
-<tr>
-<td>【Ctrl】+Z</td>
-<td>暂停当前进程并丢入后台</td>
-</tr>
-<tr>
-<td>【Ctrl】+S</td>
-<td>暂停当前程序，暂停后按下任意键恢复运行</td>
-</tr>
-<tr>
-<td>【Ctrl】+A</td>
-<td>将光标移动到命令行首</td>
-</tr>
-<tr>
-<td>【Ctrl】+E</td>
-<td>将光标移动到命令行尾</td>
-</tr>
-<tr>
-<td>【Ctrl】+L</td>
-<td>清屏</td>
-</tr>
-<tr>
-<td>【Ctrl】+【Shift】+N</td>
-<td>新建终端窗口</td>
-</tr>
-</tbody>
-</table>
-<h1 id="命令提示符"><a class="markdownIt-Anchor" href="#命令提示符"></a> 命令提示符</h1>
-<p>成功登录系统后显示如下:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment">#</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>各字段说明如下：</p>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>root</td>
-<td>标识登录的用户</td>
-</tr>
-<tr>
-<td>101c7</td>
-<td>主机名</td>
-</tr>
-<tr>
-<td>~</td>
-<td>当前处于的目录。~表示当前用户目录，它是个变量</td>
-</tr>
-<tr>
-<td>#</td>
-<td>表示登录用户为root，如果是普通用户用$表示</td>
-</tr>
-</tbody>
-</table>
-<h1 id="命令格式"><a class="markdownIt-Anchor" href="#命令格式"></a> 命令格式</h1>
-<p>一般命令格式如下，中括号 [] 表示非必须输入：</p>
-<pre class="line-numbers language-none"><code class="language-none">命令名称 [-选项] [参数1] [参数2]...<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="命令名称"><a class="markdownIt-Anchor" href="#命令名称"></a> 命令名称</h2>
-<p>一行命令第一个输入的部分绝对是命令（command）或可执行文件。</p>
-<p>当命令太长时，可以使用反斜杠 \ 来转义回车（必须立刻接特殊字符才能转义），使命令输入连续到下一行。</p>
-<p>命令严格区分大小写，通常由小写字母构成。</p>
-<h2 id="选项"><a class="markdownIt-Anchor" href="#选项"></a> 选项</h2>
-<p>选项（options）前通常会加 - 号，例如 -h。</p>
-<p>有时表示输入选项完整全名，则使用 – 符号，例如 --help。</p>
-<p>多个选项可以用一个 - 连起来。</p>
-<h2 id="参数"><a class="markdownIt-Anchor" href="#参数"></a> 参数</h2>
-<p>参数（parameter）依附在选项或是命令后面，用来向希望运行的程序传递信息。</p>
-<p>通常参数是一些文件名，告诉命令从哪里可以得到输入，以及把输出送到什么地方。</p>
-<p>参数之间用空格隔开，多个空格会被视为一个空格。</p>
-<h1 id="执行命令"><a class="markdownIt-Anchor" href="#执行命令"></a> 执行命令</h1>
-<p>在命令行执行命令时，有两种情况：</p>
-<ul>
-<li>按下回车键后命令立即运行，直接显示结果，等待下一条命令输入。</li>
-<li>进入到该命令的环境，直到结束该命令才回到命令提示符的环境。</li>
-</ul>
-<p>命令在正常执行后返回一个0值，表示执行成功。如果命令执行过程中出错没有完成全部工作，则返回一个非零值(可用变量$?查看)。</p>
-<h2 id="命令执行顺序"><a class="markdownIt-Anchor" href="#命令执行顺序"></a> 命令执行顺序</h2>
-<p>按优先级排列:</p>
-<ol>
-<li>以相对/绝对路径执行命令，例如 /bin/ls 或 ls；</li>
-<li>由别名(alias)找到该命令来执行；</li>
-<li>由 bash 内置的(builtin)命令来执行；</li>
-<li>通过 $PATH 这个变量的顺序找到的第一个命令来执行。</li>
-</ol>
-<h2 id="执行多条命令"><a class="markdownIt-Anchor" href="#执行多条命令"></a> 执行多条命令</h2>
-<p>可以用分号**;**将多条命令写在同一行，这些命令将会依次执行。</p>
-<p>例如查看root.txt文件属性；修改其权限为6755；再次查看root.txt的属性：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ll root.txt ; chmod 6775 root.txt ; ll root.txt </span>
--rw-r--r--. <span class="token number">1</span> root root <span class="token number">7549</span> Sep <span class="token number">11</span> <span class="token number">11</span>:59 root.txt
--rwsrwsr-x. <span class="token number">1</span> root root <span class="token number">7549</span> Sep <span class="token number">11</span> <span class="token number">11</span>:59 root.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h2 id="报错信息"><a class="markdownIt-Anchor" href="#报错信息"></a> 报错信息</h2>
-<p>以下是两条报错信息:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">cat</span> nohup.out <span class="token punctuation">;</span> catt
-cat: nohup.out: Permission denied
-bash: catt: <span class="token builtin class-name">command</span> not found<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>其使用冒号:分隔成三段，分别表示：命令、参数和报错原因。</p>
-<h1 id="命令别名"><a class="markdownIt-Anchor" href="#命令别名"></a> 命令别名</h1>
-<p>使用命令alias可以为命令或一组命令指定自定义名称。例如，将命令<code>ll -a | more</code>设置为lm：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># alias lm='ll -a | more'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>要查询已定义的别名，可以使用-p参数：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># alias -p</span>
-<span class="token builtin class-name">alias</span> <span class="token assign-left variable">cp</span><span class="token operator">=</span><span class="token string">'cp -i'</span>
-<span class="token builtin class-name">alias</span> <span class="token assign-left variable">egrep</span><span class="token operator">=</span><span class="token string">'egrep --color=auto'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>要取消别名，使用unalias命令：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># unalias lm</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>如果要临时挂起别名，例如想要使用原始的ls命令，而不是带有–color=auto参数的别名ls，在命令前面加上\字符：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span><span class="token comment"># \ls -la</span>
-total <span class="token number">64</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h1 id="历史命令"><a class="markdownIt-Anchor" href="#历史命令"></a> 历史命令</h1>
-<p>使用快捷键[Ctrl]+r 可以搜索历史命令记录。搜索结果继续按[Ctrl]+r 显示上一个找到的命令：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">(</span>reverse-i-search<span class="token punctuation">)</span>`history': <span class="token function">history</span> <span class="token operator">|</span> <span class="token function">grep</span> dump<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>可以使用<code>history </code>命令查询输入过的历史命令列表。默认情况下，历史命令保存在 ~/.bash_history 中。只有在注销登录后，此次会话所执行的命令才会写入文件中。</p>
-<p>可用参数:</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>-c</td>
-<td>清除所有记录。</td>
-</tr>
-<tr>
-<td>-d</td>
-<td>删除指定编号的命令记录。</td>
-</tr>
-<tr>
-<td>-a</td>
-<td>插入当前历史记录到指定文件末尾，默认会将此次会话的历史记录写入到.bash_history文件中。</td>
-</tr>
-<tr>
-<td>-w</td>
-<td>写入当前的历史记录到指定文件中。</td>
-</tr>
-</tbody>
-</table>
-<p>例如，要显示最近的5条历史记录：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># history 5</span>
-  <span class="token number">888</span>  <span class="token function">date</span>
-  <span class="token number">889</span>  <span class="token function">time</span>
-  <span class="token number">890</span>  w <span class="token parameter variable">-i</span>
-  <span class="token number">891</span>  <span class="token function">cat</span> .bash_history 
-  <span class="token number">892</span>  <span class="token function">history</span> <span class="token operator">|</span> <span class="token function">tail</span> <span class="token parameter variable">-n5</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以通过 !记录编号 直接执行对应的命令。例如，要重新运行第890条记录，可以输入：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># !890</span>
-w <span class="token parameter variable">-i</span>
-<span class="token number">23</span>:41:23 up <span class="token number">1</span> day,  <span class="token number">8</span>:32,  <span class="token number">2</span> users,  load average: <span class="token number">0.00</span>, <span class="token number">0.01</span>, <span class="token number">0.05</span>
-<span class="token environment constant">USER</span>     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
-root     pts/0    <span class="token number">192.168</span>.2.101    04:01    <span class="token number">3</span>.00s  <span class="token number">0</span>.84s  <span class="token number">0</span>.00s w <span class="token parameter variable">-i</span>
-root     pts/1    <span class="token number">192.168</span>.2.101    <span class="token number">15</span>:12    <span class="token number">8</span>:28m  <span class="token number">0</span>.01s  <span class="token number">0</span>.01s <span class="token parameter variable">-bash</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>如果使用 !!，则会执行上一个命令。</p>
-<h1 id="清屏"><a class="markdownIt-Anchor" href="#清屏"></a> 清屏</h1>
-<p>直接输入clear命令能清屏：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># clear</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 ]]></content>
       <categories>
         <category>Linux</category>
