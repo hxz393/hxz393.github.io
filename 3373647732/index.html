@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"flat"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="BIOS搭配MBR&#x2F;GPT 目前，主机系统在载入硬件驱动方面的程序有两种：使用 BIOS 和 UEFI。简单的开机流程分为以下步骤：  载入 BIOS 的硬件信息与自测（POST，power on self-test），并根据设置取得第一个可开机的设备； 通过硬件的 INT 13 中断功能，读取并执行第一个可开机设备内 MBR 的引导加载程序（Boot Loader）； 依据引导加载程序的设置，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="06.Linux 启动流程">
+<meta property="og:url" content="https://blog.x2b.net/3373647732/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="BIOS搭配MBR&#x2F;GPT 目前，主机系统在载入硬件驱动方面的程序有两种：使用 BIOS 和 UEFI。简单的开机流程分为以下步骤：  载入 BIOS 的硬件信息与自测（POST，power on self-test），并根据设置取得第一个可开机的设备； 通过硬件的 INT 13 中断功能，读取并执行第一个可开机设备内 MBR 的引导加载程序（Boot Loader）； 依据引导加载程序的设置，">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-10-10T12:54:21.000Z">
+<meta property="article:modified_time" content="2023-04-24T14:02:15.833Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/3373647732/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/3373647732/","path":"3373647732/","title":"06.Linux 启动流程"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>06.Linux 启动流程 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="../index.html" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">2</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">6</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#bios%E6%90%AD%E9%85%8Dmbrgpt"><span class="nav-number">1.</span> <span class="nav-text"> BIOS搭配MBR&#x2F;GPT</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%9A%E9%87%8D%E5%BC%95%E5%AF%BC"><span class="nav-number">2.</span> <span class="nav-text"> 多重引导</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%95%E5%AF%BC%E7%9B%AE%E5%BD%95"><span class="nav-number">3.</span> <span class="nav-text"> 引导目录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A1%AC%E4%BB%B6%E6%A3%80%E6%B5%8B"><span class="nav-number">4.</span> <span class="nav-text"> 硬件检测</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="nav-number">5.</span> <span class="nav-text"> 虚拟文件系统</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#systemd"><span class="nav-number">6.</span> <span class="nav-text"> Systemd</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B"><span class="nav-number">6.1.</span> <span class="nav-text"> 启动流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E7%9B%B8%E5%85%B3%E7%9B%AE%E5%BD%95"><span class="nav-number">6.2.</span> <span class="nav-text"> 启动相关目录</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#systemv"><span class="nav-number">7.</span> <span class="nav-text"> SystemV</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B-2"><span class="nav-number">7.1.</span> <span class="nav-text"> 启动流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E7%9B%B8%E5%85%B3%E7%9B%AE%E5%BD%95-2"><span class="nav-number">7.2.</span> <span class="nav-text"> 启动相关目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#init%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">7.3.</span> <span class="nav-text"> init配置文件</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.douban.com/people/Cyber.DraFonS" title="https:&#x2F;&#x2F;www.douban.com&#x2F;people&#x2F;Cyber.DraFonS" rel="noopener external nofollow noreferrer" target="_blank">豆瓣</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/3373647732/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="06.Linux 启动流程 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          06.Linux 启动流程
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-10-10 20:54:21" itemprop="dateCreated datePublished" datetime="2021-10-10T20:54:21+08:00">2021-10-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-04-24 22:02:15" itemprop="dateModified" datetime="2023-04-24T22:02:15+08:00">2023-04-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/0-%E5%9F%BA%E7%A1%80%E6%A6%82%E8%AE%BA/" itemprop="url" rel="index"><span itemprop="name">0.基础概论</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>12 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="bios搭配mbrgpt"><a class="markdownIt-Anchor" href="#bios搭配mbrgpt"></a> BIOS搭配MBR/GPT</h1>
+<p>目前，主机系统在载入硬件驱动方面的程序有两种：使用 BIOS 和 UEFI。简单的开机流程分为以下步骤：</p>
+<ol>
+<li>载入 BIOS 的硬件信息与自测（POST，power on self-test），并根据设置取得第一个可开机的设备；</li>
+<li>通过硬件的 INT 13 中断功能，读取并执行第一个可开机设备内 MBR 的引导加载程序（Boot Loader）；</li>
+<li>依据引导加载程序的设置，识别文件系统格式，加载核心文件。由内核开始检测硬件与驱动；</li>
+<li>启动初始进程管理程序（systemd 或 systemV），最终目的都是启动基础服务和用户设置的开机启动程序。</li>
+</ol>
+<p>GPT 格式启动过程一样，差异在于开机管理程序是否支持 GPT。</p>
+<h1 id="多重引导"><a class="markdownIt-Anchor" href="#多重引导"></a> 多重引导</h1>
+<p>引导加载程序除了可以安装在 MBR 外，还可以安装到每个文件系统的引导扇区（Boot Sector）。</p>
+<p>例如，硬盘第一和第二分区分别安装了 Windows 和 Linux。开机装载第一个分区引导加载程序，此时会出现分支选项：</p>
+<ul>
+<li>选择启动 Windows 直接加载第一个分区中的 Windows 核心文件。</li>
+<li>选择启动 Linux 则转到第二个分区的引导扇区，由第二个分区的引导加载程序完成 Linux 系统启动工作。</li>
+</ul>
+<p>如果要安装多重开机，一般先安装 Windows 再安装 Linux，因为 Windows 安装时会直接覆盖掉 MBR 以及自己所在分区的引导扇区，并且 Windows 的引导程序默认没有转移引导功能。而 Linux 安装时可以选择引导加载程序不安装到 MBR，只装在指定分区的引导扇区。之后修改引导程序加入 Windows 开机选项，完成双系统引导功能。</p>
+<h1 id="引导目录"><a class="markdownIt-Anchor" href="#引导目录"></a> 引导目录</h1>
+<p>如果使用 grub 引导，需给 /boot 分区来放置开机过程所需的文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ll /boot</span>
+total <span class="token number">149232</span>
+-rw-r--r--. <span class="token number">1</span> root root   <span class="token number">153596</span> Aug <span class="token number">31</span> <span class="token number">10</span>:57 config-3.10.0-1160.41.1.el7.x86_64
+-rw-r--r--. <span class="token number">1</span> root root   <span class="token number">147819</span> Apr <span class="token number">20</span>  <span class="token number">2018</span> config-3.10.0-862.el7.x86_64
+drwxr-xr-x. <span class="token number">3</span> root root       <span class="token number">17</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:34 efi
+drwxr-xr-x. <span class="token number">2</span> root root       <span class="token number">27</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:35 grub
+drwx------. <span class="token number">5</span> root root      <span class="token number">132</span> Sep  <span class="token number">7</span> 05:55 grub2
+-rw-------. <span class="token number">1</span> root root <span class="token number">55385253</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:37 initramfs-0-rescue-77a36143eb014dd5a0d6e738b1d84778.img
+-rw-------. <span class="token number">1</span> root root <span class="token number">21322754</span> Sep  <span class="token number">7</span> 05:55 initramfs-3.10.0-1160.41.1.el7.x86_64.img
+-rw-------. <span class="token number">1</span> root root <span class="token number">13851614</span> Sep <span class="token number">18</span> <span class="token number">23</span>:13 initramfs-3.10.0-1160.41.1.el7.x86_64kdump.img
+-rw-------. <span class="token number">1</span> root root <span class="token number">21288233</span> Sep  <span class="token number">7</span> 05:56 initramfs-3.10.0-862.el7.x86_64.img
+-rw-------. <span class="token number">1</span> root root <span class="token number">13761710</span> Sep  <span class="token number">9</span> <span class="token number">15</span>:00 initramfs-3.10.0-862.el7.x86_64kdump.img
+-rw-r--r--. <span class="token number">1</span> root root   <span class="token number">320757</span> Aug <span class="token number">31</span> <span class="token number">10</span>:57 symvers-3.10.0-1160.41.1.el7.x86_64.gz
+-rw-r--r--. <span class="token number">1</span> root root   <span class="token number">304926</span> Apr <span class="token number">20</span>  <span class="token number">2018</span> symvers-3.10.0-862.el7.x86_64.gz
+-rw-------. <span class="token number">1</span> root root  <span class="token number">3620596</span> Aug <span class="token number">31</span> <span class="token number">10</span>:57 System.map-3.10.0-1160.41.1.el7.x86_64
+-rw-------. <span class="token number">1</span> root root  <span class="token number">3409143</span> Apr <span class="token number">20</span>  <span class="token number">2018</span> System.map-3.10.0-862.el7.x86_64
+-rwxr-xr-x. <span class="token number">1</span> root root  <span class="token number">6224704</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:37 vmlinuz-0-rescue-77a36143eb014dd5a0d6e738b1d84778
+-rwxr-xr-x. <span class="token number">1</span> root root  <span class="token number">6773352</span> Aug <span class="token number">31</span> <span class="token number">10</span>:57 vmlinuz-3.10.0-1160.41.1.el7.x86_64
+-rwxr-xr-x. <span class="token number">1</span> root root  <span class="token number">6224704</span> Apr <span class="token number">20</span>  <span class="token number">2018</span> vmlinuz-3.10.0-862.el7.x86_64<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>/boot 内文件与目录说明如下所示：</p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>config-*</td>
+<td>此版本内核被编译时选择的功能与模块配置文件</td>
+</tr>
+<tr>
+<td>grub、grub2</td>
+<td>开机管理程序 grub 相关数据目录</td>
+</tr>
+<tr>
+<td>initramfs-0-rescue-*</td>
+<td>救援模式的虚拟文件系统</td>
+</tr>
+<tr>
+<td>initramfs-*.img</td>
+<td>正常模式的虚拟文件系统</td>
+</tr>
+<tr>
+<td>initramfs-*kdump.img</td>
+<td>内核出问题时用到的虚拟文件系统</td>
+</tr>
+<tr>
+<td>System.map-*</td>
+<td>内核功能放置到内存位址的对应表</td>
+</tr>
+<tr>
+<td>vmlinuz-0-rescue-*</td>
+<td>救援模式的内核文件</td>
+</tr>
+<tr>
+<td>vmlinuz-*</td>
+<td>正常模式的内核文件</td>
+</tr>
+</tbody>
+</table>
+<h1 id="硬件检测"><a class="markdownIt-Anchor" href="#硬件检测"></a> 硬件检测</h1>
+<p>在引导加载程序读取到内核文件后，Linux会将内核解压到内存中，由内核开始测试与驱动硬件。</p>
+<p>此时Linux内核会以自己检测结果为准，而不理会BIOS的硬件检测结果。也就是说内核此时开始接管BIOS后的工作了。</p>
+<h1 id="虚拟文件系统"><a class="markdownIt-Anchor" href="#虚拟文件系统"></a> 虚拟文件系统</h1>
+<p>Linux 内核可以动态载入内核模块（驱动），这些内核模块放置在 /lib/modules/ 目录内。由于模块放置到根目录内，因此开机过程中内核必须要以只读方式挂载根目录，才可以读取到驱动程序。</p>
+<p>但是在挂载根目录时，很大可能 Linux 内核并不认识 SATA 设备。为了让内核顺利执行下去，引用了一个虚拟文件系统（Initial RAM Disk 或 Initial RAM Filesystem）来处理，就是在 /boot 目录内以 initramfs 开头命名的 img 文件。</p>
+<p>虚拟文件系统的 img 文件也能被引导加载程序载入到内存中，解压后在内存中仿真成一个根目录。内核会读取虚拟文件系统内的驱动，通常是与磁盘接口和文件系统格式支持有关的驱动程序。</p>
+<p>等驱动载入完毕，根目录所在分区信息被正确识别后，此虚拟文件系统被卸载，并挂载实际的根目录文件系统，继续后续开机流程。</p>
+<p>可以用 lsinitrd 命令查看 initramfs 镜像的内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># lsinitrd /boot/initramfs-3.10.0-1160.41.1.el7.x86_64.img </span>
+Image: /boot/initramfs-3.10.0-1160.41.1.el7.x86_64.img: 21M
+<span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span>
+Early CPIO image
+<span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span>
+drwxr-xr-x   <span class="token number">3</span> root     root            <span class="token number">0</span> Sep  <span class="token number">7</span> 05:55 <span class="token builtin class-name">.</span>
+-rw-r--r--   <span class="token number">1</span> root     root            <span class="token number">2</span> Sep  <span class="token number">7</span> 05:55 early_cpio
+drwxr-xr-x   <span class="token number">3</span> root     root            <span class="token number">0</span> Sep  <span class="token number">7</span> 05:55 kernel
+drwxr-xr-x   <span class="token number">3</span> root     root            <span class="token number">0</span> Sep  <span class="token number">7</span> 05:55 kernel/x86
+drwxr-xr-x   <span class="token number">2</span> root     root            <span class="token number">0</span> Sep  <span class="token number">7</span> 05:55 kernel/x86/microcode
+-rw-r--r--   <span class="token number">1</span> root     root         <span class="token number">6476</span> Sep  <span class="token number">7</span> 05:55 kernel/x86/microcode/AuthenticAMD.bin
+<span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span>
+Version: dracut-033-572.el7
+
+Arguments: <span class="token parameter variable">-f</span>
+
+dracut modules:
+<span class="token function">bash</span>
+nss-softokn
+i18n
+microcode_ctl-fw_dir_override
+<span class="token function">shutdown</span>
+<span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span>
+drwxr-xr-x  <span class="token number">12</span> root     root            <span class="token number">0</span> Sep  <span class="token number">7</span> 05:55 <span class="token builtin class-name">.</span>
+crw-r--r--   <span class="token number">1</span> root     root       <span class="token number">5</span>,   <span class="token number">1</span> Sep  <span class="token number">7</span> 05:55 dev/console
+crw-r--r--   <span class="token number">1</span> root     root       <span class="token number">1</span>,  <span class="token number">11</span> Sep  <span class="token number">7</span> 05:55 dev/kmsg
+crw-r--r--   <span class="token number">1</span> root     root       <span class="token number">1</span>,   <span class="token number">3</span> Sep  <span class="token number">7</span> 05:55 dev/null
+lrwxrwxrwx   <span class="token number">1</span> root     root            <span class="token number">7</span> Sep  <span class="token number">7</span> 05:55 bin -<span class="token operator">></span> usr/bin
+drwxr-xr-x   <span class="token number">2</span> root     root            <span class="token number">0</span> Sep  <span class="token number">7</span> 05:55 dev<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到，这个img文件可以分为两部分。前半部分包括一些预先声明的数据，其中包括一个可执行的bin文件；而后半部分才是内核会去读取的重要文件。</p>
+<p>进一步解压整个img文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 initrams<span class="token punctuation">]</span><span class="token comment"># cp /boot/initramfs-3.10.0-1160.41.1.el7.x86_64.img init.img</span>
+<span class="token punctuation">[</span>root@101c7 initrams<span class="token punctuation">]</span><span class="token comment"># file init.img </span>
+init.img: ASCII cpio archive <span class="token punctuation">(</span>SVR4 with no CRC<span class="token punctuation">)</span>
+<span class="token punctuation">[</span>root@101c7 initrams<span class="token punctuation">]</span><span class="token comment"># /usr/lib/dracut/skipcpio init.img | zcat | cpio -div</span>
+init
+<span class="token function">shutdown</span>
+<span class="token number">88189</span> blocks
+<span class="token punctuation">[</span>root@101c7 initrams<span class="token punctuation">]</span><span class="token comment"># ll</span>
+total <span class="token number">8</span>
+lrwxrwxrwx.  <span class="token number">1</span> root root    <span class="token number">7</span> Sep <span class="token number">19</span> 09:10 bin -<span class="token operator">></span> usr/bin
+drwxr-xr-x.  <span class="token number">2</span> root root   <span class="token number">45</span> Sep <span class="token number">19</span> 09:10 dev
+drwxr-xr-x. <span class="token number">12</span> root root <span class="token number">4096</span> Sep <span class="token number">19</span> 09:10 etc
+lrwxrwxrwx.  <span class="token number">1</span> root root   <span class="token number">23</span> Sep <span class="token number">19</span> 09:10 init -<span class="token operator">></span> usr/lib/systemd/systemd
+lrwxrwxrwx.  <span class="token number">1</span> root root    <span class="token number">7</span> Sep <span class="token number">19</span> 09:10 lib -<span class="token operator">></span> usr/lib
+lrwxrwxrwx.  <span class="token number">1</span> root root    <span class="token number">9</span> Sep <span class="token number">19</span> 09:10 lib64 -<span class="token operator">></span> usr/lib64
+drwxr-xr-x.  <span class="token number">2</span> root root    <span class="token number">6</span> Sep <span class="token number">19</span> 09:10 proc
+drwxr-xr-x.  <span class="token number">2</span> root root    <span class="token number">6</span> Sep <span class="token number">19</span> 09:10 root
+drwxr-xr-x.  <span class="token number">2</span> root root    <span class="token number">6</span> Sep <span class="token number">19</span> 09:10 run
+lrwxrwxrwx.  <span class="token number">1</span> root root    <span class="token number">8</span> Sep <span class="token number">19</span> 09:10 sbin -<span class="token operator">></span> usr/sbin
+-rwxr-xr-x.  <span class="token number">1</span> root root <span class="token number">3117</span> Sep <span class="token number">19</span> 09:10 <span class="token function">shutdown</span>
+drwxr-xr-x.  <span class="token number">2</span> root root    <span class="token number">6</span> Sep <span class="token number">19</span> 09:10 sys
+drwxr-xr-x.  <span class="token number">2</span> root root    <span class="token number">6</span> Sep <span class="token number">19</span> 09:10 sysroot
+drwxr-xr-x.  <span class="token number">2</span> root root    <span class="token number">6</span> Sep <span class="token number">19</span> 09:10 tmp
+drwxr-xr-x.  <span class="token number">7</span> root root   <span class="token number">66</span> Sep <span class="token number">19</span> 09:10 usr
+drwxr-xr-x.  <span class="token number">2</span> root root   <span class="token number">29</span> Sep <span class="token number">19</span> 09:10 var<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>解压后查询下这个文件系统中systemd调用的运行模式：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 initrams<span class="token punctuation">]</span><span class="token comment"># ll usr/lib/systemd/system/default.target</span>
+lrwxrwxrwx. <span class="token number">1</span> root root <span class="token number">13</span> Sep <span class="token number">19</span> 09:10 usr/lib/systemd/system/default.target -<span class="token operator">></span> initrd.target
+<span class="token punctuation">[</span>root@101c7 initrams<span class="token punctuation">]</span><span class="token comment"># systemctl list-dependencies initrd.target</span>
+initrd.target
+● ├─dracut-cmdline.service
+● ├─dracut-initqueue.service
+● ├─dracut-mount.service
+● ├─dracut-pre-mount.service<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>通过查询initrd.target可以知道内核先是用载入虚拟文件系统中的basic.target、sysinit.target等功能启用的流程，让系统顺利运行，再卸载虚拟文件系统，挂载实际系统根目录。</p>
+<p>如果想要创建一个自定义的initramfs镜像，可以使用dracut或mkinitrd来处理。例如，新建一个添加了x200网卡驱动和nfs文件系统驱动的initramfs镜像：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># dracut -v -add-drivers "x200" --filesystems "nfs" > initramfs-new.img &amp; (uname -r)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="systemd"><a class="markdownIt-Anchor" href="#systemd"></a> Systemd</h1>
+<p>Systemd 是一种系统和服务管理器，是 Linux 系统中的一项关键技术。它可以用于启动、停止和管理系统进程、网络、文件系统和其他系统资源。Systemd 最初是为 Red Hat Linux 发行版设计的，但现在已被广泛采用，并被大多数 Linux 发行版所使用。</p>
+<p>Systemd 的主要优势是速度和可靠性。它的启动速度远远快于传统的 init 系统，因为它能够并行启动多个服务。此外，Systemd 还提供了强大的日志功能和灵活的单元文件格式，可用于管理各种类型的服务和资源。</p>
+<p>Systemd 还引入了一些新的概念，例如单元和片段。单元是 Systemd 中的基本单位，用于描述系统资源（例如服务、套接字、挂载点等）。片段是一种单元文件的组成部分，它可以被其他单元文件重用。这种灵活性使得 Systemd 能够更容易地管理和组织系统资源，使其更加模块化和可重用。</p>
+<h2 id="启动流程"><a class="markdownIt-Anchor" href="#启动流程"></a> 启动流程</h2>
+<p>在内核载入完毕硬件驱动后，采用systemd管理服务的启动流程如下：</p>
+<ol>
+<li>内核会主动调用第一个程序systemd执行sysinit.target初始化系统及basic.target准备系统；</li>
+<li>接下来到<code>/usr/lib/systemd/system/</code>目录下去调用multi-user.target(default.target)；</li>
+<li>然后系统会到<code>/etc/systemd/system/multi-user.target.wants/</code>目录去找用户设置开机启动服务(unit)；</li>
+<li>最后到<code>/usr/lib/systemd/system/multi-user.target.wants/</code>目录去找系统默认的开机启动服务(unit)；</li>
+<li>（非必须）执行graphical需要的服务。</li>
+</ol>
+<p>至于最终启动的服务有哪些，可以用<code>systemctl list-dependencies</code>命令查询：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 initrams<span class="token punctuation">]</span><span class="token comment"># systemctl list-dependencies multi-user.target | grep target</span>
+multi-user.target
+● ├─basic.target
+● │ ├─selinux-policy-migrate-local-changes@targeted.service
+● │ ├─paths.target
+● │ ├─slices.target
+● │ ├─sockets.target
+● │ ├─sysinit.target
+● │ │ ├─cryptsetup.target
+● │ │ ├─local-fs.target
+● │ │ └─swap.target
+● │ └─timers.target
+● ├─getty.target
+● └─remote-fs.target<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>另外，为了兼容旧有的通过/etc/rc.d/rc.local配置自启动脚本的方式，CentOS 7保留了一个rc-local.service来执行这些脚本。</p>
+<h2 id="启动相关目录"><a class="markdownIt-Anchor" href="#启动相关目录"></a> 启动相关目录</h2>
+<p>开机会读取的文件目录如下：</p>
+<ul>
+<li><strong>/etc/modules-load.d/*.conf</strong>：配置内核需要加载的模块。</li>
+<li><strong>/etc/modprobe.d/*.conf</strong>：可以设置模块参数的配置。</li>
+<li><strong>/etc/sysconfig/</strong>：系统配置目录下有许多环境配置文件，其中一些重要的是：
+<ul>
+<li><strong>authconfig</strong>：用于规范用户身份认证机制，包括是否使用本地/etc/passwd，/etc/shadow等文件以及密码记录使用的加密算法，是否使用外部密码服务器提供的账号验证（NIS、LDAP）等。</li>
+<li><strong>cpupower</strong>：如果启动了cpupower.service服务，会读取此配置文件。</li>
+<li><strong>firewalld、iptables-config、iptables-config、ebtables-config</strong>：与防火墙服务相关的配置。</li>
+<li><strong>network-scripts</strong>：网卡设置。</li>
+</ul>
+</li>
+</ul>
+<h1 id="systemv"><a class="markdownIt-Anchor" href="#systemv"></a> SystemV</h1>
+<p>System V (System 5) 是 Unix 操作系统中的一个初始化系统。它是早期 Unix 系统的标准初始化系统，常见于许多 Linux 发行版中。System V 通过运行一个脚本，逐个启动和停止系统服务来初始化系统。这些脚本通常存储在 <code>/etc/rc.d/init.d/</code> 目录下，每个脚本对应着一个系统服务。在系统启动或关闭时，System V 会根据 <code>/etc/inittab</code> 文件的配置来执行这些脚本。</p>
+<p>System V 的缺点在于启动过程比较慢，因为它需要逐个启动和停止每个系统服务，这使得启动时间较长。此外，System V 在处理系统服务时需要手动编写脚本，并且难以处理服务之间的依赖关系，这可能导致系统启动失败或服务无法正常运行。由于这些缺点，现代 Linux 发行版逐渐转向使用 Systemd 作为默认初始化系统。</p>
+<h2 id="启动流程-2"><a class="markdownIt-Anchor" href="#启动流程-2"></a> 启动流程</h2>
+<p>在内核加载完硬件驱动后，内核会主动调用第一个进程/sbin/init。它最主要的功能是准备软件执行环境：</p>
+<ol>
+<li>init取得默认执行等级，执行/etc/rc.d/rc.sysinit文件来准备软件执行的操作环境（网络、时区等）；</li>
+<li>init执行run level的各个服务的启动（脚本方式）。例如执行等级是5，则只执行5:5:wait:/etc/rc.d/rc5这行：
+<ul>
+<li>和rc5相关的脚本存放在/etc/rc5.d/下面，以Kxx开头的文件代表执行stop，以Sxx开头代表执行start操作。</li>
+<li>这些脚本全部是连接文件，连接到stand alone服务启动的目录/etc/init.d/内。</li>
+<li>S或K后面两位数字代表执行顺序，数字越小执行越早。</li>
+</ul>
+</li>
+<li>设置好组合键功能和不断电系统pf、pr机制。</li>
+<li>init用户自定义脚本/etc/rc.d/rc.local配置文件内的程序；</li>
+<li>init执行终端模拟程序mingetty来启动login进程。</li>
+<li>（非必须）以/etc/X11/perfdm -nodaemon启动图形界面。</li>
+</ol>
+<h2 id="启动相关目录-2"><a class="markdownIt-Anchor" href="#启动相关目录-2"></a> 启动相关目录</h2>
+<p>开机用到的配置文件：</p>
+<ul>
+<li>
+<p><strong>/etc/modprobe.conf</strong></p>
+<p>定义开机要加载的模块，模块存放于 <code>/etc/sysconfig/modules/</code> 目录下。</p>
+</li>
+<li>
+<p><strong>/etc/sysconfig/</strong>*</p>
+<p>服务相关配置，重要的有：</p>
+<ul>
+<li><strong>authconfig</strong>：设置用户身份认证机制。</li>
+<li><strong>clock</strong>：设置 Linux 主机的时区。</li>
+<li><strong>i18n</strong>：设置语系。</li>
+<li><strong>keyboard &amp; mouse</strong>：设置键盘与鼠标样式。</li>
+<li><strong>network</strong>：设置网络启用、主机名和网关。</li>
+<li><strong>network-scripts</strong>：设置网卡。</li>
+</ul>
+</li>
+</ul>
+<h2 id="init配置文件"><a class="markdownIt-Anchor" href="#init配置文件"></a> init配置文件</h2>
+<p>init通过配置文件/etc/inittab规划行动。配置文件每行内容由冒号:分隔四个字段：</p>
+<ul>
+<li>
+<p><strong>设置选项</strong></p>
+<p>最多四个字符，代表init的主要工作选项，只是一个说明。</p>
+</li>
+<li>
+<p><strong>执行等级</strong></p>
+<p>代表该选项在哪些执行等级下面运行，如果是35表示在执行等级3和5都会运行。</p>
+</li>
+<li>
+<p><strong>init的操作行为</strong></p>
+<p>可设置的值有：</p>
+<ul>
+<li><strong>initdefault</strong>：默认执行等级设置值。</li>
+<li><strong>sysinit</strong>：系统初始化的操作选项。</li>
+<li><strong>ctrlaltdel</strong>：代表组合快捷键[Ctrl]+[Alt]+[Del]是否可以重新启动的设置。</li>
+<li><strong>wait</strong>：代表后面设置的命令必须要执行完毕才能继续下面其他操作。</li>
+<li><strong>respawn</strong>：代表后面的命令可以无限重启，例如tty1。</li>
+</ul>
+</li>
+<li>
+<p><strong>命令选项</strong></p>
+<p>执行的命令，通常是一些脚本。</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/3373647732/" title="06.Linux 启动流程">https://blog.x2b.net/3373647732/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../3847559470/" rel="prev" title="01.硬件基础">
+                  <i class="fa fa-chevron-left"></i> 01.硬件基础
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../2759544459/" rel="next" title="02.软件基础">
+                  02.软件基础 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">17k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">58 分钟</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes 1.21
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@next-theme/pjax@0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://unpkg.com/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://unpkg.com/katex@0.16.4/dist/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/3373647732/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://unpkg.com/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'blog.x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>
