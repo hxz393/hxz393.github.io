@@ -426,6 +426,211 @@
       </categories>
   </entry>
   <entry>
+    <title></title>
+    <url>/0/</url>
+    <content><![CDATA[<h1 id="目录配置标准"><a class="markdownIt-Anchor" href="#目录配置标准"></a> 目录配置标准</h1>
+<p>Linux采用将文件储存在单个目录结构中，这种目录被称为虚拟目录（Virtual Directory）。虚拟目录将安装在主机上的所有储存设备的文件路径纳入单个目录结构中。</p>
+<p>各种发行版遵循同一套文件系统层次结构标准（FHS，Filesystem Hierarchy Standard），目的在于规范每个特定目录应该放什么数据。FHS依据文件系统使用的频繁与否，以及是否允许使用者随意变更，将目录定义为四种交互形态：</p>
+<ul>
+<li>
+<p><strong>可分享的</strong>（Shareable）</p>
+<p>可以分享给其他系统挂载使用的目录，包括可执行文件与使用者的邮件等数据。</p>
+</li>
+<li>
+<p><strong>不可分享的</strong>（Unshareable）</p>
+<p>自己机器上面运行的设备文件或者是与程序有关的socket文件等，仅能自己使用，所以不适合分享。</p>
+</li>
+<li>
+<p><strong>不变的</strong>（Static）</p>
+<p>有些数据是不会经常变动的，例如函数库、文件说明文档、系统管理员所管理的主机服务配置文件等。</p>
+</li>
+<li>
+<p><strong>可变动的</strong>（Variable）</p>
+<p>经常改变的数据，例如日志文件等。</p>
+</li>
+</ul>
+<h1 id="顶级目录"><a class="markdownIt-Anchor" href="#顶级目录"></a> 顶级目录</h1>
+<p>所有目录都由根目录/衍生而来，因此FHS标准建议根目录所在分区应该越小越好，最好不要将应用程序所安装的软件与根目录放在同一个分区。这样可以提高性能，根目录所在的文件系统也较不容易发生问题。</p>
+<p>开机过程中仅有根目录会被挂载，其他分区则是在开机完成后陆续进行挂载。</p>
+<p>必须存在的顶级目录：</p>
+<table>
+<thead>
+<tr>
+<th><strong>目录</strong></th>
+<th><strong>目录说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/bin</td>
+<td>二进制目录，存放可以被root和一般账户所用的命令，以及在单用户维护模式下仍能被操作的常用命令，如cat，mv，chown等。</td>
+</tr>
+<tr>
+<td>/boot</td>
+<td>启动目录，存放开机会使用到的文件，包括内核文件及开机所需配置文件。</td>
+</tr>
+<tr>
+<td>/dev</td>
+<td>设备目录，Linux上任何设备与接口设备都是以文件的形式存在于这个目录下，访问目录下的某个文件就等于访问某个设备。主要分为三类硬件，例如硬盘（sda）和打印机（lp0），终端如控制台（tty），伪设备如/dev/null和/dev/zero。</td>
+</tr>
+<tr>
+<td>/etc</td>
+<td>系统配置文件目录，系统配置文件几乎都放在这里，如账号密码，服务起始文件等。一般不要放可执行文件到这个目录下。<br />/etc/X11:与X Window有关的配置文件放在这里，尤其是xorg.conf这个XServer的配置文件。<br />/etc/opt:放置第三方软件配置文件。<br />/etc/sgml:与SGML格式有关的各项配置文件。<br />/etc/xml:与XML格式有关的配置文件。</td>
+</tr>
+<tr>
+<td>/home</td>
+<td>主目录，系统默认用户主文件夹，一般子文件夹以用户账号命名。</td>
+</tr>
+<tr>
+<td>/lib, /lib64</td>
+<td>库目录，存放开机时会用到的函数库，以及在/bin或/sbin中命令会调用的函数库。<br />/lib/modules/:存放内核相关的模块（驱动程序）。</td>
+</tr>
+<tr>
+<td>/media</td>
+<td>媒体目录，存放可删除设备，包括CD，DVD，U盘等设备都暂时挂载于此。</td>
+</tr>
+<tr>
+<td>/mnt</td>
+<td>挂载目录，如果想要暂时挂载某些额外的设备，一般放置到这个目录中。</td>
+</tr>
+<tr>
+<td>/opt</td>
+<td>可选目录，给第三方软件放置的目录，包括发行版附加的一些软件包。</td>
+</tr>
+<tr>
+<td>/root</td>
+<td>系统管理员的主文件夹。</td>
+</tr>
+<tr>
+<td>/sbin</td>
+<td>系统二进制目录，只有root可用，包括开机，修复，还原系统所需要的系统命令，如fdisk，ifconfig，init等。</td>
+</tr>
+<tr>
+<td>/srv</td>
+<td>服务目录，一些网络服务启动后，这些服务所需要取用的数据目录，如将www服务需要的网页文件放置到/srv/www里。</td>
+</tr>
+<tr>
+<td>/tmp</td>
+<td>临时目录，重要数据不可放置到此目录，会被一些系统进程定期清空。</td>
+</tr>
+<tr>
+<td>/run</td>
+<td>运行目录，存放系统运作时的运行时数据。</td>
+</tr>
+</tbody>
+</table>
+<p>其他重要目录：</p>
+<table>
+<thead>
+<tr>
+<th><strong>目录</strong></th>
+<th><strong>目录说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/lost+found</td>
+<td>只有ext文件系统格式才会产生的目录，用来放置丢失的文件片段。</td>
+</tr>
+<tr>
+<td>/proc</td>
+<td>进程目录。这个目录本身是一个虚拟文件系统（Virtual Filesystem），它放置的数据都在内存中，如系统内核、进程、外部设备的状态及网络状态等，所以实际不占任何硬盘空间。</td>
+</tr>
+<tr>
+<td>/sys</td>
+<td>系统目录。和/proc类似的虚拟文件系统，记录与内核相关信息，包括目前已加载的内核模块与硬件设备信息。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="usr目录"><a class="markdownIt-Anchor" href="#usr目录"></a> /usr目录</h1>
+<p>/usr目录存放静态数据,即不会随时间改变的文件,原则上放置独立安装的软件数据。系统默认软件也放在/usr目录下。</p>
+<p>/usr目录下的子目录说明：</p>
+<table>
+<thead>
+<tr>
+<th><strong>目录</strong></th>
+<th><strong>目录说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/usr/bin/</td>
+<td>存放所有的用户命令。</td>
+</tr>
+<tr>
+<td>/usr/include/</td>
+<td>存放C/C++等编程语言的头文件(header)和包含文件(include)。</td>
+</tr>
+<tr>
+<td>/usr/lib/</td>
+<td>存放各种应用软件的函数库、目标文件，以及一般用户不使用的执行文件或脚本。</td>
+</tr>
+<tr>
+<td>/usr/local/</td>
+<td>推荐系统管理员自行下载安装的软件存放目录。</td>
+</tr>
+<tr>
+<td>/usr/sbin/</td>
+<td>存放非正常运行所需的系统命令，例如网络服务器软件的服务命令。</td>
+</tr>
+<tr>
+<td>/usr/share/</td>
+<td>存放共享文件，如man手册和doc帮助文档。</td>
+</tr>
+<tr>
+<td>/usr/src/</td>
+<td>一般建议将源码放在该目录下。内核源码建议放在/usr/src/linux/下。</td>
+</tr>
+<tr>
+<td>/usr/libexec/</td>
+<td>存放某些不被一般使用者惯用的可执行文件或脚本。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="var目录"><a class="markdownIt-Anchor" href="#var目录"></a> /var目录</h1>
+<p>/var 目录是用来存放会经常变动的文件的，包括缓存（cache）、日志文件（log file）以及某些软件运行时所产生的文件（lock file、run file）或 MySQL 数据库的文件等等。最好可以将它独立出来挂在单独的一个分区中。</p>
+<p>下面是 /var 目录下的子目录说明：</p>
+<table>
+<thead>
+<tr>
+<th>目录</th>
+<th>目录说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/var/cache/</td>
+<td>应用程序本身运行过程中会产生一些暂存文件。</td>
+</tr>
+<tr>
+<td>/var/lib/</td>
+<td>程序执行的过程中需要使用到的数据文件的放置目录。在此目录下各自的软件应该要有自己的目录，例如 MySQL 数据库放置到 /var/lib/mysql/ 下。</td>
+</tr>
+<tr>
+<td>/var/lock/</td>
+<td>某些设备或文件资源一次只能被一个应用程序所使用，为了避免使用冲突就得给该设备上锁。例如刻录机设备在刻录中时会被锁上。目前此目录已被挪到 /run/lock 中。</td>
+</tr>
+<tr>
+<td>/var/log/</td>
+<td>日志文件放置的目录，例如记录登录者信息的文件 /var/log/messages、/var/log/wtmp。</td>
+</tr>
+<tr>
+<td>/var/mail/</td>
+<td>放置个人电子邮件信箱的目录，等同于 /var/spool/mail/。</td>
+</tr>
+<tr>
+<td>/var/run/</td>
+<td>某些程序或服务启动后，会将它们的 PID 放置在这个目录下。</td>
+</tr>
+<tr>
+<td>/var/spool/</td>
+<td>放置一些队列数据，通常在使用后会被删除。</td>
+</tr>
+</tbody>
+</table>
+]]></content>
+  </entry>
+  <entry>
     <title>01.硬件基础</title>
     <url>/3847559470/</url>
     <content><![CDATA[<h1 id="计算机简介"><a class="markdownIt-Anchor" href="#计算机简介"></a> 计算机简介</h1>
