@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>06.Linux 启动流程</title>
+    <title></title>
     <url>/3373647732/</url>
     <content><![CDATA[<h1 id="bios-启动流程"><a class="markdownIt-Anchor" href="#bios-启动流程"></a> BIOS 启动流程</h1>
 <p>目前，主机系统在载入硬件驱动方面的程序有两种：使用 BIOS 和 UEFI。简单的开机流程分为以下步骤：</p>
@@ -12,8 +12,7 @@
 <li>启动初始进程管理程序（systemd 或 System V），最终目的都是启动基础服务和用户设置的开机启动程序。</li>
 </ol>
 <p>在使用 BIOS 时，通常搭配 MBR（Master Boot Record）分区表。而在使用 UEFI 时，通常搭配 GPT（GUID Partition Table）分区表。GPT 格式启动过程与 MBR 类似，差异在于开机管理程序是否支持 GPT。</p>
-<p>在引导加载程序读取到内核文件后，Linux 会将内核解压到内存中，由内核开始测试与驱动硬件。</p>
-<p>此时 Linux 内核会以自己检测结果为准，而不理会 BIOS 的硬件检测结果。也就是说内核此时开始接管 BIOS 后的工作了。</p>
+<p>在引导加载程序读取到内核文件后，Linux 会将内核解压到内存中，由内核开始测试与驱动硬件。此时 Linux 内核会以自己检测结果为准，而不理会 BIOS 的硬件检测结果。也就是说内核此时开始接管 BIOS 后的工作了。</p>
 <h1 id="多系统引导"><a class="markdownIt-Anchor" href="#多系统引导"></a> 多系统引导</h1>
 <p>引导加载程序除了可以安装在 MBR 外，还可以安装到每个文件系统的引导扇区（Boot Sector）。</p>
 <p>例如，硬盘第一和第二分区分别安装了 Windows 和 Linux。开机装载第一个分区引导加载程序，此时会出现分支选项：</p>
@@ -23,7 +22,7 @@
 </ul>
 <p>如果要安装多重开机，一般先安装 Windows 再安装 Linux，因为 Windows 安装时会直接覆盖掉 MBR 以及自己所在分区的引导扇区，并且 Windows 的引导程序默认没有转移引导功能。而 Linux 安装时可以选择引导加载程序不安装到 MBR，只装在指定分区的引导扇区。之后修改引导程序加入 Windows 开机选项，完成双系统引导功能。</p>
 <h1 id="引导目录说明"><a class="markdownIt-Anchor" href="#引导目录说明"></a> 引导目录说明</h1>
-<p>如果使用 grub 引导，需给 <code>/boot</code> 分区来放置开机过程所需的文件：</p>
+<p>如果使用 GRUB 引导，需给 <code>/boot</code> 分区来放置开机过程所需的文件：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ll /boot</span>
 total <span class="token number">149232</span>
 -rw-r--r--. <span class="token number">1</span> root root   <span class="token number">153596</span> Aug <span class="token number">31</span> <span class="token number">10</span>:57 config-3.10.0-1160.41.1.el7.x86_64
