@@ -22,15 +22,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"flat"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
 
-    <meta name="description" content="BIOS 搭配 MBR&#x2F;GPT 目前，主机系统在载入硬件驱动方面的程序有两种：使用 BIOS 和 UEFI。简单的开机流程分为以下步骤：  载入 BIOS 的硬件信息与自测（POST，power on self-test），并根据设置取得第一个可开机的设备； 通过硬件的 INT 13 中断功能，读取并执行第一个可开机设备内 MBR 的引导加载程序（Boot Loader）； 依据引导加载程序的设">
+    <meta name="description" content="BIOS 启动流程 目前，主机系统在载入硬件驱动方面的程序有两种：使用 BIOS 和 UEFI。简单的开机流程分为以下步骤：  载入 BIOS 或 UEFI 的硬件信息与自测（POST，Power-On Self-Test），并根据设置取得第一个可开机的设备； 对于 BIOS，通过硬件的 INT 13 中断功能，读取并执行第一个可开机设备内 MBR 的引导加载程序（Boot Loader）；对于">
 <meta property="og:type" content="article">
 <meta property="og:title" content="06.Linux 启动流程">
 <meta property="og:url" content="https://blog.x2b.net/3373647732/index.html">
 <meta property="og:site_name" content="X to Bytes">
-<meta property="og:description" content="BIOS 搭配 MBR&#x2F;GPT 目前，主机系统在载入硬件驱动方面的程序有两种：使用 BIOS 和 UEFI。简单的开机流程分为以下步骤：  载入 BIOS 的硬件信息与自测（POST，power on self-test），并根据设置取得第一个可开机的设备； 通过硬件的 INT 13 中断功能，读取并执行第一个可开机设备内 MBR 的引导加载程序（Boot Loader）； 依据引导加载程序的设">
+<meta property="og:description" content="BIOS 启动流程 目前，主机系统在载入硬件驱动方面的程序有两种：使用 BIOS 和 UEFI。简单的开机流程分为以下步骤：  载入 BIOS 或 UEFI 的硬件信息与自测（POST，Power-On Self-Test），并根据设置取得第一个可开机的设备； 对于 BIOS，通过硬件的 INT 13 中断功能，读取并执行第一个可开机设备内 MBR 的引导加载程序（Boot Loader）；对于">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-10-10T12:54:21.000Z">
-<meta property="article:modified_time" content="2023-04-24T16:14:30.906Z">
+<meta property="article:modified_time" content="2023-04-25T17:08:05.845Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python">
 <meta name="twitter:card" content="summary">
@@ -94,7 +94,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="../index.html" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">3</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">14</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="../index.html" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">2</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">2</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -145,7 +145,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#bios-%E6%90%AD%E9%85%8D-mbrgpt"><span class="nav-number">1.</span> <span class="nav-text"> BIOS 搭配 MBR&#x2F;GPT</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%9A%E9%87%8D%E5%BC%95%E5%AF%BC"><span class="nav-number">2.</span> <span class="nav-text"> 多重引导</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%95%E5%AF%BC%E7%9B%AE%E5%BD%95"><span class="nav-number">3.</span> <span class="nav-text"> 引导目录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A1%AC%E4%BB%B6%E6%A3%80%E6%B5%8B"><span class="nav-number">4.</span> <span class="nav-text"> 硬件检测</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="nav-number">5.</span> <span class="nav-text"> 虚拟文件系统</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#systemd"><span class="nav-number">6.</span> <span class="nav-text"> Systemd</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B"><span class="nav-number">6.1.</span> <span class="nav-text"> 启动流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E7%9B%B8%E5%85%B3%E7%9B%AE%E5%BD%95"><span class="nav-number">6.2.</span> <span class="nav-text"> 启动相关目录</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#systemv"><span class="nav-number">7.</span> <span class="nav-text"> SystemV</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B-2"><span class="nav-number">7.1.</span> <span class="nav-text"> 启动流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E7%9B%B8%E5%85%B3%E7%9B%AE%E5%BD%95-2"><span class="nav-number">7.2.</span> <span class="nav-text"> 启动相关目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#init-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">7.3.</span> <span class="nav-text"> init 配置文件</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#bios-%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text"> BIOS 启动流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%9A%E7%B3%BB%E7%BB%9F%E5%BC%95%E5%AF%BC"><span class="nav-number">2.</span> <span class="nav-text"> 多系统引导</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%95%E5%AF%BC%E7%9B%AE%E5%BD%95%E8%AF%B4%E6%98%8E"><span class="nav-number">3.</span> <span class="nav-text"> 引导目录说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="nav-number">4.</span> <span class="nav-text"> 虚拟文件系统</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#systemd"><span class="nav-number">5.</span> <span class="nav-text"> Systemd</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B"><span class="nav-number">5.1.</span> <span class="nav-text"> 启动流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E7%9B%B8%E5%85%B3%E7%9B%AE%E5%BD%95"><span class="nav-number">5.2.</span> <span class="nav-text"> 启动相关目录</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#systemv"><span class="nav-number">6.</span> <span class="nav-text"> SystemV</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B-2"><span class="nav-number">6.1.</span> <span class="nav-text"> 启动流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E7%9B%B8%E5%85%B3%E7%9B%AE%E5%BD%95-2"><span class="nav-number">6.2.</span> <span class="nav-text"> 启动相关目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#init-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">6.3.</span> <span class="nav-text"> init 配置文件</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -160,13 +160,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="../archives/">
-          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-count">2</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="../categories/">
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
@@ -258,7 +258,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-04-25 00:14:30" itemprop="dateModified" datetime="2023-04-25T00:14:30+08:00">2023-04-25</time>
+      <time title="修改时间：2023-04-26 01:08:05" itemprop="dateModified" datetime="2023-04-26T01:08:05+08:00">2023-04-26</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -288,7 +288,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>3.5k</span>
+      <span>3.6k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -306,16 +306,18 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="bios-搭配-mbrgpt"><a class="markdownIt-Anchor" href="#bios-搭配-mbrgpt"></a> BIOS 搭配 MBR/GPT</h1>
+        <h1 id="bios-启动流程"><a class="markdownIt-Anchor" href="#bios-启动流程"></a> BIOS 启动流程</h1>
 <p>目前，主机系统在载入硬件驱动方面的程序有两种：使用 BIOS 和 UEFI。简单的开机流程分为以下步骤：</p>
 <ol>
-<li>载入 BIOS 的硬件信息与自测（POST，power on self-test），并根据设置取得第一个可开机的设备；</li>
-<li>通过硬件的 INT 13 中断功能，读取并执行第一个可开机设备内 MBR 的引导加载程序（Boot Loader）；</li>
+<li>载入 BIOS 或 UEFI 的硬件信息与自测（POST，Power-On Self-Test），并根据设置取得第一个可开机的设备；</li>
+<li>对于 BIOS，通过硬件的 INT 13 中断功能，读取并执行第一个可开机设备内 MBR 的引导加载程序（Boot Loader）；对于 UEFI，读取并执行第一个可开机设备内 EFI 分区的引导加载程序；</li>
 <li>依据引导加载程序的设置，识别文件系统格式，加载核心文件。由内核开始检测硬件与驱动；</li>
-<li>启动初始进程管理程序（systemd 或 systemV），最终目的都是启动基础服务和用户设置的开机启动程序。</li>
+<li>启动初始进程管理程序（systemd 或 System V），最终目的都是启动基础服务和用户设置的开机启动程序。</li>
 </ol>
-<p>GPT 格式启动过程一样，差异在于开机管理程序是否支持 GPT。</p>
-<h1 id="多重引导"><a class="markdownIt-Anchor" href="#多重引导"></a> 多重引导</h1>
+<p>在使用 BIOS 时，通常搭配 MBR（Master Boot Record）分区表。而在使用 UEFI 时，通常搭配 GPT（GUID Partition Table）分区表。GPT 格式启动过程与 MBR 类似，差异在于开机管理程序是否支持 GPT。</p>
+<p>在引导加载程序读取到内核文件后，Linux 会将内核解压到内存中，由内核开始测试与驱动硬件。</p>
+<p>此时 Linux 内核会以自己检测结果为准，而不理会 BIOS 的硬件检测结果。也就是说内核此时开始接管 BIOS 后的工作了。</p>
+<h1 id="多系统引导"><a class="markdownIt-Anchor" href="#多系统引导"></a> 多系统引导</h1>
 <p>引导加载程序除了可以安装在 MBR 外，还可以安装到每个文件系统的引导扇区（Boot Sector）。</p>
 <p>例如，硬盘第一和第二分区分别安装了 Windows 和 Linux。开机装载第一个分区引导加载程序，此时会出现分支选项：</p>
 <ul>
@@ -323,8 +325,8 @@
 <li>选择启动 Linux 则转到第二个分区的引导扇区，由第二个分区的引导加载程序完成 Linux 系统启动工作。</li>
 </ul>
 <p>如果要安装多重开机，一般先安装 Windows 再安装 Linux，因为 Windows 安装时会直接覆盖掉 MBR 以及自己所在分区的引导扇区，并且 Windows 的引导程序默认没有转移引导功能。而 Linux 安装时可以选择引导加载程序不安装到 MBR，只装在指定分区的引导扇区。之后修改引导程序加入 Windows 开机选项，完成双系统引导功能。</p>
-<h1 id="引导目录"><a class="markdownIt-Anchor" href="#引导目录"></a> 引导目录</h1>
-<p>如果使用 grub 引导，需给 /boot 分区来放置开机过程所需的文件：</p>
+<h1 id="引导目录说明"><a class="markdownIt-Anchor" href="#引导目录说明"></a> 引导目录说明</h1>
+<p>如果使用 grub 引导，需给 <code>/boot</code> 分区来放置开机过程所需的文件：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ll /boot</span>
 total <span class="token number">149232</span>
 -rw-r--r--. <span class="token number">1</span> root root   <span class="token number">153596</span> Aug <span class="token number">31</span> <span class="token number">10</span>:57 config-3.10.0-1160.41.1.el7.x86_64
@@ -344,7 +346,7 @@ drwx------. <span class="token number">5</span> root root      <span class="toke
 -rwxr-xr-x. <span class="token number">1</span> root root  <span class="token number">6224704</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:37 vmlinuz-0-rescue-77a36143eb014dd5a0d6e738b1d84778
 -rwxr-xr-x. <span class="token number">1</span> root root  <span class="token number">6773352</span> Aug <span class="token number">31</span> <span class="token number">10</span>:57 vmlinuz-3.10.0-1160.41.1.el7.x86_64
 -rwxr-xr-x. <span class="token number">1</span> root root  <span class="token number">6224704</span> Apr <span class="token number">20</span>  <span class="token number">2018</span> vmlinuz-3.10.0-862.el7.x86_64<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>/boot 内文件与目录说明如下所示：</p>
+<p><code>/boot</code> 内文件与目录说明如下所示：</p>
 <table>
 <thead>
 <tr>
@@ -387,15 +389,12 @@ drwx------. <span class="token number">5</span> root root      <span class="toke
 </tr>
 </tbody>
 </table>
-<h1 id="硬件检测"><a class="markdownIt-Anchor" href="#硬件检测"></a> 硬件检测</h1>
-<p>在引导加载程序读取到内核文件后，Linux 会将内核解压到内存中，由内核开始测试与驱动硬件。</p>
-<p>此时 Linux 内核会以自己检测结果为准，而不理会 BIOS 的硬件检测结果。也就是说内核此时开始接管 BIOS 后的工作了。</p>
 <h1 id="虚拟文件系统"><a class="markdownIt-Anchor" href="#虚拟文件系统"></a> 虚拟文件系统</h1>
-<p>Linux 内核可以动态载入内核模块（驱动），这些内核模块放置在 /lib/modules/ 目录内。由于模块放置到根目录内，因此开机过程中内核必须要以只读方式挂载根目录，才可以读取到驱动程序。</p>
-<p>但是在挂载根目录时，很大可能 Linux 内核并不认识 SATA 设备。为了让内核顺利执行下去，引用了一个虚拟文件系统（Initial RAM Disk 或 Initial RAM Filesystem）来处理，就是在 /boot 目录内以 initramfs 开头命名的 img 文件。</p>
+<p>Linux 内核可以动态载入内核模块（驱动），这些内核模块放置在 <code>/lib/modules/</code> 目录内。由于模块放置到根目录内，因此开机过程中内核必须要以只读方式挂载根目录，才可以读取到驱动程序。</p>
+<p>但是在挂载根目录时，很大可能 Linux 内核并不认识 SATA 设备。为了让内核顺利执行下去，引用了一个虚拟文件系统（Initial RAM Disk 或 Initial RAM Filesystem）来处理，就是在 <code>/boot</code> 目录内以 initramfs 开头命名的 img 文件。</p>
 <p>虚拟文件系统的 img 文件也能被引导加载程序载入到内存中，解压后在内存中仿真成一个根目录。内核会读取虚拟文件系统内的驱动，通常是与磁盘接口和文件系统格式支持有关的驱动程序。</p>
 <p>等驱动载入完毕，根目录所在分区信息被正确识别后，此虚拟文件系统被卸载，并挂载实际的根目录文件系统，继续后续开机流程。</p>
-<p>可以用 lsinitrd 命令查看 initramfs 镜像的内容：</p>
+<p>可以用 <code>lsinitrd</code> 命令查看 initramfs 镜像的内容：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># lsinitrd /boot/initramfs-3.10.0-1160.41.1.el7.x86_64.img </span>
 Image: /boot/initramfs-3.10.0-1160.41.1.el7.x86_64.img: 21M
 <span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span>
@@ -471,7 +470,7 @@ initrd.target
 <h2 id="启动流程"><a class="markdownIt-Anchor" href="#启动流程"></a> 启动流程</h2>
 <p>在内核载入完毕硬件驱动后，采用 systemd 管理服务的启动流程如下：</p>
 <ol>
-<li>内核会主动调用第一个程序 systemd 执行 sysinit.target 初始化系统及 basic.target 准备系统；</li>
+<li>内核会主动调用第一个程序 <code>systemd</code> 执行 sysinit.target 初始化系统及 basic.target 准备系统；</li>
 <li>接下来到<code>/usr/lib/systemd/system/</code>目录下去调用 multi-user.target(default.target)；</li>
 <li>然后系统会到<code>/etc/systemd/system/multi-user.target.wants/</code>目录去找用户设置开机启动服务(unit)；</li>
 <li>最后到<code>/usr/lib/systemd/system/multi-user.target.wants/</code>目录去找系统默认的开机启动服务(unit)；</li>
@@ -492,7 +491,7 @@ multi-user.target
 ● │ └─timers.target
 ● ├─getty.target
 ● └─remote-fs.target<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>另外，为了兼容旧有的通过/etc/rc.d/rc.local 配置自启动脚本的方式，CentOS 7 保留了一个 rc-local.service 来执行这些脚本。</p>
+<p>另外，为了兼容旧有的通过 <code>/etc/rc.d/rc.local</code> 配置自启动脚本的方式，CentOS 7 保留了一个 rc-local.service 来执行这些脚本。</p>
 <h2 id="启动相关目录"><a class="markdownIt-Anchor" href="#启动相关目录"></a> 启动相关目录</h2>
 <p>开机会读取的文件目录如下：</p>
 <ul>
@@ -500,7 +499,7 @@ multi-user.target
 <li><strong>/etc/modprobe.d/*.conf</strong>：可以设置模块参数的配置。</li>
 <li><strong>/etc/sysconfig/</strong>：系统配置目录下有许多环境配置文件，其中一些重要的是：
 <ul>
-<li><strong>authconfig</strong>：用于规范用户身份认证机制，包括是否使用本地/etc/passwd，/etc/shadow 等文件以及密码记录使用的加密算法，是否使用外部密码服务器提供的账号验证（NIS、LDAP）等。</li>
+<li><strong>authconfig</strong>：用于规范用户身份认证机制，包括是否使用本地 <code>/etc/passwd</code>，<code>/etc/shadow</code> 等文件以及密码记录使用的加密算法，是否使用外部密码服务器提供的账号验证（NIS、LDAP）等。</li>
 <li><strong>cpupower</strong>：如果启动了 cpupower.service 服务，会读取此配置文件。</li>
 <li><strong>firewalld、iptables-config、iptables-config、ebtables-config</strong>：与防火墙服务相关的配置。</li>
 <li><strong>network-scripts</strong>：网卡设置。</li>
@@ -511,20 +510,20 @@ multi-user.target
 <p>System V (System 5) 是 Unix 操作系统中的一个初始化系统。它是早期 Unix 系统的标准初始化系统，常见于许多 Linux 发行版中。System V 通过运行一个脚本，逐个启动和停止系统服务来初始化系统。这些脚本通常存储在 <code>/etc/rc.d/init.d/</code> 目录下，每个脚本对应着一个系统服务。在系统启动或关闭时，System V 会根据 <code>/etc/inittab</code> 文件的配置来执行这些脚本。</p>
 <p>System V 的缺点在于启动过程比较慢，因为它需要逐个启动和停止每个系统服务，这使得启动时间较长。此外，System V 在处理系统服务时需要手动编写脚本，并且难以处理服务之间的依赖关系，这可能导致系统启动失败或服务无法正常运行。由于这些缺点，现代 Linux 发行版逐渐转向使用 Systemd 作为默认初始化系统。</p>
 <h2 id="启动流程-2"><a class="markdownIt-Anchor" href="#启动流程-2"></a> 启动流程</h2>
-<p>在内核加载完硬件驱动后，内核会主动调用第一个进程/sbin/init。它最主要的功能是准备软件执行环境：</p>
+<p>在内核加载完硬件驱动后，内核会主动调用第一个进程 <code>/sbin/init</code>。它最主要的功能是准备软件执行环境：</p>
 <ol>
-<li>init 取得默认执行等级，执行/etc/rc.d/rc.sysinit 文件来准备软件执行的操作环境（网络、时区等）；</li>
-<li>init 执行 run level 的各个服务的启动（脚本方式）。例如执行等级是 5，则只执行 5:5:wait:/etc/rc.d/rc5 这行：
+<li>init 取得默认执行等级，执行 <code>/etc/rc.d/rc.sysinit</code> 文件来准备软件执行的操作环境（网络、时区等）；</li>
+<li>init 执行 run level 的各个服务的启动（脚本方式）。例如执行等级是 5，则只执行 <code>5:5:wait:/etc/rc.d/rc5</code> 这行：
 <ul>
-<li>和 rc5 相关的脚本存放在/etc/rc5.d/下面，以 Kxx 开头的文件代表执行 stop，以 Sxx 开头代表执行 start 操作。</li>
-<li>这些脚本全部是连接文件，连接到 stand alone 服务启动的目录/etc/init.d/内。</li>
+<li>和 rc5 相关的脚本存放在 <code>/etc/rc5.d/</code> 下面，以 Kxx 开头的文件代表执行 stop，以 Sxx 开头代表执行 start 操作。</li>
+<li>这些脚本全部是连接文件，连接到 stand alone 服务启动的目录 <code>/etc/init.d/</code>内。</li>
 <li>S 或 K 后面两位数字代表执行顺序，数字越小执行越早。</li>
 </ul>
 </li>
 <li>设置好组合键功能和不断电系统 pf、pr 机制。</li>
-<li>init 用户自定义脚本/etc/rc.d/rc.local 配置文件内的程序；</li>
+<li>init 用户自定义脚本 <code>/etc/rc.d/rc.local</code> 配置文件内的程序；</li>
 <li>init 执行终端模拟程序 mingetty 来启动 login 进程。</li>
-<li>（非必须）以/etc/X11/perfdm -nodaemon 启动图形界面。</li>
+<li>（非必须）以 <code>/etc/X11/perfdm -nodaemon</code> 启动图形界面。</li>
 </ol>
 <h2 id="启动相关目录-2"><a class="markdownIt-Anchor" href="#启动相关目录-2"></a> 启动相关目录</h2>
 <p>开机用到的配置文件：</p>
@@ -547,7 +546,7 @@ multi-user.target
 </li>
 </ul>
 <h2 id="init-配置文件"><a class="markdownIt-Anchor" href="#init-配置文件"></a> init 配置文件</h2>
-<p>init 通过配置文件/etc/inittab 规划行动。配置文件每行内容由冒号:分隔四个字段：</p>
+<p>init 通过配置文件 <code>/etc/inittab</code> 规划行动。配置文件每行内容由冒号<code>:</code>分隔四个字段：</p>
 <ul>
 <li>
 <p><strong>设置选项</strong></p>
@@ -634,14 +633,11 @@ multi-user.target
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="../3473028004/" rel="prev" title="01.Linux 安装配置">
-                  <i class="fa fa-chevron-left"></i> 01.Linux 安装配置
+                <a href="../3200821655/" rel="prev" title="05.磁盘分区知识">
+                  <i class="fa fa-chevron-left"></i> 05.磁盘分区知识
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="../2592592171/" rel="next" title="10.Linux 用户与组">
-                  10.Linux 用户与组 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
@@ -674,13 +670,13 @@ multi-user.target
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">32k</span>
+    <span title="站点总字数">6k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:47</span>
+    <span title="站点阅读时长">20 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">
