@@ -22,28 +22,28 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"flat"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
 
-    <meta name="description" content="目录配置标准 Linux 采用将文件储存在单个目录结构中，这种目录被称为虚拟目录（Virtual Directory）。虚拟目录将安装在主机上的所有储存设备的文件路径纳入单个目录结构中。 各种发行版遵循同一套文件系统层次结构标准（FHS，Filesystem Hierarchy Standard），目的在于规范每个特定目录应该放什么数据。FHS 依据文件系统使用的频繁与否，以及是否允许使用者随意">
+    <meta name="description" content="进程与程序 程序（Program）是可执行的二进制文件。 当触发执行程序动作后，程序内容及程序数据会加载到内存中，成为一个运行中的程序，即进程（Process）。 系统为这个进程分配一个 ID，称为 PID（Program ID）。同时，根据触发这个进程的用户及相关属性关系，为这个 PID 设置一组有效的权限。  子进程与父进程 登录系统后，会获得一个 bash 的 shell。通过 bash">
 <meta property="og:type" content="article">
-<meta property="og:title" content="04.Linux 目录结构">
-<meta property="og:url" content="https://blog.x2b.net/4087499240/index.html">
+<meta property="og:title" content="11.Linux 程序进程">
+<meta property="og:url" content="https://blog.x2b.net/1/index.html">
 <meta property="og:site_name" content="X to Bytes">
-<meta property="og:description" content="目录配置标准 Linux 采用将文件储存在单个目录结构中，这种目录被称为虚拟目录（Virtual Directory）。虚拟目录将安装在主机上的所有储存设备的文件路径纳入单个目录结构中。 各种发行版遵循同一套文件系统层次结构标准（FHS，Filesystem Hierarchy Standard），目的在于规范每个特定目录应该放什么数据。FHS 依据文件系统使用的频繁与否，以及是否允许使用者随意">
+<meta property="og:description" content="进程与程序 程序（Program）是可执行的二进制文件。 当触发执行程序动作后，程序内容及程序数据会加载到内存中，成为一个运行中的程序，即进程（Process）。 系统为这个进程分配一个 ID，称为 PID（Program ID）。同时，根据触发这个进程的用户及相关属性关系，为这个 PID 设置一组有效的权限。  子进程与父进程 登录系统后，会获得一个 bash 的 shell。通过 bash">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-03-20T01:01:17.000Z">
-<meta property="article:modified_time" content="2023-04-24T16:14:12.325Z">
+<meta property="article:published_time" content="2021-09-18T05:44:21.000Z">
+<meta property="article:modified_time" content="2023-04-25T04:05:01.969Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://blog.x2b.net/4087499240/">
+<link rel="canonical" href="https://blog.x2b.net/1/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/4087499240/","path":"4087499240/","title":"04.Linux 目录结构"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/1/","path":"1/","title":"11.Linux 程序进程"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>04.Linux 目录结构 | X to Bytes</title>
+<title>11.Linux 程序进程 | X to Bytes</title>
   
 
   <script src="../js/third-party/analytics/baidu-analytics.js"></script>
@@ -145,7 +145,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95%E9%85%8D%E7%BD%AE%E6%A0%87%E5%87%86"><span class="nav-number">1.</span> <span class="nav-text"> 目录配置标准</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A1%B6%E7%BA%A7%E7%9B%AE%E5%BD%95"><span class="nav-number">2.</span> <span class="nav-text"> 顶级目录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#usr-%E7%9B%AE%E5%BD%95"><span class="nav-number">3.</span> <span class="nav-text"> &#x2F;usr 目录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#var-%E7%9B%AE%E5%BD%95"><span class="nav-number">4.</span> <span class="nav-text"> &#x2F;var 目录</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E4%B8%8E%E7%A8%8B%E5%BA%8F"><span class="nav-number">1.</span> <span class="nav-text"> 进程与程序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%90%E8%BF%9B%E7%A8%8B%E4%B8%8E%E7%88%B6%E8%BF%9B%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text"> 子进程与父进程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%87%E7%A8%8B%E8%B0%83%E7%94%A8%E7%9A%84%E6%B5%81%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text"> 过程调用的流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%85%E9%83%A8%E7%A8%8B%E5%BA%8F%E6%B2%9F%E9%80%9A"><span class="nav-number">4.</span> <span class="nav-text"> 内部程序沟通</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%9A%E7%94%A8%E6%88%B7%E4%B8%8E%E5%A4%9A%E4%BB%BB%E5%8A%A1%E7%8E%AF%E5%A2%83"><span class="nav-number">5.</span> <span class="nav-text"> 多用户与多任务环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B"><span class="nav-number">6.</span> <span class="nav-text"> 僵尸进程</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -222,7 +222,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/4087499240/">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="../images/avatar.jpg">
@@ -235,12 +235,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="04.Linux 目录结构 | X to Bytes">
+      <meta itemprop="name" content="11.Linux 程序进程 | X to Bytes">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          04.Linux 目录结构
+          11.Linux 程序进程
         </h1>
 
         <div class="post-meta-container">
@@ -251,14 +251,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2022-03-20 09:01:17" itemprop="dateCreated datePublished" datetime="2022-03-20T09:01:17+08:00">2022-03-20</time>
+      <time title="创建时间：2021-09-18 13:44:21" itemprop="dateCreated datePublished" datetime="2021-09-18T13:44:21+08:00">2021-09-18</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-04-25 00:14:12" itemprop="dateModified" datetime="2023-04-25T00:14:12+08:00">2023-04-25</time>
+      <time title="修改时间：2023-04-25 12:05:01" itemprop="dateModified" datetime="2023-04-25T12:05:01+08:00">2023-04-25</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -288,14 +288,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.8k</span>
+      <span>950</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>6 分钟</span>
+      <span>3 分钟</span>
     </span>
 </div>
 
@@ -306,206 +306,66 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="目录配置标准"><a class="markdownIt-Anchor" href="#目录配置标准"></a> 目录配置标准</h1>
-<p>Linux 采用将文件储存在单个目录结构中，这种目录被称为虚拟目录（Virtual Directory）。虚拟目录将安装在主机上的所有储存设备的文件路径纳入单个目录结构中。</p>
-<p>各种发行版遵循同一套文件系统层次结构标准（FHS，Filesystem Hierarchy Standard），目的在于规范每个特定目录应该放什么数据。FHS 依据文件系统使用的频繁与否，以及是否允许使用者随意变更，将目录定义为四种交互形态：</p>
-<ul>
-<li>
-<p><strong>可分享的</strong>（Shareable）</p>
-<p>可以分享给其他系统挂载使用的目录，包括可执行文件与使用者的邮件等数据。</p>
-</li>
-<li>
-<p><strong>不可分享的</strong>（Unshareable）</p>
-<p>自己机器上面运行的设备文件或者是与程序有关的 socket 文件等，仅能自己使用，所以不适合分享。</p>
-</li>
-<li>
-<p><strong>不变的</strong>（Static）</p>
-<p>有些数据是不会经常变动的，例如函数库、文件说明文档、系统管理员所管理的主机服务配置文件等。</p>
-</li>
-<li>
-<p><strong>可变动的</strong>（Variable）</p>
-<p>经常改变的数据，例如日志文件等。</p>
-</li>
-</ul>
-<h1 id="顶级目录"><a class="markdownIt-Anchor" href="#顶级目录"></a> 顶级目录</h1>
-<p>所有目录都由根目录/衍生而来，因此 FHS 标准建议根目录所在分区应该越小越好，最好不要将应用程序所安装的软件与根目录放在同一个分区。这样可以提高性能，根目录所在的文件系统也较不容易发生问题。</p>
-<p>开机过程中仅有根目录会被挂载，其他分区则是在开机完成后陆续进行挂载。</p>
-<p>必须存在的顶级目录：</p>
+        <h1 id="进程与程序"><a class="markdownIt-Anchor" href="#进程与程序"></a> 进程与程序</h1>
+<p>程序（Program）是可执行的二进制文件。</p>
+<p>当触发执行程序动作后，程序内容及程序数据会加载到内存中，成为一个运行中的程序，即进程（Process）。</p>
+<p>系统为这个进程分配一个 ID，称为 PID（Program ID）。同时，根据触发这个进程的用户及相关属性关系，为这个 PID 设置一组有效的权限。</p>
+<h1 id="子进程与父进程"><a class="markdownIt-Anchor" href="#子进程与父进程"></a> 子进程与父进程</h1>
+<p>登录系统后，会获得一个 bash 的 shell。通过 bash 提供的接口执行另一个命令，如 vim，它也会被分配一个 PID。此时，原本的 bash 就是 vim 的父进程。父进程的 PID 可以用 PPID（Parent ID）表示。</p>
+<p>通常，子进程会继承父进程的相关权限和环境变量。</p>
+<p>例如，在 bash 中执行 bash，再用<code>ps -l</code>命令查看：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># bash</span>
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ps -l</span>
+F S   <span class="token environment constant">UID</span>    PID   <span class="token environment constant">PPID</span>  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+<span class="token number">4</span> S     <span class="token number">0</span>   <span class="token number">5713</span>   <span class="token number">5709</span>  <span class="token number">0</span>  <span class="token number">80</span>   <span class="token number">0</span> - <span class="token number">28920</span> do_wai pts/0    00:00:00 <span class="token function">bash</span>
+<span class="token number">4</span> S     <span class="token number">0</span>  <span class="token number">35555</span>   <span class="token number">5713</span>  <span class="token number">0</span>  <span class="token number">80</span>   <span class="token number">0</span> - <span class="token number">28919</span> do_wai pts/0    00:00:00 <span class="token function">bash</span>
+<span class="token number">0</span> R     <span class="token number">0</span>  <span class="token number">35570</span>  <span class="token number">35555</span>  <span class="token number">0</span>  <span class="token number">80</span>   <span class="token number">0</span> - <span class="token number">38332</span> -      pts/0    00:00:00 <span class="token function">ps</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到第一个 bash 的 PID 5517 是第二个 bash 的 PPID。</p>
+<h1 id="过程调用的流程"><a class="markdownIt-Anchor" href="#过程调用的流程"></a> 过程调用的流程</h1>
+<p>父进程和子进程之间的互相调用过程通常称为 fork-and-exec 的流程。进程都会通过父进程以复制（fork）的方式产生一个一模一样的子进程，然后被复制的子进程再以 exec 的方式执行实际要进行的进程，最终成为一个子进程的存在。</p>
+<p>其过程从上往下执行如下示意：</p>
 <table>
 <thead>
 <tr>
-<th><strong>目录</strong></th>
-<th><strong>目录说明</strong></th>
+<th><strong>阶段</strong></th>
+<th><strong>状态</strong></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>/bin</td>
-<td>二进制目录，存放可以被 root 和一般账户所用的命令，以及在单用户维护模式下仍能被操作的常用命令，如 cat，mv，chown 等。</td>
+<td>父进程</td>
+<td>PID=x,程序=a</td>
 </tr>
 <tr>
-<td>/boot</td>
-<td>启动目录，存放开机会使用到的文件，包括内核文件及开机所需配置文件。</td>
+<td>中间暂存进程</td>
+<td>PID=y,程序=a,PPID=x</td>
 </tr>
 <tr>
-<td>/dev</td>
-<td>设备目录，Linux 上任何设备与接口设备都是以文件的形式存在于这个目录下，访问目录下的某个文件就等于访问某个设备。主要分为三类硬件，例如硬盘（sda）和打印机（lp0），终端如控制台（tty），伪设备如/dev/null 和/dev/zero。</td>
-</tr>
-<tr>
-<td>/etc</td>
-<td>系统配置文件目录，系统配置文件几乎都放在这里，如账号密码，服务起始文件等。一般不要放可执行文件到这个目录下。<br />/etc/X11:与 X Window 有关的配置文件放在这里，尤其是 xorg.conf 这个 XServer 的配置文件。<br />/etc/opt:放置第三方软件配置文件。<br />/etc/sgml:与 SGML 格式有关的各项配置文件。<br />/etc/xml:与 XML 格式有关的配置文件。</td>
-</tr>
-<tr>
-<td>/home</td>
-<td>主目录，系统默认用户主文件夹，一般子文件夹以用户账号命名。</td>
-</tr>
-<tr>
-<td>/lib, /lib64</td>
-<td>库目录，存放开机时会用到的函数库，以及在/bin 或/sbin 中命令会调用的函数库。<br />/lib/modules/:存放内核相关的模块（驱动程序）。</td>
-</tr>
-<tr>
-<td>/media</td>
-<td>媒体目录，存放可删除设备，包括 CD，DVD，U 盘等设备都暂时挂载于此。</td>
-</tr>
-<tr>
-<td>/mnt</td>
-<td>挂载目录，如果想要暂时挂载某些额外的设备，一般放置到这个目录中。</td>
-</tr>
-<tr>
-<td>/opt</td>
-<td>可选目录，给第三方软件放置的目录，包括发行版附加的一些软件包。</td>
-</tr>
-<tr>
-<td>/root</td>
-<td>系统管理员的主文件夹。</td>
-</tr>
-<tr>
-<td>/sbin</td>
-<td>系统二进制目录，只有 root 可用，包括开机，修复，还原系统所需要的系统命令，如 fdisk，ifconfig，init 等。</td>
-</tr>
-<tr>
-<td>/srv</td>
-<td>服务目录，一些网络服务启动后，这些服务所需要取用的数据目录，如将 www 服务需要的网页文件放置到/srv/www 里。</td>
-</tr>
-<tr>
-<td>/tmp</td>
-<td>临时目录，重要数据不可放置到此目录，会被一些系统进程定期清空。</td>
-</tr>
-<tr>
-<td>/run</td>
-<td>运行目录，存放系统运作时的运行时数据。</td>
+<td>子进程</td>
+<td>PID=y,程序=b,PPID=x</td>
 </tr>
 </tbody>
 </table>
-<p>其他重要目录：</p>
-<table>
-<thead>
-<tr>
-<th><strong>目录</strong></th>
-<th><strong>目录说明</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>/lost+found</td>
-<td>只有 ext 文件系统格式才会产生的目录，用来放置丢失的文件片段。</td>
-</tr>
-<tr>
-<td>/proc</td>
-<td>进程目录。这个目录本身是一个虚拟文件系统（Virtual Filesystem），它放置的数据都在内存中，如系统内核、进程、外部设备的状态及网络状态等，所以实际不占任何硬盘空间。</td>
-</tr>
-<tr>
-<td>/sys</td>
-<td>系统目录。和/proc 类似的虚拟文件系统，记录与内核相关信息，包括目前已加载的内核模块与硬件设备信息。</td>
-</tr>
-</tbody>
-</table>
-<h1 id="usr-目录"><a class="markdownIt-Anchor" href="#usr-目录"></a> /usr 目录</h1>
-<p>/usr 目录存放静态数据,即不会随时间改变的文件,原则上放置独立安装的软件数据。系统默认软件也放在/usr 目录下。</p>
-<p>/usr 目录下的子目录说明：</p>
-<table>
-<thead>
-<tr>
-<th><strong>目录</strong></th>
-<th><strong>目录说明</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>/usr/bin/</td>
-<td>存放所有的用户命令。</td>
-</tr>
-<tr>
-<td>/usr/include/</td>
-<td>存放 C/C++等编程语言的头文件(header)和包含文件(include)。</td>
-</tr>
-<tr>
-<td>/usr/lib/</td>
-<td>存放各种应用软件的函数库、目标文件，以及一般用户不使用的执行文件或脚本。</td>
-</tr>
-<tr>
-<td>/usr/local/</td>
-<td>推荐系统管理员自行下载安装的软件存放目录。</td>
-</tr>
-<tr>
-<td>/usr/sbin/</td>
-<td>存放非正常运行所需的系统命令，例如网络服务器软件的服务命令。</td>
-</tr>
-<tr>
-<td>/usr/share/</td>
-<td>存放共享文件，如 man 手册和 doc 帮助文档。</td>
-</tr>
-<tr>
-<td>/usr/src/</td>
-<td>一般建议将源码放在该目录下。内核源码建议放在/usr/src/linux/下。</td>
-</tr>
-<tr>
-<td>/usr/libexec/</td>
-<td>存放某些不被一般使用者惯用的可执行文件或脚本。</td>
-</tr>
-</tbody>
-</table>
-<h1 id="var-目录"><a class="markdownIt-Anchor" href="#var-目录"></a> /var 目录</h1>
-<p>/var 目录是用来存放会经常变动的文件的，包括缓存（cache）、日志文件（log file）以及某些软件运行时所产生的文件（lock file、run file）或 MySQL 数据库的文件等等。最好可以将它独立出来挂在单独的一个分区中。</p>
-<p>下面是 /var 目录下的子目录说明：</p>
-<table>
-<thead>
-<tr>
-<th>目录</th>
-<th>目录说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>/var/cache/</td>
-<td>应用程序本身运行过程中会产生一些暂存文件。</td>
-</tr>
-<tr>
-<td>/var/lib/</td>
-<td>程序执行的过程中需要使用到的数据文件的放置目录。在此目录下各自的软件应该要有自己的目录，例如 MySQL 数据库放置到 /var/lib/mysql/ 下。</td>
-</tr>
-<tr>
-<td>/var/lock/</td>
-<td>某些设备或文件资源一次只能被一个应用程序所使用，为了避免使用冲突就得给该设备上锁。例如刻录机设备在刻录中时会被锁上。目前此目录已被挪到 /run/lock 中。</td>
-</tr>
-<tr>
-<td>/var/log/</td>
-<td>日志文件放置的目录，例如记录登录者信息的文件 /var/log/messages、/var/log/wtmp。</td>
-</tr>
-<tr>
-<td>/var/mail/</td>
-<td>放置个人电子邮件信箱的目录，等同于 /var/spool/mail/。</td>
-</tr>
-<tr>
-<td>/var/run/</td>
-<td>某些程序或服务启动后，会将它们的 PID 放置在这个目录下。</td>
-</tr>
-<tr>
-<td>/var/spool/</td>
-<td>放置一些队列数据，通常在使用后会被删除。</td>
-</tr>
-</tbody>
-</table>
+<h1 id="内部程序沟通"><a class="markdownIt-Anchor" href="#内部程序沟通"></a> 内部程序沟通</h1>
+<p>在系统内，许多进程需要互相交换信息。除了通过文件进行沟通，还包括共享内存（Shared Memory）、消息队列（Message Queues）、管道（Pipe）等方式，统称为内部程序沟通（Interprocess Communication）。可以用命令 ipcs 观察沟通状态：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span><span class="token comment"># ipcs</span>
+
+ Message Queues 
+key        msqid      owner      perms      used-bytes   messages    
+
+ Shared Memory Segments 
+key        shmid      owner      perms      bytes      nattch     status      
+
+ Semaphore Arrays 
+key        semid      owner      perms      nsems   <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以通过<code>ipcrm</code>命令将看到的 interprocess 删除。</p>
+<h1 id="多用户与多任务环境"><a class="markdownIt-Anchor" href="#多用户与多任务环境"></a> 多用户与多任务环境</h1>
+<p>多用户系统也叫分时系统（Time-Share System），指多个用户可以在同一时间使用计算机系统。与 Linux 相比，Windows 系统是单用户系统。</p>
+<p>多任务是指 Linux 可以同时执行几个任务，它可以在还未执行完一个任务时又执行另一项任务。</p>
+<p>每个用户权限不同，所以登录后获得的 shell 的 PID 不同。而 CPU 速度 1GHz 代表 CPU 每秒可以运行 10<sup>9</sup>次命令，每个工作都占用 CPU 的几个命令次数。Linux 可以让 CPU 在各个进程间进行切换。所以实际上，所谓多任务处理是 CPU 快速地执行多个任务，看上去就像它们同时被执行一样。CPU 切换进程的工作与这些工作进入到 CPU 运行的调度会影响到系统的整体性能。由于 CPU 性能出众，所以可以支持多个用户同时登录运行不同程序，这就是多用户与多任务环境。</p>
+<h1 id="僵尸进程"><a class="markdownIt-Anchor" href="#僵尸进程"></a> 僵尸进程</h1>
+<p>造成僵尸进程的原因是该进程应该已经执行完毕或因故应该要终止时，该进程的父进程很可能已经死亡，无法完整将该进程结束掉，而造成那个进程一直滞留在内存。</p>
+<p>使用 ps 命令查看进程时，如果发现某个进程的 CMD 后面有<defunct>，就代表该进程是僵尸进程。</p>
 
     </div>
 
@@ -537,7 +397,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://blog.x2b.net/4087499240/" title="04.Linux 目录结构">https://blog.x2b.net/4087499240/</a>
+      <a href="https://blog.x2b.net/1/" title="11.Linux 程序进程">https://blog.x2b.net/1/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
@@ -567,13 +427,13 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="../2592592171/" rel="prev" title="10.Linux 用户与组">
-                  <i class="fa fa-chevron-left"></i> 10.Linux 用户与组
+                <a href="../3847559470/" rel="prev" title="01.硬件基础">
+                  <i class="fa fa-chevron-left"></i> 01.硬件基础
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="../2759544459/" rel="next" title="02.软件基础">
-                  02.软件基础 <i class="fa fa-chevron-right"></i>
+                <a href="../3373647732/" rel="next" title="06.Linux 启动流程">
+                  06.Linux 启动流程 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -683,7 +543,7 @@
 
 
   <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
-  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/4087499240/"}</script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/1/"}</script>
   <script src="../js/third-party/quicklink.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
