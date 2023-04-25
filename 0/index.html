@@ -22,28 +22,28 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"flat"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
 
-    <meta name="description" content="基本权限 基础权限有三种，分别是：读（r，read）、写（w，write）、执行（x，eXecute）。 同样的权限标记对于文件和目录代表不同的意义。  文件权限 文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。    数字 字符 权限     4 r 读取文件内容。例如使用 cat 命令查看，使用 vim 以只读方式打开。   2 w 编辑修">
+    <meta name="description" content="安装配置 以 CentOS 7 为例，在安装系统后，需要执行以下几种主要操作。括号内用 0 代表可选操作，1 代表必选操作。  克隆虚拟机（0） 安装完毕后，选择关机克隆。默认生成新的网卡 MAC 地址。启动后执行快照。  修改网络参数（1） 网络配置文件位于 &#x2F;etc&#x2F;sysconfig&#x2F;network-scripts&#x2F;ifcfg-*，使用 nmcli 命令来修改：">
 <meta property="og:type" content="article">
-<meta property="og:title" content="09.Linux 文件权限">
-<meta property="og:url" content="https://blog.x2b.net/46662635/index.html">
+<meta property="og:title" content="X to Bytes">
+<meta property="og:url" content="https://blog.x2b.net/0/index.html">
 <meta property="og:site_name" content="X to Bytes">
-<meta property="og:description" content="基本权限 基础权限有三种，分别是：读（r，read）、写（w，write）、执行（x，eXecute）。 同样的权限标记对于文件和目录代表不同的意义。  文件权限 文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。    数字 字符 权限     4 r 读取文件内容。例如使用 cat 命令查看，使用 vim 以只读方式打开。   2 w 编辑修">
+<meta property="og:description" content="安装配置 以 CentOS 7 为例，在安装系统后，需要执行以下几种主要操作。括号内用 0 代表可选操作，1 代表必选操作。  克隆虚拟机（0） 安装完毕后，选择关机克隆。默认生成新的网卡 MAC 地址。启动后执行快照。  修改网络参数（1） 网络配置文件位于 &#x2F;etc&#x2F;sysconfig&#x2F;network-scripts&#x2F;ifcfg-*，使用 nmcli 命令来修改：">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-09-18T03:57:47.000Z">
-<meta property="article:modified_time" content="2023-04-25T01:31:11.368Z">
+<meta property="article:published_time" content="2021-09-22T05:52:10.000Z">
+<meta property="article:modified_time" content="2023-04-25T14:55:07.368Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://blog.x2b.net/46662635/">
+<link rel="canonical" href="https://blog.x2b.net/0/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/46662635/","path":"46662635/","title":"09.Linux 文件权限"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/0/","path":"0/","title":""}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>09.Linux 文件权限 | X to Bytes</title>
+<title> | X to Bytes</title>
   
 
   <script src="../js/third-party/analytics/baidu-analytics.js"></script>
@@ -145,7 +145,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%9D%83%E9%99%90"><span class="nav-number">1.</span> <span class="nav-text"> 基本权限</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90"><span class="nav-number">2.</span> <span class="nav-text"> 文件权限</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95%E6%9D%83%E9%99%90"><span class="nav-number">3.</span> <span class="nav-text"> 目录权限</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9D%83%E9%99%90%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text"> 权限参考</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E6%9D%83%E9%99%90"><span class="nav-number">5.</span> <span class="nav-text"> 特殊权限</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#suid"><span class="nav-number">5.1.</span> <span class="nav-text"> SUID</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sgid"><span class="nav-number">5.2.</span> <span class="nav-text"> SGID</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sbit"><span class="nav-number">5.3.</span> <span class="nav-text"> SBIT</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text"> 安装配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%8B%E9%9A%86%E8%99%9A%E6%8B%9F%E6%9C%BA0"><span class="nav-number">2.</span> <span class="nav-text"> 克隆虚拟机（0）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E7%BD%91%E7%BB%9C%E5%8F%82%E6%95%B01"><span class="nav-number">3.</span> <span class="nav-text"> 修改网络参数（1）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9ssh%E9%85%8D%E7%BD%AE0"><span class="nav-number">4.</span> <span class="nav-text"> 修改SSH配置（0）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E4%B8%BB%E6%9C%BA%E5%90%8D1"><span class="nav-number">5.</span> <span class="nav-text"> 修改主机名（1）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E6%97%B6%E9%97%B4%E5%90%8C%E6%AD%A51"><span class="nav-number">6.</span> <span class="nav-text"> 修改时间同步（1）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E6%94%B9%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85%E6%BA%901"><span class="nav-number">7.</span> <span class="nav-text"> 更改软件安装源（1）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A0%811"><span class="nav-number">8.</span> <span class="nav-text"> 修改系统编码（1）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E9%98%B2%E7%81%AB%E5%A2%991"><span class="nav-number">9.</span> <span class="nav-text"> 修改防火墙（1）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E6%9B%B4%E6%96%B01"><span class="nav-number">10.</span> <span class="nav-text"> 系统更新（1）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%9F%BA%E6%9C%AC%E5%B7%A5%E5%85%B71"><span class="nav-number">11.</span> <span class="nav-text"> 安装基本工具（1）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEgrub0"><span class="nav-number">12.</span> <span class="nav-text"> 配置GRUB（0）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%AC%A2%E8%BF%8E%E6%96%87%E5%AD%970"><span class="nav-number">13.</span> <span class="nav-text"> 配置欢迎文字（0）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-sudo0"><span class="nav-number">14.</span> <span class="nav-text"> 配置 sudo（0）</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -222,7 +222,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/46662635/">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="../images/avatar.jpg">
@@ -235,12 +235,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="09.Linux 文件权限 | X to Bytes">
+      <meta itemprop="name" content=" | X to Bytes">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          09.Linux 文件权限
+          
         </h1>
 
         <div class="post-meta-container">
@@ -251,27 +251,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2021-09-18 11:57:47" itemprop="dateCreated datePublished" datetime="2021-09-18T11:57:47+08:00">2021-09-18</time>
+      <time title="创建时间：2021-09-22 13:52:10" itemprop="dateCreated datePublished" datetime="2021-09-22T13:52:10+08:00">2021-09-22</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-04-25 09:31:11" itemprop="dateModified" datetime="2023-04-25T09:31:11+08:00">2023-04-25</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../categories/Linux/0-%E5%9F%BA%E7%A1%80%E6%A6%82%E8%AE%BA/" itemprop="url" rel="index"><span itemprop="name">0.基础概论</span></a>
-        </span>
+      <time title="修改时间：2023-04-25 22:55:07" itemprop="dateModified" datetime="2023-04-25T22:55:07+08:00">2023-04-25</time>
     </span>
 
   
@@ -288,14 +275,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.2k</span>
+      <span>736</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>4 分钟</span>
+      <span>2 分钟</span>
     </span>
 </div>
 
@@ -306,126 +293,79 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="基本权限"><a class="markdownIt-Anchor" href="#基本权限"></a> 基本权限</h1>
-<p>基础权限有三种，分别是：读（r，read）、写（w，write）、执行（x，eXecute）。</p>
-<p>同样的权限标记对于文件和目录代表不同的意义。</p>
-<h1 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h1>
-<p>文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。</p>
-<table>
-<thead>
-<tr>
-<th>数字</th>
-<th>字符</th>
-<th>权限</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>4</td>
-<td>r</td>
-<td><strong>读取文件内容</strong>。例如使用 cat 命令查看，使用 vim 以<strong>只读</strong>方式打开。</td>
-</tr>
-<tr>
-<td>2</td>
-<td>w</td>
-<td><strong>编辑修改</strong>文件内容，但<strong>不包括删除</strong>文件。例如使用 vim、sed 等对文件内容进行修改并保存。</td>
-</tr>
-<tr>
-<td>1</td>
-<td>x</td>
-<td>文件具有可以被系统<strong>执行</strong>的权限。例如命令和脚本必须拥有此权限才能直接执行。</td>
-</tr>
-</tbody>
-</table>
-<h1 id="目录权限"><a class="markdownIt-Anchor" href="#目录权限"></a> 目录权限</h1>
-<p>目录主要的内容是记录文件名清单，所以目录权限实际关联的是目录下文件属性查看与更改。</p>
-<table>
-<thead>
-<tr>
-<th>数字</th>
-<th>字符</th>
-<th>权限</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>4</td>
-<td>r</td>
-<td><strong>仅查询</strong>目录下的文件或目录<strong>名称</strong>，无法看到属性，相当于执行不加参数的 ls 命令。</td>
-</tr>
-<tr>
-<td>2</td>
-<td>w</td>
-<td>改变目录结构清单权限，也就是在目录下<strong>新建、删除、重命名</strong>文件或目录。</td>
-</tr>
-<tr>
-<td>1</td>
-<td>x</td>
-<td><strong>进入目录</strong>的权限，<strong>查询</strong>目录下的文件<strong>属性</strong>。</td>
-</tr>
-</tbody>
-</table>
-<h1 id="权限参考"><a class="markdownIt-Anchor" href="#权限参考"></a> 权限参考</h1>
-<p>根据使用场景来配置权限。</p>
-<p><strong>用户进入目录所需权限</strong>：</p>
+        <h1 id="安装配置"><a class="markdownIt-Anchor" href="#安装配置"></a> 安装配置</h1>
+<p>以 CentOS 7 为例，在安装系统后，需要执行以下几种主要操作。括号内用 0 代表可选操作，1 代表必选操作。</p>
+<h1 id="克隆虚拟机0"><a class="markdownIt-Anchor" href="#克隆虚拟机0"></a> 克隆虚拟机（0）</h1>
+<p>安装完毕后，选择关机克隆。默认生成新的网卡 MAC 地址。启动后执行快照。</p>
+<h1 id="修改网络参数1"><a class="markdownIt-Anchor" href="#修改网络参数1"></a> 修改网络参数（1）</h1>
+<p>网络配置文件位于 <code>/etc/sysconfig/network-scripts/ifcfg-*</code>，使用 <code>nmcli</code> 命令来修改：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">nmcli connection modify ens33 connection.autoconnect <span class="token function">yes</span> ipv4.method manual ipv4.addresses <span class="token number">192.168</span>.2.234/24 ipv4.gateway <span class="token number">192.168</span>.2.1 ipv4.dns <span class="token number">222.246</span>.129.80
+nmcli connection up ens33
+nmcli<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h1 id="修改ssh配置0"><a class="markdownIt-Anchor" href="#修改ssh配置0"></a> 修改SSH配置（0）</h1>
+<p>有些云主机默认不允许 SSH 使用密码方式登录，可以修改 SSH 文件配置：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sed</span> <span class="token parameter variable">-i</span> <span class="token string">"s/PasswordAuthentication no/PasswordAuthentication yes/g"</span> /etc/ssh/sshd_config
+<span class="token function">cat</span> /etc/ssh/sshd_config <span class="token operator">|</span> <span class="token function">grep</span> PasswordAuthentication
+systemctl reload sshd
+systemctl status sshd<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="修改主机名1"><a class="markdownIt-Anchor" href="#修改主机名1"></a> 修改主机名（1）</h1>
+<p>根据 IP 地址修改主机名：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">hostnamectl set-hostname server201<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="修改时间同步1"><a class="markdownIt-Anchor" href="#修改时间同步1"></a> 修改时间同步（1）</h1>
+<p>先将时区修改为东 8 区，再安装网络时间同步功能：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">timedatectl set-timezone <span class="token string">"Asia/Shanghai"</span>
+yum <span class="token parameter variable">-y</span> <span class="token function">install</span> ntp ntpdate
+ntpdate cn.pool.ntp.org
+hwclock <span class="token parameter variable">--systohc</span>
+hwclock <span class="token parameter variable">-w</span>
+<span class="token function">date</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="更改软件安装源1"><a class="markdownIt-Anchor" href="#更改软件安装源1"></a> 更改软件安装源（1）</h1>
+<p>修改为阿里云镜像仓库地址：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">mv</span> /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+<span class="token builtin class-name">cd</span> /etc/yum.repos.d/ <span class="token operator">&amp;&amp;</span> <span class="token function">wget</span> http://mirrors.aliyun.com/repo/Centos-7.repo
+yum clean all
+yum makecache<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="修改系统编码1"><a class="markdownIt-Anchor" href="#修改系统编码1"></a> 修改系统编码（1）</h1>
+<p>改为使用 en_US.utf8 编码：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">localectl set-locale <span class="token assign-left variable"><span class="token environment constant">LANG</span></span><span class="token operator">=</span>en_US.utf8
+localectl<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h1 id="修改防火墙1"><a class="markdownIt-Anchor" href="#修改防火墙1"></a> 修改防火墙（1）</h1>
+<p>根据需要修改防火墙和 SELinux 开关：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">service</span> iptables stop
+<span class="token function">chkconfig</span> iptables off
+systemctl stop firewalld.service
+systemctl disable firewalld.service
+setenforce <span class="token number">0</span>
+<span class="token function">sed</span> <span class="token parameter variable">-i</span> <span class="token string">'s/SELINUX=enforcing/SELINUX=disabled/'</span> /etc/sysconfig/selinux
+<span class="token function">sed</span> <span class="token parameter variable">-i</span> <span class="token string">'s/SELINUX=enforcing/SELINUX=disabled/'</span> /etc/selinux/config
+getenforce <span class="token comment">#</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="系统更新1"><a class="markdownIt-Anchor" href="#系统更新1"></a> 系统更新（1）</h1>
+<p>更新软件到最新版：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">yum <span class="token parameter variable">-y</span> update<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>可以加入到计划任务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">echo</span> <span class="token string">"15 2 * * * root /usr/bin/yum -y update"</span> <span class="token operator">>></span> /etc/crontab<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="安装基本工具1"><a class="markdownIt-Anchor" href="#安装基本工具1"></a> 安装基本工具（1）</h1>
+<p>安装 netstat、wget、jq、vim 等工具：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">yum <span class="token function">install</span> <span class="token parameter variable">-y</span> net-tools <span class="token function">wget</span> jq <span class="token function">vim</span> bash-completion epel-release setroubleshoot
+<span class="token builtin class-name">echo</span> <span class="token string">"alias vi='vim'"</span> <span class="token operator">>></span> ~/.bash_profile
+<span class="token builtin class-name">echo</span> <span class="token string">"export vi"</span> <span class="token operator">>></span> ~/.bash_profile<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h1 id="配置grub0"><a class="markdownIt-Anchor" href="#配置grub0"></a> 配置GRUB（0）</h1>
+<p>在修改 <code>/etc/default/grub</code> 配置文件后，使用 <code>grub2-mkconfig</code> 命令生成新的配置文件。通常用于更新内核后修改启动顺序。</p>
+<h1 id="配置欢迎文字0"><a class="markdownIt-Anchor" href="#配置欢迎文字0"></a> 配置欢迎文字（0）</h1>
+<p>修改配置文件 <code>/etc/issue</code>。</p>
+<h1 id="配置-sudo0"><a class="markdownIt-Anchor" href="#配置-sudo0"></a> 配置 sudo（0）</h1>
+<p>sudo 配置文件位于 <code>/etc/sudoers</code>，可以使用 <code>visudo</code> 命令编辑：</p>
 <ul>
-<li>目录需要 x 权限，来运行 cd 切换目录。</li>
-<li>目录需要 r 权限，来使用 ls 命令查看目录中文件列表。</li>
+<li>定义用户行为：<code>username host = command</code>，每个命令之间用逗号隔开。</li>
+<li>例如，<code>alice ALL=/bin/userdel</code> 表示用户 alice 在所有主机上可以使用 <code>sudo userdel</code> 命令。</li>
+<li>例如，<code>alice laocal=ALL</code> 表示 alice 能在 laocal 主机上使用 sudo 运行所有命令。</li>
+<li>例如，<code>alice ALL=/bin/*</code> 表示运行 <code>bin</code> 目录下的命令，但不适用于其任何子目录。</li>
+<li>例如，<code>alice ALL=(mysql) /usr/bin/mysqld</code> 表示指定 mysql 的运行用户为 mysql。</li>
+<li>定义用户别名：<code>User_Alias ADMIN = alice, bob</code>，一般别名定义放在文件开头。</li>
+<li>定义命令别名：<code>Cmnd_Alias USER_COMMANDS = /bin/useradd, /bin/userdel</code>，多个命令用逗号隔开。</li>
+<li>定义主机别名：<code>Host_Alias SERVERS = nginx1, tomcat</code>，别名可以组合一起使用。</li>
+<li>排除命令：<code>alice SERVERS=/bin/*, !DENIED_COMMANDS</code>，表示在 DENIED_COMMANDS 定义的命令不可使用。</li>
 </ul>
-<p><strong>用户读取目录内文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 r 权限来运行 cat、more 等读取文件命令。</li>
-</ul>
-<p><strong>用户修改目录内文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 r 和 w 权限来使用 vi 等工具进行文件读写。</li>
-</ul>
-<p><strong>用户创建一个文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 w 和 x 权限来创建文件。</li>
-</ul>
-<p><strong>用户执行目录下的命令所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 x 权限来运行命令。</li>
-</ul>
-<h1 id="特殊权限"><a class="markdownIt-Anchor" href="#特殊权限"></a> 特殊权限</h1>
-<p>在 Linux 系统中，还有一些特殊权限。</p>
-<h2 id="suid"><a class="markdownIt-Anchor" href="#suid"></a> SUID</h2>
-<p>当 s 标志出现在文件所有者的 x 权限上时，被称为 Set UID，其含义为：</p>
-<ul>
-<li>SUID 权限<strong>仅对二进制程序有效</strong>，不能用在脚本上；</li>
-<li>执行者对该程序需要具有 x 的可执行权限；</li>
-<li>本权限仅在执行该程序的过程中（run-time）有效；</li>
-<li><strong>执行者将具有该程序所有者的权限</strong>。</li>
-</ul>
-<p>例如一般用户运行 passwd 命令修改密码，需要修改/etc/shadow 文件。但是该文件的权限只有 root 可读写，而用户运行 passwd 程序时，会暂时获得 passwd 程序的 root 权限，从而可以通过 passwd 命令修改/etc/shadow 文件。</p>
-<p>这是因为运行 passwd 后会启动一个新的进程，该进程会产生一个新的 PID。在该 PID 产生时，SUID 会给予该 PID 特殊的权限设置，使得执行者在该进程中具有该程序所有者的权限。</p>
-<h2 id="sgid"><a class="markdownIt-Anchor" href="#sgid"></a> SGID</h2>
-<p>当 s 标志出现在文件所属组的 x 权限上时，被称为 Set GID。SGID 可以针对文件或目录来设置。</p>
-<p><strong>针对文件</strong>，SGID 有以下功能：</p>
-<ul>
-<li>SGID 对二进制程序有效；</li>
-<li>程序执行者对该程序来说，需要具备 x 的权限；</li>
-<li><strong>执行者在执行的过程中将会获得该程序所属组的权限</strong>。</li>
-</ul>
-<p>例如，一般用户使用 locate 这个程序可以查询/var/lib/mlocate/mlocate.db 文件的内容，会暂时获得 slocate 用户组的权限。</p>
-<p><strong>针对目录</strong>，SGID 有以下功能：</p>
-<ul>
-<li>用户若对此目录具有 r 和 x 的权限时，该用户能够进入此目录；</li>
-<li>用户在此目录下的有效用户组将会变成该目录的用户组；</li>
-<li><strong>若用户在此目录下具有 w 的权限，则用户所创建的新文件的所属组与此目录的所属组相同。</strong></li>
-</ul>
-<h2 id="sbit"><a class="markdownIt-Anchor" href="#sbit"></a> SBIT</h2>
-<p>当 t 出现在文件所有者的其他用户 x 权限上时，被称为 Sticky Bit。其含义为：</p>
-<ul>
-<li>SBIT 权限<strong>仅对目录有效</strong>；</li>
-<li>当用户对该目录具有 w 和 x 权限时，即具有写入权限时；</li>
-<li><strong>当用户在该目录下创建文件或目录时，仅有自己与 root 才有权力删除该文件。</strong></li>
-</ul>
-<p>例如，用户 1 对目录 A 具有 w 的权限，里面还有其他用户的文件。此时，目录 A 加上了 SBIT 权限时，用户 1 只能修改自己创建的文件，无法删除他人文件。</p>
 
     </div>
 
@@ -457,7 +397,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://blog.x2b.net/46662635/" title="09.Linux 文件权限">https://blog.x2b.net/46662635/</a>
+      <a href="https://blog.x2b.net/0/" title="">https://blog.x2b.net/0/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
@@ -487,10 +427,13 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
+                <a href="../1/" rel="prev" title="11.Linux 程序进程">
+                  <i class="fa fa-chevron-left"></i> 11.Linux 程序进程
+                </a>
             </div>
             <div class="post-nav-item">
-                <a href="../1872252014/" rel="next" title="08.Linux 文件属性">
-                  08.Linux 文件属性 <i class="fa fa-chevron-right"></i>
+                <a href="../3373647732/" rel="next" title="06.Linux 启动流程">
+                  06.Linux 启动流程 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -600,7 +543,7 @@
 
 
   <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
-  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/46662635/"}</script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/0/"}</script>
   <script src="../js/third-party/quicklink.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
