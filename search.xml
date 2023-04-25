@@ -634,6 +634,515 @@
       </categories>
   </entry>
   <entry>
+    <title>10.Linux 用户与组</title>
+    <url>/2592592171/</url>
+    <content><![CDATA[<h1 id="用户标识符"><a class="markdownIt-Anchor" href="#用户标识符"></a> 用户标识符</h1>
+<p>每个用户至少都有两个ID，用户ID（UID，User ID）和用户组ID（GID，Group ID）。</p>
+<p>当显示文件属性时，系统会根据/etc/passwd与/etc/group的内容找到UID/GID对应的账号与组名再显示出来。</p>
+<h1 id="用户账号"><a class="markdownIt-Anchor" href="#用户账号"></a> 用户账号</h1>
+<p>用户通过终端或SSH登录时，系统的处理过程如下：</p>
+<ol>
+<li>首先在/etc/passwd中查找是否存在输入的账户，如果存在，则读取对应的UID、GID、主目录和shell设置。</li>
+<li>核对输入的密码是否与/etc/shadow记录匹配。</li>
+<li>如果账户和密码都正确，就可以进入shell。</li>
+</ol>
+<h2 id="etcpasswd文件结构"><a class="markdownIt-Anchor" href="#etcpasswd文件结构"></a> /etc/passwd文件结构</h2>
+<p>passwd中以行为单位记录系统中所有账号，各字段之间用冒号分隔开：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span><span class="token comment"># head -4 /etc/passwd</span>
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>以上以第一条为例，总共七个字段，说明如下：</p>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>内容</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>root</td>
+<td>账号名称，用来对应UID</td>
+</tr>
+<tr>
+<td>2</td>
+<td>x</td>
+<td>密码，早期UNIX用来存放加密过的密码字段</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0</td>
+<td>UID，其中0固定为root用，1-499号留给系统账号用，500之后为一般用户</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0</td>
+<td>GID，组信息保存在/etc/group中</td>
+</tr>
+<tr>
+<td>5</td>
+<td>root</td>
+<td>用户信息说明列，只是用来解释账号意义</td>
+</tr>
+<tr>
+<td>6</td>
+<td>/root</td>
+<td>用户主文件夹位置</td>
+</tr>
+<tr>
+<td>7</td>
+<td>/bin/bash</td>
+<td>默认使用的shell。如果是/sbin/nologin代表不能登录</td>
+</tr>
+</tbody>
+</table>
+<h2 id="etcshadow文件结构"><a class="markdownIt-Anchor" href="#etcshadow文件结构"></a> /etc/shadow文件结构</h2>
+<p>shadow文件中保存了密码和相关限制设置：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span><span class="token comment"># cat /etc/shadow</span>
+root:<span class="token variable">$6</span><span class="token variable">$A7YdIFXQJ47yq0</span>::0:99999:7:::
+bin:*:17632:0:99999:7:::<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>以第一条记录为例，总共有九个字段，说明如下：</p>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>内容</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>root</td>
+<td>账户名</td>
+</tr>
+<tr>
+<td>2</td>
+<td>7YdIFXQJ47yq0</td>
+<td>编码过的密码，使用不同编码方式产生的长度不同</td>
+</tr>
+<tr>
+<td>3</td>
+<td>13400</td>
+<td>最近改动密码的日期，以1970/01/01作为基准计算经过时间</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0</td>
+<td>密码不可被改动的天数，0无限制，11表示每次修改密码的等待间隔为11天</td>
+</tr>
+<tr>
+<td>5</td>
+<td>99999</td>
+<td>密码过期的期限天数，如果超过这个限制天数没改密码，密码会变为已过期</td>
+</tr>
+<tr>
+<td>6</td>
+<td>7</td>
+<td>密码过期前发出警告的提前天数</td>
+</tr>
+<tr>
+<td>7</td>
+<td>14</td>
+<td>密码过期后的账号宽限时间</td>
+</tr>
+<tr>
+<td>8</td>
+<td>14800</td>
+<td>账号失效日期，过了限制日期后账号无法再使用</td>
+</tr>
+<tr>
+<td>9</td>
+<td>-</td>
+<td>保留字段</td>
+</tr>
+</tbody>
+</table>
+<h1 id="用户组"><a class="markdownIt-Anchor" href="#用户组"></a> 用户组</h1>
+<p>用户组可以将账户集中在一起组成一个逻辑排列，从而简化特权管理。和用户组有关的文件记录在/etc/group与/etc/gshadow中。</p>
+<h2 id="etcgroup文件结构"><a class="markdownIt-Anchor" href="#etcgroup文件结构"></a> /etc/group文件结构</h2>
+<p>group文件记录GID与组名的对应：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span><span class="token comment"># cat /etc/group</span>
+root:x:0:
+bin:x:1:
+daemon:x:2:<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>以第一条记录为例，总共有四个字段，说明如下：</p>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>内容</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>root</td>
+<td>用户组名</td>
+</tr>
+<tr>
+<td>2</td>
+<td>x</td>
+<td>用户组密码，不再使用</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0</td>
+<td>用户组ID</td>
+</tr>
+<tr>
+<td>4</td>
+<td>-</td>
+<td>此用户组支持的账号名称</td>
+</tr>
+</tbody>
+</table>
+<p>初始用户组（initial group）与有效用户组（effective group）：</p>
+<ul>
+<li>保存在/etc/passwd中的用户对应GID就是初始用户组；</li>
+<li>保存在/etc/group中的用户名说明用户在此组中，该组是组内用户的有效用户组。</li>
+</ul>
+<h2 id="etcgshadow文件结构"><a class="markdownIt-Anchor" href="#etcgshadow文件结构"></a> /etc/gshadow文件结构</h2>
+<p>gshadow用来设定组密码：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span><span class="token comment"># cat /etc/gshadow</span>
+root:::
+bin:::<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>文件内容和/etc/group差不多，除了第二列用来记录组密码。</p>
+<h2 id="两种群组机制"><a class="markdownIt-Anchor" href="#两种群组机制"></a> 两种群组机制</h2>
+<p>针对创建用户时会不会创建私有组的策略有两种机制：</p>
+<ul>
+<li>
+<p><strong>私有群组机制</strong></p>
+<p>系统会创建一个与账号同名的群组给使用者作为初始群组，且主文件夹权限设置为700，这样对用户来说保密性较好。使用这一机制的代表有RHEL、Fedora、CentOS等。</p>
+</li>
+<li>
+<p><strong>公共群组机制</strong></p>
+<p>新建账户时若没指定组，自动把GID=100分配给使用者作为初始群组。此组为users公共组，主文件夹权限是755，同一组内的用户可以共享主文件夹内数据。代表有SuSE等。</p>
+</li>
+</ul>
+<h1 id="新增用户"><a class="markdownIt-Anchor" href="#新增用户"></a> 新增用户</h1>
+<p>使用默认设置新建用户时，系统所作的工作：</p>
+<ol>
+<li>在 /etc/passwd 中创建一行与账号相关的数据，包括创建 UID/GID/主文件夹等；</li>
+<li>在 /etc/shadow 中将账号密码相关参数填入，默认无密码；</li>
+<li>在 /etc/group 中加入一个与账户名一样的组名；</li>
+<li>在 /home 下面创建与账户同名的目录作为用户主文件夹，权限为 700。</li>
+</ol>
+<p>可以通过<code>useradd -D</code>查看创建用户时使用的默认值：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span><span class="token comment"># useradd -D</span>
+<span class="token assign-left variable">GROUP</span><span class="token operator">=</span><span class="token number">100</span>
+<span class="token assign-left variable"><span class="token environment constant">HOME</span></span><span class="token operator">=</span>/home
+<span class="token assign-left variable">INACTIVE</span><span class="token operator">=</span>-1
+<span class="token assign-left variable">EXPIRE</span><span class="token operator">=</span>
+<span class="token assign-left variable"><span class="token environment constant">SHELL</span></span><span class="token operator">=</span>/bin/bash
+<span class="token assign-left variable">SKEL</span><span class="token operator">=</span>/etc/skel
+<span class="token assign-left variable">CREATE_MAIL_SPOOL</span><span class="token operator">=</span>yes<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其实调用的就是 /etc/default/useradd 文件内容。变量说明如下：</p>
+<table>
+<thead>
+<tr>
+<th>行</th>
+<th>设置</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>GROUP=100</td>
+<td>设置新用户初始组为 users，在 CentOS 中不适用</td>
+</tr>
+<tr>
+<td>2</td>
+<td>HOME=/home</td>
+<td>用户主文件夹的基准目录（basedir）</td>
+</tr>
+<tr>
+<td>3</td>
+<td>INACTIVE=-1</td>
+<td>密码过期后是否会失效的设置值</td>
+</tr>
+<tr>
+<td>4</td>
+<td>EXPIRE=</td>
+<td>账号失效的日期，YYYY-MM-DD 格式</td>
+</tr>
+<tr>
+<td>5</td>
+<td>SHELL=/bin/bash</td>
+<td>新用户默认 shell 的路径</td>
+</tr>
+<tr>
+<td>6</td>
+<td>SKEL=/etc/skel</td>
+<td>新用户主目录里默认的内容参考来源</td>
+</tr>
+<tr>
+<td>7</td>
+<td>CREATE_MAIL_SPOOL=yes</td>
+<td>创建用户邮件信箱</td>
+</tr>
+</tbody>
+</table>
+<p>其他一些设置，如密码策略、邮箱目录等，存放在 /etc/login.defs 文件下：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span><span class="token comment"># cat /etc/login.defs | grep -v -E "^$|^#"</span>
+MAIL_DIR        /var/spool/mail
+PASS_MAX_DAYS   <span class="token number">99999</span>
+PASS_MIN_DAYS   <span class="token number">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在 /etc/login.defs 文件内一些重要参数说明：</p>
+<table>
+<thead>
+<tr>
+<th>行</th>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>MAIL_DIR</td>
+<td>用户邮箱所在位置</td>
+</tr>
+<tr>
+<td>2-6</td>
+<td>PASS_, WARN_AGE</td>
+<td>密码设置相关</td>
+</tr>
+<tr>
+<td>7-14</td>
+<td>UID, SYS_UID, GID, SYS_GID</td>
+<td>设置 UID/GID 号相关参数</td>
+</tr>
+<tr>
+<td>15</td>
+<td>CREATE_HOME</td>
+<td>建立用户主文件夹</td>
+</tr>
+<tr>
+<td>16</td>
+<td>UMASK</td>
+<td>用户主文件的权限设置</td>
+</tr>
+<tr>
+<td>17</td>
+<td>USERGROUPS_ENAB</td>
+<td>删掉用户时，如果同名组是空组，也一并删除</td>
+</tr>
+<tr>
+<td>18</td>
+<td>ENCRYPT_METHOD</td>
+<td>密码加密方式</td>
+</tr>
+</tbody>
+</table>
+<h1 id="修改密码"><a class="markdownIt-Anchor" href="#修改密码"></a> 修改密码</h1>
+<p>root修改密码时不需要旧密码，可以忽略密码规则。一般账号改密码需要输入旧密码，密码需要符合复杂性要求。</p>
+<p>密码管理机制由/etc/pam.d/passwd控制，密码测试模块使用pam_cracklib.so。</p>
+<p>可以通过authconfig命令来查看密码哈希使用算法:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># authconfig --test | grep hashing</span>
+password hashing algorithm is sha512<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>假设作为一般用户，原始密码为A2345678b，则修改密码时的错误示例如下：</p>
+<table>
+<thead>
+<tr>
+<th><strong>密码规则</strong></th>
+<th><strong>错误示例</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>长度&gt;8</td>
+<td>b2345C</td>
+</tr>
+<tr>
+<td>不是回文(即上次密码的倒置)</td>
+<td>b8765432A</td>
+</tr>
+<tr>
+<td>不能和上次密码只有大小写区别</td>
+<td>a2345678B</td>
+</tr>
+<tr>
+<td>至少有字母+数字</td>
+<td>abababab</td>
+</tr>
+<tr>
+<td>简单的轮询检查</td>
+<td>2345678bA</td>
+</tr>
+</tbody>
+</table>
+<h1 id="pam模块"><a class="markdownIt-Anchor" href="#pam模块"></a> PAM模块</h1>
+<p>PAM（可插拔身份验证模块）是一套应用程序编程接口(API), 它提供一系列验证机制。只要用户将验证阶段的需求告诉PAM，PAM就能够回报用户验证的结果（成功或失败）。</p>
+<p>由于PAM仅是一套验证机制，又可以提供给其他程序调用，因此无论使用什么程序都可以使用PAM进行身份验证。</p>
+<p>例如，passwd命令调用PAM的流程如下：</p>
+<ol>
+<li>用户执行/usr/bin/passwd程序，并输入密码;</li>
+<li>passwd调用PAM模块进行验证;</li>
+<li>PAM模块会到/etc/pam.d/中查找与程序passwd同名的配置文件;</li>
+<li>根据/etc/pam.d/passwd内的设置，引用相关的PAM模块逐步进行验证分析;</li>
+<li>将验证结果回传给passwd程序;</li>
+<li>passwd根据PAM回传结果决定下一个操作（通过或要求重试）。</li>
+</ol>
+<p>查看/etc/pam.d/passwd文件内容如下:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># cat /etc/pam.d/passwd</span>
+<span class="token comment">#%PAM-1.0</span>
+auth       include      system-auth
+account    include      system-auth
+password   substack     system-auth
+<span class="token parameter variable">-password</span>   optional    pam_gnome_keyring.so use_authtok
+password   substack     postlogin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>每一行分为三个字段，分别是：验证类别（type）、控制标志（flag）、PAM模块与该模块的参数。</p>
+<h2 id="验证类型"><a class="markdownIt-Anchor" href="#验证类型"></a> 验证类型</h2>
+<p>验证类型(Type)有四种，分别为：</p>
+<ul>
+<li><strong>auth</strong>：authentication（认证）的缩写，主要用来检验用户的身份信息，通常需要密码来检验，因此后续接的模块是用来验证使用者的身份。</li>
+<li><strong>account</strong>：account（账号）则大部分用于进行授权，主要在检验用户是否具有正确的授权。例如使用一个过期的密码登录时，无法正确登录。</li>
+<li><strong>session</strong>：session（会话）管理的是用户在这次登录（或使用这个命令）期间PAM所给予的环境设置。这个类型通常用于记录用户登录和注销时的信息。例如使用sudo命令，会在安全日志里出现很多关于PAM的行，记录session open、session close等信息。</li>
+<li><strong>password</strong>：password就是密码，所以这种类别主要用于提供验证的修订工作，例如修改密码。</li>
+</ul>
+<p>这四个验证的类型通常有顺序。先进行身份验证（auth），系统给予授权（account），登记登录信息（session），最后是需要更改密码（password）时才给予的password类型。</p>
+<h2 id="控制标志"><a class="markdownIt-Anchor" href="#控制标志"></a> 控制标志</h2>
+<p>控制标志(Control Flag)是验证通过的标准，这个字段在控制该验证的放行方式，也分为四种控制方式：</p>
+<ul>
+<li>
+<p><strong>required</strong></p>
+<p>此验证若成功带有success的标志，失败带有failure的标志，无论成功与失败都会继续后续的验证流程。由于后续的验证流程可以继续进行，因此相当有利于记录日志(log)，这是PAM最常使用的标志。</p>
+</li>
+<li>
+<p><strong>requisite</strong></p>
+<p>验证失败立刻回报原程序failure的标志，并终止后续的验证流程。成功则带有success的标志并继续后续的验证流程。与required最大的区别是遇到失败立马终止，因此失败所产生的PAM信息无法记录。</p>
+</li>
+<li>
+<p><strong>sufficient</strong></p>
+<p>若验证成功则立刻回传success给原程序，并终止后续的验证流程，失败则带有failure标志并继续后续的验证流程，与requisite刚好相反。</p>
+</li>
+<li>
+<p><strong>optional</strong></p>
+<p>这个模块控制目的大多是在显示信息，并不是用在验证方面。</p>
+</li>
+</ul>
+<p>如果控制标志出现的是include，代表的是调用后面的文件作为这个类别的验证。</p>
+<h2 id="模块"><a class="markdownIt-Anchor" href="#模块"></a> 模块</h2>
+<p>模块存放路径：</p>
+<table>
+<thead>
+<tr>
+<th>路径</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/etc/pam.d/*</td>
+<td>每个程序单独的 PAM 配置文件</td>
+</tr>
+<tr>
+<td>/lib/security/*</td>
+<td>PAM 模块文件实际放置位置</td>
+</tr>
+<tr>
+<td>/etc/security/*</td>
+<td>其他 PAM 环境配置文件</td>
+</tr>
+<tr>
+<td>/usr/share/doc/pam-*/</td>
+<td>详细的 PAM 说明文件</td>
+</tr>
+</tbody>
+</table>
+<p>一些比较常用的模块：</p>
+<table>
+<thead>
+<tr>
+<th>模块名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pam_securetty.so</td>
+<td>限制系统管理员 (root) 只能从安全的终端机登录，例如 tty1-7(/etc/securetty 由设定)。</td>
+</tr>
+<tr>
+<td>pam_nologin.so</td>
+<td>限制一般用户能否登录主机。当 /etc/nologin 文件存在时，所有一般用户均无法登录。</td>
+</tr>
+<tr>
+<td>pam_selinux.so</td>
+<td>SELinux 是针对程序来进行详细管理权限的功能。</td>
+</tr>
+<tr>
+<td>pam_console.so</td>
+<td>需要使用特殊的终端接口登录主机时，这个模块帮助处理一些文件权限的问题。</td>
+</tr>
+<tr>
+<td>pam_loginuid.so</td>
+<td>验证用户的 UID 数值，可以使用这个模块来规范。</td>
+</tr>
+<tr>
+<td>pam_env.so</td>
+<td>用来设置环境变量的一个模块。</td>
+</tr>
+<tr>
+<td>pam_unix.so</td>
+<td>用于验证阶段的认证功能，可以用于授权阶段的账号许可证管理、日志记录等。</td>
+</tr>
+<tr>
+<td>pam_pwquality.so</td>
+<td>用来验证密码的强度，包括密码是否在字典中、密码最大重试次数等。</td>
+</tr>
+<tr>
+<td>pam_cracklib.so</td>
+<td>用来检验密码强度，已被 pam_pwquality.so 取代。</td>
+</tr>
+<tr>
+<td>pam_limits.so</td>
+<td>ulimit 命令用到了这个模块。</td>
+</tr>
+</tbody>
+</table>
+<p>另外一个比较常用的是 /etc/security/limits.conf 这个配置文件，可以直接修改这个文件来对用户的系统使用配额做一些设置。</p>
+<p>例如修改用户user1只能新建小于100MB的文件（hard），且大于80MB会警告（soft）：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># vim /etc/security/limits.conf </span>
+<span class="token comment">#&lt;domain>      &lt;type>  &lt;item>         &lt;value></span>
+<span class="token comment">#</span>
+<span class="token comment">#*               soft    core            0</span>
+<span class="token comment">#*               hard    rss             10000</span>
+<span class="token comment">#@student        hard    nproc           20</span>
+<span class="token comment">#@faculty        soft    nproc           20</span>
+<span class="token comment">#@faculty        hard    nproc           50</span>
+<span class="token comment">#ftp             hard    nproc           0</span>
+<span class="token comment">#@student        -       maxlogins       4</span>
+user1            soft    fsize           <span class="token number">80000</span>
+user1            hard    fsize           <span class="token number">100000</span>
+<span class="token string">"/etc/security/limits.conf"</span> 64L, 2499C written<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用ulimit查询，并使用dd命令测试：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">ulimit</span> <span class="token parameter variable">-a</span> <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">'file size'</span>
+core <span class="token function">file</span> size          <span class="token punctuation">(</span>blocks, -c<span class="token punctuation">)</span> <span class="token number">0</span>
+<span class="token function">file</span> size               <span class="token punctuation">(</span>blocks, -f<span class="token punctuation">)</span> <span class="token number">80000</span>
+<span class="token punctuation">[</span>user1@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">dd</span> <span class="token assign-left variable">if</span><span class="token operator">=</span>/dev/zero <span class="token assign-left variable">of</span><span class="token operator">=</span>filetest <span class="token assign-left variable">bs</span><span class="token operator">=</span>1M <span class="token assign-left variable">count</span><span class="token operator">=</span><span class="token number">200</span>
+File size limit exceeded
+<span class="token punctuation">[</span>user1@101c7 ~<span class="token punctuation">]</span>$ ll <span class="token parameter variable">-k</span> filetest
+-rw-rw-r--. <span class="token number">1</span> user1 user1 <span class="token number">81920000</span> Sep <span class="token number">13</span> <span class="token number">11</span>:23 filetest<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>例如限制用户组group1每次只能有一个用户登录系统（maxlogins）：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># vim /etc/security/limits.conf </span>
+<span class="token comment">#&lt;domain>      &lt;type>  &lt;item>         &lt;value></span>
+@group1          hard    maxlogins       <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>登录相关日志文件存放目录有/var/log/secure和/var/log/messages。如果发生任何无法登录或是产生意外错误，由PAM模块将数据记录在/var/log/secure中。</p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>0.基础概论</category>
+      </categories>
+  </entry>
+  <entry>
     <title>06.Linux 启动流程</title>
     <url>/3373647732/</url>
     <content><![CDATA[<h1 id="bios-搭配-mbrgpt"><a class="markdownIt-Anchor" href="#bios-搭配-mbrgpt"></a> BIOS 搭配 MBR/GPT</h1>
@@ -1669,143 +2178,6 @@ root     pts/1    <span class="token number">192.168</span>.2.101    <span class
       </categories>
   </entry>
   <entry>
-    <title>08.Linux 文件属性</title>
-    <url>/1872252014/</url>
-    <content><![CDATA[<h1 id="查看文件属性"><a class="markdownIt-Anchor" href="#查看文件属性"></a> 查看文件属性</h1>
-<p>执行 ls -la 命令后，可以看到当前目录下所有文件的权限和属性：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ll -la</span>
-total <span class="token number">32</span>
-dr-xr-x---.  <span class="token number">4</span> root root  <span class="token number">175</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 <span class="token builtin class-name">.</span>
-dr-xr-xr-x. <span class="token number">17</span> root root  <span class="token number">224</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:37 <span class="token punctuation">..</span>
--rw-------.  <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
--rw-------.  <span class="token number">1</span> root root  <span class="token number">847</span> Sep  <span class="token number">8</span> <span class="token number">12</span>:32 .bash_history
--rw-r--r--.  <span class="token number">1</span> root root   <span class="token number">18</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bash_logout
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">176</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bash_profile
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">176</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bashrc
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">100</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .cshrc
-drwxr-xr-x.  <span class="token number">2</span> root root    <span class="token number">6</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 dir1
-drwxr-----.  <span class="token number">3</span> root root   <span class="token number">19</span> Sep  <span class="token number">7</span> 05:51 .pki
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">129</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .tcshrc
--rw-------.  <span class="token number">1</span> root root  <span class="token number">508</span> Sep  <span class="token number">7</span> 05:52 .viminfo<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>total 为该目录下的所有数据所占用的实际块数量乘以块大小的值。</p>
-<p>从左到右以空格分隔成七列，分别代表：类型和权限、连接、所有者、所有组、大小、修改时间、文件名”。</p>
-<h1 id="文件类型"><a class="markdownIt-Anchor" href="#文件类型"></a> 文件类型</h1>
-<p>第一列第一个字段用来表示文件的类型，文件类型有下面几种：</p>
-<table>
-<thead>
-<tr>
-<th><strong>标记</strong></th>
-<th><strong>类型</strong></th>
-<th><strong>说明</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>-</td>
-<td>普通文件</td>
-<td>文本文件、数据文件、可执行程序等都作为普通文件存储</td>
-</tr>
-<tr>
-<td>d</td>
-<td>目录</td>
-<td>目录不存放常规数据，它用来组织访问其他文件</td>
-</tr>
-<tr>
-<td>c</td>
-<td>字符设备文件</td>
-<td>指处理数据时每次只能处理一个字符的设备，例如鼠标、键盘（一次性读取设备）</td>
-</tr>
-<tr>
-<td>b</td>
-<td>块设备文件</td>
-<td>指处理数据时每次能处理大块数据的设备，例如硬盘</td>
-</tr>
-<tr>
-<td>s</td>
-<td>本地域套接字</td>
-<td>实现进程间通信的连接，本地域套接字由系统调用 socket 创建</td>
-</tr>
-<tr>
-<td>p</td>
-<td>有名管道(FIFO)</td>
-<td>让运行在同一主机上的两个进程相互通信，和 socket 文件相似</td>
-</tr>
-<tr>
-<td>l</td>
-<td>符号链接</td>
-<td>也叫做软链接(Linkfile)，通过名字指向文件</td>
-</tr>
-</tbody>
-</table>
-<p>ls 命令结果展示文件颜色含义：</p>
-<table>
-<thead>
-<tr>
-<th><strong>颜色</strong></th>
-<th><strong>含义</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>灰色</td>
-<td>普通文件</td>
-</tr>
-<tr>
-<td>蓝色</td>
-<td>目录</td>
-</tr>
-<tr>
-<td>绿色</td>
-<td>可执行文件</td>
-</tr>
-<tr>
-<td>黄色</td>
-<td>特殊文件</td>
-</tr>
-<tr>
-<td>红色</td>
-<td>压缩文件</td>
-</tr>
-</tbody>
-</table>
-<h1 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h1>
-<p>第一列后九个字段以三个为一组，分别表示：</p>
-<ul>
-<li>文件所有者权限</li>
-<li>同用户组权限</li>
-<li>其他用户权限</li>
-</ul>
-<p>权限为&quot;rwx&quot;的三个参数组合，没有权限显示为&quot;-&quot;减号。</p>
-<h1 id="连接节点"><a class="markdownIt-Anchor" href="#连接节点"></a> 连接节点</h1>
-<p>第二列数字表示节点，每个文件都会将它的权限与属性记录到文件系统的 inode 中。</p>
-<p>这个属性记录的就是有多少不同的文件名连接到相同的一个 inode 号码。</p>
-<h1 id="所有者所有组"><a class="markdownIt-Anchor" href="#所有者所有组"></a> 所有者/所有组</h1>
-<p>第三列和第四列分别表示文件所属的用户和用户组。</p>
-<h1 id="文件大小"><a class="markdownIt-Anchor" href="#文件大小"></a> 文件大小</h1>
-<p>第五列表示文件的容量大小，默认单位为 Bytes。</p>
-<p>目录显示的大小不是文件夹大小，而是目录元数据的大小。</p>
-<h1 id="修改日期"><a class="markdownIt-Anchor" href="#修改日期"></a> 修改日期</h1>
-<p>第六列为文件的创建日期或最近修改时间。</p>
-<p>如果修改时间距离太久，那时间部分会显示成年份。</p>
-<h1 id="文件名"><a class="markdownIt-Anchor" href="#文件名"></a> 文件名</h1>
-<p>第七列为文件名或文件夹名。</p>
-<p>Linux 的文件名是大小写敏感的。</p>
-<p>文件或目录名的第一个字母是&quot;.&quot;表示隐藏文件。</p>
-<p><strong>文件名规则</strong>：</p>
-<ul>
-<li>由大写字母、小写字母、数字和一些特殊符号组成；</li>
-<li>不可以包含 * ? &lt; &gt; ( ) [ ] { } / \ | &quot;  ` ＆ ;  ! 等符号；</li>
-<li>＋-可以出现在文件名中，但是不能作为文件名中的第一个字母；</li>
-<li>文件名中一般不应该包含空格；</li>
-<li>使用 Ext 文件系统时，文件名最长 255 个字符，路径最长 4096 个字符。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>0.基础概论</category>
-      </categories>
-  </entry>
-  <entry>
     <title>07.Linux 文件系统</title>
     <url>/2794564793/</url>
     <content><![CDATA[<h1 id="查看文件系统支持"><a class="markdownIt-Anchor" href="#查看文件系统支持"></a> 查看文件系统支持</h1>
@@ -2292,6 +2664,143 @@ realtime <span class="token operator">=</span>none                   <span class
       </categories>
   </entry>
   <entry>
+    <title>08.Linux 文件属性</title>
+    <url>/1872252014/</url>
+    <content><![CDATA[<h1 id="查看文件属性"><a class="markdownIt-Anchor" href="#查看文件属性"></a> 查看文件属性</h1>
+<p>执行 ls -la 命令后，可以看到当前目录下所有文件的权限和属性：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ll -la</span>
+total <span class="token number">32</span>
+dr-xr-x---.  <span class="token number">4</span> root root  <span class="token number">175</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 <span class="token builtin class-name">.</span>
+dr-xr-xr-x. <span class="token number">17</span> root root  <span class="token number">224</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:37 <span class="token punctuation">..</span>
+-rw-------.  <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
+-rw-------.  <span class="token number">1</span> root root  <span class="token number">847</span> Sep  <span class="token number">8</span> <span class="token number">12</span>:32 .bash_history
+-rw-r--r--.  <span class="token number">1</span> root root   <span class="token number">18</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bash_logout
+-rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">176</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bash_profile
+-rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">176</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bashrc
+-rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">100</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .cshrc
+drwxr-xr-x.  <span class="token number">2</span> root root    <span class="token number">6</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 dir1
+drwxr-----.  <span class="token number">3</span> root root   <span class="token number">19</span> Sep  <span class="token number">7</span> 05:51 .pki
+-rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">129</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .tcshrc
+-rw-------.  <span class="token number">1</span> root root  <span class="token number">508</span> Sep  <span class="token number">7</span> 05:52 .viminfo<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>total 为该目录下的所有数据所占用的实际块数量乘以块大小的值。</p>
+<p>从左到右以空格分隔成七列，分别代表：类型和权限、连接、所有者、所有组、大小、修改时间、文件名”。</p>
+<h1 id="文件类型"><a class="markdownIt-Anchor" href="#文件类型"></a> 文件类型</h1>
+<p>第一列第一个字段用来表示文件的类型，文件类型有下面几种：</p>
+<table>
+<thead>
+<tr>
+<th><strong>标记</strong></th>
+<th><strong>类型</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-</td>
+<td>普通文件</td>
+<td>文本文件、数据文件、可执行程序等都作为普通文件存储</td>
+</tr>
+<tr>
+<td>d</td>
+<td>目录</td>
+<td>目录不存放常规数据，它用来组织访问其他文件</td>
+</tr>
+<tr>
+<td>c</td>
+<td>字符设备文件</td>
+<td>指处理数据时每次只能处理一个字符的设备，例如鼠标、键盘（一次性读取设备）</td>
+</tr>
+<tr>
+<td>b</td>
+<td>块设备文件</td>
+<td>指处理数据时每次能处理大块数据的设备，例如硬盘</td>
+</tr>
+<tr>
+<td>s</td>
+<td>本地域套接字</td>
+<td>实现进程间通信的连接，本地域套接字由系统调用 socket 创建</td>
+</tr>
+<tr>
+<td>p</td>
+<td>有名管道(FIFO)</td>
+<td>让运行在同一主机上的两个进程相互通信，和 socket 文件相似</td>
+</tr>
+<tr>
+<td>l</td>
+<td>符号链接</td>
+<td>也叫做软链接(Linkfile)，通过名字指向文件</td>
+</tr>
+</tbody>
+</table>
+<p>ls 命令结果展示文件颜色含义：</p>
+<table>
+<thead>
+<tr>
+<th><strong>颜色</strong></th>
+<th><strong>含义</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>灰色</td>
+<td>普通文件</td>
+</tr>
+<tr>
+<td>蓝色</td>
+<td>目录</td>
+</tr>
+<tr>
+<td>绿色</td>
+<td>可执行文件</td>
+</tr>
+<tr>
+<td>黄色</td>
+<td>特殊文件</td>
+</tr>
+<tr>
+<td>红色</td>
+<td>压缩文件</td>
+</tr>
+</tbody>
+</table>
+<h1 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h1>
+<p>第一列后九个字段以三个为一组，分别表示：</p>
+<ul>
+<li>文件所有者权限</li>
+<li>同用户组权限</li>
+<li>其他用户权限</li>
+</ul>
+<p>权限为&quot;rwx&quot;的三个参数组合，没有权限显示为&quot;-&quot;减号。</p>
+<h1 id="连接节点"><a class="markdownIt-Anchor" href="#连接节点"></a> 连接节点</h1>
+<p>第二列数字表示节点，每个文件都会将它的权限与属性记录到文件系统的 inode 中。</p>
+<p>这个属性记录的就是有多少不同的文件名连接到相同的一个 inode 号码。</p>
+<h1 id="所有者所有组"><a class="markdownIt-Anchor" href="#所有者所有组"></a> 所有者/所有组</h1>
+<p>第三列和第四列分别表示文件所属的用户和用户组。</p>
+<h1 id="文件大小"><a class="markdownIt-Anchor" href="#文件大小"></a> 文件大小</h1>
+<p>第五列表示文件的容量大小，默认单位为 Bytes。</p>
+<p>目录显示的大小不是文件夹大小，而是目录元数据的大小。</p>
+<h1 id="修改日期"><a class="markdownIt-Anchor" href="#修改日期"></a> 修改日期</h1>
+<p>第六列为文件的创建日期或最近修改时间。</p>
+<p>如果修改时间距离太久，那时间部分会显示成年份。</p>
+<h1 id="文件名"><a class="markdownIt-Anchor" href="#文件名"></a> 文件名</h1>
+<p>第七列为文件名或文件夹名。</p>
+<p>Linux 的文件名是大小写敏感的。</p>
+<p>文件或目录名的第一个字母是&quot;.&quot;表示隐藏文件。</p>
+<p><strong>文件名规则</strong>：</p>
+<ul>
+<li>由大写字母、小写字母、数字和一些特殊符号组成；</li>
+<li>不可以包含 * ? &lt; &gt; ( ) [ ] { } / \ | &quot;  ` ＆ ;  ! 等符号；</li>
+<li>＋-可以出现在文件名中，但是不能作为文件名中的第一个字母；</li>
+<li>文件名中一般不应该包含空格；</li>
+<li>使用 Ext 文件系统时，文件名最长 255 个字符，路径最长 4096 个字符。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>0.基础概论</category>
+      </categories>
+  </entry>
+  <entry>
     <title>09.Linux 文件权限</title>
     <url>/46662635/</url>
     <content><![CDATA[<h1 id="基本权限"><a class="markdownIt-Anchor" href="#基本权限"></a> 基本权限</h1>
@@ -2382,38 +2891,38 @@ realtime <span class="token operator">=</span>none                   <span class
 <h1 id="特殊权限"><a class="markdownIt-Anchor" href="#特殊权限"></a> 特殊权限</h1>
 <p>在 Linux 系统中，还有一些特殊权限。</p>
 <h2 id="suid"><a class="markdownIt-Anchor" href="#suid"></a> SUID</h2>
-<p>当s标志出现在文件所有者的x权限上时，被称为Set UID，其含义为：</p>
+<p>当 s 标志出现在文件所有者的 x 权限上时，被称为 Set UID，其含义为：</p>
 <ul>
-<li>SUID权限<strong>仅对二进制程序有效</strong>，不能用在脚本上；</li>
-<li>执行者对该程序需要具有x的可执行权限；</li>
+<li>SUID 权限<strong>仅对二进制程序有效</strong>，不能用在脚本上；</li>
+<li>执行者对该程序需要具有 x 的可执行权限；</li>
 <li>本权限仅在执行该程序的过程中（run-time）有效；</li>
 <li><strong>执行者将具有该程序所有者的权限</strong>。</li>
 </ul>
-<p>例如一般用户运行passwd命令修改密码，需要修改/etc/shadow文件。但是该文件的权限只有root可读写，而用户运行passwd程序时，会暂时获得passwd程序的root权限，从而可以通过passwd命令修改/etc/shadow文件。</p>
-<p>这是因为运行passwd后会启动一个新的进程，该进程会产生一个新的PID。在该PID产生时，SUID会给予该PID特殊的权限设置，使得执行者在该进程中具有该程序所有者的权限。</p>
+<p>例如一般用户运行 passwd 命令修改密码，需要修改/etc/shadow 文件。但是该文件的权限只有 root 可读写，而用户运行 passwd 程序时，会暂时获得 passwd 程序的 root 权限，从而可以通过 passwd 命令修改/etc/shadow 文件。</p>
+<p>这是因为运行 passwd 后会启动一个新的进程，该进程会产生一个新的 PID。在该 PID 产生时，SUID 会给予该 PID 特殊的权限设置，使得执行者在该进程中具有该程序所有者的权限。</p>
 <h2 id="sgid"><a class="markdownIt-Anchor" href="#sgid"></a> SGID</h2>
-<p>当s标志出现在文件所属组的x权限上时，被称为Set GID。SGID可以针对文件或目录来设置。</p>
-<p><strong>针对文件</strong>，SGID有以下功能：</p>
+<p>当 s 标志出现在文件所属组的 x 权限上时，被称为 Set GID。SGID 可以针对文件或目录来设置。</p>
+<p><strong>针对文件</strong>，SGID 有以下功能：</p>
 <ul>
-<li>SGID对二进制程序有效；</li>
-<li>程序执行者对该程序来说，需要具备x的权限；</li>
+<li>SGID 对二进制程序有效；</li>
+<li>程序执行者对该程序来说，需要具备 x 的权限；</li>
 <li><strong>执行者在执行的过程中将会获得该程序所属组的权限</strong>。</li>
 </ul>
-<p>例如，一般用户使用locate这个程序可以查询/var/lib/mlocate/mlocate.db文件的内容，会暂时获得slocate用户组的权限。</p>
-<p><strong>针对目录</strong>，SGID有以下功能：</p>
+<p>例如，一般用户使用 locate 这个程序可以查询/var/lib/mlocate/mlocate.db 文件的内容，会暂时获得 slocate 用户组的权限。</p>
+<p><strong>针对目录</strong>，SGID 有以下功能：</p>
 <ul>
-<li>用户若对此目录具有r和x的权限时，该用户能够进入此目录；</li>
+<li>用户若对此目录具有 r 和 x 的权限时，该用户能够进入此目录；</li>
 <li>用户在此目录下的有效用户组将会变成该目录的用户组；</li>
-<li><strong>若用户在此目录下具有w的权限，则用户所创建的新文件的所属组与此目录的所属组相同。</strong></li>
+<li><strong>若用户在此目录下具有 w 的权限，则用户所创建的新文件的所属组与此目录的所属组相同。</strong></li>
 </ul>
 <h2 id="sbit"><a class="markdownIt-Anchor" href="#sbit"></a> SBIT</h2>
-<p>当t出现在文件所有者的其他用户x权限上时，被称为Sticky Bit。其含义为：</p>
+<p>当 t 出现在文件所有者的其他用户 x 权限上时，被称为 Sticky Bit。其含义为：</p>
 <ul>
-<li>SBIT权限<strong>仅对目录有效</strong>；</li>
-<li>当用户对该目录具有w和x权限时，即具有写入权限时；</li>
-<li><strong>当用户在该目录下创建文件或目录时，仅有自己与root才有权力删除该文件。</strong></li>
+<li>SBIT 权限<strong>仅对目录有效</strong>；</li>
+<li>当用户对该目录具有 w 和 x 权限时，即具有写入权限时；</li>
+<li><strong>当用户在该目录下创建文件或目录时，仅有自己与 root 才有权力删除该文件。</strong></li>
 </ul>
-<p>例如，用户1对目录A具有w的权限，里面还有其他用户的文件。此时，目录A加上了SBIT权限时，用户1只能修改自己创建的文件，无法删除他人文件。</p>
+<p>例如，用户 1 对目录 A 具有 w 的权限，里面还有其他用户的文件。此时，目录 A 加上了 SBIT 权限时，用户 1 只能修改自己创建的文件，无法删除他人文件。</p>
 ]]></content>
       <categories>
         <category>Linux</category>
