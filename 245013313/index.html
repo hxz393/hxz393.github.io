@@ -22,28 +22,28 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"flat"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
 
-    <meta name="description" content="终端类型 只使用文本的终端被称为字符终端（Character Terminal）或基于文本的终端（Text-Based Terminal），统称命令行界面（CLI，命令行界面）。其硬件设备标准代表是 DEC 公司 1978 年生产的 VT100。 图形终端(Graphics Terminal)不仅可以处理文本，还可以显示任何能使用小点在屏幕上进行绘制的内容，也就是可以通过图形用户界面（GUI，图">
+    <meta name="description" content="帮助命令 某些命令可以使用 --help 参数来查看简短的帮助信息。例如，要查看命令 mkdir 的帮助信息： [user1@101c7 root]$ mkdir --help Usage: mkdir [OPTION]... DIRECTORY... Create the DIRECTORY(ies), if they do not already exist.  Mandatory argu">
 <meta property="og:type" content="article">
-<meta property="og:title" content="03.Linux 终端操作">
-<meta property="og:url" content="https://blog.x2b.net/1784829336/index.html">
+<meta property="og:title" content="03. Linux 中使用帮助">
+<meta property="og:url" content="https://blog.x2b.net/245013313/index.html">
 <meta property="og:site_name" content="X to Bytes">
-<meta property="og:description" content="终端类型 只使用文本的终端被称为字符终端（Character Terminal）或基于文本的终端（Text-Based Terminal），统称命令行界面（CLI，命令行界面）。其硬件设备标准代表是 DEC 公司 1978 年生产的 VT100。 图形终端(Graphics Terminal)不仅可以处理文本，还可以显示任何能使用小点在屏幕上进行绘制的内容，也就是可以通过图形用户界面（GUI，图">
+<meta property="og:description" content="帮助命令 某些命令可以使用 --help 参数来查看简短的帮助信息。例如，要查看命令 mkdir 的帮助信息： [user1@101c7 root]$ mkdir --help Usage: mkdir [OPTION]... DIRECTORY... Create the DIRECTORY(ies), if they do not already exist.  Mandatory argu">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-09-18T03:57:47.000Z">
-<meta property="article:modified_time" content="2023-04-24T17:36:09.835Z">
+<meta property="article:modified_time" content="2023-04-25T15:57:40.564Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://blog.x2b.net/1784829336/">
+<link rel="canonical" href="https://blog.x2b.net/245013313/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/1784829336/","path":"1784829336/","title":"03.Linux 终端操作"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/245013313/","path":"245013313/","title":"03. Linux 中使用帮助"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>03.Linux 终端操作 | X to Bytes</title>
+<title>03. Linux 中使用帮助 | X to Bytes</title>
   
 
   <script src="../js/third-party/analytics/baidu-analytics.js"></script>
@@ -145,7 +145,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%88%E7%AB%AF%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text"> 终端类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%BB%84%E5%90%88%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="nav-number">2.</span> <span class="nav-text"> 常用组合快捷键</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E6%8F%90%E7%A4%BA%E7%AC%A6"><span class="nav-number">3.</span> <span class="nav-text"> 命令提示符</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E6%A0%BC%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text"> 命令格式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E5%90%8D%E7%A7%B0"><span class="nav-number">4.1.</span> <span class="nav-text"> 命令名称</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%89%E9%A1%B9"><span class="nav-number">4.2.</span> <span class="nav-text"> 选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E6%95%B0"><span class="nav-number">4.3.</span> <span class="nav-text"> 参数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4"><span class="nav-number">5.</span> <span class="nav-text"> 执行命令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="nav-number">5.1.</span> <span class="nav-text"> 命令执行顺序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E5%A4%9A%E6%9D%A1%E5%91%BD%E4%BB%A4"><span class="nav-number">5.2.</span> <span class="nav-text"> 执行多条命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E4%BF%A1%E6%81%AF"><span class="nav-number">5.3.</span> <span class="nav-text"> 报错信息</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E5%88%AB%E5%90%8D"><span class="nav-number">6.</span> <span class="nav-text"> 命令别名</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8E%86%E5%8F%B2%E5%91%BD%E4%BB%A4"><span class="nav-number">7.</span> <span class="nav-text"> 历史命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B8%85%E5%B1%8F"><span class="nav-number">8.</span> <span class="nav-text"> 清屏</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%AE%E5%8A%A9%E5%91%BD%E4%BB%A4"><span class="nav-number">1.</span> <span class="nav-text"> 帮助命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E6%89%8B%E5%86%8C"><span class="nav-number">2.</span> <span class="nav-text"> 查询手册</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2info%E6%96%87%E6%A1%A3"><span class="nav-number">3.</span> <span class="nav-text"> 查询Info文档</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -222,7 +222,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/1784829336/">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/245013313/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="../images/avatar.jpg">
@@ -235,12 +235,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="03.Linux 终端操作 | X to Bytes">
+      <meta itemprop="name" content="03. Linux 中使用帮助 | X to Bytes">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          03.Linux 终端操作
+          03. Linux 中使用帮助
         </h1>
 
         <div class="post-meta-container">
@@ -258,7 +258,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-04-25 01:36:09" itemprop="dateModified" datetime="2023-04-25T01:36:09+08:00">2023-04-25</time>
+      <time title="修改时间：2023-04-25 23:57:40" itemprop="dateModified" datetime="2023-04-25T23:57:40+08:00">2023-04-25</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -270,7 +270,7 @@
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../categories/Linux/0-%E5%9F%BA%E7%A1%80%E6%A6%82%E8%AE%BA/" itemprop="url" rel="index"><span itemprop="name">0.基础概论</span></a>
+          <a href="../categories/Linux/1-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">1.基本操作</span></a>
         </span>
     </span>
 
@@ -288,14 +288,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.4k</span>
+      <span>979</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>5 分钟</span>
+      <span>3 分钟</span>
     </span>
 </div>
 
@@ -306,193 +306,144 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="终端类型"><a class="markdownIt-Anchor" href="#终端类型"></a> 终端类型</h1>
-<p>只使用文本的终端被称为字符终端（Character Terminal）或基于文本的终端（Text-Based Terminal），统称命令行界面（CLI，命令行界面）。其硬件设备标准代表是 DEC 公司 1978 年生产的 VT100。</p>
-<p>图形终端(Graphics Terminal)不仅可以处理文本，还可以显示任何能使用小点在屏幕上进行绘制的内容，也就是可以通过图形用户界面（GUI，图形用户界面）和服务端交互。Unix 的 GUI 都基于 X 终端。</p>
-<p>可以通过查看 <code>$TERM</code> 变量来了解当前使用的终端配置文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span><span class="token comment"># echo $TERM</span>
-vt100<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h1 id="常用组合快捷键"><a class="markdownIt-Anchor" href="#常用组合快捷键"></a> 常用组合快捷键</h1>
-<p>在终端中常用的快捷键如下：</p>
-<table>
-<thead>
-<tr>
-<th>快捷键</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>【Tab】</td>
-<td>命令补全/文件名补齐</td>
-</tr>
-<tr>
-<td>【Ctrl】+C</td>
-<td>中断操作，停止程序运行</td>
-</tr>
-<tr>
-<td>【Ctrl】+D</td>
-<td>键盘输入结束/退出终端/删除光标后字符</td>
-</tr>
-<tr>
-<td>【Ctrl】+Z</td>
-<td>暂停当前进程并丢入后台</td>
-</tr>
-<tr>
-<td>【Ctrl】+S</td>
-<td>暂停当前程序，暂停后按下任意键恢复运行</td>
-</tr>
-<tr>
-<td>【Ctrl】+A</td>
-<td>将光标移动到命令行首</td>
-</tr>
-<tr>
-<td>【Ctrl】+E</td>
-<td>将光标移动到命令行尾</td>
-</tr>
-<tr>
-<td>【Ctrl】+L</td>
-<td>清屏</td>
-</tr>
-<tr>
-<td>【Ctrl】+【Shift】+N</td>
-<td>新建终端窗口</td>
-</tr>
-</tbody>
-</table>
-<h1 id="命令提示符"><a class="markdownIt-Anchor" href="#命令提示符"></a> 命令提示符</h1>
-<p>成功登录系统后显示如下:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment">#</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>各字段说明如下：</p>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>root</td>
-<td>标识登录的用户</td>
-</tr>
-<tr>
-<td>101c7</td>
-<td>主机名</td>
-</tr>
-<tr>
-<td>~</td>
-<td>当前处于的目录。~表示当前用户目录，它是个变量</td>
-</tr>
-<tr>
-<td>#</td>
-<td>表示登录用户为 root，如果是普通用户用$表示</td>
-</tr>
-</tbody>
-</table>
-<h1 id="命令格式"><a class="markdownIt-Anchor" href="#命令格式"></a> 命令格式</h1>
-<p>一般命令格式如下，中括号 [] 表示非必须输入：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">命令名称 <span class="token punctuation">[</span>-选项<span class="token punctuation">]</span> <span class="token punctuation">[</span>参数1<span class="token punctuation">]</span> <span class="token punctuation">[</span>参数2<span class="token punctuation">]</span><span class="token punctuation">..</span>.<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="命令名称"><a class="markdownIt-Anchor" href="#命令名称"></a> 命令名称</h2>
-<p>一行命令第一个输入的部分绝对是命令（command）或可执行文件。</p>
-<p>当命令太长时，可以使用反斜杠 \ 来转义回车（必须立刻接特殊字符才能转义），使命令输入连续到下一行。</p>
-<p>命令严格区分大小写，通常由小写字母构成。</p>
-<h2 id="选项"><a class="markdownIt-Anchor" href="#选项"></a> 选项</h2>
-<p>选项（options）前通常会加 - 号，例如 -h。</p>
-<p>有时表示输入选项完整全名，则使用 – 符号，例如 --help。</p>
-<p>多个选项可以用一个 - 连起来。</p>
-<h2 id="参数"><a class="markdownIt-Anchor" href="#参数"></a> 参数</h2>
-<p>参数（parameter）依附在选项或是命令后面，用来向希望运行的程序传递信息。</p>
-<p>通常参数是一些文件名，告诉命令从哪里可以得到输入，以及把输出送到什么地方。</p>
-<p>参数之间用空格隔开，多个空格会被视为一个空格。</p>
-<h1 id="执行命令"><a class="markdownIt-Anchor" href="#执行命令"></a> 执行命令</h1>
-<p>在命令行执行命令时，有两种情况：</p>
+        <h1 id="帮助命令"><a class="markdownIt-Anchor" href="#帮助命令"></a> 帮助命令</h1>
+<p>某些命令可以使用 <code>--help</code> 参数来查看简短的帮助信息。例如，要查看命令 <code>mkdir</code> 的帮助信息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> <span class="token parameter variable">--help</span>
+Usage: <span class="token function">mkdir</span> <span class="token punctuation">[</span>OPTION<span class="token punctuation">]</span><span class="token punctuation">..</span>. DIRECTORY<span class="token punctuation">..</span>.
+Create the DIRECTORY<span class="token punctuation">(</span>ies<span class="token punctuation">)</span>, <span class="token keyword">if</span> they <span class="token keyword">do</span> not already exist.
+
+Mandatory arguments to long options are mandatory <span class="token keyword">for</span> short options too.
+  -m, <span class="token parameter variable">--mode</span><span class="token operator">=</span>MODE   <span class="token builtin class-name">set</span> <span class="token function">file</span> mode <span class="token punctuation">(</span>as <span class="token keyword">in</span> <span class="token function">chmod</span><span class="token punctuation">)</span>, not <span class="token assign-left variable">a</span><span class="token operator">=</span>rwx - <span class="token builtin class-name">umask</span>
+  -p, <span class="token parameter variable">--parents</span>     no error <span class="token keyword">if</span> existing, <span class="token function">make</span> parent directories as needed
+  -v, <span class="token parameter variable">--verbose</span>     print a message <span class="token keyword">for</span> each created directory
+  <span class="token parameter variable">-Z</span>                   <span class="token builtin class-name">set</span> SELinux security context of each created directory
+                         to the default <span class="token builtin class-name">type</span>
+      --context<span class="token punctuation">[</span><span class="token operator">=</span>CTX<span class="token punctuation">]</span>  like -Z, or <span class="token keyword">if</span> CTX is specified <span class="token keyword">then</span> <span class="token builtin class-name">set</span> the SELinux
+                         or SMACK security context to CTX
+      <span class="token parameter variable">--help</span>     display this <span class="token builtin class-name">help</span> and <span class="token builtin class-name">exit</span>
+      <span class="token parameter variable">--version</span>  output version information and <span class="token builtin class-name">exit</span>
+
+GNU coreutils online help: <span class="token operator">&lt;</span>http://www.gnu.org/software/coreutils/<span class="token operator">></span>
+For complete documentation, run: info coreutils 'mkdir invocation<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>一些特殊符号的含义：</p>
 <ul>
-<li>按下回车键后命令立即运行，直接显示结果，等待下一条命令输入。</li>
-<li>进入到该命令的环境，直到结束该命令才回到命令提示符的环境。</li>
+<li>省略号<code>...</code>：表示可以有多个选项或参数。</li>
+<li>中括号<code>[]</code>：之间的任何内容都是可选的。</li>
+<li>大括号<code>&#123;&#125;</code>：表示应该选择由|隔开的各项中一个。</li>
+<li>尖括号<code>&lt;&gt;</code>：内为变量表示参数可变。</li>
+<li>不带中括号<code>[]</code>：表示<strong>必选项</strong>，必须作为命令的一部分输入。</li>
 </ul>
-<p>命令在正常执行后返回一个 0 值，表示执行成功。如果命令执行过程中出错没有完成全部工作，则返回一个非零值(可用变量$?查看)。</p>
-<h2 id="命令执行顺序"><a class="markdownIt-Anchor" href="#命令执行顺序"></a> 命令执行顺序</h2>
-<p>按优先级排列:</p>
-<ol>
-<li>以相对/绝对路径执行命令，例如 /bin/ls 或 ls；</li>
-<li>由别名(alias)找到该命令来执行；</li>
-<li>由 bash 内置的(builtin)命令来执行；</li>
-<li>通过 $PATH 这个变量的顺序找到的第一个命令来执行。</li>
-</ol>
-<h2 id="执行多条命令"><a class="markdownIt-Anchor" href="#执行多条命令"></a> 执行多条命令</h2>
-<p>可以用分号将多条命令写在同一行，这些命令将会依次执行。</p>
-<p>例如查看 root.txt 文件属性；修改其权限为 6755；再次查看 root.txt 的属性：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ll root.txt ; chmod 6775 root.txt ; ll root.txt </span>
--rw-r--r--. <span class="token number">1</span> root root <span class="token number">7549</span> Sep <span class="token number">11</span> <span class="token number">11</span>:59 root.txt
--rwsrwsr-x. <span class="token number">1</span> root root <span class="token number">7549</span> Sep <span class="token number">11</span> <span class="token number">11</span>:59 root.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h2 id="报错信息"><a class="markdownIt-Anchor" href="#报错信息"></a> 报错信息</h2>
-<p>以下是两条报错信息:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">cat</span> nohup.out <span class="token punctuation">;</span> catt
-cat: nohup.out: Permission denied
-bash: catt: <span class="token builtin class-name">command</span> not found<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>其使用冒号:分隔成三段，分别表示：命令、参数和报错原因。</p>
-<h1 id="命令别名"><a class="markdownIt-Anchor" href="#命令别名"></a> 命令别名</h1>
-<p>使用命令 alias 可以为命令或一组命令指定自定义名称。例如，将命令<code>ll -a | more</code>设置为 lm：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># alias lm='ll -a | more'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>要查询已定义的别名，可以使用-p 参数：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># alias -p</span>
-<span class="token builtin class-name">alias</span> <span class="token assign-left variable">cp</span><span class="token operator">=</span><span class="token string">'cp -i'</span>
-<span class="token builtin class-name">alias</span> <span class="token assign-left variable">egrep</span><span class="token operator">=</span><span class="token string">'egrep --color=auto'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>要取消别名，使用 unalias 命令：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># unalias lm</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>如果要临时挂起别名，例如想要使用原始的 ls 命令，而不是带有–color=auto 参数的别名 ls，在命令前面加上\字符：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span><span class="token comment"># \ls -la</span>
-total <span class="token number">64</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h1 id="历史命令"><a class="markdownIt-Anchor" href="#历史命令"></a> 历史命令</h1>
-<p>使用快捷键[Ctrl]+r 可以搜索历史命令记录。搜索结果继续按[Ctrl]+r 显示上一个找到的命令：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">(</span>reverse-i-search<span class="token punctuation">)</span>`history': <span class="token function">history</span> <span class="token operator">|</span> <span class="token function">grep</span> dump<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>可以使用<code>history</code>命令查询输入过的历史命令列表。默认情况下，历史命令保存在 ~/.bash_history 中。只有在注销登录后，此次会话所执行的命令才会写入文件中。</p>
-<p>可用参数:</p>
+<h1 id="查询手册"><a class="markdownIt-Anchor" href="#查询手册"></a> 查询手册</h1>
+<p>使用<code>man</code>命令可以查询操作手册（manual），所有内建命令都有对应的操作手册页面。</p>
+<p>手册存放在<code>/usr/share/man</code>目录中，可以通过修改<code>/etc/man_db.conf</code>文件来定义man查询手册的位置。</p>
+<p>例如使用<code>man</code>命令查询<code>mkdir</code>命令的手册:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">man</span> <span class="token function">mkdir</span>
+MKDIR<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>                                      User Commands                                     MKDIR<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+
+NAME
+       <span class="token function">mkdir</span> - <span class="token function">make</span> directories
+
+SYNOPSIS
+       <span class="token function">mkdir</span> <span class="token punctuation">[</span>OPTION<span class="token punctuation">]</span><span class="token punctuation">..</span>. DIRECTORY<span class="token punctuation">..</span>.
+
+DESCRIPTION
+       Create the DIRECTORY<span class="token punctuation">(</span>ies<span class="token punctuation">)</span>, <span class="token keyword">if</span> they <span class="token keyword">do</span> not already exist.
+
+       Mandatory arguments to long options are mandatory <span class="token keyword">for</span> short options too.
+
+       -m, <span class="token parameter variable">--mode</span><span class="token operator">=</span>MODE
+              <span class="token builtin class-name">set</span> <span class="token function">file</span> mode <span class="token punctuation">(</span>as <span class="token keyword">in</span> <span class="token function">chmod</span><span class="token punctuation">)</span>, not <span class="token assign-left variable">a</span><span class="token operator">=</span>rwx - <span class="token builtin class-name">umask</span>
+
+       -p, <span class="token parameter variable">--parents</span>
+              no error <span class="token keyword">if</span> existing, <span class="token function">make</span> parent directories as needed
+
+       -v, <span class="token parameter variable">--verbose</span>
+              print a message <span class="token keyword">for</span> each created directory
+
+ Manual page mkdir<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> line <span class="token number">1</span> <span class="token punctuation">(</span>press h <span class="token keyword">for</span> <span class="token builtin class-name">help</span> or q to quit<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在man页面使用方向键浏览，用空格或[PageUp]，[PageDown]翻页。</p>
+<p>输入/关键字来向下（?关键字向上）搜索手册中的内容，在搜索中按n和N进行正向查询和反向查询。</p>
+<p>使用<code>-f</code>选项查询命令相关说明文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">man</span> <span class="token parameter variable">-f</span> <span class="token function">date</span>
+<span class="token function">date</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>             - print or <span class="token builtin class-name">set</span> the system <span class="token function">date</span> and <span class="token function">time</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>通常查询显示的是最低编号的内容（可以在 man_db.conf 中设置）。可以使用数字指定查询相应区块文档：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">man</span> <span class="token parameter variable">-f</span> info
+info <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>             - <span class="token builtin class-name">read</span> Info documents
+info <span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>             - readable online documentation
+<span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">man</span> <span class="token number">5</span> info
+INFO<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>                                    File Formats Manual                                   INFO<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>
+
+NAME
+       info - readable online documentation<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以使用<code>-k</code>选项进行模糊查询：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">man</span> <span class="token parameter variable">-k</span> setse
+setsebool <span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span>        - <span class="token builtin class-name">set</span> SELinux boolean value
+<span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">man</span> <span class="token parameter variable">-k</span> sets
+cpupower <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>         - Shows and sets processor power related values
+ExtUtils::XSSymSet <span class="token punctuation">(</span>3pm<span class="token punctuation">)</span> - keep sets of symbol names palatable to the VMS linker
+ipset <span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span>            - administration tool <span class="token keyword">for</span> IP sets
+setsebool <span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span>        - <span class="token builtin class-name">set</span> SELinux boolean value
+setsid <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>           - run a program <span class="token keyword">in</span> a new session
+systemd.preset <span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>   - Service enablement presets<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Man手册约定：</p>
 <table>
 <thead>
 <tr>
-<th>参数</th>
-<th>说明</th>
+<th>区域号</th>
+<th>所涵盖的内容</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>-c</td>
-<td>清除所有记录。</td>
+<td>1</td>
+<td>可执行程序或shell命令</td>
 </tr>
 <tr>
-<td>-d</td>
-<td>删除指定编号的命令记录。</td>
+<td>2</td>
+<td>系统内核可调用的函数和工具等</td>
 </tr>
 <tr>
-<td>-a</td>
-<td>插入当前历史记录到指定文件末尾，默认会将此次会话的历史记录写入到.bash_history 文件中。</td>
+<td>3</td>
+<td>一些常用函数（Function）与函数库（Library），大部分为C的函数库（libc）</td>
 </tr>
 <tr>
-<td>-w</td>
-<td>写入当前的历史记录到指定文件中。</td>
+<td>4</td>
+<td>设备文件的说明，通常在/dev下的文件</td>
+</tr>
+<tr>
+<td>5</td>
+<td>配置文件或者是某些文件的格式</td>
+</tr>
+<tr>
+<td>6</td>
+<td>游戏和演示</td>
+</tr>
+<tr>
+<td>7</td>
+<td>惯例与协议等，例如文件系统、网络协议等名词解释</td>
+</tr>
+<tr>
+<td>8</td>
+<td>只有超级用户和系统管理员可使用的系统管理命令</td>
+</tr>
+<tr>
+<td>9</td>
+<td>内核例程，与Kernel有关的文件</td>
 </tr>
 </tbody>
 </table>
-<p>例如，要显示最近的 5 条历史记录：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># history 5</span>
-  <span class="token number">888</span>  <span class="token function">date</span>
-  <span class="token number">889</span>  <span class="token function">time</span>
-  <span class="token number">890</span>  w <span class="token parameter variable">-i</span>
-  <span class="token number">891</span>  <span class="token function">cat</span> .bash_history 
-  <span class="token number">892</span>  <span class="token function">history</span> <span class="token operator">|</span> <span class="token function">tail</span> <span class="token parameter variable">-n5</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以通过 !记录编号 直接执行对应的命令。例如，要重新运行第 890 条记录，可以输入：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># !890</span>
-w <span class="token parameter variable">-i</span>
-<span class="token number">23</span>:41:23 up <span class="token number">1</span> day,  <span class="token number">8</span>:32,  <span class="token number">2</span> users,  load average: <span class="token number">0.00</span>, <span class="token number">0.01</span>, <span class="token number">0.05</span>
-<span class="token environment constant">USER</span>     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
-root     pts/0    <span class="token number">192.168</span>.2.101    04:01    <span class="token number">3</span>.00s  <span class="token number">0</span>.84s  <span class="token number">0</span>.00s w <span class="token parameter variable">-i</span>
-root     pts/1    <span class="token number">192.168</span>.2.101    <span class="token number">15</span>:12    <span class="token number">8</span>:28m  <span class="token number">0</span>.01s  <span class="token number">0</span>.01s <span class="token parameter variable">-bash</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>如果使用 !!，则会执行上一个命令。</p>
-<h1 id="清屏"><a class="markdownIt-Anchor" href="#清屏"></a> 清屏</h1>
-<p>直接输入 clear 命令能清屏：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># clear</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="查询info文档"><a class="markdownIt-Anchor" href="#查询info文档"></a> 查询Info文档</h1>
+<p>类似于在命令行中浏览网页，使用<code>info</code>可以查询存放在 /usr/share/info/ 目录下的文档。例如，可以使用以下命令查询有关<code>mkdir</code>的信息：</p>
+ <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ info <span class="token function">mkdir</span>
+File: libc.info,  Node: Creating Directories,  Next: File Attributes,  Prev: Renaming Files,  Up: File Sys<span class="token punctuation">\</span>
+tem Interface
+
+<span class="token number">14.8</span> Creating Directories
+<span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">=</span>
+
+Directories are created with the <span class="token string">'mkdir'</span> function.  <span class="token punctuation">(</span>There is also a
+shell <span class="token builtin class-name">command</span> <span class="token string">'mkdir'</span> <span class="token function">which</span> does the same thing.<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中，File 表示info页面的数据来源文件，Node 表示页面所属节点。在.info的说明文件中，每个节点都有定位与链接，类似于超链接，可以快速跳转。</p>
 
     </div>
 
@@ -524,7 +475,7 @@ root     pts/1    <span class="token number">192.168</span>.2.101    <span class
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://blog.x2b.net/1784829336/" title="03.Linux 终端操作">https://blog.x2b.net/1784829336/</a>
+      <a href="https://blog.x2b.net/245013313/" title="03. Linux 中使用帮助">https://blog.x2b.net/245013313/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
@@ -554,13 +505,13 @@ root     pts/1    <span class="token number">192.168</span>.2.101    <span class
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="../3200821655/" rel="prev" title="05.磁盘分区知识">
-                  <i class="fa fa-chevron-left"></i> 05.磁盘分区知识
+                <a href="../3847559470/" rel="prev" title="01.硬件基础">
+                  <i class="fa fa-chevron-left"></i> 01.硬件基础
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="../3847559470/" rel="next" title="01.硬件基础">
-                  01.硬件基础 <i class="fa fa-chevron-right"></i>
+                <a href="../377146946/" rel="next" title="02.Linux 环境配置">
+                  02.Linux 环境配置 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -670,7 +621,7 @@ root     pts/1    <span class="token number">192.168</span>.2.101    <span class
 
 
   <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
-  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/1784829336/"}</script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/245013313/"}</script>
   <script src="../js/third-party/quicklink.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 

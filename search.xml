@@ -1,6 +1,215 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>04.Linux 目录结构</title>
+    <url>/4087499240/</url>
+    <content><![CDATA[<h1 id="目录配置标准"><a class="markdownIt-Anchor" href="#目录配置标准"></a> 目录配置标准</h1>
+<p>Linux 采用将文件储存在单个目录结构中，这种目录被称为虚拟目录（Virtual Directory）。虚拟目录将安装在主机上的所有储存设备的文件路径纳入单个目录结构中。</p>
+<p>各种发行版遵循同一套文件系统层次结构标准（FHS，Filesystem Hierarchy Standard），目的在于规范每个特定目录应该放什么数据。FHS 依据文件系统使用的频繁与否，以及是否允许使用者随意变更，将目录定义为四种交互形态：</p>
+<ul>
+<li>
+<p><strong>可分享的</strong>（Shareable）</p>
+<p>可以分享给其他系统挂载使用的目录，包括可执行文件与使用者的邮件等数据。</p>
+</li>
+<li>
+<p><strong>不可分享的</strong>（Unshareable）</p>
+<p>自己机器上面运行的设备文件或者是与程序有关的 socket 文件等，仅能自己使用，所以不适合分享。</p>
+</li>
+<li>
+<p><strong>不变的</strong>（Static）</p>
+<p>有些数据是不会经常变动的，例如函数库、文件说明文档、系统管理员所管理的主机服务配置文件等。</p>
+</li>
+<li>
+<p><strong>可变动的</strong>（Variable）</p>
+<p>经常改变的数据，例如日志文件等。</p>
+</li>
+</ul>
+<h1 id="顶级目录"><a class="markdownIt-Anchor" href="#顶级目录"></a> 顶级目录</h1>
+<p>所有目录都由根目录/衍生而来，因此 FHS 标准建议根目录所在分区应该越小越好，最好不要将应用程序所安装的软件与根目录放在同一个分区。这样可以提高性能，根目录所在的文件系统也较不容易发生问题。</p>
+<p>开机过程中仅有根目录会被挂载，其他分区则是在开机完成后陆续进行挂载。</p>
+<p>必须存在的顶级目录：</p>
+<table>
+<thead>
+<tr>
+<th><strong>目录</strong></th>
+<th><strong>目录说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/bin</td>
+<td>二进制目录，存放可以被 root 和一般账户所用的命令，以及在单用户维护模式下仍能被操作的常用命令，如 cat，mv，chown 等。</td>
+</tr>
+<tr>
+<td>/boot</td>
+<td>启动目录，存放开机会使用到的文件，包括内核文件及开机所需配置文件。</td>
+</tr>
+<tr>
+<td>/dev</td>
+<td>设备目录，Linux 上任何设备与接口设备都是以文件的形式存在于这个目录下，访问目录下的某个文件就等于访问某个设备。主要分为三类硬件，例如硬盘（sda）和打印机（lp0），终端如控制台（tty），伪设备如/dev/null 和/dev/zero。</td>
+</tr>
+<tr>
+<td>/etc</td>
+<td>系统配置文件目录，系统配置文件几乎都放在这里，如账号密码，服务起始文件等。一般不要放可执行文件到这个目录下。<br />/etc/X11:与 X Window 有关的配置文件放在这里，尤其是 xorg.conf 这个 XServer 的配置文件。<br />/etc/opt:放置第三方软件配置文件。<br />/etc/sgml:与 SGML 格式有关的各项配置文件。<br />/etc/xml:与 XML 格式有关的配置文件。</td>
+</tr>
+<tr>
+<td>/home</td>
+<td>主目录，系统默认用户主文件夹，一般子文件夹以用户账号命名。</td>
+</tr>
+<tr>
+<td>/lib, /lib64</td>
+<td>库目录，存放开机时会用到的函数库，以及在/bin 或/sbin 中命令会调用的函数库。<br />/lib/modules/:存放内核相关的模块（驱动程序）。</td>
+</tr>
+<tr>
+<td>/media</td>
+<td>媒体目录，存放可删除设备，包括 CD，DVD，U 盘等设备都暂时挂载于此。</td>
+</tr>
+<tr>
+<td>/mnt</td>
+<td>挂载目录，如果想要暂时挂载某些额外的设备，一般放置到这个目录中。</td>
+</tr>
+<tr>
+<td>/opt</td>
+<td>可选目录，给第三方软件放置的目录，包括发行版附加的一些软件包。</td>
+</tr>
+<tr>
+<td>/root</td>
+<td>系统管理员的主文件夹。</td>
+</tr>
+<tr>
+<td>/sbin</td>
+<td>系统二进制目录，只有 root 可用，包括开机，修复，还原系统所需要的系统命令，如 fdisk，ifconfig，init 等。</td>
+</tr>
+<tr>
+<td>/srv</td>
+<td>服务目录，一些网络服务启动后，这些服务所需要取用的数据目录，如将 www 服务需要的网页文件放置到/srv/www 里。</td>
+</tr>
+<tr>
+<td>/tmp</td>
+<td>临时目录，重要数据不可放置到此目录，会被一些系统进程定期清空。</td>
+</tr>
+<tr>
+<td>/run</td>
+<td>运行目录，存放系统运作时的运行时数据。</td>
+</tr>
+</tbody>
+</table>
+<p>其他重要目录：</p>
+<table>
+<thead>
+<tr>
+<th><strong>目录</strong></th>
+<th><strong>目录说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/lost+found</td>
+<td>只有 ext 文件系统格式才会产生的目录，用来放置丢失的文件片段。</td>
+</tr>
+<tr>
+<td>/proc</td>
+<td>进程目录。这个目录本身是一个虚拟文件系统（Virtual Filesystem），它放置的数据都在内存中，如系统内核、进程、外部设备的状态及网络状态等，所以实际不占任何硬盘空间。</td>
+</tr>
+<tr>
+<td>/sys</td>
+<td>系统目录。和/proc 类似的虚拟文件系统，记录与内核相关信息，包括目前已加载的内核模块与硬件设备信息。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="usr-目录"><a class="markdownIt-Anchor" href="#usr-目录"></a> /usr 目录</h1>
+<p>/usr 目录存放静态数据,即不会随时间改变的文件,原则上放置独立安装的软件数据。系统默认软件也放在/usr 目录下。</p>
+<p>/usr 目录下的子目录说明：</p>
+<table>
+<thead>
+<tr>
+<th><strong>目录</strong></th>
+<th><strong>目录说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/usr/bin/</td>
+<td>存放所有的用户命令。</td>
+</tr>
+<tr>
+<td>/usr/include/</td>
+<td>存放 C/C++等编程语言的头文件(header)和包含文件(include)。</td>
+</tr>
+<tr>
+<td>/usr/lib/</td>
+<td>存放各种应用软件的函数库、目标文件，以及一般用户不使用的执行文件或脚本。</td>
+</tr>
+<tr>
+<td>/usr/local/</td>
+<td>推荐系统管理员自行下载安装的软件存放目录。</td>
+</tr>
+<tr>
+<td>/usr/sbin/</td>
+<td>存放非正常运行所需的系统命令，例如网络服务器软件的服务命令。</td>
+</tr>
+<tr>
+<td>/usr/share/</td>
+<td>存放共享文件，如 man 手册和 doc 帮助文档。</td>
+</tr>
+<tr>
+<td>/usr/src/</td>
+<td>一般建议将源码放在该目录下。内核源码建议放在/usr/src/linux/下。</td>
+</tr>
+<tr>
+<td>/usr/libexec/</td>
+<td>存放某些不被一般使用者惯用的可执行文件或脚本。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="var-目录"><a class="markdownIt-Anchor" href="#var-目录"></a> /var 目录</h1>
+<p>/var 目录是用来存放会经常变动的文件的，包括缓存（cache）、日志文件（log file）以及某些软件运行时所产生的文件（lock file、run file）或 MySQL 数据库的文件等等。最好可以将它独立出来挂在单独的一个分区中。</p>
+<p>下面是 /var 目录下的子目录说明：</p>
+<table>
+<thead>
+<tr>
+<th>目录</th>
+<th>目录说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/var/cache/</td>
+<td>应用程序本身运行过程中会产生一些暂存文件。</td>
+</tr>
+<tr>
+<td>/var/lib/</td>
+<td>程序执行的过程中需要使用到的数据文件的放置目录。在此目录下各自的软件应该要有自己的目录，例如 MySQL 数据库放置到 /var/lib/mysql/ 下。</td>
+</tr>
+<tr>
+<td>/var/lock/</td>
+<td>某些设备或文件资源一次只能被一个应用程序所使用，为了避免使用冲突就得给该设备上锁。例如刻录机设备在刻录中时会被锁上。目前此目录已被挪到 /run/lock 中。</td>
+</tr>
+<tr>
+<td>/var/log/</td>
+<td>日志文件放置的目录，例如记录登录者信息的文件 /var/log/messages、/var/log/wtmp。</td>
+</tr>
+<tr>
+<td>/var/mail/</td>
+<td>放置个人电子邮件信箱的目录，等同于 /var/spool/mail/。</td>
+</tr>
+<tr>
+<td>/var/run/</td>
+<td>某些程序或服务启动后，会将它们的 PID 放置在这个目录下。</td>
+</tr>
+<tr>
+<td>/var/spool/</td>
+<td>放置一些队列数据，通常在使用后会被删除。</td>
+</tr>
+</tbody>
+</table>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>0.基础概论</category>
+      </categories>
+  </entry>
+  <entry>
     <title>02.软件基础</title>
     <url>/2759544459/</url>
     <content><![CDATA[<h1 id="数字系统"><a class="markdownIt-Anchor" href="#数字系统"></a> 数字系统</h1>
@@ -418,215 +627,6 @@
 <p>GNU 通用公共许可证（GPL）规定任何已发布的软件所做的任何修改都必须以相同的许可证发布。</p>
 </li>
 </ul>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>0.基础概论</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>04.Linux 目录结构</title>
-    <url>/4087499240/</url>
-    <content><![CDATA[<h1 id="目录配置标准"><a class="markdownIt-Anchor" href="#目录配置标准"></a> 目录配置标准</h1>
-<p>Linux 采用将文件储存在单个目录结构中，这种目录被称为虚拟目录（Virtual Directory）。虚拟目录将安装在主机上的所有储存设备的文件路径纳入单个目录结构中。</p>
-<p>各种发行版遵循同一套文件系统层次结构标准（FHS，Filesystem Hierarchy Standard），目的在于规范每个特定目录应该放什么数据。FHS 依据文件系统使用的频繁与否，以及是否允许使用者随意变更，将目录定义为四种交互形态：</p>
-<ul>
-<li>
-<p><strong>可分享的</strong>（Shareable）</p>
-<p>可以分享给其他系统挂载使用的目录，包括可执行文件与使用者的邮件等数据。</p>
-</li>
-<li>
-<p><strong>不可分享的</strong>（Unshareable）</p>
-<p>自己机器上面运行的设备文件或者是与程序有关的 socket 文件等，仅能自己使用，所以不适合分享。</p>
-</li>
-<li>
-<p><strong>不变的</strong>（Static）</p>
-<p>有些数据是不会经常变动的，例如函数库、文件说明文档、系统管理员所管理的主机服务配置文件等。</p>
-</li>
-<li>
-<p><strong>可变动的</strong>（Variable）</p>
-<p>经常改变的数据，例如日志文件等。</p>
-</li>
-</ul>
-<h1 id="顶级目录"><a class="markdownIt-Anchor" href="#顶级目录"></a> 顶级目录</h1>
-<p>所有目录都由根目录/衍生而来，因此 FHS 标准建议根目录所在分区应该越小越好，最好不要将应用程序所安装的软件与根目录放在同一个分区。这样可以提高性能，根目录所在的文件系统也较不容易发生问题。</p>
-<p>开机过程中仅有根目录会被挂载，其他分区则是在开机完成后陆续进行挂载。</p>
-<p>必须存在的顶级目录：</p>
-<table>
-<thead>
-<tr>
-<th><strong>目录</strong></th>
-<th><strong>目录说明</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>/bin</td>
-<td>二进制目录，存放可以被 root 和一般账户所用的命令，以及在单用户维护模式下仍能被操作的常用命令，如 cat，mv，chown 等。</td>
-</tr>
-<tr>
-<td>/boot</td>
-<td>启动目录，存放开机会使用到的文件，包括内核文件及开机所需配置文件。</td>
-</tr>
-<tr>
-<td>/dev</td>
-<td>设备目录，Linux 上任何设备与接口设备都是以文件的形式存在于这个目录下，访问目录下的某个文件就等于访问某个设备。主要分为三类硬件，例如硬盘（sda）和打印机（lp0），终端如控制台（tty），伪设备如/dev/null 和/dev/zero。</td>
-</tr>
-<tr>
-<td>/etc</td>
-<td>系统配置文件目录，系统配置文件几乎都放在这里，如账号密码，服务起始文件等。一般不要放可执行文件到这个目录下。<br />/etc/X11:与 X Window 有关的配置文件放在这里，尤其是 xorg.conf 这个 XServer 的配置文件。<br />/etc/opt:放置第三方软件配置文件。<br />/etc/sgml:与 SGML 格式有关的各项配置文件。<br />/etc/xml:与 XML 格式有关的配置文件。</td>
-</tr>
-<tr>
-<td>/home</td>
-<td>主目录，系统默认用户主文件夹，一般子文件夹以用户账号命名。</td>
-</tr>
-<tr>
-<td>/lib, /lib64</td>
-<td>库目录，存放开机时会用到的函数库，以及在/bin 或/sbin 中命令会调用的函数库。<br />/lib/modules/:存放内核相关的模块（驱动程序）。</td>
-</tr>
-<tr>
-<td>/media</td>
-<td>媒体目录，存放可删除设备，包括 CD，DVD，U 盘等设备都暂时挂载于此。</td>
-</tr>
-<tr>
-<td>/mnt</td>
-<td>挂载目录，如果想要暂时挂载某些额外的设备，一般放置到这个目录中。</td>
-</tr>
-<tr>
-<td>/opt</td>
-<td>可选目录，给第三方软件放置的目录，包括发行版附加的一些软件包。</td>
-</tr>
-<tr>
-<td>/root</td>
-<td>系统管理员的主文件夹。</td>
-</tr>
-<tr>
-<td>/sbin</td>
-<td>系统二进制目录，只有 root 可用，包括开机，修复，还原系统所需要的系统命令，如 fdisk，ifconfig，init 等。</td>
-</tr>
-<tr>
-<td>/srv</td>
-<td>服务目录，一些网络服务启动后，这些服务所需要取用的数据目录，如将 www 服务需要的网页文件放置到/srv/www 里。</td>
-</tr>
-<tr>
-<td>/tmp</td>
-<td>临时目录，重要数据不可放置到此目录，会被一些系统进程定期清空。</td>
-</tr>
-<tr>
-<td>/run</td>
-<td>运行目录，存放系统运作时的运行时数据。</td>
-</tr>
-</tbody>
-</table>
-<p>其他重要目录：</p>
-<table>
-<thead>
-<tr>
-<th><strong>目录</strong></th>
-<th><strong>目录说明</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>/lost+found</td>
-<td>只有 ext 文件系统格式才会产生的目录，用来放置丢失的文件片段。</td>
-</tr>
-<tr>
-<td>/proc</td>
-<td>进程目录。这个目录本身是一个虚拟文件系统（Virtual Filesystem），它放置的数据都在内存中，如系统内核、进程、外部设备的状态及网络状态等，所以实际不占任何硬盘空间。</td>
-</tr>
-<tr>
-<td>/sys</td>
-<td>系统目录。和/proc 类似的虚拟文件系统，记录与内核相关信息，包括目前已加载的内核模块与硬件设备信息。</td>
-</tr>
-</tbody>
-</table>
-<h1 id="usr-目录"><a class="markdownIt-Anchor" href="#usr-目录"></a> /usr 目录</h1>
-<p>/usr 目录存放静态数据,即不会随时间改变的文件,原则上放置独立安装的软件数据。系统默认软件也放在/usr 目录下。</p>
-<p>/usr 目录下的子目录说明：</p>
-<table>
-<thead>
-<tr>
-<th><strong>目录</strong></th>
-<th><strong>目录说明</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>/usr/bin/</td>
-<td>存放所有的用户命令。</td>
-</tr>
-<tr>
-<td>/usr/include/</td>
-<td>存放 C/C++等编程语言的头文件(header)和包含文件(include)。</td>
-</tr>
-<tr>
-<td>/usr/lib/</td>
-<td>存放各种应用软件的函数库、目标文件，以及一般用户不使用的执行文件或脚本。</td>
-</tr>
-<tr>
-<td>/usr/local/</td>
-<td>推荐系统管理员自行下载安装的软件存放目录。</td>
-</tr>
-<tr>
-<td>/usr/sbin/</td>
-<td>存放非正常运行所需的系统命令，例如网络服务器软件的服务命令。</td>
-</tr>
-<tr>
-<td>/usr/share/</td>
-<td>存放共享文件，如 man 手册和 doc 帮助文档。</td>
-</tr>
-<tr>
-<td>/usr/src/</td>
-<td>一般建议将源码放在该目录下。内核源码建议放在/usr/src/linux/下。</td>
-</tr>
-<tr>
-<td>/usr/libexec/</td>
-<td>存放某些不被一般使用者惯用的可执行文件或脚本。</td>
-</tr>
-</tbody>
-</table>
-<h1 id="var-目录"><a class="markdownIt-Anchor" href="#var-目录"></a> /var 目录</h1>
-<p>/var 目录是用来存放会经常变动的文件的，包括缓存（cache）、日志文件（log file）以及某些软件运行时所产生的文件（lock file、run file）或 MySQL 数据库的文件等等。最好可以将它独立出来挂在单独的一个分区中。</p>
-<p>下面是 /var 目录下的子目录说明：</p>
-<table>
-<thead>
-<tr>
-<th>目录</th>
-<th>目录说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>/var/cache/</td>
-<td>应用程序本身运行过程中会产生一些暂存文件。</td>
-</tr>
-<tr>
-<td>/var/lib/</td>
-<td>程序执行的过程中需要使用到的数据文件的放置目录。在此目录下各自的软件应该要有自己的目录，例如 MySQL 数据库放置到 /var/lib/mysql/ 下。</td>
-</tr>
-<tr>
-<td>/var/lock/</td>
-<td>某些设备或文件资源一次只能被一个应用程序所使用，为了避免使用冲突就得给该设备上锁。例如刻录机设备在刻录中时会被锁上。目前此目录已被挪到 /run/lock 中。</td>
-</tr>
-<tr>
-<td>/var/log/</td>
-<td>日志文件放置的目录，例如记录登录者信息的文件 /var/log/messages、/var/log/wtmp。</td>
-</tr>
-<tr>
-<td>/var/mail/</td>
-<td>放置个人电子邮件信箱的目录，等同于 /var/spool/mail/。</td>
-</tr>
-<tr>
-<td>/var/run/</td>
-<td>某些程序或服务启动后，会将它们的 PID 放置在这个目录下。</td>
-</tr>
-<tr>
-<td>/var/spool/</td>
-<td>放置一些队列数据，通常在使用后会被删除。</td>
-</tr>
-</tbody>
-</table>
 ]]></content>
       <categories>
         <category>Linux</category>
@@ -1593,7 +1593,7 @@ Kernel <span class="token punctuation">\</span>r on an <span class="token punctu
 </ul>
 <p>还有一种 shell 是非交互式 shell，系统执行 shell 脚本时用的就是这种 shell。可以通过 BASH_ENV 环境变量来设置一些初始值。</p>
 <h2 id="login-shell"><a class="markdownIt-Anchor" href="#login-shell"></a> login shell</h2>
-<p>下面两个文件只有login shell能读取:</p>
+<p>下面两个文件只有 login shell 能读取:</p>
 <p>下面两个文件只有 login shell 能读取：</p>
 <ul>
 <li>
@@ -1712,6 +1712,153 @@ isig icanon iexten <span class="token builtin class-name">echo</span> echoe echo
 allexport       off
 braceexpand     on
 emacs           on<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>1.基本操作</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>03. Linux 中使用帮助</title>
+    <url>/245013313/</url>
+    <content><![CDATA[<h1 id="帮助命令"><a class="markdownIt-Anchor" href="#帮助命令"></a> 帮助命令</h1>
+<p>某些命令可以使用 <code>--help</code> 参数来查看简短的帮助信息。例如，要查看命令 <code>mkdir</code> 的帮助信息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> <span class="token parameter variable">--help</span>
+Usage: <span class="token function">mkdir</span> <span class="token punctuation">[</span>OPTION<span class="token punctuation">]</span><span class="token punctuation">..</span>. DIRECTORY<span class="token punctuation">..</span>.
+Create the DIRECTORY<span class="token punctuation">(</span>ies<span class="token punctuation">)</span>, <span class="token keyword">if</span> they <span class="token keyword">do</span> not already exist.
+
+Mandatory arguments to long options are mandatory <span class="token keyword">for</span> short options too.
+  -m, <span class="token parameter variable">--mode</span><span class="token operator">=</span>MODE   <span class="token builtin class-name">set</span> <span class="token function">file</span> mode <span class="token punctuation">(</span>as <span class="token keyword">in</span> <span class="token function">chmod</span><span class="token punctuation">)</span>, not <span class="token assign-left variable">a</span><span class="token operator">=</span>rwx - <span class="token builtin class-name">umask</span>
+  -p, <span class="token parameter variable">--parents</span>     no error <span class="token keyword">if</span> existing, <span class="token function">make</span> parent directories as needed
+  -v, <span class="token parameter variable">--verbose</span>     print a message <span class="token keyword">for</span> each created directory
+  <span class="token parameter variable">-Z</span>                   <span class="token builtin class-name">set</span> SELinux security context of each created directory
+                         to the default <span class="token builtin class-name">type</span>
+      --context<span class="token punctuation">[</span><span class="token operator">=</span>CTX<span class="token punctuation">]</span>  like -Z, or <span class="token keyword">if</span> CTX is specified <span class="token keyword">then</span> <span class="token builtin class-name">set</span> the SELinux
+                         or SMACK security context to CTX
+      <span class="token parameter variable">--help</span>     display this <span class="token builtin class-name">help</span> and <span class="token builtin class-name">exit</span>
+      <span class="token parameter variable">--version</span>  output version information and <span class="token builtin class-name">exit</span>
+
+GNU coreutils online help: <span class="token operator">&lt;</span>http://www.gnu.org/software/coreutils/<span class="token operator">></span>
+For complete documentation, run: info coreutils 'mkdir invocation<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>一些特殊符号的含义：</p>
+<ul>
+<li>省略号<code>...</code>：表示可以有多个选项或参数。</li>
+<li>中括号<code>[]</code>：之间的任何内容都是可选的。</li>
+<li>大括号<code>&#123;&#125;</code>：表示应该选择由|隔开的各项中一个。</li>
+<li>尖括号<code>&lt;&gt;</code>：内为变量表示参数可变。</li>
+<li>不带中括号<code>[]</code>：表示<strong>必选项</strong>，必须作为命令的一部分输入。</li>
+</ul>
+<h1 id="查询手册"><a class="markdownIt-Anchor" href="#查询手册"></a> 查询手册</h1>
+<p>使用<code>man</code>命令可以查询操作手册（manual），所有内建命令都有对应的操作手册页面。</p>
+<p>手册存放在<code>/usr/share/man</code>目录中，可以通过修改<code>/etc/man_db.conf</code>文件来定义man查询手册的位置。</p>
+<p>例如使用<code>man</code>命令查询<code>mkdir</code>命令的手册:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">man</span> <span class="token function">mkdir</span>
+MKDIR<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>                                      User Commands                                     MKDIR<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+
+NAME
+       <span class="token function">mkdir</span> - <span class="token function">make</span> directories
+
+SYNOPSIS
+       <span class="token function">mkdir</span> <span class="token punctuation">[</span>OPTION<span class="token punctuation">]</span><span class="token punctuation">..</span>. DIRECTORY<span class="token punctuation">..</span>.
+
+DESCRIPTION
+       Create the DIRECTORY<span class="token punctuation">(</span>ies<span class="token punctuation">)</span>, <span class="token keyword">if</span> they <span class="token keyword">do</span> not already exist.
+
+       Mandatory arguments to long options are mandatory <span class="token keyword">for</span> short options too.
+
+       -m, <span class="token parameter variable">--mode</span><span class="token operator">=</span>MODE
+              <span class="token builtin class-name">set</span> <span class="token function">file</span> mode <span class="token punctuation">(</span>as <span class="token keyword">in</span> <span class="token function">chmod</span><span class="token punctuation">)</span>, not <span class="token assign-left variable">a</span><span class="token operator">=</span>rwx - <span class="token builtin class-name">umask</span>
+
+       -p, <span class="token parameter variable">--parents</span>
+              no error <span class="token keyword">if</span> existing, <span class="token function">make</span> parent directories as needed
+
+       -v, <span class="token parameter variable">--verbose</span>
+              print a message <span class="token keyword">for</span> each created directory
+
+ Manual page mkdir<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> line <span class="token number">1</span> <span class="token punctuation">(</span>press h <span class="token keyword">for</span> <span class="token builtin class-name">help</span> or q to quit<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在man页面使用方向键浏览，用空格或[PageUp]，[PageDown]翻页。</p>
+<p>输入/关键字来向下（?关键字向上）搜索手册中的内容，在搜索中按n和N进行正向查询和反向查询。</p>
+<p>使用<code>-f</code>选项查询命令相关说明文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">man</span> <span class="token parameter variable">-f</span> <span class="token function">date</span>
+<span class="token function">date</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>             - print or <span class="token builtin class-name">set</span> the system <span class="token function">date</span> and <span class="token function">time</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>通常查询显示的是最低编号的内容（可以在 man_db.conf 中设置）。可以使用数字指定查询相应区块文档：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">man</span> <span class="token parameter variable">-f</span> info
+info <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>             - <span class="token builtin class-name">read</span> Info documents
+info <span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>             - readable online documentation
+<span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">man</span> <span class="token number">5</span> info
+INFO<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>                                    File Formats Manual                                   INFO<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>
+
+NAME
+       info - readable online documentation<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以使用<code>-k</code>选项进行模糊查询：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">man</span> <span class="token parameter variable">-k</span> setse
+setsebool <span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span>        - <span class="token builtin class-name">set</span> SELinux boolean value
+<span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">man</span> <span class="token parameter variable">-k</span> sets
+cpupower <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>         - Shows and sets processor power related values
+ExtUtils::XSSymSet <span class="token punctuation">(</span>3pm<span class="token punctuation">)</span> - keep sets of symbol names palatable to the VMS linker
+ipset <span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span>            - administration tool <span class="token keyword">for</span> IP sets
+setsebool <span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span>        - <span class="token builtin class-name">set</span> SELinux boolean value
+setsid <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>           - run a program <span class="token keyword">in</span> a new session
+systemd.preset <span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>   - Service enablement presets<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Man手册约定：</p>
+<table>
+<thead>
+<tr>
+<th>区域号</th>
+<th>所涵盖的内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>可执行程序或shell命令</td>
+</tr>
+<tr>
+<td>2</td>
+<td>系统内核可调用的函数和工具等</td>
+</tr>
+<tr>
+<td>3</td>
+<td>一些常用函数（Function）与函数库（Library），大部分为C的函数库（libc）</td>
+</tr>
+<tr>
+<td>4</td>
+<td>设备文件的说明，通常在/dev下的文件</td>
+</tr>
+<tr>
+<td>5</td>
+<td>配置文件或者是某些文件的格式</td>
+</tr>
+<tr>
+<td>6</td>
+<td>游戏和演示</td>
+</tr>
+<tr>
+<td>7</td>
+<td>惯例与协议等，例如文件系统、网络协议等名词解释</td>
+</tr>
+<tr>
+<td>8</td>
+<td>只有超级用户和系统管理员可使用的系统管理命令</td>
+</tr>
+<tr>
+<td>9</td>
+<td>内核例程，与Kernel有关的文件</td>
+</tr>
+</tbody>
+</table>
+<h1 id="查询info文档"><a class="markdownIt-Anchor" href="#查询info文档"></a> 查询Info文档</h1>
+<p>类似于在命令行中浏览网页，使用<code>info</code>可以查询存放在 /usr/share/info/ 目录下的文档。例如，可以使用以下命令查询有关<code>mkdir</code>的信息：</p>
+ <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ info <span class="token function">mkdir</span>
+File: libc.info,  Node: Creating Directories,  Next: File Attributes,  Prev: Renaming Files,  Up: File Sys<span class="token punctuation">\</span>
+tem Interface
+
+<span class="token number">14.8</span> Creating Directories
+<span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">=</span>
+
+Directories are created with the <span class="token string">'mkdir'</span> function.  <span class="token punctuation">(</span>There is also a
+shell <span class="token builtin class-name">command</span> <span class="token string">'mkdir'</span> <span class="token function">which</span> does the same thing.<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中，File 表示info页面的数据来源文件，Node 表示页面所属节点。在.info的说明文件中，每个节点都有定位与链接，类似于超链接，可以快速跳转。</p>
 ]]></content>
       <categories>
         <category>Linux</category>
@@ -2478,143 +2625,6 @@ root     pts/1    <span class="token number">192.168</span>.2.101    <span class
       </categories>
   </entry>
   <entry>
-    <title>08.Linux 文件属性</title>
-    <url>/1872252014/</url>
-    <content><![CDATA[<h1 id="查看文件属性"><a class="markdownIt-Anchor" href="#查看文件属性"></a> 查看文件属性</h1>
-<p>执行 ls -la 命令后，可以看到当前目录下所有文件的权限和属性：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ll -la</span>
-total <span class="token number">32</span>
-dr-xr-x---.  <span class="token number">4</span> root root  <span class="token number">175</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 <span class="token builtin class-name">.</span>
-dr-xr-xr-x. <span class="token number">17</span> root root  <span class="token number">224</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:37 <span class="token punctuation">..</span>
--rw-------.  <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
--rw-------.  <span class="token number">1</span> root root  <span class="token number">847</span> Sep  <span class="token number">8</span> <span class="token number">12</span>:32 .bash_history
--rw-r--r--.  <span class="token number">1</span> root root   <span class="token number">18</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bash_logout
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">176</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bash_profile
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">176</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bashrc
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">100</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .cshrc
-drwxr-xr-x.  <span class="token number">2</span> root root    <span class="token number">6</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 dir1
-drwxr-----.  <span class="token number">3</span> root root   <span class="token number">19</span> Sep  <span class="token number">7</span> 05:51 .pki
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">129</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .tcshrc
--rw-------.  <span class="token number">1</span> root root  <span class="token number">508</span> Sep  <span class="token number">7</span> 05:52 .viminfo<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>total 为该目录下的所有数据所占用的实际块数量乘以块大小的值。</p>
-<p>从左到右以空格分隔成七列，分别代表：类型和权限、连接、所有者、所有组、大小、修改时间、文件名”。</p>
-<h1 id="文件类型"><a class="markdownIt-Anchor" href="#文件类型"></a> 文件类型</h1>
-<p>第一列第一个字段用来表示文件的类型，文件类型有下面几种：</p>
-<table>
-<thead>
-<tr>
-<th><strong>标记</strong></th>
-<th><strong>类型</strong></th>
-<th><strong>说明</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>-</td>
-<td>普通文件</td>
-<td>文本文件、数据文件、可执行程序等都作为普通文件存储</td>
-</tr>
-<tr>
-<td>d</td>
-<td>目录</td>
-<td>目录不存放常规数据，它用来组织访问其他文件</td>
-</tr>
-<tr>
-<td>c</td>
-<td>字符设备文件</td>
-<td>指处理数据时每次只能处理一个字符的设备，例如鼠标、键盘（一次性读取设备）</td>
-</tr>
-<tr>
-<td>b</td>
-<td>块设备文件</td>
-<td>指处理数据时每次能处理大块数据的设备，例如硬盘</td>
-</tr>
-<tr>
-<td>s</td>
-<td>本地域套接字</td>
-<td>实现进程间通信的连接，本地域套接字由系统调用 socket 创建</td>
-</tr>
-<tr>
-<td>p</td>
-<td>有名管道(FIFO)</td>
-<td>让运行在同一主机上的两个进程相互通信，和 socket 文件相似</td>
-</tr>
-<tr>
-<td>l</td>
-<td>符号链接</td>
-<td>也叫做软链接(Linkfile)，通过名字指向文件</td>
-</tr>
-</tbody>
-</table>
-<p>ls 命令结果展示文件颜色含义：</p>
-<table>
-<thead>
-<tr>
-<th><strong>颜色</strong></th>
-<th><strong>含义</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>灰色</td>
-<td>普通文件</td>
-</tr>
-<tr>
-<td>蓝色</td>
-<td>目录</td>
-</tr>
-<tr>
-<td>绿色</td>
-<td>可执行文件</td>
-</tr>
-<tr>
-<td>黄色</td>
-<td>特殊文件</td>
-</tr>
-<tr>
-<td>红色</td>
-<td>压缩文件</td>
-</tr>
-</tbody>
-</table>
-<h1 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h1>
-<p>第一列后九个字段以三个为一组，分别表示：</p>
-<ul>
-<li>文件所有者权限</li>
-<li>同用户组权限</li>
-<li>其他用户权限</li>
-</ul>
-<p>权限为&quot;rwx&quot;的三个参数组合，没有权限显示为&quot;-&quot;减号。</p>
-<h1 id="连接节点"><a class="markdownIt-Anchor" href="#连接节点"></a> 连接节点</h1>
-<p>第二列数字表示节点，每个文件都会将它的权限与属性记录到文件系统的 inode 中。</p>
-<p>这个属性记录的就是有多少不同的文件名连接到相同的一个 inode 号码。</p>
-<h1 id="所有者所有组"><a class="markdownIt-Anchor" href="#所有者所有组"></a> 所有者/所有组</h1>
-<p>第三列和第四列分别表示文件所属的用户和用户组。</p>
-<h1 id="文件大小"><a class="markdownIt-Anchor" href="#文件大小"></a> 文件大小</h1>
-<p>第五列表示文件的容量大小，默认单位为 Bytes。</p>
-<p>目录显示的大小不是文件夹大小，而是目录元数据的大小。</p>
-<h1 id="修改日期"><a class="markdownIt-Anchor" href="#修改日期"></a> 修改日期</h1>
-<p>第六列为文件的创建日期或最近修改时间。</p>
-<p>如果修改时间距离太久，那时间部分会显示成年份。</p>
-<h1 id="文件名"><a class="markdownIt-Anchor" href="#文件名"></a> 文件名</h1>
-<p>第七列为文件名或文件夹名。</p>
-<p>Linux 的文件名是大小写敏感的。</p>
-<p>文件或目录名的第一个字母是&quot;.&quot;表示隐藏文件。</p>
-<p><strong>文件名规则</strong>：</p>
-<ul>
-<li>由大写字母、小写字母、数字和一些特殊符号组成；</li>
-<li>不可以包含 * ? &lt; &gt; ( ) [ ] { } / \ | &quot;  ` ＆ ;  ! 等符号；</li>
-<li>＋-可以出现在文件名中，但是不能作为文件名中的第一个字母；</li>
-<li>文件名中一般不应该包含空格；</li>
-<li>使用 Ext 文件系统时，文件名最长 255 个字符，路径最长 4096 个字符。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>0.基础概论</category>
-      </categories>
-  </entry>
-  <entry>
     <title>07.Linux 文件系统</title>
     <url>/2794564793/</url>
     <content><![CDATA[<h1 id="查看文件系统支持"><a class="markdownIt-Anchor" href="#查看文件系统支持"></a> 查看文件系统支持</h1>
@@ -3093,6 +3103,143 @@ realtime <span class="token operator">=</span>none                   <span class
 <li>extsz=4096 指 extent 大小为 4KB。</li>
 </ul>
 </li>
+</ul>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>0.基础概论</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>08.Linux 文件属性</title>
+    <url>/1872252014/</url>
+    <content><![CDATA[<h1 id="查看文件属性"><a class="markdownIt-Anchor" href="#查看文件属性"></a> 查看文件属性</h1>
+<p>执行 ls -la 命令后，可以看到当前目录下所有文件的权限和属性：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ll -la</span>
+total <span class="token number">32</span>
+dr-xr-x---.  <span class="token number">4</span> root root  <span class="token number">175</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 <span class="token builtin class-name">.</span>
+dr-xr-xr-x. <span class="token number">17</span> root root  <span class="token number">224</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:37 <span class="token punctuation">..</span>
+-rw-------.  <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
+-rw-------.  <span class="token number">1</span> root root  <span class="token number">847</span> Sep  <span class="token number">8</span> <span class="token number">12</span>:32 .bash_history
+-rw-r--r--.  <span class="token number">1</span> root root   <span class="token number">18</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bash_logout
+-rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">176</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bash_profile
+-rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">176</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bashrc
+-rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">100</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .cshrc
+drwxr-xr-x.  <span class="token number">2</span> root root    <span class="token number">6</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 dir1
+drwxr-----.  <span class="token number">3</span> root root   <span class="token number">19</span> Sep  <span class="token number">7</span> 05:51 .pki
+-rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">129</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .tcshrc
+-rw-------.  <span class="token number">1</span> root root  <span class="token number">508</span> Sep  <span class="token number">7</span> 05:52 .viminfo<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>total 为该目录下的所有数据所占用的实际块数量乘以块大小的值。</p>
+<p>从左到右以空格分隔成七列，分别代表：类型和权限、连接、所有者、所有组、大小、修改时间、文件名”。</p>
+<h1 id="文件类型"><a class="markdownIt-Anchor" href="#文件类型"></a> 文件类型</h1>
+<p>第一列第一个字段用来表示文件的类型，文件类型有下面几种：</p>
+<table>
+<thead>
+<tr>
+<th><strong>标记</strong></th>
+<th><strong>类型</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-</td>
+<td>普通文件</td>
+<td>文本文件、数据文件、可执行程序等都作为普通文件存储</td>
+</tr>
+<tr>
+<td>d</td>
+<td>目录</td>
+<td>目录不存放常规数据，它用来组织访问其他文件</td>
+</tr>
+<tr>
+<td>c</td>
+<td>字符设备文件</td>
+<td>指处理数据时每次只能处理一个字符的设备，例如鼠标、键盘（一次性读取设备）</td>
+</tr>
+<tr>
+<td>b</td>
+<td>块设备文件</td>
+<td>指处理数据时每次能处理大块数据的设备，例如硬盘</td>
+</tr>
+<tr>
+<td>s</td>
+<td>本地域套接字</td>
+<td>实现进程间通信的连接，本地域套接字由系统调用 socket 创建</td>
+</tr>
+<tr>
+<td>p</td>
+<td>有名管道(FIFO)</td>
+<td>让运行在同一主机上的两个进程相互通信，和 socket 文件相似</td>
+</tr>
+<tr>
+<td>l</td>
+<td>符号链接</td>
+<td>也叫做软链接(Linkfile)，通过名字指向文件</td>
+</tr>
+</tbody>
+</table>
+<p>ls 命令结果展示文件颜色含义：</p>
+<table>
+<thead>
+<tr>
+<th><strong>颜色</strong></th>
+<th><strong>含义</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>灰色</td>
+<td>普通文件</td>
+</tr>
+<tr>
+<td>蓝色</td>
+<td>目录</td>
+</tr>
+<tr>
+<td>绿色</td>
+<td>可执行文件</td>
+</tr>
+<tr>
+<td>黄色</td>
+<td>特殊文件</td>
+</tr>
+<tr>
+<td>红色</td>
+<td>压缩文件</td>
+</tr>
+</tbody>
+</table>
+<h1 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h1>
+<p>第一列后九个字段以三个为一组，分别表示：</p>
+<ul>
+<li>文件所有者权限</li>
+<li>同用户组权限</li>
+<li>其他用户权限</li>
+</ul>
+<p>权限为&quot;rwx&quot;的三个参数组合，没有权限显示为&quot;-&quot;减号。</p>
+<h1 id="连接节点"><a class="markdownIt-Anchor" href="#连接节点"></a> 连接节点</h1>
+<p>第二列数字表示节点，每个文件都会将它的权限与属性记录到文件系统的 inode 中。</p>
+<p>这个属性记录的就是有多少不同的文件名连接到相同的一个 inode 号码。</p>
+<h1 id="所有者所有组"><a class="markdownIt-Anchor" href="#所有者所有组"></a> 所有者/所有组</h1>
+<p>第三列和第四列分别表示文件所属的用户和用户组。</p>
+<h1 id="文件大小"><a class="markdownIt-Anchor" href="#文件大小"></a> 文件大小</h1>
+<p>第五列表示文件的容量大小，默认单位为 Bytes。</p>
+<p>目录显示的大小不是文件夹大小，而是目录元数据的大小。</p>
+<h1 id="修改日期"><a class="markdownIt-Anchor" href="#修改日期"></a> 修改日期</h1>
+<p>第六列为文件的创建日期或最近修改时间。</p>
+<p>如果修改时间距离太久，那时间部分会显示成年份。</p>
+<h1 id="文件名"><a class="markdownIt-Anchor" href="#文件名"></a> 文件名</h1>
+<p>第七列为文件名或文件夹名。</p>
+<p>Linux 的文件名是大小写敏感的。</p>
+<p>文件或目录名的第一个字母是&quot;.&quot;表示隐藏文件。</p>
+<p><strong>文件名规则</strong>：</p>
+<ul>
+<li>由大写字母、小写字母、数字和一些特殊符号组成；</li>
+<li>不可以包含 * ? &lt; &gt; ( ) [ ] { } / \ | &quot;  ` ＆ ;  ! 等符号；</li>
+<li>＋-可以出现在文件名中，但是不能作为文件名中的第一个字母；</li>
+<li>文件名中一般不应该包含空格；</li>
+<li>使用 Ext 文件系统时，文件名最长 255 个字符，路径最长 4096 个字符。</li>
 </ul>
 ]]></content>
       <categories>
