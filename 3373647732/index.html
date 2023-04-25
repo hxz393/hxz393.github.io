@@ -30,7 +30,7 @@
 <meta property="og:description" content="BIOS 启动流程 目前，主机系统在载入硬件驱动方面的程序有两种：使用 BIOS 和 UEFI。简单的开机流程分为以下步骤：  载入 BIOS 或 UEFI 的硬件信息与自测（POST，Power-On Self-Test），并根据设置取得第一个可开机的设备； 对于 BIOS，通过硬件的 INT 13 中断功能，读取并执行第一个可开机设备内 MBR 的引导加载程序（Boot Loader）；对于">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-10-10T12:54:21.000Z">
-<meta property="article:modified_time" content="2023-04-25T17:08:05.845Z">
+<meta property="article:modified_time" content="2023-04-25T17:08:58.464Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python">
 <meta name="twitter:card" content="summary">
@@ -145,7 +145,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#bios-%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text"> BIOS 启动流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%9A%E7%B3%BB%E7%BB%9F%E5%BC%95%E5%AF%BC"><span class="nav-number">2.</span> <span class="nav-text"> 多系统引导</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%95%E5%AF%BC%E7%9B%AE%E5%BD%95%E8%AF%B4%E6%98%8E"><span class="nav-number">3.</span> <span class="nav-text"> 引导目录说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="nav-number">4.</span> <span class="nav-text"> 虚拟文件系统</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#systemd"><span class="nav-number">5.</span> <span class="nav-text"> Systemd</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B"><span class="nav-number">5.1.</span> <span class="nav-text"> 启动流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E7%9B%B8%E5%85%B3%E7%9B%AE%E5%BD%95"><span class="nav-number">5.2.</span> <span class="nav-text"> 启动相关目录</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#systemv"><span class="nav-number">6.</span> <span class="nav-text"> SystemV</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B-2"><span class="nav-number">6.1.</span> <span class="nav-text"> 启动流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E7%9B%B8%E5%85%B3%E7%9B%AE%E5%BD%95-2"><span class="nav-number">6.2.</span> <span class="nav-text"> 启动相关目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#init-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">6.3.</span> <span class="nav-text"> init 配置文件</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#bios-%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text"> BIOS 启动流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%9A%E7%B3%BB%E7%BB%9F%E5%BC%95%E5%AF%BC"><span class="nav-number">2.</span> <span class="nav-text"> 多系统引导</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%95%E5%AF%BC%E7%9B%AE%E5%BD%95%E8%AF%B4%E6%98%8E"><span class="nav-number">3.</span> <span class="nav-text"> 引导目录说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="nav-number">4.</span> <span class="nav-text"> 虚拟文件系统</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#systemd-%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B"><span class="nav-number">5.</span> <span class="nav-text"> Systemd 启动流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B"><span class="nav-number">5.1.</span> <span class="nav-text"> 启动流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E7%9B%B8%E5%85%B3%E7%9B%AE%E5%BD%95"><span class="nav-number">5.2.</span> <span class="nav-text"> 启动相关目录</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#system-v-%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B"><span class="nav-number">6.</span> <span class="nav-text"> System V 启动流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B-2"><span class="nav-number">6.1.</span> <span class="nav-text"> 启动流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E7%9B%B8%E5%85%B3%E7%9B%AE%E5%BD%95-2"><span class="nav-number">6.2.</span> <span class="nav-text"> 启动相关目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#init-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">6.3.</span> <span class="nav-text"> init 配置文件</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -258,7 +258,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-04-26 01:08:05" itemprop="dateModified" datetime="2023-04-26T01:08:05+08:00">2023-04-26</time>
+      <time title="修改时间：2023-04-26 01:08:58" itemprop="dateModified" datetime="2023-04-26T01:08:58+08:00">2023-04-26</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -463,7 +463,7 @@ initrd.target
 <p>通过查询 initrd.target 可以知道内核先是用载入虚拟文件系统中的 basic.target、sysinit.target 等功能启用的流程，让系统顺利运行，再卸载虚拟文件系统，挂载实际系统根目录。</p>
 <p>如果想要创建一个自定义的 initramfs 镜像，可以使用 dracut 或 mkinitrd 来处理。例如，新建一个添加了 x200 网卡驱动和 nfs 文件系统驱动的 initramfs 镜像：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># dracut -v -add-drivers "x200" --filesystems "nfs" > initramfs-new.img &amp; (uname -r)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h1 id="systemd"><a class="markdownIt-Anchor" href="#systemd"></a> Systemd</h1>
+<h1 id="systemd-启动流程"><a class="markdownIt-Anchor" href="#systemd-启动流程"></a> Systemd 启动流程</h1>
 <p>Systemd 是一种系统和服务管理器，是 Linux 系统中的一项关键技术。它可以用于启动、停止和管理系统进程、网络、文件系统和其他系统资源。Systemd 最初是为 Red Hat Linux 发行版设计的，但现在已被广泛采用，并被大多数 Linux 发行版所使用。</p>
 <p>Systemd 的主要优势是速度和可靠性。它的启动速度远远快于传统的 init 系统，因为它能够并行启动多个服务。此外，Systemd 还提供了强大的日志功能和灵活的单元文件格式，可用于管理各种类型的服务和资源。</p>
 <p>Systemd 还引入了一些新的概念，例如单元和片段。单元是 Systemd 中的基本单位，用于描述系统资源（例如服务、套接字、挂载点等）。片段是一种单元文件的组成部分，它可以被其他单元文件重用。这种灵活性使得 Systemd 能够更容易地管理和组织系统资源，使其更加模块化和可重用。</p>
@@ -506,7 +506,7 @@ multi-user.target
 </ul>
 </li>
 </ul>
-<h1 id="systemv"><a class="markdownIt-Anchor" href="#systemv"></a> SystemV</h1>
+<h1 id="system-v-启动流程"><a class="markdownIt-Anchor" href="#system-v-启动流程"></a> System V 启动流程</h1>
 <p>System V (System 5) 是 Unix 操作系统中的一个初始化系统。它是早期 Unix 系统的标准初始化系统，常见于许多 Linux 发行版中。System V 通过运行一个脚本，逐个启动和停止系统服务来初始化系统。这些脚本通常存储在 <code>/etc/rc.d/init.d/</code> 目录下，每个脚本对应着一个系统服务。在系统启动或关闭时，System V 会根据 <code>/etc/inittab</code> 文件的配置来执行这些脚本。</p>
 <p>System V 的缺点在于启动过程比较慢，因为它需要逐个启动和停止每个系统服务，这使得启动时间较长。此外，System V 在处理系统服务时需要手动编写脚本，并且难以处理服务之间的依赖关系，这可能导致系统启动失败或服务无法正常运行。由于这些缺点，现代 Linux 发行版逐渐转向使用 Systemd 作为默认初始化系统。</p>
 <h2 id="启动流程-2"><a class="markdownIt-Anchor" href="#启动流程-2"></a> 启动流程</h2>

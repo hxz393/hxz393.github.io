@@ -160,7 +160,7 @@ initrd.target
 <p>通过查询 initrd.target 可以知道内核先是用载入虚拟文件系统中的 basic.target、sysinit.target 等功能启用的流程，让系统顺利运行，再卸载虚拟文件系统，挂载实际系统根目录。</p>
 <p>如果想要创建一个自定义的 initramfs 镜像，可以使用 dracut 或 mkinitrd 来处理。例如，新建一个添加了 x200 网卡驱动和 nfs 文件系统驱动的 initramfs 镜像：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># dracut -v -add-drivers "x200" --filesystems "nfs" > initramfs-new.img &amp; (uname -r)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h1 id="systemd"><a class="markdownIt-Anchor" href="#systemd"></a> Systemd</h1>
+<h1 id="systemd-启动流程"><a class="markdownIt-Anchor" href="#systemd-启动流程"></a> Systemd 启动流程</h1>
 <p>Systemd 是一种系统和服务管理器，是 Linux 系统中的一项关键技术。它可以用于启动、停止和管理系统进程、网络、文件系统和其他系统资源。Systemd 最初是为 Red Hat Linux 发行版设计的，但现在已被广泛采用，并被大多数 Linux 发行版所使用。</p>
 <p>Systemd 的主要优势是速度和可靠性。它的启动速度远远快于传统的 init 系统，因为它能够并行启动多个服务。此外，Systemd 还提供了强大的日志功能和灵活的单元文件格式，可用于管理各种类型的服务和资源。</p>
 <p>Systemd 还引入了一些新的概念，例如单元和片段。单元是 Systemd 中的基本单位，用于描述系统资源（例如服务、套接字、挂载点等）。片段是一种单元文件的组成部分，它可以被其他单元文件重用。这种灵活性使得 Systemd 能够更容易地管理和组织系统资源，使其更加模块化和可重用。</p>
@@ -203,7 +203,7 @@ multi-user.target
 </ul>
 </li>
 </ul>
-<h1 id="systemv"><a class="markdownIt-Anchor" href="#systemv"></a> SystemV</h1>
+<h1 id="system-v-启动流程"><a class="markdownIt-Anchor" href="#system-v-启动流程"></a> System V 启动流程</h1>
 <p>System V (System 5) 是 Unix 操作系统中的一个初始化系统。它是早期 Unix 系统的标准初始化系统，常见于许多 Linux 发行版中。System V 通过运行一个脚本，逐个启动和停止系统服务来初始化系统。这些脚本通常存储在 <code>/etc/rc.d/init.d/</code> 目录下，每个脚本对应着一个系统服务。在系统启动或关闭时，System V 会根据 <code>/etc/inittab</code> 文件的配置来执行这些脚本。</p>
 <p>System V 的缺点在于启动过程比较慢，因为它需要逐个启动和停止每个系统服务，这使得启动时间较长。此外，System V 在处理系统服务时需要手动编写脚本，并且难以处理服务之间的依赖关系，这可能导致系统启动失败或服务无法正常运行。由于这些缺点，现代 Linux 发行版逐渐转向使用 Systemd 作为默认初始化系统。</p>
 <h2 id="启动流程-2"><a class="markdownIt-Anchor" href="#启动流程-2"></a> 启动流程</h2>
