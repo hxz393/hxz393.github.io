@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title></title>
-    <url>/3373647732/</url>
+    <title>Linux 启动流程</title>
+    <url>/4291230975/</url>
     <content><![CDATA[<h1 id="bios-启动流程"><a class="markdownIt-Anchor" href="#bios-启动流程"></a> BIOS 启动流程</h1>
 <p>目前，主机系统在载入硬件驱动方面的程序有两种：使用 BIOS 和 UEFI。简单的开机流程分为以下步骤：</p>
 <ol>
@@ -191,14 +191,14 @@ multi-user.target
 <h2 id="启动相关目录"><a class="markdownIt-Anchor" href="#启动相关目录"></a> 启动相关目录</h2>
 <p>开机会读取的文件目录如下：</p>
 <ul>
-<li><strong>/etc/modules-load.d/*.conf</strong>：配置内核需要加载的模块。</li>
-<li><strong>/etc/modprobe.d/*.conf</strong>：可以设置模块参数的配置。</li>
-<li><strong>/etc/sysconfig/</strong>：系统配置目录下有许多环境配置文件，其中一些重要的是：
+<li><code>/etc/modules-load.d/*.conf</code>：配置内核需要加载的模块。</li>
+<li><code>/etc/modprobe.d/*.conf</code>：可以设置模块参数的配置。</li>
+<li><code>/etc/sysconfig/</code>：系统配置目录下有许多环境配置文件，其中一些重要的是：
 <ul>
-<li><strong>authconfig</strong>：用于规范用户身份认证机制，包括是否使用本地 <code>/etc/passwd</code>，<code>/etc/shadow</code> 等文件以及密码记录使用的加密算法，是否使用外部密码服务器提供的账号验证（NIS、LDAP）等。</li>
-<li><strong>cpupower</strong>：如果启动了 cpupower.service 服务，会读取此配置文件。</li>
-<li><strong>firewalld、iptables-config、iptables-config、ebtables-config</strong>：与防火墙服务相关的配置。</li>
-<li><strong>network-scripts</strong>：网卡设置。</li>
+<li>authconfig：用于规范用户身份认证机制，包括是否使用本地 <code>/etc/passwd</code>，<code>/etc/shadow</code> 等文件以及密码记录使用的加密算法，是否使用外部密码服务器提供的账号验证（NIS、LDAP）等。</li>
+<li>cpupower：如果启动了 cpupower.service 服务，会读取此配置文件。</li>
+<li>firewalld、iptables-config、iptables-config、ebtables-config：与防火墙服务相关的配置。</li>
+<li>network-scripts：网卡设置。</li>
 </ul>
 </li>
 </ul>
@@ -225,19 +225,19 @@ multi-user.target
 <p>开机用到的配置文件：</p>
 <ul>
 <li>
-<p><strong>/etc/modprobe.conf</strong></p>
+<p><code>/etc/modprobe.conf</code></p>
 <p>定义开机要加载的模块，模块存放于 <code>/etc/sysconfig/modules/</code> 目录下。</p>
 </li>
 <li>
-<p><strong>/etc/sysconfig/</strong>*</p>
+<p><code>/etc/sysconfig/*</code></p>
 <p>服务相关配置，重要的有：</p>
 <ul>
-<li><strong>authconfig</strong>：设置用户身份认证机制。</li>
-<li><strong>clock</strong>：设置 Linux 主机的时区。</li>
-<li><strong>i18n</strong>：设置语系。</li>
-<li><strong>keyboard &amp; mouse</strong>：设置键盘与鼠标样式。</li>
-<li><strong>network</strong>：设置网络启用、主机名和网关。</li>
-<li><strong>network-scripts</strong>：设置网卡。</li>
+<li>authconfig：设置用户身份认证机制。</li>
+<li>clock：设置 Linux 主机的时区。</li>
+<li>i18n：设置语系。</li>
+<li>keyboard &amp; mouse：设置键盘与鼠标样式。</li>
+<li>network：设置网络启用、主机名和网关。</li>
+<li>network-scripts：设置网卡。</li>
 </ul>
 </li>
 </ul>
@@ -256,11 +256,11 @@ multi-user.target
 <p><strong>init 的操作行为</strong></p>
 <p>可设置的值有：</p>
 <ul>
-<li><strong>initdefault</strong>：默认执行等级设置值。</li>
-<li><strong>sysinit</strong>：系统初始化的操作选项。</li>
-<li><strong>ctrlaltdel</strong>：代表组合快捷键[Ctrl]+[Alt]+[Del]是否可以重新启动的设置。</li>
-<li><strong>wait</strong>：代表后面设置的命令必须要执行完毕才能继续下面其他操作。</li>
-<li><strong>respawn</strong>：代表后面的命令可以无限重启，例如 tty1。</li>
+<li>initdefault：默认执行等级设置值。</li>
+<li>sysinit：系统初始化的操作选项。</li>
+<li>ctrlaltdel：代表组合快捷键[Ctrl]+[Alt]+[Del]是否可以重新启动的设置。</li>
+<li>wait：代表后面设置的命令必须要执行完毕才能继续下面其他操作。</li>
+<li>respawn：代表后面的命令可以无限重启，例如 tty1。</li>
 </ul>
 </li>
 <li>
@@ -275,7 +275,7 @@ multi-user.target
       </categories>
   </entry>
   <entry>
-    <title>05.磁盘分区知识</title>
+    <title>磁盘分区知识</title>
     <url>/3200821655/</url>
     <content><![CDATA[<h1 id="磁盘设备名"><a class="markdownIt-Anchor" href="#磁盘设备名"></a> 磁盘设备名</h1>
 <p>在新版 Linux 中，IDE 和 SATA 的磁盘命名没有区别。</p>
@@ -306,57 +306,41 @@ multi-user.target
 <p>SATA 接口设备名由 Linux 内核检测到磁盘的顺序从 a 开始排列，与插槽号无关。例如，两块磁盘插到 SATA1 和 SATA5 插槽上，系统中识别为 sda 和 sdb。</p>
 <h1 id="磁盘阵列"><a class="markdownIt-Anchor" href="#磁盘阵列"></a> 磁盘阵列</h1>
 <p>磁盘阵列（RAID，Redundant Arrays of Inexpensive Disks）即容错廉价磁盘阵列，指通过一些技术（软件或硬件）将多个较小的磁盘整合成一个较大的磁盘设备，并且具有一定数据保护的功能。</p>
+<h2 id="磁盘阵列类型"><a class="markdownIt-Anchor" href="#磁盘阵列类型"></a> 磁盘阵列类型</h2>
+<p>磁盘整列有两种组建方式。</p>
+<h3 id="硬件磁盘阵列hardware"><a class="markdownIt-Anchor" href="#硬件磁盘阵列hardware"></a> 硬件磁盘阵列（hardware）</h3>
+<p>硬件磁盘阵列通过磁盘阵列卡完成组建任务，拥有专门芯片来处理 RAID 任务。性能比较好，例如用来处理 RAID 5 的同位检查码计算，并不会重复消耗原本系统的 I/O 总线。硬件磁盘阵列的设备文件名为/dev/sd[a-p]。</p>
+<h3 id="软件磁盘阵列software"><a class="markdownIt-Anchor" href="#软件磁盘阵列software"></a> 软件磁盘阵列（software）</h3>
+<p>软件磁盘阵列利用软件来仿真磁盘阵列功能，与 CPU 运算和 I/O 总线速度关系很大。在 CentOS 中提供的软件磁盘阵列软件为 mdadm，支持以分区为单位组建 RAID0/1/5 等。软件磁盘阵列使用的设备文件名是系统的设备文件/dev/md[0-1]。</p>
 <h2 id="磁盘阵列等级"><a class="markdownIt-Anchor" href="#磁盘阵列等级"></a> 磁盘阵列等级</h2>
-<p>常见磁盘阵列等级有：</p>
-<ul>
-<li>
-<p><strong>RAID 0</strong>（等量模式，stripe）</p>
+<p>常见磁盘阵列等级 4 种。</p>
+<h3 id="raid-0等量模式stripe"><a class="markdownIt-Anchor" href="#raid-0等量模式stripe"></a> RAID 0（等量模式，stripe）</h3>
 <p>此模式下，RAID 会将磁盘先切出等量的区块（名为 chunk，大小 4KB ~ 1MB），写入文件时，该文件依据块大小切割好，依序放到各个磁盘中去。</p>
 <p>磁盘可用容量为所有磁盘容量之和。</p>
 <p>读写性能最佳。</p>
 <p>安全性最糟，任意一块磁盘损坏，所有文件数据将缺损，所有数据都会丢失。</p>
-</li>
-<li>
-<p><strong>RAID 1</strong>（映像模式，mirror）</p>
+<h3 id="raid-1映像模式mirror"><a class="markdownIt-Anchor" href="#raid-1映像模式mirror"></a> RAID 1（映像模式，mirror）</h3>
 <p>此模式让同一份数据完整保存在两块磁盘上面，写入文件时，该文件复制为两份，并分别写入到各个磁盘中去。</p>
 <p>磁盘可用容量为所有磁盘容量之和的一半。</p>
 <p>写性能在使用软阵列时不好，因为南桥芯片的 I/O 性能有限，同时写入会导致带宽不够。读取性能和 RAID 0 一样。</p>
 <p>安全性最好。</p>
-</li>
-<li>
-<p><strong>RAID 0+1</strong>，<strong>RAID 1+0</strong></p>
+<h3 id="raid-01raid-10"><a class="markdownIt-Anchor" href="#raid-01raid-10"></a> RAID 0+1，RAID 1+0</h3>
 <p>所谓 RAID 0+1 就是先让两块磁盘组成 RAID 0，再将两组 RAID 0 组成一组 RAID 1。RAID 1+0 则是先组 RAID 0，再组成 RAID 1。</p>
 <p>磁盘可用容量和 RAID 1 一样只有一半可用。</p>
 <p>读写性能和 RAID 0 一样。</p>
 <p>安全性和 RAID 1 一样。</p>
-</li>
-<li>
-<p><strong>RAID 5</strong></p>
+<h3 id="raid-5"><a class="markdownIt-Anchor" href="#raid-5"></a> RAID 5</h3>
 <p>至少需要三块以上磁盘才能组建。在每个循环的写入过程中，每块磁盘还加入一个同位检查数据（Parity），这个数据会记录其他磁盘的备份数据，用于磁盘损坏时的恢复。</p>
 <p>磁盘可用容量为总磁盘容量减一块磁盘容量。</p>
 <p>读写取性能介于 RAID 1 和 RAID 0 之间。</p>
 <p>安全性能方面，只接受损坏不超过一块的硬盘情况下恢复数据。</p>
-</li>
-</ul>
 <h2 id="预备磁盘"><a class="markdownIt-Anchor" href="#预备磁盘"></a> 预备磁盘</h2>
 <p>磁盘阵列中的磁盘损坏时，可更换坏掉的磁盘并插入新的磁盘，磁盘阵列会主动重建数据。这通常需要在关机重启时进行，但 SAS 支持热插拔，可以避免重启。</p>
 <p>为实现系统实时主动重建，需要预备磁盘。预备磁盘是指一块或多块未包含在原磁盘阵列等级中的磁盘。只有在磁盘阵列中出现磁盘损坏时，才会主动将预备磁盘引入磁盘阵列中进行数据重建。</p>
-<h2 id="磁盘阵列类型"><a class="markdownIt-Anchor" href="#磁盘阵列类型"></a> 磁盘阵列类型</h2>
-<p>磁盘整列有两种组建方式：</p>
-<ul>
-<li>
-<p><strong>硬件磁盘阵列</strong>(hardware)</p>
-<p>硬件磁盘阵列通过磁盘阵列卡完成组建任务，拥有专门芯片来处理 RAID 任务。性能比较好，例如用来处理 RAID 5 的同位检查码计算，并不会重复消耗原本系统的 I/O 总线。硬件磁盘阵列的设备文件名为/dev/sd[a-p]。</p>
-</li>
-<li>
-<p><strong>软件磁盘阵列</strong>(software)</p>
-<p>软件磁盘阵列利用软件来仿真磁盘阵列功能，与 CPU 运算和 I/O 总线速度关系很大。在 CentOS 中提供的软件磁盘阵列软件为 mdadm，支持以分区为单位组建 RAID0/1/5 等。软件磁盘阵列使用的设备文件名是系统的设备文件/dev/md[0-1]。</p>
-</li>
-</ul>
 <h1 id="逻辑卷管理器"><a class="markdownIt-Anchor" href="#逻辑卷管理器"></a> 逻辑卷管理器</h1>
 <p>逻辑卷管理器（LVM，Logical Volume Manager）通过软件组合几个物理分区（PV），将它们称为一块看起来是独立的大磁盘（VG），然后再将这块大磁盘分成可使用分区（LV），最终挂载使用。</p>
 <h2 id="物理卷"><a class="markdownIt-Anchor" href="#物理卷"></a> 物理卷</h2>
-<p>物理卷（PV，Physical Volume）分区需要通过 fdisk 调整系统标识符（system ID）为 8e（LVM 的标识符），然后通过 pvcreate 命令将其转换为 LVM 的最底层物理卷（PV），才能利用这些 PV。</p>
+<p>物理卷（PV，Physical Volume）分区需要通过 <code>fdisk</code> 调整系统标识符（system ID）为 8e（LVM 的标识符），然后通过 <code>pvcreate</code> 命令将其转换为 LVM 的最底层物理卷（PV），才能利用这些 PV。</p>
 <h2 id="卷用户组"><a class="markdownIt-Anchor" href="#卷用户组"></a> 卷用户组</h2>
 <p>LVM 将许多 PV 整合成卷用户组(VG，Volume Group)，在 32 位系统下每个 VG 最多仅能包含 65534 个 PE。如果使用 LVM 默认参数，则一个 VG 最大可达 256GB 容量。在 64 位系统下已不存在限制。</p>
 <h2 id="物理扩展块"><a class="markdownIt-Anchor" href="#物理扩展块"></a> 物理扩展块</h2>
@@ -364,17 +348,15 @@ multi-user.target
 <h2 id="逻辑卷"><a class="markdownIt-Anchor" href="#逻辑卷"></a> 逻辑卷</h2>
 <p>VG 会被切分成逻辑卷（LV，即 Logical Volume），这个 LV 就是最后可以被格式化使用的分区。</p>
 <p>LV 的大小与此 LV 内的 PE 总数有关。</p>
-<p>为了方便用户利用 LVM 管理其系统，LV 的设备文件名通常指定为 /dev/vgname/lvname 的样式。</p>
+<p>为了方便用户利用 LVM 管理其系统，LV 的设备文件名通常指定为 <code>/dev/vgname/lvname</code> 的样式。</p>
 <p>更改文件系统容量本质是通过交换 PE 来进行数据转换，将原本 LV 内的 PE 转移到其他设备中以降低 LV 容量，或将其他设备的 PE 加到此 LV 中以增大容量。</p>
 <p>对 LV 数据写入机制有两种：</p>
 <ul>
 <li>
-<p><strong>线性模式</strong>（linear）：</p>
-<p>如果有两个分区 sdb1 和 sdb2 加入到 VG 中，并且整个 VG 只有一个 LV 时，数据会先将 sdb1 写满，再开始写 sdb2。</p>
+<p><strong>线性模式</strong>（linear）：如果有两个分区 sdb1 和 sdb2 加入到 VG 中，并且整个 VG 只有一个 LV 时，数据会先将 sdb1 写满，再开始写 sdb2。</p>
 </li>
 <li>
-<p><strong>交错模式</strong>（striped）：</p>
-<p>类似于 RAID 0 的模式，同时向两个分区内写入数据。</p>
+<p><strong>交错模式</strong>（striped）：类似于 RAID 0 的模式，同时向两个分区内写入数据。</p>
 </li>
 </ul>
 <p>LVM 的重点在于可以弹性调整文件系统容量，而不是性能优先，因此默认使用线性模式进行读写。</p>
@@ -385,16 +367,13 @@ multi-user.target
 <p>MBR 分区表第一个扇区（512Bytes）用来记录三个重要的信息：</p>
 <ul>
 <li>
-<p><strong>主引导分区</strong>（MBR，Master Boot Record）：</p>
-<p>用来安装引导加载程序的地方，有 446Bytes 大小。</p>
+<p><strong>主引导分区</strong>（MBR，Master Boot Record）：用来安装引导加载程序的地方，有 446Bytes 大小。</p>
 </li>
 <li>
-<p><strong>分区表</strong>（Partition Table）：</p>
-<p>记录整块硬盘的分区状态，有 64Bytes 大小。</p>
+<p><strong>分区表</strong>（Partition Table）：记录整块硬盘的分区状态，有 64Bytes 大小。</p>
 </li>
 <li>
-<p><strong>引导记录标识</strong>（BRID）：</p>
-<p>用来判断设备是否可以用于启动，只有 2 Bytes 大小。值为 55 或 AA 表示可引导。</p>
+<p><strong>引导记录标识</strong>（BRID）：用来判断设备是否可以用于启动，只有 2 Bytes 大小。值为 55 或 AA 表示可引导。</p>
 </li>
 </ul>
 <p>如果第一个扇区出现物理坏道，整块硬盘都不可用。</p>
@@ -406,9 +385,9 @@ multi-user.target
 <li>转交其他 Loader，将引导加载功能转交给其他 Loader 负责。</li>
 </ul>
 <h2 id="分区表"><a class="markdownIt-Anchor" href="#分区表"></a> 分区表</h2>
-<p>分区表记录了每个分区的起始柱面号，分区只是针对那 64bytes 的分区表进行设置。由于只有 64Bytes 大小，所以仅能写入四组分区信息。这四组分区信息分为主(Primary)或扩展(Extended)分区。</p>
-<p>主分区和扩展分区在 Linux 系统中表示为 sda[1-4]。</p>
-<p>分区的最小单位为柱面(Cylinder)。</p>
+<p>分区表记录了每个分区的起始柱面号，分区只是针对那 64Bytes 的分区表进行设置。由于只有 64Bytes 大小，所以仅能写入四组分区信息。这四组分区信息分为主（Primary）或扩展（Extended）分区。</p>
+<p>主分区和扩展分区在 Linux 系统中表示为 <code>sda[1-4]</code>。</p>
+<p>分区的最小单位为柱面（Cylinder），通常每个分区都包含一个或多个柱面。</p>
 <h2 id="扩展分区"><a class="markdownIt-Anchor" href="#扩展分区"></a> 扩展分区</h2>
 <p>扩展分区是指利用额外的扇区来记录分区信息，但无法进行格式化。可以在扩展分区中创建逻辑分区，具体做法是在每个逻辑分区的最前面几个扇区记录分区信息。需要注意的是，一个磁盘最多只能有一个扩展分区，这是操作系统的限制。</p>
 <p>为了确保磁盘的连续性，通常将扩展分区的柱面号分配在所有主分区之后。这样可以更好地利用磁盘空间，并有助于提高磁盘读写效率。</p>
