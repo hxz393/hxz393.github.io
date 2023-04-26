@@ -6,7 +6,7 @@
   <link href="https://blog.x2b.net/atom.xml" rel="self"/>
   
   <link href="https://blog.x2b.net/"/>
-  <updated>2023-04-26T03:40:49.451Z</updated>
+  <updated>2023-04-26T02:27:45.720Z</updated>
   <id>https://blog.x2b.net/</id>
   
   <author>
@@ -15,68 +15,6 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>Linux 目录操作</title>
-    <link href="https://blog.x2b.net/2/"/>
-    <id>https://blog.x2b.net/2/</id>
-    <published>2022-03-20T01:01:17.000Z</published>
-    <updated>2023-04-26T03:40:49.451Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;路径&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#路径&quot;&gt;&lt;/a&gt; 路径&lt;/h1&gt;
-&lt;p&gt;根据文件名写法不同，可以分为绝对路径（absolute）和相对路径（relative）：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;绝对路径&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;由根目录开始写起的文件或目录名称，定义了在虚拟目录结构中该文件的确切位置。例如 &lt;code&gt;/home/base/.bashrc&lt;/code&gt;。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;相对路径&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;基于目前位置的路径写法。例如 &lt;code&gt;./base/.bashrc&lt;/code&gt; 或 &lt;code&gt;../../home/base/&lt;/code&gt; 等。&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Linux 中有些比较特殊的目录表示符号如下表：&lt;/p&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;&lt;strong&gt;符号&lt;/strong&gt;&lt;/th&gt;
-&lt;th&gt;&lt;strong&gt;意义&lt;/strong&gt;&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;.&lt;/td&gt;
-&lt;td&gt;此层目录&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;…&lt;/td&gt;
-&lt;td&gt;上一层目录&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;-&lt;/td&gt;
-&lt;td&gt;前一个工作目录&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;~&lt;/td&gt;
-&lt;td&gt;目前用户身份所在的主文件夹&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;~account&lt;/td&gt;
-&lt;td&gt;代表 account 这个用户的主文件夹&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;h1 id=&quot;显示当前目录&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#显示当前目录&quot;&gt;&lt;/a&gt; 显示当前目录&lt;/h1&gt;</summary>
-    
-    
-    
-    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
-    
-    <category term="1.基本操作" scheme="https://blog.x2b.net/categories/Linux/1-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/"/>
-    
-    
-  </entry>
   
   <entry>
     <title>Linux 用户与组</title>
@@ -173,6 +111,146 @@
   </entry>
   
   <entry>
+    <title>Linux 文件操作</title>
+    <link href="https://blog.x2b.net/3891118029/"/>
+    <id>https://blog.x2b.net/3891118029/</id>
+    <published>2022-03-20T01:01:17.000Z</published>
+    <updated>2023-04-26T03:58:18.600Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;文件和目录查询&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#文件和目录查询&quot;&gt;&lt;/a&gt; 文件和目录查询&lt;/h1&gt;
+&lt;p&gt;使用 &lt;code&gt;ls&lt;/code&gt; 命令可以列出目录中的文件，不包括隐藏文件。默认按文件名排序。&lt;code&gt;ll&lt;/code&gt; 命令是 &lt;code&gt;ls -l&lt;/code&gt; 的别名。&lt;/p&gt;
+&lt;p&gt;以下是一些常用选项参数：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;选项&lt;/th&gt;
+&lt;th&gt;说明&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;-a&lt;/td&gt;
+&lt;td&gt;显示隐藏文件&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;-d&lt;/td&gt;
+&lt;td&gt;仅查看目录本身属性&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;-h&lt;/td&gt;
+&lt;td&gt;使显示结果更友好&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;-i&lt;/td&gt;
+&lt;td&gt;列出 inode 号码&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;-l&lt;/td&gt;
+&lt;td&gt;显示详细信息&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;-n&lt;/td&gt;
+&lt;td&gt;列出 UID 与 GID&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;-R&lt;/td&gt;
+&lt;td&gt;连同子目录内容一起列出&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;-S&lt;/td&gt;
+&lt;td&gt;以文件大小排序&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;-t&lt;/td&gt;
+&lt;td&gt;依时间排序&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;可以同时查看多个文件信息，路径之间用空格隔开：&lt;/p&gt;
+&lt;pre class=&quot;line-numbers language-bash&quot; data-language=&quot;bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;root@101c7 ~&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token comment&quot;&gt;# ll ./dir1/ ./audit/&lt;/span&gt;
+./audit/:
+total &lt;span class=&quot;token number&quot;&gt;360&lt;/span&gt;
+-rw-------. &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt; root root &lt;span class=&quot;token number&quot;&gt;182023&lt;/span&gt; Sep &lt;span class=&quot;token number&quot;&gt;9&lt;/span&gt; 05:01 audit.log
+lrwxrwxrwx. &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; root root &lt;span class=&quot;token number&quot;&gt;9&lt;/span&gt; Sep &lt;span class=&quot;token number&quot;&gt;9&lt;/span&gt; 05:29 ha.log -&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; audit.log
+-rw-------. &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt; root root &lt;span class=&quot;token number&quot;&gt;182023&lt;/span&gt; Sep &lt;span class=&quot;token number&quot;&gt;9&lt;/span&gt; 05:01 la.log
+
+./dir1/:
+total &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;
+-rwxrwxr--. &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;ftp&lt;/span&gt; root &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt; Sep &lt;span class=&quot;token number&quot;&gt;8&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;23&lt;/span&gt;:29 xx&lt;span aria-hidden=&quot;true&quot; class=&quot;line-numbers-rows&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;</summary>
+    
+    
+    
+    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
+    
+    <category term="1.基本操作" scheme="https://blog.x2b.net/categories/Linux/1-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Linux 目录操作</title>
+    <link href="https://blog.x2b.net/2/"/>
+    <id>https://blog.x2b.net/2/</id>
+    <published>2022-03-20T01:01:17.000Z</published>
+    <updated>2023-04-26T03:40:49.451Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;路径&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#路径&quot;&gt;&lt;/a&gt; 路径&lt;/h1&gt;
+&lt;p&gt;根据文件名写法不同，可以分为绝对路径（absolute）和相对路径（relative）：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;绝对路径&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;由根目录开始写起的文件或目录名称，定义了在虚拟目录结构中该文件的确切位置。例如 &lt;code&gt;/home/base/.bashrc&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;相对路径&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;基于目前位置的路径写法。例如 &lt;code&gt;./base/.bashrc&lt;/code&gt; 或 &lt;code&gt;../../home/base/&lt;/code&gt; 等。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Linux 中有些比较特殊的目录表示符号如下表：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;strong&gt;符号&lt;/strong&gt;&lt;/th&gt;
+&lt;th&gt;&lt;strong&gt;意义&lt;/strong&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;.&lt;/td&gt;
+&lt;td&gt;此层目录&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;…&lt;/td&gt;
+&lt;td&gt;上一层目录&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;-&lt;/td&gt;
+&lt;td&gt;前一个工作目录&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;~&lt;/td&gt;
+&lt;td&gt;目前用户身份所在的主文件夹&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;~account&lt;/td&gt;
+&lt;td&gt;代表 account 这个用户的主文件夹&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h1 id=&quot;显示当前目录&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#显示当前目录&quot;&gt;&lt;/a&gt; 显示当前目录&lt;/h1&gt;</summary>
+    
+    
+    
+    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
+    
+    <category term="1.基本操作" scheme="https://blog.x2b.net/categories/Linux/1-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/"/>
+    
+    
+  </entry>
+  
+  <entry>
     <title>Linux 启动流程</title>
     <link href="https://blog.x2b.net/4291230975/"/>
     <id>https://blog.x2b.net/4291230975/</id>
@@ -226,31 +304,6 @@
   </entry>
   
   <entry>
-    <title>Linux 命令行使用</title>
-    <link href="https://blog.x2b.net/1784829336/"/>
-    <id>https://blog.x2b.net/1784829336/</id>
-    <published>2021-09-18T03:57:47.000Z</published>
-    <updated>2023-04-26T03:40:49.451Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;终端类型&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#终端类型&quot;&gt;&lt;/a&gt; 终端类型&lt;/h1&gt;
-&lt;p&gt;只使用文本的终端被称为字符终端（Character Terminal）或基于文本的终端（Text-Based Terminal），统称命令行界面（CLI，Command Line Interface）。其硬件设备标准代表是 DEC 公司 1978 年生产的 VT100。&lt;/p&gt;
-&lt;p&gt;图形终端（Graphics Terminal）不仅可以处理文本，还可以显示任何能使用小点在屏幕上进行绘制的内容，也就是可以通过图形用户界面（GUI，Graphical User Interface）和服务端交互。Unix 的 GUI 都基于 X Window System。在图形终端中，用户可以通过鼠标、键盘和触摸屏等设备进行交互操作，相比于命令行界面，图形终端更加直观和易用。&lt;/p&gt;
-&lt;p&gt;在现代计算机系统中，通常都同时支持命令行界面和图形界面。命令行界面通常用于系统维护、编程和高级用户操作等任务，而图形界面则主要用于日常应用程序的操作和交互。&lt;/p&gt;
-&lt;p&gt;可以通过查看 &lt;code&gt;$TERM&lt;/code&gt; 变量来了解当前使用的终端配置文件：&lt;/p&gt;
-&lt;pre class=&quot;line-numbers language-bash&quot; data-language=&quot;bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;root@server3 ~&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token comment&quot;&gt;# echo $TERM&lt;/span&gt;
-vt100&lt;span aria-hidden=&quot;true&quot; class=&quot;line-numbers-rows&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;</summary>
-    
-    
-    
-    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
-    
-    <category term="0.基础概论" scheme="https://blog.x2b.net/categories/Linux/0-%E5%9F%BA%E7%A1%80%E6%A6%82%E8%AE%BA/"/>
-    
-    
-  </entry>
-  
-  <entry>
     <title>Linux 文件属性解释</title>
     <link href="https://blog.x2b.net/1872252014/"/>
     <id>https://blog.x2b.net/1872252014/</id>
@@ -288,44 +341,20 @@ drwxr-----.  &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt; root root
   </entry>
   
   <entry>
-    <title>Linux 文件权限</title>
-    <link href="https://blog.x2b.net/46662635/"/>
-    <id>https://blog.x2b.net/46662635/</id>
+    <title>Linux 命令行使用</title>
+    <link href="https://blog.x2b.net/1784829336/"/>
+    <id>https://blog.x2b.net/1784829336/</id>
     <published>2021-09-18T03:57:47.000Z</published>
-    <updated>2023-04-26T02:17:46.604Z</updated>
+    <updated>2023-04-26T03:40:49.451Z</updated>
     
     
-    <summary type="html">&lt;h1 id=&quot;基本权限&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#基本权限&quot;&gt;&lt;/a&gt; 基本权限&lt;/h1&gt;
-&lt;p&gt;基础权限有三种，分别是：读（r，Read）、写（w，Write）、执行（x，eXecute）。&lt;/p&gt;
-&lt;p&gt;同样的权限标记对于文件和目录代表不同的意义。&lt;/p&gt;
-&lt;h2 id=&quot;文件权限&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#文件权限&quot;&gt;&lt;/a&gt; 文件权限&lt;/h2&gt;
-&lt;p&gt;文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。&lt;/p&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;数字&lt;/th&gt;
-&lt;th&gt;字符&lt;/th&gt;
-&lt;th&gt;权限&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;4&lt;/td&gt;
-&lt;td&gt;r&lt;/td&gt;
-&lt;td&gt;&lt;strong&gt;读取文件内容&lt;/strong&gt;。例如使用 &lt;code&gt;cat&lt;/code&gt; 命令查看，使用 &lt;code&gt;vim&lt;/code&gt; 以&lt;strong&gt;只读&lt;/strong&gt;方式打开。&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;2&lt;/td&gt;
-&lt;td&gt;w&lt;/td&gt;
-&lt;td&gt;&lt;strong&gt;编辑修改&lt;/strong&gt;文件内容，但&lt;strong&gt;不包括删除&lt;/strong&gt;文件。例如使用 &lt;code&gt;vim&lt;/code&gt;、&lt;code&gt;sed&lt;/code&gt; 等对文件内容进行修改并保存。&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;1&lt;/td&gt;
-&lt;td&gt;x&lt;/td&gt;
-&lt;td&gt;文件具有可以被系统&lt;strong&gt;执行&lt;/strong&gt;的权限。例如命令和脚本必须拥有此权限才能直接执行。&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;</summary>
+    <summary type="html">&lt;h1 id=&quot;终端类型&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#终端类型&quot;&gt;&lt;/a&gt; 终端类型&lt;/h1&gt;
+&lt;p&gt;只使用文本的终端被称为字符终端（Character Terminal）或基于文本的终端（Text-Based Terminal），统称命令行界面（CLI，Command Line Interface）。其硬件设备标准代表是 DEC 公司 1978 年生产的 VT100。&lt;/p&gt;
+&lt;p&gt;图形终端（Graphics Terminal）不仅可以处理文本，还可以显示任何能使用小点在屏幕上进行绘制的内容，也就是可以通过图形用户界面（GUI，Graphical User Interface）和服务端交互。Unix 的 GUI 都基于 X Window System。在图形终端中，用户可以通过鼠标、键盘和触摸屏等设备进行交互操作，相比于命令行界面，图形终端更加直观和易用。&lt;/p&gt;
+&lt;p&gt;在现代计算机系统中，通常都同时支持命令行界面和图形界面。命令行界面通常用于系统维护、编程和高级用户操作等任务，而图形界面则主要用于日常应用程序的操作和交互。&lt;/p&gt;
+&lt;p&gt;可以通过查看 &lt;code&gt;$TERM&lt;/code&gt; 变量来了解当前使用的终端配置文件：&lt;/p&gt;
+&lt;pre class=&quot;line-numbers language-bash&quot; data-language=&quot;bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;root@server3 ~&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token comment&quot;&gt;# echo $TERM&lt;/span&gt;
+vt100&lt;span aria-hidden=&quot;true&quot; class=&quot;line-numbers-rows&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;</summary>
     
     
     
@@ -444,6 +473,55 @@ drwxr-xr-x. &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt; root root 
 drwxr-xr-x. &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt; root root   &lt;span class=&quot;token number&quot;&gt;30&lt;/span&gt; Sep  &lt;span class=&quot;token number&quot;&gt;7&lt;/span&gt; 05:54 cachefiles
 drwxr-xr-x. &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt; root root   &lt;span class=&quot;token number&quot;&gt;24&lt;/span&gt; Sep  &lt;span class=&quot;token number&quot;&gt;7&lt;/span&gt; 05:54 ceph&lt;span aria-hidden=&quot;true&quot; class=&quot;line-numbers-rows&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;查看系统目前已加载到内存中支持的文件系统：&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
+    
+    <category term="0.基础概论" scheme="https://blog.x2b.net/categories/Linux/0-%E5%9F%BA%E7%A1%80%E6%A6%82%E8%AE%BA/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Linux 文件权限</title>
+    <link href="https://blog.x2b.net/46662635/"/>
+    <id>https://blog.x2b.net/46662635/</id>
+    <published>2021-09-18T03:57:47.000Z</published>
+    <updated>2023-04-26T02:17:46.604Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;基本权限&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#基本权限&quot;&gt;&lt;/a&gt; 基本权限&lt;/h1&gt;
+&lt;p&gt;基础权限有三种，分别是：读（r，Read）、写（w，Write）、执行（x，eXecute）。&lt;/p&gt;
+&lt;p&gt;同样的权限标记对于文件和目录代表不同的意义。&lt;/p&gt;
+&lt;h2 id=&quot;文件权限&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#文件权限&quot;&gt;&lt;/a&gt; 文件权限&lt;/h2&gt;
+&lt;p&gt;文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;数字&lt;/th&gt;
+&lt;th&gt;字符&lt;/th&gt;
+&lt;th&gt;权限&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;r&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;读取文件内容&lt;/strong&gt;。例如使用 &lt;code&gt;cat&lt;/code&gt; 命令查看，使用 &lt;code&gt;vim&lt;/code&gt; 以&lt;strong&gt;只读&lt;/strong&gt;方式打开。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;w&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;编辑修改&lt;/strong&gt;文件内容，但&lt;strong&gt;不包括删除&lt;/strong&gt;文件。例如使用 &lt;code&gt;vim&lt;/code&gt;、&lt;code&gt;sed&lt;/code&gt; 等对文件内容进行修改并保存。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;x&lt;/td&gt;
+&lt;td&gt;文件具有可以被系统&lt;strong&gt;执行&lt;/strong&gt;的权限。例如命令和脚本必须拥有此权限才能直接执行。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;</summary>
     
     
     

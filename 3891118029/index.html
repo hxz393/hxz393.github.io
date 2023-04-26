@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="文件和目录查询 使用 ls 命令可以列出目录中的文件，不包括隐藏文件。默认按文件名排序。ll 命令是 ls -l 的别名。 以下是一些常用选项参数：    选项 说明     -a 显示隐藏文件   -d 仅查看目录本身属性   -h 使显示结果更友好   -i 列出 inode 号码   -l 显示详细信息   -n 列出 UID 与 GID   -R 连同子目录内容一起列出   -S 以文件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 文件操作">
+<meta property="og:url" content="https://blog.x2b.net/3891118029/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="文件和目录查询 使用 ls 命令可以列出目录中的文件，不包括隐藏文件。默认按文件名排序。ll 命令是 ls -l 的别名。 以下是一些常用选项参数：    选项 说明     -a 显示隐藏文件   -d 仅查看目录本身属性   -h 使显示结果更友好   -i 列出 inode 号码   -l 显示详细信息   -n 列出 UID 与 GID   -R 连同子目录内容一起列出   -S 以文件">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-20T01:01:17.000Z">
+<meta property="article:modified_time" content="2023-04-26T03:58:18.600Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/3891118029/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/3891118029/","path":"3891118029/","title":"Linux 文件操作"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Linux 文件操作 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="../index.html" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">3</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">13</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E5%92%8C%E7%9B%AE%E5%BD%95%E6%9F%A5%E8%AF%A2"><span class="nav-number">1.</span> <span class="nav-text"> 文件和目录查询</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5%E6%96%87%E4%BB%B6%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text"> 检查文件类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%E6%96%87%E4%BB%B6%E4%B8%8E%E7%9B%AE%E5%BD%95"><span class="nav-number">3.</span> <span class="nav-text"> 复制文件与目录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E6%96%87%E4%BB%B6%E4%B8%8E%E7%9B%AE%E5%BD%95"><span class="nav-number">4.</span> <span class="nav-text"> 删除文件与目录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A7%BB%E5%8A%A8%E5%92%8C%E6%9B%B4%E5%90%8D%E6%96%87%E4%BB%B6%E5%92%8C%E7%9B%AE%E5%BD%95"><span class="nav-number">5.</span> <span class="nav-text"> 移动和更名文件和目录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E6%96%87%E4%BB%B6%E6%97%B6%E9%97%B4%E6%88%B3"><span class="nav-number">6.</span> <span class="nav-text"> 修改文件时间戳</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%96%87%E4%BB%B6"><span class="nav-number">7.</span> <span class="nav-text"> 创建文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%93%A6%E9%99%A4%E6%96%87%E4%BB%B6%E5%86%85%E5%AE%B9"><span class="nav-number">8.</span> <span class="nav-text"> 擦除文件内容</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E6%96%87%E4%BB%B6"><span class="nav-number">9.</span> <span class="nav-text"> 连接文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A1%AC%E8%BF%9E%E6%8E%A5"><span class="nav-number">9.1.</span> <span class="nav-text"> 硬连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BD%AF%E8%BF%9E%E6%8E%A5"><span class="nav-number">9.2.</span> <span class="nav-text"> 软连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95%E7%9A%84%E8%BF%9E%E6%8E%A5%E6%95%B0%E9%87%8F"><span class="nav-number">9.3.</span> <span class="nav-text"> 目录的连接数量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E8%BF%9E%E6%8E%A5"><span class="nav-number">9.4.</span> <span class="nav-text"> 创建连接</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9A%90%E8%97%8F%E5%B1%9E%E6%80%A7"><span class="nav-number">10.</span> <span class="nav-text"> 隐藏属性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E9%9A%90%E8%97%8F%E5%B1%9E%E6%80%A7"><span class="nav-number">10.1.</span> <span class="nav-text"> 设置隐藏属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%98%BE%E7%A4%BA%E6%96%87%E4%BB%B6%E9%9A%90%E8%97%8F%E5%B1%9E%E6%80%A7"><span class="nav-number">10.2.</span> <span class="nav-text"> 显示文件隐藏属性</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.douban.com/people/Cyber.DraFonS" title="https:&#x2F;&#x2F;www.douban.com&#x2F;people&#x2F;Cyber.DraFonS" rel="noopener external nofollow noreferrer" target="_blank">豆瓣</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/3891118029/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Linux 文件操作 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux 文件操作
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-03-20 09:01:17" itemprop="dateCreated datePublished" datetime="2022-03-20T09:01:17+08:00">2022-03-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-04-26 11:58:18" itemprop="dateModified" datetime="2023-04-26T11:58:18+08:00">2023-04-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/1-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">1.基本操作</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>10 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="文件和目录查询"><a class="markdownIt-Anchor" href="#文件和目录查询"></a> 文件和目录查询</h1>
+<p>使用 <code>ls</code> 命令可以列出目录中的文件，不包括隐藏文件。默认按文件名排序。<code>ll</code> 命令是 <code>ls -l</code> 的别名。</p>
+<p>以下是一些常用选项参数：</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-a</td>
+<td>显示隐藏文件</td>
+</tr>
+<tr>
+<td>-d</td>
+<td>仅查看目录本身属性</td>
+</tr>
+<tr>
+<td>-h</td>
+<td>使显示结果更友好</td>
+</tr>
+<tr>
+<td>-i</td>
+<td>列出 inode 号码</td>
+</tr>
+<tr>
+<td>-l</td>
+<td>显示详细信息</td>
+</tr>
+<tr>
+<td>-n</td>
+<td>列出 UID 与 GID</td>
+</tr>
+<tr>
+<td>-R</td>
+<td>连同子目录内容一起列出</td>
+</tr>
+<tr>
+<td>-S</td>
+<td>以文件大小排序</td>
+</tr>
+<tr>
+<td>-t</td>
+<td>依时间排序</td>
+</tr>
+</tbody>
+</table>
+<p>可以同时查看多个文件信息，路径之间用空格隔开：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ll ./dir1/ ./audit/</span>
+./audit/:
+total <span class="token number">360</span>
+-rw-------. <span class="token number">2</span> root root <span class="token number">182023</span> Sep <span class="token number">9</span> 05:01 audit.log
+lrwxrwxrwx. <span class="token number">1</span> root root <span class="token number">9</span> Sep <span class="token number">9</span> 05:29 ha.log -<span class="token operator">></span> audit.log
+-rw-------. <span class="token number">2</span> root root <span class="token number">182023</span> Sep <span class="token number">9</span> 05:01 la.log
+
+./dir1/:
+total <span class="token number">0</span>
+-rwxrwxr--. <span class="token number">1</span> <span class="token function">ftp</span> root <span class="token number">0</span> Sep <span class="token number">8</span> <span class="token number">23</span>:29 xx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以使用通配符 *（? 匹配单字母）来显示所有匹配的文件和目录，包括子文件夹中的文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ls -l s*</span>
+-rw-r--r--. <span class="token number">1</span> root root <span class="token number">83886080</span> Sep <span class="token number">10</span> <span class="token number">22</span>:20 sdb5.disk
+
+sdb4m:
+total <span class="token number">20</span>
+-rw-------. <span class="token number">1</span> root root <span class="token number">1260</span> Sep <span class="token number">10</span> <span class="token number">15</span>:05 a.cfg
+drwx------. <span class="token number">2</span> root root <span class="token number">16384</span> Sep <span class="token number">10</span> <span class="token number">15</span>:03 lost+found<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>展示完整的文件修改时间使用 <code>--full-time</code> 参数：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ls -Al --full-time /etc/bash_completion.d/</span>
+total <span class="token number">72</span>
+-rw-r--r--. <span class="token number">1</span> root root <span class="token number">56178</span> <span class="token number">2020</span>-05-28 <span class="token number">16</span>:32:30.000000000 <span class="token parameter variable">-0400</span> <span class="token function">git</span>
+-rw-r--r--. <span class="token number">1</span> root root <span class="token number">829</span> <span class="token number">2020</span>-02-05 07:58:44.000000000 <span class="token parameter variable">-0500</span> iprutils
+-rw-r--r--. <span class="token number">1</span> root root <span class="token number">11736</span> <span class="token number">2020</span>-03-31 <span class="token number">23</span>:33:31.000000000 <span class="token parameter variable">-0400</span> mercurial.sh<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以指定展示特定时间戳，比如查询文件访问时间：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span><span class="token comment"># ls -l --time=atime </span>
+total <span class="token number">364</span>
+-rw-------. <span class="token number">1</span> root root <span class="token number">182023</span> Sep <span class="token number">9</span> 05:51 b.log
+-rw-r--r--. <span class="token number">1</span> root root <span class="token number">178</span> Sep <span class="token number">9</span> 05:57 c.log
+-rw-------. <span class="token number">1</span> root root <span class="token number">182023</span> Sep <span class="token number">9</span> 05:48 mvau.log<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 <code>-F</code> 参数能在文件名末显示该文件的类型：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ls -F /sbin/</span>
+accessdb*              fsfreeze*                   mkdict@ <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>结果中可执行文件会在文件名后加*，软链接加@，目录加/，管道加|，并用不同颜色表示结果。</p>
+<p>此外，还可以使用 stat 命令来查看某个文件的具体属性，其展示结果一步到位，包括文件大小、块数、I/O 块大小、设备号、Inode 号码、硬链接数量、文件权限、UID 和 GID、SELinux 安全上下文、文件访问时间、修改时间、变化时间和创建时间等信息。例如，查看 <a target="_blank" rel="noopener external nofollow noreferrer" href="http://ftp.sh">ftp.sh</a> 文件的属性：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span><span class="token comment"># stat ftp.sh</span>
+  File: ‘ftp.sh’
+  Size: <span class="token number">52</span>              Blocks: <span class="token number">8</span>          IO Block: <span class="token number">4096</span>   regular <span class="token function">file</span>
+Device: fd00h/64768d    Inode: <span class="token number">4215134</span>     Links: <span class="token number">1</span>
+Access: <span class="token punctuation">(</span>0644/-rw-r--r--<span class="token punctuation">)</span>  Uid: <span class="token punctuation">(</span>    <span class="token number">0</span>/    root<span class="token punctuation">)</span>   Gid: <span class="token punctuation">(</span>    <span class="token number">0</span>/    root<span class="token punctuation">)</span>
+Context: unconfined_u:object_r:admin_home_t:s0
+Access: <span class="token number">2021</span>-09-23 <span class="token number">19</span>:18:22.974352478 +0800
+Modify: <span class="token number">2021</span>-09-23 <span class="token number">19</span>:18:04.472546785 +0800
+Change: <span class="token number">2021</span>-09-23 <span class="token number">19</span>:18:04.473546775 +0800
+ Birth: -<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中，Size 表示文件大小，Blocks 表示块数，IO Block 表示 I/O 块大小，regular file 表示文件类型为常规文件，Device 表示设备号，Inode 表示 Inode 号码，Links 表示硬链接数量，Access 表示文件访问时间，Modify 表示文件修改时间，Change 表示文件状态更改时间，Birth 表示文件创建时间。</p>
+<h1 id="检查文件类型"><a class="markdownIt-Anchor" href="#检查文件类型"></a> 检查文件类型</h1>
+<p>想了解某个文件的基本数据类型，可以使用 file 命令。</p>
+<p>例如，查看二进制文件 passwd 的信息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># file /usr/bin/passwd </span>
+/usr/bin/passwd: setuid ELF <span class="token number">64</span>-bit LSB shared object, x86-64, version <span class="token number">1</span> <span class="token punctuation">(</span>SYSV<span class="token punctuation">)</span>, dynamically linked <span class="token punctuation">(</span>uses shared libs<span class="token punctuation">)</span>, <span class="token keyword">for</span> GNU/Linux <span class="token number">2.6</span>.32, BuildID<span class="token punctuation">[</span>sha1<span class="token punctuation">]</span><span class="token operator">=</span>dee1b9ab6618c6bfb84a14f85ba258c742cf4aec, stripped<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>再比如，查看日志文件 b.log 的信息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span><span class="token comment"># file b.log </span>
+b.log: ASCII text, with very long lines<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h1 id="复制文件与目录"><a class="markdownIt-Anchor" href="#复制文件与目录"></a> 复制文件与目录</h1>
+<p>使用 <code>cp</code> 命令可以复制文件和文件夹，系统已经为 <code>cp</code> 加入 <code>-i</code> 选项以询问用户是否覆盖文件。</p>
+<p>例如，复制当前目录下的 anaconda-ks.cfg 文件到 <code>/home/</code> 下并命名为 anac.cfg:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># cp anaconda-ks.cfg /home/anac.cfg ; ll /home</span>
+total <span class="token number">4</span>
+-rw-------. <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">9</span> 05:12 anac.cfg<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>复制文件夹需要使用递归参数 <code>-r</code>，例如复制 <code>/var/log</code> 下的文件夹 audit 到当前目录:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># cp -r /var/log/audit/ . ; ll ./audit/</span>
+total <span class="token number">180</span>
+-rw-------. <span class="token number">1</span> root root <span class="token number">182023</span> Sep  <span class="token number">9</span> 05:14 audit.log<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>复制后的文件属性，如修改时间和权限（所有者变为操作者）会改变。如果要保留源文件属性，可以使用 <code>-a</code> 参数：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ll /var/log/audit/</span>
+total <span class="token number">180</span>
+-rw-------. <span class="token number">1</span> root root <span class="token number">182023</span> Sep  <span class="token number">9</span> 05:01 audit.log
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ll audit/</span>
+total <span class="token number">180</span>
+-rw-------. <span class="token number">1</span> root root <span class="token number">182023</span> Sep  <span class="token number">9</span> 05:14 audit.log
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># rm -rf audit/ ; cp -ra /var/log/audit/ . ; ll audit/</span>
+total <span class="token number">180</span>
+-rw-------. <span class="token number">1</span> root root <span class="token number">182023</span> Sep  <span class="token number">9</span> 05:01 audit.log<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="删除文件与目录"><a class="markdownIt-Anchor" href="#删除文件与目录"></a> 删除文件与目录</h1>
+<p>删除文件或文件夹使用 rm 命令。如果需要删除以-开头的特殊文件，需要使用相对路径。</p>
+<p>例如，要删除当前目录下的 la.log 和 ha.log 两个文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span><span class="token comment"># rm -f la.log ha.log</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>如果需要删除文件夹，则需要使用 <code>-r</code> 参数，并且可以使用通配符*。例如，要删除当前文件夹下以 app 开头的所有文件和文件夹：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># rm -rf app*</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="移动和更名文件和目录"><a class="markdownIt-Anchor" href="#移动和更名文件和目录"></a> 移动和更名文件和目录</h1>
+<p>在 Linux 中，可以使用 <code>mv</code> 命令移动和更名文件和目录。移动文件或目录会保持其 inode 编号和时间戳不变。</p>
+<p>例如，将文件 audit.log 移动到其上级目录并将其更名为 mvau.log：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span><span class="token comment"># mv audit.log ../mvau.log</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>也可以同时移动多个文件到指定目录。例如，将 mvau.log 和 b.log 一次性移动到目录 audit 中：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># mv mvau.log b.log audit/</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="修改文件时间戳"><a class="markdownIt-Anchor" href="#修改文件时间戳"></a> 修改文件时间戳</h1>
+<p>在 Linux 系统中，每个文件都有三个时间戳：</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Modification Time(<strong>mtime</strong>)  修改时间</td>
+<td>当文件<strong>内容更改</strong>时会更新这个时间.不包括文件的属性或权限更改</td>
+</tr>
+<tr>
+<td>Status Time(<strong>ctime</strong>)     状态(创建)时间</td>
+<td>当文件<strong>状态改变</strong>时会更新这个时间,比如权限和属性的更改</td>
+</tr>
+<tr>
+<td>Access Time(<strong>atime</strong>)    (上次)访问时间</td>
+<td>当文件<strong>内容读取</strong>时会更新这个时间,比如用 cat 或 less 去读取</td>
+</tr>
+</tbody>
+</table>
+<p>可以使用 <code>touch</code> 命令来修改文件的时间戳。如果不指定时间，则修改为当前时间。</p>
+<p>例如，将 a.log 文件的修改时间和访问时间修改为 2007 年 1 月 1 日 1 点 1 分：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span><span class="token comment"># ll a.log;ll --time=atime a.log; ll --time=ctime a.log </span>
+-rw-r--r--. <span class="token number">1</span> root root <span class="token number">0</span> Sep  <span class="token number">9</span> 07:35 a.log
+-rw-r--r--. <span class="token number">1</span> root root <span class="token number">0</span> Sep  <span class="token number">9</span> 07:35 a.log
+-rw-r--r--. <span class="token number">1</span> root root <span class="token number">0</span> Sep  <span class="token number">9</span> 07:35 a.log
+<span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span><span class="token comment"># touch -t 0701010101 a.log</span>
+<span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span><span class="token comment"># ll a.log;ll --time=atime a.log; ll --time=ctime a.log </span>
+-rw-r--r--. <span class="token number">1</span> root root <span class="token number">0</span> Jan  <span class="token number">1</span>  <span class="token number">2007</span> a.log
+-rw-r--r--. <span class="token number">1</span> root root <span class="token number">0</span> Jan  <span class="token number">1</span>  <span class="token number">2007</span> a.log
+-rw-r--r--. <span class="token number">1</span> root root <span class="token number">0</span> Sep  <span class="token number">9</span> 07:38 a.log<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="创建文件"><a class="markdownIt-Anchor" href="#创建文件"></a> 创建文件</h1>
+<p><code>touch</code> 命令本意用来更新文件时间戳，当文件不存在时会创建一个新的空文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span><span class="token comment"># touch a.log ; ll</span>
+total <span class="token number">364</span>
+-rw-r--r--. <span class="token number">1</span> root root      <span class="token number">0</span> Sep  <span class="token number">9</span> 07:35 a.log<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>也可以使用 <code>cat</code> 命令接收用户输入，并将其重定向到文件中：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># cat > catfile</span>
+<span class="token number">123</span>
+<span class="token number">32</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>输入完毕后按下 Ctrl+d 组合键以结束输入。</p>
+<h1 id="擦除文件内容"><a class="markdownIt-Anchor" href="#擦除文件内容"></a> 擦除文件内容</h1>
+<p>当使用 <code>rm</code> 命令删除文件时，实际上只是将文件的块标记为可写，而磁盘上的数据并没有被删除。如果要安全删除文件并保证不留下任何痕迹，可以使用 <code>shred</code> 命令，它会用随机数据对目标文件进行多次覆写。例如，以下命令对名为 www 的文件进行四次覆写，最后填充为零后再删除文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span><span class="token comment"># shred -fuvz www </span>
+shred: www: pass <span class="token number">1</span>/4 <span class="token punctuation">(</span>random<span class="token punctuation">)</span><span class="token punctuation">..</span>.
+shred: www: pass <span class="token number">2</span>/4 <span class="token punctuation">(</span>random<span class="token punctuation">)</span><span class="token punctuation">..</span>.
+shred: www: pass <span class="token number">3</span>/4 <span class="token punctuation">(</span>random<span class="token punctuation">)</span><span class="token punctuation">..</span>.
+shred: www: pass <span class="token number">4</span>/4 <span class="token punctuation">(</span>000000<span class="token punctuation">)</span><span class="token punctuation">..</span>.
+shred: www: removing
+shred: www: renamed to 000
+shred: 000: renamed to 00
+shred: 00: renamed to <span class="token number">0</span>
+shred: www: removed<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>需要注意的是，<code>shred</code> 命令并不适用于所有文件系统。例如，ZFS 文件系统会为新数据分配新的数据块，而不是直接覆写旧数据。</p>
+<h1 id="连接文件"><a class="markdownIt-Anchor" href="#连接文件"></a> 连接文件</h1>
+<p>在 Linux 中，可以使用 <code>ln</code> 命令来连接文件。<code>ln</code> 命令有两种链接方式：硬链接和软链接。</p>
+<h2 id="硬连接"><a class="markdownIt-Anchor" href="#硬连接"></a> 硬连接</h2>
+<p>硬连接（hard link）是在某个目录 block 数据中新建一条文件名，连接到某个已存在的 inode 号码关联记录。</p>
+<p>硬链接特点：</p>
+<ul>
+<li>新建的硬连接属性权限和源文件一样，修改也和源文件同步，是因为其数据储存在引用的 inode 块中；</li>
+<li>一个文件有几个硬连接就有几个 Link Counter；</li>
+<li>建立硬连接不占用磁盘空间与 inode 数目。</li>
+</ul>
+<p>建立硬连接有两个限制：</p>
+<ul>
+<li>不能跨文件系统，因为不同文件系统有不同 inode；</li>
+<li>不能连接到目录。</li>
+</ul>
+<h2 id="软连接"><a class="markdownIt-Anchor" href="#软连接"></a> 软连接</h2>
+<p>软连接（symbolic link）也叫做符号连接或快捷方式，是指向另一个文件或目录的特殊文件。它有自己的 inode 编号和硬链接计数器。但是软链接的内容是源文件的路径名。</p>
+<p>软连接文件属性为 l ，使用 <code>ls</code> 查看时会有个 -&gt; 符号指向源文件的路径名。</p>
+<p>如果源文件改名或删除，软链接文件将不会指向正确位置，因为其使用文件名作为引用。</p>
+<h2 id="目录的连接数量"><a class="markdownIt-Anchor" href="#目录的连接数量"></a> 目录的连接数量</h2>
+<p>当新建一个目录时，新的目录连接数为 2。</p>
+<p>比如新建目录 <code>/root/1/</code>，另一个硬连接等于 <code>/root/1/.</code>。</p>
+<p>而上层目录的连接数会增加 1，也就是增加了 <code>/root/1/..</code> 这个硬连接。</p>
+<h2 id="创建连接"><a class="markdownIt-Anchor" href="#创建连接"></a> 创建连接</h2>
+<p>使用 <code>ln</code> 和 <code>cp</code> 命令都可以创建连接。默认不加参数使用 <code>ln</code> 建立的就是硬连接：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span><span class="token comment"># ln hhh hhh_hark; ll -i</span>
+total <span class="token number">24</span>
+<span class="token number">16</span> -rw-r--r--. <span class="token number">2</span> root root     <span class="token number">4</span> Sep <span class="token number">10</span> 01:57 hhh
+<span class="token number">16</span> -rw-r--r--. <span class="token number">2</span> root root     <span class="token number">4</span> Sep <span class="token number">10</span> 01:57 hhh_hark
+<span class="token number">11</span> drwx------. <span class="token number">2</span> root root <span class="token number">16384</span> Sep  <span class="token number">9</span> <span class="token number">15</span>:54 lost+found<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>创建符号连接使用参数 <code>-s</code> 来建立：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span><span class="token comment"># ln -s hhh hhh_soft; ll -i</span>
+total <span class="token number">24</span>
+<span class="token number">16</span> -rw-r--r--. <span class="token number">2</span> root root     <span class="token number">4</span> Sep <span class="token number">10</span> 01:57 hhh
+<span class="token number">16</span> -rw-r--r--. <span class="token number">2</span> root root     <span class="token number">4</span> Sep <span class="token number">10</span> 01:57 hhh_hark
+<span class="token number">12</span> lrwxrwxrwx. <span class="token number">1</span> root root     <span class="token number">3</span> Sep <span class="token number">10</span> 02:04 hhh_soft -<span class="token operator">></span> hhh
+<span class="token number">11</span> drwx------. <span class="token number">2</span> root root <span class="token number">16384</span> Sep  <span class="token number">9</span> <span class="token number">15</span>:54 lost+found<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="隐藏属性"><a class="markdownIt-Anchor" href="#隐藏属性"></a> 隐藏属性</h1>
+<p>文件和文件夹主要的隐藏属性列表如下：</p>
+<table>
+<thead>
+<tr>
+<th><strong>属性</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>访问此文件的 atime 不会被修改，可避免读写较慢的机器过度访问磁盘。</td>
+</tr>
+<tr>
+<td>S</td>
+<td>加上此属性后，任何修改都将立即写入硬盘，不在内存中缓存。</td>
+</tr>
+<tr>
+<td>a</td>
+<td>设置此属性后，文件只能增加数据，不能删除也不能修改数据。设置在目录上，目录内的文件不能删除。</td>
+</tr>
+<tr>
+<td>c</td>
+<td>此文件会自动压缩，读取时自动解压缩。储存时会先进行压缩。</td>
+</tr>
+<tr>
+<td>d</td>
+<td>当 dump 执行时，此文件或目录不会被 dump 备份。</td>
+</tr>
+<tr>
+<td>i</td>
+<td>文件不能删除、改名、修改。设置在目录上表示不允许在目录内建立和删除文件。</td>
+</tr>
+<tr>
+<td>s</td>
+<td>如果文件被删除，立即将原先位置填充，完全销毁数据。</td>
+</tr>
+<tr>
+<td>u</td>
+<td>开启回收站功能，文件被删除后还能恢复。</td>
+</tr>
+</tbody>
+</table>
+<p>上表是在 ext 文件系统中可用的属性，xfs 文件系统仅支持部分隐藏属性。</p>
+<h2 id="设置隐藏属性"><a class="markdownIt-Anchor" href="#设置隐藏属性"></a> 设置隐藏属性</h2>
+<p>使用 <code>chattr</code> 命令来给文件设置隐藏属性。例如给文件 1 加上 i 和 a 属性：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># chattr +ia 1</span>
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># rm -rf 1</span>
+rm: cannot remove <span class="token string">'1'</span><span class="token builtin class-name">:</span> Operation not permitted<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>取消文件的隐藏属性 i：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># chattr -i 1</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>如果设置对象是文件夹，使用 <code>-R</code> 可以递归修改，在文件夹中新建的文件会继承隐藏属性。</p>
+<h2 id="显示文件隐藏属性"><a class="markdownIt-Anchor" href="#显示文件隐藏属性"></a> 显示文件隐藏属性</h2>
+<p>使用 <code>lsattr</code> ming’l 来查看文件或目录的隐藏属性：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># lsattr -R</span>
+---------------- ./anaconda-ks.cfg
+---------------- ./audit
+
+./audit:
+---------------- ./audit/mvau.log
+---------------- ./audit/b.log
+
+---------------- ./2
+--S--adA-------- ./3
+
+./3:
+--S--adA-------- ./3/3
+
+--S-ia-A-------- ./1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/3891118029/" title="Linux 文件操作">https://blog.x2b.net/3891118029/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../2/" rel="prev" title="Linux 目录操作">
+                  <i class="fa fa-chevron-left"></i> Linux 目录操作
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../2759544459/" rel="next" title="计算机软件基础">
+                  计算机软件基础 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">33k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:50</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes 1.21
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@next-theme/pjax@0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://unpkg.com/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://unpkg.com/katex@0.16.4/dist/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/3891118029/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://unpkg.com/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'blog.x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>
