@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="一次性输出 在 Linux 中，可以使用 cat 和 tac 命令一次性将文本内容打印出来，即将标准输入的数据复制到标准输出。 cat 是 Catenate 的缩写，从第一行开始显示文件内容。另外一个重要的应用是组合多个文件。如果没有指定文件或文件为 -，则从标准输入读取。 例如，要查看 c.log 文件的内容，并使用 -b 参数来显示行号（不计空行，计空行使用 -n）： [root@101c7">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 文件查看">
+<meta property="og:url" content="https://blog.x2b.net/1251081056/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="一次性输出 在 Linux 中，可以使用 cat 和 tac 命令一次性将文本内容打印出来，即将标准输入的数据复制到标准输出。 cat 是 Catenate 的缩写，从第一行开始显示文件内容。另外一个重要的应用是组合多个文件。如果没有指定文件或文件为 -，则从标准输入读取。 例如，要查看 c.log 文件的内容，并使用 -b 参数来显示行号（不计空行，计空行使用 -n）： [root@101c7">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-20T01:01:17.000Z">
+<meta property="article:modified_time" content="2023-04-26T12:27:20.036Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/1251081056/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/1251081056/","path":"1251081056/","title":"Linux 文件查看"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Linux 文件查看 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="../index.html" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">3</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">18</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E6%AC%A1%E6%80%A7%E8%BE%93%E5%87%BA"><span class="nav-number">1.</span> <span class="nav-text"> 一次性输出</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%98%85%E8%AF%BB%E6%96%87%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text"> 阅读文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%80%89%E5%8F%96"><span class="nav-number">3.</span> <span class="nav-text"> 数据选取</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B"><span class="nav-number">4.</span> <span class="nav-text"> 二进制文件查看</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.douban.com/people/Cyber.DraFonS" title="https:&#x2F;&#x2F;www.douban.com&#x2F;people&#x2F;Cyber.DraFonS" rel="noopener external nofollow noreferrer" target="_blank">豆瓣</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/1251081056/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Linux 文件查看 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux 文件查看
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-03-20 09:01:17" itemprop="dateCreated datePublished" datetime="2022-03-20T09:01:17+08:00">2022-03-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-04-26 20:27:20" itemprop="dateModified" datetime="2023-04-26T20:27:20+08:00">2023-04-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/1-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">1.基本操作</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="一次性输出"><a class="markdownIt-Anchor" href="#一次性输出"></a> 一次性输出</h1>
+<p>在 Linux 中，可以使用 <code>cat</code> 和 <code>tac</code> 命令一次性将文本内容打印出来，即将标准输入的数据复制到标准输出。</p>
+<p><code>cat</code> 是 Catenate 的缩写，从第一行开始显示文件内容。另外一个重要的应用是组合多个文件。如果没有指定文件或文件为 <code>-</code>，则从标准输入读取。</p>
+<p>例如，要查看 <code>c.log</code> 文件的内容，并使用 <code>-b</code> 参数来显示行号（不计空行，计空行使用 <code>-n</code>）：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">cat</span> <span class="token parameter variable">-b</span> c.log 
+     <span class="token number">1</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061.322</span>:415<span class="token punctuation">)</span>
+     <span class="token number">2</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_END <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061</span>
+     <span class="token number">3</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_START <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">163</span>
+     <span class="token number">4</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audi<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 <code>-A</code> 参数可以将特殊字符打印出来，例如 <code>[Tab]</code> 显示为 <code>^I</code>，<code>[Enter]</code> 换行显示为 <code>$</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">cat</span> <span class="token parameter variable">-nA</span> c.log 
+     <span class="token number">1</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061.322</span>:415<span class="token punctuation">)</span>
+     <span class="token number">2</span> ^Itype<span class="token operator">=</span>USER_END <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061</span>$
+     <span class="token number">3</span>   <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_START <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">163</span>$
+     <span class="token number">4</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audi$
+     <span class="token number">5</span> $<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>cat</code> 命令的一个常见用途是将多个文件内容组合到一个文件中：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> ftp.sh ca.srl <span class="token operator">>></span> newfile<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>使用 <code>tac</code> 命令可以倒序输出文件内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">tac</span> c.log 
+<span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audi
+  <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_START <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">163</span>
+       <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_END <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061</span>
+<span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061.322</span>:415<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果要将每行的内容反转输出，可以使用 <code>rev</code> 命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span>$ <span class="token function">rev</span> ftp.sh 
+gro.miv.ptf nepo
+bup <span class="token function">dc</span>
+txt.tahWdniFoTerehW teg
+eyb<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 <code>nl</code> 命令可以自定义行号位置打印文件内容，例如给行号加零填充：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">nl</span> <span class="token parameter variable">-n</span> rz c.log 
+000001 <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061.322</span>:415<span class="token punctuation">)</span>
+000002  <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_END <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061</span>
+000003   <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_START <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">163</span>
+000004 <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audi<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="阅读文件"><a class="markdownIt-Anchor" href="#阅读文件"></a> 阅读文件</h1>
+<p>使用 <code>more</code> 命令可以查看文件内容并逐页翻阅：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">more</span> nohup.out
+Vim: Warning: Output is not to a terminal
+Vim: Warning: Input is not from a terminal
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+--More--<span class="token punctuation">(</span><span class="token number">23</span>%<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>当文件内容超过一页时，会提示 <code>--More--</code>，此时可以使用以下按键进行操作：</p>
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th><strong>功能</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>空格(space)</td>
+<td>向下翻一页</td>
+</tr>
+<tr>
+<td>回车(enter)</td>
+<td>向下滚动一行</td>
+</tr>
+<tr>
+<td>/字符串</td>
+<td>向下搜索关键字,定位到那一页</td>
+</tr>
+<tr>
+<td>:f</td>
+<td>显示文件名以及当前行数</td>
+</tr>
+<tr>
+<td>q</td>
+<td>退出</td>
+</tr>
+<tr>
+<td>b</td>
+<td>往回翻页,对管道无用</td>
+</tr>
+<tr>
+<td>v</td>
+<td>调用vi编辑器</td>
+</tr>
+</tbody>
+</table>
+<p>使用<code>less</code>命令查看文件时，可以使用方向键进行导航：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">less</span> nohup.out
+Vim: Warning: Output is not to a terminal
+Vim: Warning: Output is not to a terminal
+<span class="token builtin class-name">:</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>进入查看页面后，可以使用以下键盘按键：</p>
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th><strong>功能</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PageUp/PageDown</td>
+<td>向上/向下翻页。</td>
+</tr>
+<tr>
+<td>方向键上/方向键下</td>
+<td>向上/向下滚动一行。</td>
+</tr>
+<tr>
+<td>/字符串&amp;?字符串</td>
+<td>向下&amp;向上查询字符串。</td>
+</tr>
+<tr>
+<td>n/N</td>
+<td>向下/向上重复查询。</td>
+</tr>
+<tr>
+<td>v</td>
+<td>启动vi编辑器编辑当前文件。</td>
+</tr>
+<tr>
+<td>q</td>
+<td>离开。</td>
+</tr>
+<tr>
+<td>h</td>
+<td>帮助文件。</td>
+</tr>
+</tbody>
+</table>
+<p>可以通过设置环境变量 PAGER 来指定希望使用的分页程序。</p>
+<h1 id="数据选取"><a class="markdownIt-Anchor" href="#数据选取"></a> 数据选取</h1>
+<p><code>head</code> 命令可以设定从文件开头开始选取多少行的内容。例如，要查看 nohup.out 文件的前2行内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">head</span> <span class="token parameter variable">-2</span> nohup.out
+Vim: Warning: Output is not to a terminal
+Vim: Warning: Input is not from a terminal<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><code>tail</code> 命令则从文件后面开始取多少行的内容并显示出来。例如，要选取查看 list.txt 文件最后 1 行的内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">tail</span> <span class="token parameter variable">-1</span> list.txt
+/tmp/etc/skel/.bashrc<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>可以加上 <code>-f</code> 参数来持续打印文件内容，这在查看日志文件时非常有用：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">tail</span> <span class="token parameter variable">-f</span> nohup.out 
+Vim: Error reading input, exiting<span class="token punctuation">..</span>.sers package to sandbox the tcsd daemon:/devv
+Vim: Finished.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>这将持续打印 nohup.out 文件的内容，直到手动停止命令。</p>
+<h1 id="二进制文件查看"><a class="markdownIt-Anchor" href="#二进制文件查看"></a> 二进制文件查看</h1>
+<p>使用普通的文本查看命令查看二进制文件会显示乱码，可以使用 <code>od</code> 命令来查阅二进制文件。</p>
+<p>例如，以默认八进制方式查看 <code>passwd</code> 文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ od /bin/passwd <span class="token operator">|</span> <span class="token function">head</span> <span class="token parameter variable">-n</span> <span class="token number">10</span>
+0000000 042577 043114 000402 000001 000000 000000 000000 000000
+0000020 000003 000076 000001 000000 031110 000000 000000 000000
+0000040 000100 000000 000000 000000 062620 000000 000000 000000
+0000060 000000 000000 000100 000070 000011 000100 000035 000034
+0000100 000006 000000 000005 000000 000100 000000 000000 000000<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>用 <code>-t</code> 参数指定显示格式，例如将十六位进制与ASCII字符同时显示：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ od <span class="token parameter variable">-t</span> xCc c.log
+0000000  <span class="token number">74</span>  <span class="token number">79</span>  <span class="token number">70</span>  <span class="token number">65</span>  3d  <span class="token number">43</span>  <span class="token number">52</span>  <span class="token number">45</span>  <span class="token number">44</span>  5f  <span class="token number">44</span>  <span class="token number">49</span>  <span class="token number">53</span>  <span class="token number">50</span>  <span class="token number">20</span>  6d
+          t   y   p   e   <span class="token operator">=</span>   C   R   E   D   _   D   I   S   P       m
+0000020  <span class="token number">73</span>  <span class="token number">67</span>  3d  <span class="token number">61</span>  <span class="token number">75</span>  <span class="token number">64</span>  <span class="token number">69</span>  <span class="token number">74</span>  <span class="token number">28</span>  <span class="token number">31</span>  <span class="token number">36</span>  <span class="token number">33</span>  <span class="token number">31</span>  <span class="token number">31</span>  <span class="token number">37</span>  <span class="token number">38</span>
+          s   g   <span class="token operator">=</span>   a   u   d   i   t   <span class="token punctuation">(</span>   <span class="token number">1</span>   <span class="token number">6</span>   <span class="token number">3</span>   <span class="token number">1</span>   <span class="token number">1</span>   <span class="token number">7</span>   <span class="token number">8</span>
+0000040  <span class="token number">30</span>  <span class="token number">36</span>  <span class="token number">31</span>  2e  <span class="token number">33</span>  <span class="token number">32</span>  <span class="token number">32</span>  3a  <span class="token number">34</span>  <span class="token number">31</span>  <span class="token number">35</span>  <span class="token number">29</span>  3a  <span class="token number">20</span>  <span class="token number">70</span>  <span class="token number">69</span>
+          <span class="token number">0</span>   <span class="token number">6</span>   <span class="token number">1</span>   <span class="token builtin class-name">.</span>   <span class="token number">3</span>   <span class="token number">2</span>   <span class="token number">2</span>   <span class="token builtin class-name">:</span>   <span class="token number">4</span>   <span class="token number">1</span>   <span class="token number">5</span>   <span class="token punctuation">)</span>   <span class="token builtin class-name">:</span>       p   i<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>也可以使用 <code>hexdump</code> 命令来查看二进制文件，唯一区别是 <code>hexdump</code> 默认情况下以十六进制显示数据：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span>$ hexdump <span class="token parameter variable">-C</span> /usr/bin/scsi_temperature
+00000000  <span class="token number">23</span> <span class="token number">21</span> 2f <span class="token number">62</span> <span class="token number">69</span> 6e 2f <span class="token number">62</span>  <span class="token number">61</span> <span class="token number">73</span> <span class="token number">68</span> 0a 0a <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span>  <span class="token operator">|</span><span class="token comment">#!/bin/bash..###|</span>
+00000010  <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span>  <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span>  <span class="token operator">|</span><span class="token comment">################|</span>
+*
+00000050  0a <span class="token number">23</span> 0a <span class="token number">23</span> <span class="token number">20</span> <span class="token number">20</span> <span class="token number">43</span> <span class="token number">68</span>  <span class="token number">65</span> <span class="token number">63</span> 6b <span class="token number">20</span> <span class="token number">74</span> <span class="token number">68</span> <span class="token number">65</span> <span class="token number">20</span>  <span class="token operator">|</span><span class="token builtin class-name">.</span><span class="token comment">#.#  Check the |</span>
+00000060  <span class="token number">74</span> <span class="token number">65</span> 6d <span class="token number">70</span> <span class="token number">65</span> <span class="token number">72</span> <span class="token number">61</span> <span class="token number">74</span>  <span class="token number">75</span> <span class="token number">72</span> <span class="token number">65</span> <span class="token number">20</span> 6f <span class="token number">66</span> <span class="token number">20</span> <span class="token number">74</span>  <span class="token operator">|</span>temperature of t<span class="token operator">|</span>
+00000070  <span class="token number">68</span> <span class="token number">65</span> <span class="token number">20</span> <span class="token number">67</span> <span class="token number">69</span> <span class="token number">76</span> <span class="token number">65</span> 6e  <span class="token number">20</span> <span class="token number">53</span> <span class="token number">43</span> <span class="token number">53</span> <span class="token number">49</span> <span class="token number">20</span> <span class="token number">64</span> <span class="token number">65</span>  <span class="token operator">|</span>he given SCSI de<span class="token operator">|</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上面二进制数据显示方式叫规范格式（Canonical Format）。每行最左边是十六进制表示的偏移，中间16个字节是实际数据，右边为相应ASCII字符。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/1251081056/" title="Linux 文件查看">https://blog.x2b.net/1251081056/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../3891118029/" rel="prev" title="Linux 文件操作">
+                  <i class="fa fa-chevron-left"></i> Linux 文件操作
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../3570307132/" rel="next" title="Linux 下搜索文件">
+                  Linux 下搜索文件 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">40k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:12</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes 1.21
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@next-theme/pjax@0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://unpkg.com/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://unpkg.com/katex@0.16.4/dist/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/1251081056/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://unpkg.com/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'blog.x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>

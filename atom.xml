@@ -111,11 +111,92 @@
   </entry>
   
   <entry>
+    <title>Linux 下搜索文件</title>
+    <link href="https://blog.x2b.net/3570307132/"/>
+    <id>https://blog.x2b.net/3570307132/</id>
+    <published>2022-03-20T01:01:17.000Z</published>
+    <updated>2023-04-26T14:32:49.532Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;通配符&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#通配符&quot;&gt;&lt;/a&gt; 通配符&lt;/h1&gt;
+&lt;p&gt;通配符（wildcard）是 Bash 操作接口的一个功能。常用的通配符如下表：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;符号&lt;/th&gt;
+&lt;th&gt;意义&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;*&lt;/td&gt;
+&lt;td&gt;代表0到无穷多个任意字符。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;?&lt;/td&gt;
+&lt;td&gt;代表一定有一个任意字符。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;[]&lt;/td&gt;
+&lt;td&gt;代表一定有一个括号内的字符，例如 [xgw] 代表可能是 xgw 其中一个。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;[-]&lt;/td&gt;
+&lt;td&gt;代表在编码顺序内的所有字符，例如 [0-9] 代表 0 到 9 之间的所有数字。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;[^]&lt;/td&gt;
+&lt;td&gt;第一个字符为 ^ 代表反向选择，例如 [^xpw]代表任意一个非 xpw 的字符。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h1 id=&quot;快速搜索&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#快速搜索&quot;&gt;&lt;/a&gt; 快速搜索&lt;/h1&gt;
+&lt;p&gt;在 Linux 中，可以使用不同的命令进行快速搜索，以下是一些常用命令。&lt;/p&gt;
+&lt;p&gt;使用 &lt;code&gt;which&lt;/code&gt; 命令来查找命令所在路径。这个命令根据的是$PATH环境变量所指定的路径去查询：&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
+    
+    <category term="1.基本操作" scheme="https://blog.x2b.net/categories/Linux/1-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Linux 文件查看</title>
+    <link href="https://blog.x2b.net/1251081056/"/>
+    <id>https://blog.x2b.net/1251081056/</id>
+    <published>2022-03-20T01:01:17.000Z</published>
+    <updated>2023-04-26T12:27:20.036Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;一次性输出&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#一次性输出&quot;&gt;&lt;/a&gt; 一次性输出&lt;/h1&gt;
+&lt;p&gt;在 Linux 中，可以使用 &lt;code&gt;cat&lt;/code&gt; 和 &lt;code&gt;tac&lt;/code&gt; 命令一次性将文本内容打印出来，即将标准输入的数据复制到标准输出。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;cat&lt;/code&gt; 是 Catenate 的缩写，从第一行开始显示文件内容。另外一个重要的应用是组合多个文件。如果没有指定文件或文件为 &lt;code&gt;-&lt;/code&gt;，则从标准输入读取。&lt;/p&gt;
+&lt;p&gt;例如，要查看 &lt;code&gt;c.log&lt;/code&gt; 文件的内容，并使用 &lt;code&gt;-b&lt;/code&gt; 参数来显示行号（不计空行，计空行使用 &lt;code&gt;-n&lt;/code&gt;）：&lt;/p&gt;
+&lt;pre class=&quot;line-numbers language-bash&quot; data-language=&quot;bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;root@101c7 audit&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;$ &lt;span class=&quot;token function&quot;&gt;cat&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-b&lt;/span&gt; c.log 
+     &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;CRED_DISP &lt;span class=&quot;token assign-left variable&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;audit&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1631178061.322&lt;/span&gt;:415&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+     &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;USER_END &lt;span class=&quot;token assign-left variable&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;audit&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1631178061&lt;/span&gt;
+     &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;USER_START &lt;span class=&quot;token assign-left variable&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;audit&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;163&lt;/span&gt;
+     &lt;span class=&quot;token number&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;CRED_DISP &lt;span class=&quot;token assign-left variable&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;audi&lt;span aria-hidden=&quot;true&quot; class=&quot;line-numbers-rows&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;使用 &lt;code&gt;-A&lt;/code&gt; 参数可以将特殊字符打印出来，例如 &lt;code&gt;[Tab]&lt;/code&gt; 显示为 &lt;code&gt;^I&lt;/code&gt;，&lt;code&gt;[Enter]&lt;/code&gt; 换行显示为 &lt;code&gt;$&lt;/code&gt;：&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
+    
+    <category term="1.基本操作" scheme="https://blog.x2b.net/categories/Linux/1-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/"/>
+    
+    
+  </entry>
+  
+  <entry>
     <title>Linux 文件操作</title>
     <link href="https://blog.x2b.net/3891118029/"/>
     <id>https://blog.x2b.net/3891118029/</id>
     <published>2022-03-20T01:01:17.000Z</published>
-    <updated>2023-04-26T09:08:33.456Z</updated>
+    <updated>2023-04-26T12:15:47.167Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;文件和目录查询&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#文件和目录查询&quot;&gt;&lt;/a&gt; 文件和目录查询&lt;/h1&gt;
@@ -275,6 +356,31 @@ total &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;
     <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
     
     <category term="0.基础概论" scheme="https://blog.x2b.net/categories/Linux/0-%E5%9F%BA%E7%A1%80%E6%A6%82%E8%AE%BA/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Linux 工作控制</title>
+    <link href="https://blog.x2b.net/517799084/"/>
+    <id>https://blog.x2b.net/517799084/</id>
+    <published>2021-09-18T05:56:41.000Z</published>
+    <updated>2023-04-26T14:51:10.534Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;工作控制&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#工作控制&quot;&gt;&lt;/a&gt; 工作控制&lt;/h1&gt;
+&lt;p&gt;工作控制是一种由内核支持、shell实现的功能，允许用户同时运行多个进程，其中一个进程在前台（foreground），其他进程在后台（background）运行。用户可以在前台和后台之间切换、挂起和显示进程状态。&lt;/p&gt;
+&lt;p&gt;将一个进程放入后台运行，该进程必须不需要与用户交互，且不能使用Ctrl+c来终止运行。&lt;/p&gt;
+&lt;h1 id=&quot;后台运行&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#后台运行&quot;&gt;&lt;/a&gt; 后台运行&lt;/h1&gt;
+&lt;p&gt;在命令后加入空格和&amp;amp;符号即可将进程放入后台运行，这也被称为异步进程（Asynchronous Process）运行程序：&lt;/p&gt;
+&lt;pre class=&quot;line-numbers language-bash&quot; data-language=&quot;bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;root@101c7 ext333&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;$ &lt;span class=&quot;token function&quot;&gt;tar&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-zxvf&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;.iso &lt;span class=&quot;token parameter variable&quot;&gt;-C&lt;/span&gt; lost+found/ &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;36961&lt;/span&gt;&lt;span aria-hidden=&quot;true&quot; class=&quot;line-numbers-rows&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;</summary>
+    
+    
+    
+    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
+    
+    <category term="1.基本操作" scheme="https://blog.x2b.net/categories/Linux/1-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/"/>
     
     
   </entry>
@@ -596,6 +702,75 @@ drwxr-xr-x. &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt; root root 
     <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
     
     <category term="0.基础概论" scheme="https://blog.x2b.net/categories/Linux/0-%E5%9F%BA%E7%A1%80%E6%A6%82%E8%AE%BA/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Linux 下压缩和解压文件</title>
+    <link href="https://blog.x2b.net/635683850/"/>
+    <id>https://blog.x2b.net/635683850/</id>
+    <published>2021-09-18T03:57:47.000Z</published>
+    <updated>2023-04-26T12:45:35.513Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;常见压缩格式&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#常见压缩格式&quot;&gt;&lt;/a&gt; 常见压缩格式&lt;/h1&gt;
+&lt;p&gt;各种压缩工具使用的压缩技术不同，最后生成的文件后缀也不同，下面是Linux下常用的几种压缩格式：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;后缀&lt;/th&gt;
+&lt;th&gt;对应程序&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;*.Z&lt;/td&gt;
+&lt;td&gt;compress 程序压缩的文件&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;*.zip&lt;/td&gt;
+&lt;td&gt;zip 程序压缩的文件&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;*.gz&lt;/td&gt;
+&lt;td&gt;gzip 程序压缩的文件&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;*.bz2&lt;/td&gt;
+&lt;td&gt;bzip2 程序压缩的文件&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;*.xz&lt;/td&gt;
+&lt;td&gt;xz 程序压缩的文件&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;*.tar&lt;/td&gt;
+&lt;td&gt;tar 程序打包的数据，没有经过压缩&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;*.tar.gz&lt;/td&gt;
+&lt;td&gt;tar 程序打包的文件，经过 gzip 的压缩&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;*.tar.bz2&lt;/td&gt;
+&lt;td&gt;tar 程序打包的文件，经过 bzip2 的压缩&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;*.tar.xz&lt;/td&gt;
+&lt;td&gt;tar 程序打包的文件，经过 xz 的压缩&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;gzip 和 bzip2 都只能针对单个文件进行压缩和解压缩，而 tar 可以调用它们来集中打包文件。&lt;/p&gt;
+&lt;h1 id=&quot;单文件压缩解压&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#单文件压缩解压&quot;&gt;&lt;/a&gt; 单文件压缩解压&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;compress&lt;/code&gt; 程序已经不再被使用，&lt;code&gt;gzip&lt;/code&gt; 为系统内置程序，可用的参数有下面这些：&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
+    
+    <category term="1.基本操作" scheme="https://blog.x2b.net/categories/Linux/1-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/"/>
     
     
   </entry>
