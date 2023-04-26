@@ -1945,6 +1945,143 @@ key        semid      owner      perms      nsems   <span aria-hidden="true" cla
       </categories>
   </entry>
   <entry>
+    <title>Linux 文件属性解释</title>
+    <url>/1872252014/</url>
+    <content><![CDATA[<h1 id="查看文件属性"><a class="markdownIt-Anchor" href="#查看文件属性"></a> 查看文件属性</h1>
+<p>执行 <code>ls -la</code> 命令后，可以看到当前目录下所有文件的权限和属性：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ll -la</span>
+total <span class="token number">32</span>
+dr-xr-x---.  <span class="token number">4</span> root root  <span class="token number">175</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 <span class="token builtin class-name">.</span>
+dr-xr-xr-x. <span class="token number">17</span> root root  <span class="token number">224</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:37 <span class="token punctuation">..</span>
+-rw-------.  <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
+-rw-------.  <span class="token number">1</span> root root  <span class="token number">847</span> Sep  <span class="token number">8</span> <span class="token number">12</span>:32 .bash_history
+-rw-r--r--.  <span class="token number">1</span> root root   <span class="token number">18</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bash_logout
+-rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">176</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bash_profile
+-rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">176</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bashrc
+-rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">100</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .cshrc
+drwxr-xr-x.  <span class="token number">2</span> root root    <span class="token number">6</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 dir1
+drwxr-----.  <span class="token number">3</span> root root   <span class="token number">19</span> Sep  <span class="token number">7</span> 05:51 .pki
+-rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">129</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .tcshrc
+-rw-------.  <span class="token number">1</span> root root  <span class="token number">508</span> Sep  <span class="token number">7</span> 05:52 .viminfo<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>total 为该目录下的所有数据所占用的实际块数量乘以块大小的值。</p>
+<p>从左到右以空格分隔成七列，分别代表：类型和权限、连接、所有者、所有组、大小、修改时间、文件名。</p>
+<h1 id="文件类型"><a class="markdownIt-Anchor" href="#文件类型"></a> 文件类型</h1>
+<p>第一列第一个字段用来表示文件的类型，文件类型有下面几种：</p>
+<table>
+<thead>
+<tr>
+<th><strong>标记</strong></th>
+<th><strong>类型</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-</td>
+<td>普通文件</td>
+<td>文本文件、数据文件、可执行程序等都作为普通文件存储</td>
+</tr>
+<tr>
+<td>d</td>
+<td>目录</td>
+<td>目录不存放常规数据，它用来组织访问其他文件</td>
+</tr>
+<tr>
+<td>c</td>
+<td>字符设备文件</td>
+<td>指处理数据时每次只能处理一个字符的设备，例如鼠标、键盘（一次性读取设备）</td>
+</tr>
+<tr>
+<td>b</td>
+<td>块设备文件</td>
+<td>指处理数据时每次能处理大块数据的设备，例如硬盘</td>
+</tr>
+<tr>
+<td>s</td>
+<td>本地域套接字</td>
+<td>实现进程间通信的连接，本地域套接字由系统调用 socket 创建</td>
+</tr>
+<tr>
+<td>p</td>
+<td>有名管道(FIFO)</td>
+<td>让运行在同一主机上的两个进程相互通信，和 socket 文件相似</td>
+</tr>
+<tr>
+<td>l</td>
+<td>符号链接</td>
+<td>也叫做软链接（Linkfile），通过名字指向文件</td>
+</tr>
+</tbody>
+</table>
+<p><code>ls</code> 命令结果展示文件颜色含义：</p>
+<table>
+<thead>
+<tr>
+<th><strong>颜色</strong></th>
+<th><strong>含义</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>灰色</td>
+<td>普通文件</td>
+</tr>
+<tr>
+<td>蓝色</td>
+<td>目录</td>
+</tr>
+<tr>
+<td>绿色</td>
+<td>可执行文件</td>
+</tr>
+<tr>
+<td>黄色</td>
+<td>特殊文件</td>
+</tr>
+<tr>
+<td>红色</td>
+<td>压缩文件</td>
+</tr>
+</tbody>
+</table>
+<h1 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h1>
+<p>第一列后九个字段以三个为一组，分别表示：</p>
+<ul>
+<li>文件所有者权限</li>
+<li>同用户组权限</li>
+<li>其他用户权限</li>
+</ul>
+<p>权限为&quot;rwx&quot;的三个参数组合，没有权限显示为&quot;-&quot;减号。</p>
+<h1 id="连接节点"><a class="markdownIt-Anchor" href="#连接节点"></a> 连接节点</h1>
+<p>第二列数字表示节点，每个文件都会将它的权限与属性记录到文件系统的 inode 中。</p>
+<p>这个属性记录的就是有多少不同的文件名连接到相同的一个 inode 号码。</p>
+<h1 id="所有者所有组"><a class="markdownIt-Anchor" href="#所有者所有组"></a> 所有者/所有组</h1>
+<p>第三列和第四列分别表示文件所属的用户和用户组。</p>
+<h1 id="文件大小"><a class="markdownIt-Anchor" href="#文件大小"></a> 文件大小</h1>
+<p>第五列表示文件的容量大小，默认单位为 Bytes。</p>
+<p>目录显示的大小不是文件夹大小，而是目录元数据的大小。</p>
+<h1 id="修改日期"><a class="markdownIt-Anchor" href="#修改日期"></a> 修改日期</h1>
+<p>第六列为文件的创建日期或最近修改时间。</p>
+<p>如果修改时间距离太久，那时间部分会显示成年份。</p>
+<h1 id="文件名"><a class="markdownIt-Anchor" href="#文件名"></a> 文件名</h1>
+<p>第七列为文件名或文件夹名。</p>
+<p>Linux 的文件名是大小写敏感的。</p>
+<p>文件或目录名的第一个字母是&quot;.&quot;表示隐藏文件。</p>
+<p><strong>文件名规则</strong>：</p>
+<ul>
+<li>由大写字母、小写字母、数字和一些特殊符号组成；</li>
+<li>不可以包含 * ? &lt; &gt; ( ) [ ] { } / \ | &quot;  ` ＆ ;  ! 等符号；</li>
+<li>＋-可以出现在文件名中，但是不能作为文件名中的第一个字母；</li>
+<li>文件名中一般不应该包含空格；</li>
+<li>使用 Ext 文件系统时，文件名最长 255 个字符，路径最长 4096 个字符。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>0.基础概论</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Linux 命令行使用</title>
     <url>/1784829336/</url>
     <content><![CDATA[<h1 id="终端类型"><a class="markdownIt-Anchor" href="#终端类型"></a> 终端类型</h1>
@@ -2627,136 +2764,128 @@ drwx------. <span class="token number">2</span> root root  16K Sep  <span class=
       </categories>
   </entry>
   <entry>
-    <title>Linux 文件属性解释</title>
-    <url>/1872252014/</url>
-    <content><![CDATA[<h1 id="查看文件属性"><a class="markdownIt-Anchor" href="#查看文件属性"></a> 查看文件属性</h1>
-<p>执行 <code>ls -la</code> 命令后，可以看到当前目录下所有文件的权限和属性：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ll -la</span>
-total <span class="token number">32</span>
-dr-xr-x---.  <span class="token number">4</span> root root  <span class="token number">175</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 <span class="token builtin class-name">.</span>
-dr-xr-xr-x. <span class="token number">17</span> root root  <span class="token number">224</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:37 <span class="token punctuation">..</span>
--rw-------.  <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
--rw-------.  <span class="token number">1</span> root root  <span class="token number">847</span> Sep  <span class="token number">8</span> <span class="token number">12</span>:32 .bash_history
--rw-r--r--.  <span class="token number">1</span> root root   <span class="token number">18</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bash_logout
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">176</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bash_profile
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">176</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bashrc
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">100</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .cshrc
-drwxr-xr-x.  <span class="token number">2</span> root root    <span class="token number">6</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 dir1
-drwxr-----.  <span class="token number">3</span> root root   <span class="token number">19</span> Sep  <span class="token number">7</span> 05:51 .pki
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">129</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .tcshrc
--rw-------.  <span class="token number">1</span> root root  <span class="token number">508</span> Sep  <span class="token number">7</span> 05:52 .viminfo<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>total 为该目录下的所有数据所占用的实际块数量乘以块大小的值。</p>
-<p>从左到右以空格分隔成七列，分别代表：类型和权限、连接、所有者、所有组、大小、修改时间、文件名。</p>
-<h1 id="文件类型"><a class="markdownIt-Anchor" href="#文件类型"></a> 文件类型</h1>
-<p>第一列第一个字段用来表示文件的类型，文件类型有下面几种：</p>
+    <title>Linux 文件权限</title>
+    <url>/46662635/</url>
+    <content><![CDATA[<h1 id="基本权限"><a class="markdownIt-Anchor" href="#基本权限"></a> 基本权限</h1>
+<p>基础权限有三种，分别是：读（r，Read）、写（w，Write）、执行（x，eXecute）。</p>
+<p>同样的权限标记对于文件和目录代表不同的意义。</p>
+<h2 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h2>
+<p>文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。</p>
 <table>
 <thead>
 <tr>
-<th><strong>标记</strong></th>
-<th><strong>类型</strong></th>
-<th><strong>说明</strong></th>
+<th>数字</th>
+<th>字符</th>
+<th>权限</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>-</td>
-<td>普通文件</td>
-<td>文本文件、数据文件、可执行程序等都作为普通文件存储</td>
+<td>4</td>
+<td>r</td>
+<td><strong>读取文件内容</strong>。例如使用 <code>cat</code> 命令查看，使用 <code>vim</code> 以<strong>只读</strong>方式打开。</td>
 </tr>
 <tr>
-<td>d</td>
-<td>目录</td>
-<td>目录不存放常规数据，它用来组织访问其他文件</td>
+<td>2</td>
+<td>w</td>
+<td><strong>编辑修改</strong>文件内容，但<strong>不包括删除</strong>文件。例如使用 <code>vim</code>、<code>sed</code> 等对文件内容进行修改并保存。</td>
 </tr>
 <tr>
-<td>c</td>
-<td>字符设备文件</td>
-<td>指处理数据时每次只能处理一个字符的设备，例如鼠标、键盘（一次性读取设备）</td>
-</tr>
-<tr>
-<td>b</td>
-<td>块设备文件</td>
-<td>指处理数据时每次能处理大块数据的设备，例如硬盘</td>
-</tr>
-<tr>
-<td>s</td>
-<td>本地域套接字</td>
-<td>实现进程间通信的连接，本地域套接字由系统调用 socket 创建</td>
-</tr>
-<tr>
-<td>p</td>
-<td>有名管道(FIFO)</td>
-<td>让运行在同一主机上的两个进程相互通信，和 socket 文件相似</td>
-</tr>
-<tr>
-<td>l</td>
-<td>符号链接</td>
-<td>也叫做软链接（Linkfile），通过名字指向文件</td>
+<td>1</td>
+<td>x</td>
+<td>文件具有可以被系统<strong>执行</strong>的权限。例如命令和脚本必须拥有此权限才能直接执行。</td>
 </tr>
 </tbody>
 </table>
-<p><code>ls</code> 命令结果展示文件颜色含义：</p>
+<h2 id="目录权限"><a class="markdownIt-Anchor" href="#目录权限"></a> 目录权限</h2>
+<p>目录主要的内容是记录文件名清单，所以目录权限实际关联的是目录下文件属性查看与更改。</p>
 <table>
 <thead>
 <tr>
-<th><strong>颜色</strong></th>
-<th><strong>含义</strong></th>
+<th>数字</th>
+<th>字符</th>
+<th>权限</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>灰色</td>
-<td>普通文件</td>
+<td>4</td>
+<td>r</td>
+<td><strong>仅查询</strong>目录下的文件或目录<strong>名称</strong>，无法看到属性，相当于执行不加参数的 <code>ls</code> 命令。</td>
 </tr>
 <tr>
-<td>蓝色</td>
-<td>目录</td>
+<td>2</td>
+<td>w</td>
+<td>改变目录结构清单权限，也就是在目录下<strong>新建、删除、重命名</strong>文件或目录。</td>
 </tr>
 <tr>
-<td>绿色</td>
-<td>可执行文件</td>
-</tr>
-<tr>
-<td>黄色</td>
-<td>特殊文件</td>
-</tr>
-<tr>
-<td>红色</td>
-<td>压缩文件</td>
+<td>1</td>
+<td>x</td>
+<td><strong>进入目录</strong>的权限，<strong>查询</strong>目录下的文件<strong>属性</strong>。</td>
 </tr>
 </tbody>
 </table>
-<h1 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h1>
-<p>第一列后九个字段以三个为一组，分别表示：</p>
+<h1 id="权限参考"><a class="markdownIt-Anchor" href="#权限参考"></a> 权限参考</h1>
+<p>根据使用场景来配置权限。</p>
+<p><strong>用户进入目录所需权限</strong>：</p>
 <ul>
-<li>文件所有者权限</li>
-<li>同用户组权限</li>
-<li>其他用户权限</li>
+<li>目录需要 x 权限，来运行 <code>cd</code> 切换目录。</li>
+<li>目录需要 r 权限，来使用 <code>ls</code> 命令查看目录中文件列表。</li>
 </ul>
-<p>权限为&quot;rwx&quot;的三个参数组合，没有权限显示为&quot;-&quot;减号。</p>
-<h1 id="连接节点"><a class="markdownIt-Anchor" href="#连接节点"></a> 连接节点</h1>
-<p>第二列数字表示节点，每个文件都会将它的权限与属性记录到文件系统的 inode 中。</p>
-<p>这个属性记录的就是有多少不同的文件名连接到相同的一个 inode 号码。</p>
-<h1 id="所有者所有组"><a class="markdownIt-Anchor" href="#所有者所有组"></a> 所有者/所有组</h1>
-<p>第三列和第四列分别表示文件所属的用户和用户组。</p>
-<h1 id="文件大小"><a class="markdownIt-Anchor" href="#文件大小"></a> 文件大小</h1>
-<p>第五列表示文件的容量大小，默认单位为 Bytes。</p>
-<p>目录显示的大小不是文件夹大小，而是目录元数据的大小。</p>
-<h1 id="修改日期"><a class="markdownIt-Anchor" href="#修改日期"></a> 修改日期</h1>
-<p>第六列为文件的创建日期或最近修改时间。</p>
-<p>如果修改时间距离太久，那时间部分会显示成年份。</p>
-<h1 id="文件名"><a class="markdownIt-Anchor" href="#文件名"></a> 文件名</h1>
-<p>第七列为文件名或文件夹名。</p>
-<p>Linux 的文件名是大小写敏感的。</p>
-<p>文件或目录名的第一个字母是&quot;.&quot;表示隐藏文件。</p>
-<p><strong>文件名规则</strong>：</p>
+<p><strong>用户读取目录内文件所需权限</strong>：</p>
 <ul>
-<li>由大写字母、小写字母、数字和一些特殊符号组成；</li>
-<li>不可以包含 * ? &lt; &gt; ( ) [ ] { } / \ | &quot;  ` ＆ ;  ! 等符号；</li>
-<li>＋-可以出现在文件名中，但是不能作为文件名中的第一个字母；</li>
-<li>文件名中一般不应该包含空格；</li>
-<li>使用 Ext 文件系统时，文件名最长 255 个字符，路径最长 4096 个字符。</li>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 r 权限来运行 <code>cat</code>、<code>more</code> 等读取文件命令。</li>
 </ul>
+<p><strong>用户修改目录内文件所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 r 和 w 权限来使用 <code>vi</code> 等工具进行文件读写。</li>
+</ul>
+<p><strong>用户创建一个文件所需权限</strong>：</p>
+<ul>
+<li>目录需要 w 和 x 权限来创建文件。</li>
+</ul>
+<p><strong>用户执行目录下的命令所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 x 权限来运行命令。</li>
+</ul>
+<h1 id="特殊权限"><a class="markdownIt-Anchor" href="#特殊权限"></a> 特殊权限</h1>
+<p>在 Linux 系统中，还有一些特殊权限。</p>
+<h2 id="suid"><a class="markdownIt-Anchor" href="#suid"></a> SUID</h2>
+<p>当 s 标志出现在文件所有者的 x 权限上时，被称为 Set UID，其含义为：</p>
+<ul>
+<li>SUID 权限<strong>仅对二进制程序有效</strong>，不能用在脚本上；</li>
+<li>执行者对该程序需要具有 x 的可执行权限；</li>
+<li>本权限仅在执行该程序的过程中（run-time）有效；</li>
+<li><strong>执行者将具有该程序所有者的权限</strong>。</li>
+</ul>
+<p>例如一般用户运行 <code>passwd</code> 命令修改密码，需要修改 <code>/etc/shadow</code> 文件。但是该文件的权限只有 root 可读写，而用户运行 passwd 程序时，会暂时获得 passwd 程序的 root 权限，从而可以通过 <code>passwd</code> 命令修改 <code>/etc/shadow</code> 文件。</p>
+<p>这是因为运行 <code>passwd</code> 后会启动一个新的进程，该进程会产生一个新的 PID。在该 PID 产生时，SUID 会给予该 PID 特殊的权限设置，使得执行者在该进程中具有该程序所有者的权限。</p>
+<h2 id="sgid"><a class="markdownIt-Anchor" href="#sgid"></a> SGID</h2>
+<p>当 s 标志出现在文件所属组的 x 权限上时，被称为 Set GID。SGID 可以针对文件或目录来设置。</p>
+<p><strong>针对文件</strong>，SGID 有以下功能：</p>
+<ul>
+<li>SGID 对二进制程序有效；</li>
+<li>程序执行者对该程序来说，需要具备 x 的权限；</li>
+<li><strong>执行者在执行的过程中将会获得该程序所属组的权限</strong>。</li>
+</ul>
+<p>例如，一般用户使用 <code>locate</code> 这个程序可以查询 <code>/var/lib/mlocate/mlocate.db</code> 文件的内容，会暂时获得 slocate 用户组的权限。</p>
+<p><strong>针对目录</strong>，SGID 有以下功能：</p>
+<ul>
+<li>用户若对此目录具有 r 和 x 的权限时，该用户能够进入此目录；</li>
+<li>用户在此目录下的有效用户组将会变成该目录的用户组；</li>
+<li><strong>若用户在此目录下具有 w 的权限，则用户所创建的新文件的所属组与此目录的所属组相同。</strong></li>
+</ul>
+<h2 id="sbit"><a class="markdownIt-Anchor" href="#sbit"></a> SBIT</h2>
+<p>当 t 出现在文件所有者的其他用户 x 权限上时，被称为 Sticky Bit。其含义为：</p>
+<ul>
+<li>SBIT 权限<strong>仅对目录有效</strong>；</li>
+<li>当用户对该目录具有 w 和 x 权限时，即具有写入权限时；</li>
+<li><strong>当用户在该目录下创建文件或目录时，仅有自己与 root 才有权力删除该文件。</strong></li>
+</ul>
+<p>例如，用户 1 对目录 A 具有 w 的权限，里面还有其他用户的文件。此时，目录 A 加上了 SBIT 权限时，用户 1 只能修改自己创建的文件，无法删除他人文件。</p>
 ]]></content>
       <categories>
         <category>Linux</category>
@@ -3299,135 +3428,6 @@ drwxr-----.  <span class="token number">3</span> root root   <span class="token 
 <p>电源供应器（Power Supply Unit，PSU）用于给主板、CPU、显卡和硬盘等硬件供电。选择质量好的电源可以有效降低硬件意外损坏的概率。</p>
 <p>如果使用诸如 AIDA 等软件对未超频的电脑进行测试时，在测试过程中出现中途断电或重启等情况，说明电源的额定功率不够或者不稳定。需要减少设备连接或者更换更高功率的电源。</p>
 <p>在选购电源时，除了考虑电源的额定功率之外，还需要考虑能源转换率，也就是 $ 输入功率 / 输出功率 $ 的值。转换率值越大越好。</p>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>0.基础概论</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>Linux 文件权限</title>
-    <url>/46662635/</url>
-    <content><![CDATA[<h1 id="基本权限"><a class="markdownIt-Anchor" href="#基本权限"></a> 基本权限</h1>
-<p>基础权限有三种，分别是：读（r，Read）、写（w，Write）、执行（x，eXecute）。</p>
-<p>同样的权限标记对于文件和目录代表不同的意义。</p>
-<h2 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h2>
-<p>文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。</p>
-<table>
-<thead>
-<tr>
-<th>数字</th>
-<th>字符</th>
-<th>权限</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>4</td>
-<td>r</td>
-<td><strong>读取文件内容</strong>。例如使用 <code>cat</code> 命令查看，使用 <code>vim</code> 以<strong>只读</strong>方式打开。</td>
-</tr>
-<tr>
-<td>2</td>
-<td>w</td>
-<td><strong>编辑修改</strong>文件内容，但<strong>不包括删除</strong>文件。例如使用 <code>vim</code>、<code>sed</code> 等对文件内容进行修改并保存。</td>
-</tr>
-<tr>
-<td>1</td>
-<td>x</td>
-<td>文件具有可以被系统<strong>执行</strong>的权限。例如命令和脚本必须拥有此权限才能直接执行。</td>
-</tr>
-</tbody>
-</table>
-<h2 id="目录权限"><a class="markdownIt-Anchor" href="#目录权限"></a> 目录权限</h2>
-<p>目录主要的内容是记录文件名清单，所以目录权限实际关联的是目录下文件属性查看与更改。</p>
-<table>
-<thead>
-<tr>
-<th>数字</th>
-<th>字符</th>
-<th>权限</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>4</td>
-<td>r</td>
-<td><strong>仅查询</strong>目录下的文件或目录<strong>名称</strong>，无法看到属性，相当于执行不加参数的 <code>ls</code> 命令。</td>
-</tr>
-<tr>
-<td>2</td>
-<td>w</td>
-<td>改变目录结构清单权限，也就是在目录下<strong>新建、删除、重命名</strong>文件或目录。</td>
-</tr>
-<tr>
-<td>1</td>
-<td>x</td>
-<td><strong>进入目录</strong>的权限，<strong>查询</strong>目录下的文件<strong>属性</strong>。</td>
-</tr>
-</tbody>
-</table>
-<h1 id="权限参考"><a class="markdownIt-Anchor" href="#权限参考"></a> 权限参考</h1>
-<p>根据使用场景来配置权限。</p>
-<p><strong>用户进入目录所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限，来运行 <code>cd</code> 切换目录。</li>
-<li>目录需要 r 权限，来使用 <code>ls</code> 命令查看目录中文件列表。</li>
-</ul>
-<p><strong>用户读取目录内文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 r 权限来运行 <code>cat</code>、<code>more</code> 等读取文件命令。</li>
-</ul>
-<p><strong>用户修改目录内文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 r 和 w 权限来使用 <code>vi</code> 等工具进行文件读写。</li>
-</ul>
-<p><strong>用户创建一个文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 w 和 x 权限来创建文件。</li>
-</ul>
-<p><strong>用户执行目录下的命令所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 x 权限来运行命令。</li>
-</ul>
-<h1 id="特殊权限"><a class="markdownIt-Anchor" href="#特殊权限"></a> 特殊权限</h1>
-<p>在 Linux 系统中，还有一些特殊权限。</p>
-<h2 id="suid"><a class="markdownIt-Anchor" href="#suid"></a> SUID</h2>
-<p>当 s 标志出现在文件所有者的 x 权限上时，被称为 Set UID，其含义为：</p>
-<ul>
-<li>SUID 权限<strong>仅对二进制程序有效</strong>，不能用在脚本上；</li>
-<li>执行者对该程序需要具有 x 的可执行权限；</li>
-<li>本权限仅在执行该程序的过程中（run-time）有效；</li>
-<li><strong>执行者将具有该程序所有者的权限</strong>。</li>
-</ul>
-<p>例如一般用户运行 <code>passwd</code> 命令修改密码，需要修改 <code>/etc/shadow</code> 文件。但是该文件的权限只有 root 可读写，而用户运行 passwd 程序时，会暂时获得 passwd 程序的 root 权限，从而可以通过 <code>passwd</code> 命令修改 <code>/etc/shadow</code> 文件。</p>
-<p>这是因为运行 <code>passwd</code> 后会启动一个新的进程，该进程会产生一个新的 PID。在该 PID 产生时，SUID 会给予该 PID 特殊的权限设置，使得执行者在该进程中具有该程序所有者的权限。</p>
-<h2 id="sgid"><a class="markdownIt-Anchor" href="#sgid"></a> SGID</h2>
-<p>当 s 标志出现在文件所属组的 x 权限上时，被称为 Set GID。SGID 可以针对文件或目录来设置。</p>
-<p><strong>针对文件</strong>，SGID 有以下功能：</p>
-<ul>
-<li>SGID 对二进制程序有效；</li>
-<li>程序执行者对该程序来说，需要具备 x 的权限；</li>
-<li><strong>执行者在执行的过程中将会获得该程序所属组的权限</strong>。</li>
-</ul>
-<p>例如，一般用户使用 <code>locate</code> 这个程序可以查询 <code>/var/lib/mlocate/mlocate.db</code> 文件的内容，会暂时获得 slocate 用户组的权限。</p>
-<p><strong>针对目录</strong>，SGID 有以下功能：</p>
-<ul>
-<li>用户若对此目录具有 r 和 x 的权限时，该用户能够进入此目录；</li>
-<li>用户在此目录下的有效用户组将会变成该目录的用户组；</li>
-<li><strong>若用户在此目录下具有 w 的权限，则用户所创建的新文件的所属组与此目录的所属组相同。</strong></li>
-</ul>
-<h2 id="sbit"><a class="markdownIt-Anchor" href="#sbit"></a> SBIT</h2>
-<p>当 t 出现在文件所有者的其他用户 x 权限上时，被称为 Sticky Bit。其含义为：</p>
-<ul>
-<li>SBIT 权限<strong>仅对目录有效</strong>；</li>
-<li>当用户对该目录具有 w 和 x 权限时，即具有写入权限时；</li>
-<li><strong>当用户在该目录下创建文件或目录时，仅有自己与 root 才有权力删除该文件。</strong></li>
-</ul>
-<p>例如，用户 1 对目录 A 具有 w 的权限，里面还有其他用户的文件。此时，目录 A 加上了 SBIT 权限时，用户 1 只能修改自己创建的文件，无法删除他人文件。</p>
 ]]></content>
       <categories>
         <category>Linux</category>
