@@ -1,6 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Linux 目录操作</title>
+    <url>/2/</url>
+    <content><![CDATA[<h1 id="路径"><a class="markdownIt-Anchor" href="#路径"></a> 路径</h1>
+<p>根据文件名写法不同，可以分为绝对路径（absolute）和相对路径（relative）：</p>
+<ul>
+<li>
+<p><strong>绝对路径</strong></p>
+<p>由根目录开始写起的文件或目录名称，定义了在虚拟目录结构中该文件的确切位置。例如 <code>/home/base/.bashrc</code>。</p>
+</li>
+<li>
+<p><strong>相对路径</strong></p>
+<p>基于目前位置的路径写法。例如 <code>./base/.bashrc</code> 或 <code>../../home/base/</code> 等。</p>
+</li>
+</ul>
+<p>Linux 中有些比较特殊的目录表示符号如下表：</p>
+<table>
+<thead>
+<tr>
+<th><strong>符号</strong></th>
+<th><strong>意义</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.</td>
+<td>此层目录</td>
+</tr>
+<tr>
+<td>…</td>
+<td>上一层目录</td>
+</tr>
+<tr>
+<td>-</td>
+<td>前一个工作目录</td>
+</tr>
+<tr>
+<td>~</td>
+<td>目前用户身份所在的主文件夹</td>
+</tr>
+<tr>
+<td>~account</td>
+<td>代表 account 这个用户的主文件夹</td>
+</tr>
+</tbody>
+</table>
+<h1 id="显示当前目录"><a class="markdownIt-Anchor" href="#显示当前目录"></a> 显示当前目录</h1>
+<p>使用 <code>pwd</code> 命令（Print Working Directory 的缩写）显示目前所在目录。</p>
+<p>如显示当前路径：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 init.d<span class="token punctuation">]</span><span class="token comment"># pwd</span>
+/etc/init.d<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>追踪链接文件显示实际路径加 <code>-P</code> 参数：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 init.d<span class="token punctuation">]</span><span class="token comment"># cd /var/mail ; pwd</span>
+/var/mail
+<span class="token punctuation">[</span>root@101c7 mail<span class="token punctuation">]</span><span class="token comment"># pwd -P</span>
+/var/spool/mail<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="切换目录"><a class="markdownIt-Anchor" href="#切换目录"></a> 切换目录</h1>
+<p>切换目录使用 <code>cd</code> 命令（change directory 的缩写）。</p>
+<p>例如进入到用户 abc 主目录下：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># cd ~abc</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>使用绝对路径写法进入到 <code>/etc/fonts/</code> 目录中：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># cd /etc/fonts/</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>回退到上个目录：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># cd -</span>
+/etc/fonts<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>使用相对路径写法进入到上级目录下的 init.d 目录：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 fonts<span class="token punctuation">]</span><span class="token comment"># cd ../init.d/</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>不接参数直接进入当前用户的主目录：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span><span class="token comment"># cd ; pwd</span>
+/root<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h1 id="新建目录"><a class="markdownIt-Anchor" href="#新建目录"></a> 新建目录</h1>
+<p>使用 <code>mkdir</code> 命令（make directory 的简写）来建立目录。</p>
+<p>如建立一个名为 test1 的目录：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># mkdir test1</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>可以用 -p 参数建立嵌套目录，比如建立 test2 文件夹后，在其下建立 test3 文件夹：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># mkdir -p test2/test3 ; ll test2</span>
+total <span class="token number">0</span>
+drwxr-xr-x. <span class="token number">2</span> root root <span class="token number">6</span> Sep <span class="token number">9</span> 04:19 test3<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>可以同时创建多个目录，目录名之间用空格分开。如一次建立 a1、b2、c3 三个文件夹：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># mkdir a1 b2 c3 ; ll</span>
+total <span class="token number">3</span>
+drwxr-xr-x. <span class="token number">2</span> root root <span class="token number">6</span> Sep <span class="token number">9</span> 04:21 a1
+drwxr-xr-x. <span class="token number">2</span> root root <span class="token number">6</span> Sep <span class="token number">9</span> 04:21 b2
+drwxr-xr-x. <span class="token number">2</span> root root <span class="token number">6</span> Sep <span class="token number">9</span> 04:21 c3<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>新建目录默认权限是 755，可以用 <code>-m</code> 参数在创建目录时自定义权限，比如建立权限为 777 的文件夹 decay：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 a1<span class="token punctuation">]</span><span class="token comment"># mkdir -m 777 decay ; ll</span>
+total <span class="token number">0</span>
+drwxrwxrwx. <span class="token number">2</span> root root <span class="token number">6</span> Sep <span class="token number">9</span> 04:23 decay<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h1 id="删除空目录"><a class="markdownIt-Anchor" href="#删除空目录"></a> 删除空目录</h1>
+<p>使用 <code>rmdir</code> 只能删除空目录。例如同时删除空目录 b2、c3：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># rmdir b2 c3</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>可以加入 <code>-p</code> 来递归删除多级空目录。例如删除 decay 目录下面的空文件夹 cc，再删除 decay 目录：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 a1<span class="token punctuation">]</span><span class="token comment"># ll</span>
+total <span class="token number">0</span>
+drwxrwxrwx. <span class="token number">3</span> root root <span class="token number">16</span> Sep <span class="token number">9</span> 04:31 decay
+<span class="token punctuation">[</span>root@101c7 a1<span class="token punctuation">]</span><span class="token comment"># rmdir -p decay/cc/ ; ll</span>
+total <span class="token number">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="查询目录大小"><a class="markdownIt-Anchor" href="#查询目录大小"></a> 查询目录大小</h1>
+<p>使用 <code>du</code> 可以查询到文件或目录所占大小。列出当前目录下面所有文件与目录大小：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span><span class="token comment"># du -ha</span>
+102K    ./100K2
+21M     ./1.copy
+21M     ./lost+found/1.copy
+21M     ./lost+found
+<span class="token number">2</span>.0K    ./a.cfg
+21M     ./1.iso
+<span class="token number">2</span>.0K    ./users/jill.txt
+<span class="token number">4</span>.0K    ./users
+102K    ./100K
+61M     <span class="token builtin class-name">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最末一行显示整个文件夹大小为 61MB。</p>
+<p>只统计当前目录下文件和文件夹（不列出文件夹下文件）大小，不包括隐藏文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span><span class="token comment"># du -sh *</span>
+102K    ./100K
+102K    ./100K2
+21M     ./1.copy
+21M     ./1.iso
+<span class="token number">2</span>.0K    ./a.cfg
+21M     ./lost+found
+<span class="token number">4</span>.0K    ./users<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>统计包含隐藏文件和文件夹大小：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-250 ~<span class="token punctuation">]</span><span class="token comment"># du -h --max-depth=1</span>
+<span class="token number">0</span>       ./.pki
+16M     ./.kube
+16K     ./.ssh
+<span class="token number">0</span>       ./.git-credential-cache
+<span class="token number">8</span>.0K    ./.docker
+124K    ./.mizu
+40K     ./.cache
+<span class="token number">1</span>.7G    ./1
+<span class="token number">1</span>.7G    <span class="token builtin class-name">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>1.基本操作</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Linux 用户与组</title>
     <url>/2592592171/</url>
     <content><![CDATA[<h1 id="用户标识符"><a class="markdownIt-Anchor" href="#用户标识符"></a> 用户标识符</h1>
@@ -1155,143 +1292,6 @@ File size limit exceeded
       </categories>
   </entry>
   <entry>
-    <title>Linux 目录操作</title>
-    <url>/2/</url>
-    <content><![CDATA[<h1 id="路径"><a class="markdownIt-Anchor" href="#路径"></a> 路径</h1>
-<p>根据文件名写法不同，可以分为绝对路径（absolute）和相对路径（relative）：</p>
-<ul>
-<li>
-<p><strong>绝对路径</strong></p>
-<p>由根目录开始写起的文件或目录名称，定义了在虚拟目录结构中该文件的确切位置。例如 <code>/home/base/.bashrc</code>。</p>
-</li>
-<li>
-<p><strong>相对路径</strong></p>
-<p>基于目前位置的路径写法。例如 <code>./base/.bashrc</code> 或 <code>../../home/base/</code> 等。</p>
-</li>
-</ul>
-<p>Linux中有些比较特殊的目录表示符号如下表：</p>
-<table>
-<thead>
-<tr>
-<th><strong>符号</strong></th>
-<th><strong>意义</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>.</td>
-<td>此层目录</td>
-</tr>
-<tr>
-<td>…</td>
-<td>上一层目录</td>
-</tr>
-<tr>
-<td>-</td>
-<td>前一个工作目录</td>
-</tr>
-<tr>
-<td>~</td>
-<td>目前用户身份所在的主文件夹</td>
-</tr>
-<tr>
-<td>~account</td>
-<td>代表 account 这个用户的主文件夹</td>
-</tr>
-</tbody>
-</table>
-<h1 id="显示当前目录"><a class="markdownIt-Anchor" href="#显示当前目录"></a> 显示当前目录</h1>
-<p>使用 <code>pwd</code> 命令（Print Working Directory 的缩写）显示目前所在目录。</p>
-<p>如显示当前路径：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 init.d<span class="token punctuation">]</span><span class="token comment"># pwd</span>
-/etc/init.d<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>追踪链接文件显示实际路径加 <code>-P</code> 参数：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 init.d<span class="token punctuation">]</span><span class="token comment"># cd /var/mail ; pwd</span>
-/var/mail
-<span class="token punctuation">[</span>root@101c7 mail<span class="token punctuation">]</span><span class="token comment"># pwd -P</span>
-/var/spool/mail<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="切换目录"><a class="markdownIt-Anchor" href="#切换目录"></a> 切换目录</h1>
-<p>切换目录使用 <code>cd</code> 命令（change directory 的缩写）。</p>
-<p>例如进入到用户 abc 主目录下：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># cd ~abc</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>使用绝对路径写法进入到 <code>/etc/fonts/</code> 目录中：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># cd /etc/fonts/</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>回退到上个目录：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># cd -</span>
-/etc/fonts<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>使用相对路径写法进入到上级目录下的 init.d 目录：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 fonts<span class="token punctuation">]</span><span class="token comment"># cd ../init.d/</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>不接参数直接进入当前用户的主目录：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span><span class="token comment"># cd ; pwd</span>
-/root<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h1 id="新建目录"><a class="markdownIt-Anchor" href="#新建目录"></a> 新建目录</h1>
-<p>使用 <code>mkdir</code> 命令（make directory 的简写）来建立目录。</p>
-<p>如建立一个名为 test1 的目录：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># mkdir test1</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>可以用 -p 参数建立嵌套目录，比如建立 test2 文件夹后，在其下建立 test3 文件夹：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># mkdir -p test2/test3 ; ll test2</span>
-total <span class="token number">0</span>
-drwxr-xr-x. <span class="token number">2</span> root root <span class="token number">6</span> Sep <span class="token number">9</span> 04:19 test3<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>可以同时创建多个目录，目录名之间用空格分开。如一次建立 a1、b2、c3 三个文件夹：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># mkdir a1 b2 c3 ; ll</span>
-total <span class="token number">3</span>
-drwxr-xr-x. <span class="token number">2</span> root root <span class="token number">6</span> Sep <span class="token number">9</span> 04:21 a1
-drwxr-xr-x. <span class="token number">2</span> root root <span class="token number">6</span> Sep <span class="token number">9</span> 04:21 b2
-drwxr-xr-x. <span class="token number">2</span> root root <span class="token number">6</span> Sep <span class="token number">9</span> 04:21 c3<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>新建目录默认权限是 755，可以用 <code>-m</code> 参数在创建目录时自定义权限，比如建立权限为 777 的文件夹 decay：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 a1<span class="token punctuation">]</span><span class="token comment"># mkdir -m 777 decay ; ll</span>
-total <span class="token number">0</span>
-drwxrwxrwx. <span class="token number">2</span> root root <span class="token number">6</span> Sep <span class="token number">9</span> 04:23 decay<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h1 id="删除空目录"><a class="markdownIt-Anchor" href="#删除空目录"></a> 删除空目录</h1>
-<p>使用 <code>rmdir</code> 只能删除空目录。例如同时删除空目录 b2、c3：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># rmdir b2 c3</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>可以加入 <code>-p</code> 来递归删除多级空目录。例如删除 decay 目录下面的空文件夹 cc，再删除 decay 目录：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 a1<span class="token punctuation">]</span><span class="token comment"># ll</span>
-total <span class="token number">0</span>
-drwxrwxrwx. <span class="token number">3</span> root root <span class="token number">16</span> Sep <span class="token number">9</span> 04:31 decay
-<span class="token punctuation">[</span>root@101c7 a1<span class="token punctuation">]</span><span class="token comment"># rmdir -p decay/cc/ ; ll</span>
-total <span class="token number">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="查询目录大小"><a class="markdownIt-Anchor" href="#查询目录大小"></a> 查询目录大小</h1>
-<p>使用 <code>du</code> 可以查询到文件或目录所占大小。列出当前目录下面所有文件与目录大小：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span><span class="token comment"># du -ha</span>
-102K    ./100K2
-21M     ./1.copy
-21M     ./lost+found/1.copy
-21M     ./lost+found
-<span class="token number">2</span>.0K    ./a.cfg
-21M     ./1.iso
-<span class="token number">2</span>.0K    ./users/jill.txt
-<span class="token number">4</span>.0K    ./users
-102K    ./100K
-61M     <span class="token builtin class-name">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>最末一行显示整个文件夹大小为 61MB。</p>
-<p>只统计当前目录下文件和文件夹（不列出文件夹下文件）大小，不包括隐藏文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span><span class="token comment"># du -sh *</span>
-102K    ./100K
-102K    ./100K2
-21M     ./1.copy
-21M     ./1.iso
-<span class="token number">2</span>.0K    ./a.cfg
-21M     ./lost+found
-<span class="token number">4</span>.0K    ./users<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>统计包含隐藏文件和文件夹大小：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-250 ~<span class="token punctuation">]</span><span class="token comment"># du -h --max-depth=1</span>
-<span class="token number">0</span>       ./.pki
-16M     ./.kube
-16K     ./.ssh
-<span class="token number">0</span>       ./.git-credential-cache
-<span class="token number">8</span>.0K    ./.docker
-124K    ./.mizu
-40K     ./.cache
-<span class="token number">1</span>.7G    ./1
-<span class="token number">1</span>.7G    <span class="token builtin class-name">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>1.基本操作</category>
-      </categories>
-  </entry>
-  <entry>
     <title>Linux 启动流程</title>
     <url>/4291230975/</url>
     <content><![CDATA[<h1 id="bios-启动流程"><a class="markdownIt-Anchor" href="#bios-启动流程"></a> BIOS 启动流程</h1>
@@ -1635,135 +1635,6 @@ key        semid      owner      perms      nsems   <span aria-hidden="true" cla
       </categories>
   </entry>
   <entry>
-    <title>Linux 文件权限</title>
-    <url>/46662635/</url>
-    <content><![CDATA[<h1 id="基本权限"><a class="markdownIt-Anchor" href="#基本权限"></a> 基本权限</h1>
-<p>基础权限有三种，分别是：读（r，Read）、写（w，Write）、执行（x，eXecute）。</p>
-<p>同样的权限标记对于文件和目录代表不同的意义。</p>
-<h2 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h2>
-<p>文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。</p>
-<table>
-<thead>
-<tr>
-<th>数字</th>
-<th>字符</th>
-<th>权限</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>4</td>
-<td>r</td>
-<td><strong>读取文件内容</strong>。例如使用 <code>cat</code> 命令查看，使用 <code>vim</code> 以<strong>只读</strong>方式打开。</td>
-</tr>
-<tr>
-<td>2</td>
-<td>w</td>
-<td><strong>编辑修改</strong>文件内容，但<strong>不包括删除</strong>文件。例如使用 <code>vim</code>、<code>sed</code> 等对文件内容进行修改并保存。</td>
-</tr>
-<tr>
-<td>1</td>
-<td>x</td>
-<td>文件具有可以被系统<strong>执行</strong>的权限。例如命令和脚本必须拥有此权限才能直接执行。</td>
-</tr>
-</tbody>
-</table>
-<h2 id="目录权限"><a class="markdownIt-Anchor" href="#目录权限"></a> 目录权限</h2>
-<p>目录主要的内容是记录文件名清单，所以目录权限实际关联的是目录下文件属性查看与更改。</p>
-<table>
-<thead>
-<tr>
-<th>数字</th>
-<th>字符</th>
-<th>权限</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>4</td>
-<td>r</td>
-<td><strong>仅查询</strong>目录下的文件或目录<strong>名称</strong>，无法看到属性，相当于执行不加参数的 <code>ls</code> 命令。</td>
-</tr>
-<tr>
-<td>2</td>
-<td>w</td>
-<td>改变目录结构清单权限，也就是在目录下<strong>新建、删除、重命名</strong>文件或目录。</td>
-</tr>
-<tr>
-<td>1</td>
-<td>x</td>
-<td><strong>进入目录</strong>的权限，<strong>查询</strong>目录下的文件<strong>属性</strong>。</td>
-</tr>
-</tbody>
-</table>
-<h1 id="权限参考"><a class="markdownIt-Anchor" href="#权限参考"></a> 权限参考</h1>
-<p>根据使用场景来配置权限。</p>
-<p><strong>用户进入目录所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限，来运行 <code>cd</code> 切换目录。</li>
-<li>目录需要 r 权限，来使用 <code>ls</code> 命令查看目录中文件列表。</li>
-</ul>
-<p><strong>用户读取目录内文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 r 权限来运行 <code>cat</code>、<code>more</code> 等读取文件命令。</li>
-</ul>
-<p><strong>用户修改目录内文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 r 和 w 权限来使用 <code>vi</code> 等工具进行文件读写。</li>
-</ul>
-<p><strong>用户创建一个文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 w 和 x 权限来创建文件。</li>
-</ul>
-<p><strong>用户执行目录下的命令所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 x 权限来运行命令。</li>
-</ul>
-<h1 id="特殊权限"><a class="markdownIt-Anchor" href="#特殊权限"></a> 特殊权限</h1>
-<p>在 Linux 系统中，还有一些特殊权限。</p>
-<h2 id="suid"><a class="markdownIt-Anchor" href="#suid"></a> SUID</h2>
-<p>当 s 标志出现在文件所有者的 x 权限上时，被称为 Set UID，其含义为：</p>
-<ul>
-<li>SUID 权限<strong>仅对二进制程序有效</strong>，不能用在脚本上；</li>
-<li>执行者对该程序需要具有 x 的可执行权限；</li>
-<li>本权限仅在执行该程序的过程中（run-time）有效；</li>
-<li><strong>执行者将具有该程序所有者的权限</strong>。</li>
-</ul>
-<p>例如一般用户运行 <code>passwd</code> 命令修改密码，需要修改 <code>/etc/shadow</code> 文件。但是该文件的权限只有 root 可读写，而用户运行 passwd 程序时，会暂时获得 passwd 程序的 root 权限，从而可以通过 <code>passwd</code> 命令修改 <code>/etc/shadow</code> 文件。</p>
-<p>这是因为运行 <code>passwd</code> 后会启动一个新的进程，该进程会产生一个新的 PID。在该 PID 产生时，SUID 会给予该 PID 特殊的权限设置，使得执行者在该进程中具有该程序所有者的权限。</p>
-<h2 id="sgid"><a class="markdownIt-Anchor" href="#sgid"></a> SGID</h2>
-<p>当 s 标志出现在文件所属组的 x 权限上时，被称为 Set GID。SGID 可以针对文件或目录来设置。</p>
-<p><strong>针对文件</strong>，SGID 有以下功能：</p>
-<ul>
-<li>SGID 对二进制程序有效；</li>
-<li>程序执行者对该程序来说，需要具备 x 的权限；</li>
-<li><strong>执行者在执行的过程中将会获得该程序所属组的权限</strong>。</li>
-</ul>
-<p>例如，一般用户使用 <code>locate</code> 这个程序可以查询 <code>/var/lib/mlocate/mlocate.db</code> 文件的内容，会暂时获得 slocate 用户组的权限。</p>
-<p><strong>针对目录</strong>，SGID 有以下功能：</p>
-<ul>
-<li>用户若对此目录具有 r 和 x 的权限时，该用户能够进入此目录；</li>
-<li>用户在此目录下的有效用户组将会变成该目录的用户组；</li>
-<li><strong>若用户在此目录下具有 w 的权限，则用户所创建的新文件的所属组与此目录的所属组相同。</strong></li>
-</ul>
-<h2 id="sbit"><a class="markdownIt-Anchor" href="#sbit"></a> SBIT</h2>
-<p>当 t 出现在文件所有者的其他用户 x 权限上时，被称为 Sticky Bit。其含义为：</p>
-<ul>
-<li>SBIT 权限<strong>仅对目录有效</strong>；</li>
-<li>当用户对该目录具有 w 和 x 权限时，即具有写入权限时；</li>
-<li><strong>当用户在该目录下创建文件或目录时，仅有自己与 root 才有权力删除该文件。</strong></li>
-</ul>
-<p>例如，用户 1 对目录 A 具有 w 的权限，里面还有其他用户的文件。此时，目录 A 加上了 SBIT 权限时，用户 1 只能修改自己创建的文件，无法删除他人文件。</p>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>0.基础概论</category>
-      </categories>
-  </entry>
-  <entry>
     <title>Linux 命令行使用</title>
     <url>/1784829336/</url>
     <content><![CDATA[<h1 id="终端类型"><a class="markdownIt-Anchor" href="#终端类型"></a> 终端类型</h1>
@@ -1847,7 +1718,7 @@ vt100<span aria-hidden="true" class="line-numbers-rows"><span></span><span></spa
 </tr>
 <tr>
 <td>#</td>
-<td>如果当前用户为root，命令提示符为 #；如果为普通用户，则为 $。</td>
+<td>如果当前用户为 root，命令提示符为 #；如果为普通用户，则为 $。</td>
 </tr>
 </tbody>
 </table>
@@ -1877,8 +1748,8 @@ vt100<span aria-hidden="true" class="line-numbers-rows"><span></span><span></spa
 <ol>
 <li>以相对/绝对路径执行命令，例如 <code>/bin/ls</code> 或 <code>ls</code>。</li>
 <li>由别名（alias）找到该命令来执行。</li>
-<li>由bash内置的（builtin）命令来执行。</li>
-<li>通过$PATH变量的顺序找到的第一个命令来执行。</li>
+<li>由 bash 内置的（builtin）命令来执行。</li>
+<li>通过$PATH 变量的顺序找到的第一个命令来执行。</li>
 </ol>
 <h2 id="执行多条命令"><a class="markdownIt-Anchor" href="#执行多条命令"></a> 执行多条命令</h2>
 <p>可以用分号将多条命令写在同一行，这些命令将会依次执行。</p>
@@ -2090,6 +1961,135 @@ drwxr-----.  <span class="token number">3</span> root root   <span class="token 
 <li>文件名中一般不应该包含空格；</li>
 <li>使用 Ext 文件系统时，文件名最长 255 个字符，路径最长 4096 个字符。</li>
 </ul>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>0.基础概论</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Linux 文件权限</title>
+    <url>/46662635/</url>
+    <content><![CDATA[<h1 id="基本权限"><a class="markdownIt-Anchor" href="#基本权限"></a> 基本权限</h1>
+<p>基础权限有三种，分别是：读（r，Read）、写（w，Write）、执行（x，eXecute）。</p>
+<p>同样的权限标记对于文件和目录代表不同的意义。</p>
+<h2 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h2>
+<p>文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。</p>
+<table>
+<thead>
+<tr>
+<th>数字</th>
+<th>字符</th>
+<th>权限</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td>r</td>
+<td><strong>读取文件内容</strong>。例如使用 <code>cat</code> 命令查看，使用 <code>vim</code> 以<strong>只读</strong>方式打开。</td>
+</tr>
+<tr>
+<td>2</td>
+<td>w</td>
+<td><strong>编辑修改</strong>文件内容，但<strong>不包括删除</strong>文件。例如使用 <code>vim</code>、<code>sed</code> 等对文件内容进行修改并保存。</td>
+</tr>
+<tr>
+<td>1</td>
+<td>x</td>
+<td>文件具有可以被系统<strong>执行</strong>的权限。例如命令和脚本必须拥有此权限才能直接执行。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="目录权限"><a class="markdownIt-Anchor" href="#目录权限"></a> 目录权限</h2>
+<p>目录主要的内容是记录文件名清单，所以目录权限实际关联的是目录下文件属性查看与更改。</p>
+<table>
+<thead>
+<tr>
+<th>数字</th>
+<th>字符</th>
+<th>权限</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td>r</td>
+<td><strong>仅查询</strong>目录下的文件或目录<strong>名称</strong>，无法看到属性，相当于执行不加参数的 <code>ls</code> 命令。</td>
+</tr>
+<tr>
+<td>2</td>
+<td>w</td>
+<td>改变目录结构清单权限，也就是在目录下<strong>新建、删除、重命名</strong>文件或目录。</td>
+</tr>
+<tr>
+<td>1</td>
+<td>x</td>
+<td><strong>进入目录</strong>的权限，<strong>查询</strong>目录下的文件<strong>属性</strong>。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="权限参考"><a class="markdownIt-Anchor" href="#权限参考"></a> 权限参考</h1>
+<p>根据使用场景来配置权限。</p>
+<p><strong>用户进入目录所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限，来运行 <code>cd</code> 切换目录。</li>
+<li>目录需要 r 权限，来使用 <code>ls</code> 命令查看目录中文件列表。</li>
+</ul>
+<p><strong>用户读取目录内文件所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 r 权限来运行 <code>cat</code>、<code>more</code> 等读取文件命令。</li>
+</ul>
+<p><strong>用户修改目录内文件所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 r 和 w 权限来使用 <code>vi</code> 等工具进行文件读写。</li>
+</ul>
+<p><strong>用户创建一个文件所需权限</strong>：</p>
+<ul>
+<li>目录需要 w 和 x 权限来创建文件。</li>
+</ul>
+<p><strong>用户执行目录下的命令所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 x 权限来运行命令。</li>
+</ul>
+<h1 id="特殊权限"><a class="markdownIt-Anchor" href="#特殊权限"></a> 特殊权限</h1>
+<p>在 Linux 系统中，还有一些特殊权限。</p>
+<h2 id="suid"><a class="markdownIt-Anchor" href="#suid"></a> SUID</h2>
+<p>当 s 标志出现在文件所有者的 x 权限上时，被称为 Set UID，其含义为：</p>
+<ul>
+<li>SUID 权限<strong>仅对二进制程序有效</strong>，不能用在脚本上；</li>
+<li>执行者对该程序需要具有 x 的可执行权限；</li>
+<li>本权限仅在执行该程序的过程中（run-time）有效；</li>
+<li><strong>执行者将具有该程序所有者的权限</strong>。</li>
+</ul>
+<p>例如一般用户运行 <code>passwd</code> 命令修改密码，需要修改 <code>/etc/shadow</code> 文件。但是该文件的权限只有 root 可读写，而用户运行 passwd 程序时，会暂时获得 passwd 程序的 root 权限，从而可以通过 <code>passwd</code> 命令修改 <code>/etc/shadow</code> 文件。</p>
+<p>这是因为运行 <code>passwd</code> 后会启动一个新的进程，该进程会产生一个新的 PID。在该 PID 产生时，SUID 会给予该 PID 特殊的权限设置，使得执行者在该进程中具有该程序所有者的权限。</p>
+<h2 id="sgid"><a class="markdownIt-Anchor" href="#sgid"></a> SGID</h2>
+<p>当 s 标志出现在文件所属组的 x 权限上时，被称为 Set GID。SGID 可以针对文件或目录来设置。</p>
+<p><strong>针对文件</strong>，SGID 有以下功能：</p>
+<ul>
+<li>SGID 对二进制程序有效；</li>
+<li>程序执行者对该程序来说，需要具备 x 的权限；</li>
+<li><strong>执行者在执行的过程中将会获得该程序所属组的权限</strong>。</li>
+</ul>
+<p>例如，一般用户使用 <code>locate</code> 这个程序可以查询 <code>/var/lib/mlocate/mlocate.db</code> 文件的内容，会暂时获得 slocate 用户组的权限。</p>
+<p><strong>针对目录</strong>，SGID 有以下功能：</p>
+<ul>
+<li>用户若对此目录具有 r 和 x 的权限时，该用户能够进入此目录；</li>
+<li>用户在此目录下的有效用户组将会变成该目录的用户组；</li>
+<li><strong>若用户在此目录下具有 w 的权限，则用户所创建的新文件的所属组与此目录的所属组相同。</strong></li>
+</ul>
+<h2 id="sbit"><a class="markdownIt-Anchor" href="#sbit"></a> SBIT</h2>
+<p>当 t 出现在文件所有者的其他用户 x 权限上时，被称为 Sticky Bit。其含义为：</p>
+<ul>
+<li>SBIT 权限<strong>仅对目录有效</strong>；</li>
+<li>当用户对该目录具有 w 和 x 权限时，即具有写入权限时；</li>
+<li><strong>当用户在该目录下创建文件或目录时，仅有自己与 root 才有权力删除该文件。</strong></li>
+</ul>
+<p>例如，用户 1 对目录 A 具有 w 的权限，里面还有其他用户的文件。此时，目录 A 加上了 SBIT 权限时，用户 1 只能修改自己创建的文件，无法删除他人文件。</p>
 ]]></content>
       <categories>
         <category>Linux</category>
