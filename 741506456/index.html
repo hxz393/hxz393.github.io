@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="查看内核版本 使用命令uname -r可以查看当前内核版本： [root@101c7 ~]$ uname -r 3.10.0-862.el7.x86_64 如果想要查看更详细的内核信息，可以使用uname -a命令： [root@101c7 audit]$ uname -a Linux 101c7 3.10.0-862.el7.x86_64 #1 SMP Fri Apr 20 16:44:24">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 查询系统信息">
+<meta property="og:url" content="https://blog.x2b.net/741506456/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="查看内核版本 使用命令uname -r可以查看当前内核版本： [root@101c7 ~]$ uname -r 3.10.0-862.el7.x86_64 如果想要查看更详细的内核信息，可以使用uname -a命令： [root@101c7 audit]$ uname -a Linux 101c7 3.10.0-862.el7.x86_64 #1 SMP Fri Apr 20 16:44:24">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-09-18T06:41:40.000Z">
+<meta property="article:modified_time" content="2023-04-26T17:31:30.357Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/741506456/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/741506456/","path":"741506456/","title":"Linux 查询系统信息"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Linux 查询系统信息 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="../index.html" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">3</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">21</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%86%85%E6%A0%B8%E7%89%88%E6%9C%AC"><span class="nav-number">1.</span> <span class="nav-text"> 查看内核版本</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%8D%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text"> 查看操作系统位数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%8F%91%E8%A1%8C%E7%89%88%E6%9C%AC"><span class="nav-number">3.</span> <span class="nav-text"> 查看发行版本</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E6%97%B6%E9%97%B4"><span class="nav-number">4.</span> <span class="nav-text"> 查看当前时间</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%86%85%E5%AD%98%E4%BD%BF%E7%94%A8%E6%83%85%E5%86%B5"><span class="nav-number">5.</span> <span class="nav-text"> 查看内存使用情况</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%86%85%E6%A0%B8%E6%A3%80%E6%B5%8B%E4%BF%A1%E6%81%AF"><span class="nav-number">6.</span> <span class="nav-text"> 查看内核检测信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E8%B5%84%E6%BA%90%E5%8D%A0%E7%94%A8%E4%BF%A1%E6%81%AF"><span class="nav-number">7.</span> <span class="nav-text"> 系统资源占用信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E5%86%85%E5%AD%98%E4%B8%AD%E5%86%85%E5%AE%B9"><span class="nav-number">8.</span> <span class="nav-text"> 查询内存中内容</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E4%BD%BF%E7%94%A8%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6"><span class="nav-number">9.</span> <span class="nav-text"> 查询使用中的文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E7%A8%8B%E5%BA%8F%E6%89%93%E5%BC%80%E7%9A%84%E6%96%87%E4%BB%B6"><span class="nav-number">10.</span> <span class="nav-text"> 查询程序打开的文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E7%A1%AC%E4%BB%B6%E4%BF%A1%E6%81%AF"><span class="nav-number">11.</span> <span class="nav-text"> 查询硬件信息</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.douban.com/people/Cyber.DraFonS" title="https:&#x2F;&#x2F;www.douban.com&#x2F;people&#x2F;Cyber.DraFonS" rel="noopener external nofollow noreferrer" target="_blank">豆瓣</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/741506456/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Linux 查询系统信息 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux 查询系统信息
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-09-18 14:41:40" itemprop="dateCreated datePublished" datetime="2021-09-18T14:41:40+08:00">2021-09-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-04-27 01:31:30" itemprop="dateModified" datetime="2023-04-27T01:31:30+08:00">2023-04-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/1-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">1.基本操作</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>9 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="查看内核版本"><a class="markdownIt-Anchor" href="#查看内核版本"></a> 查看内核版本</h1>
+<p>使用命令<code>uname -r</code>可以查看当前内核版本：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">uname</span> <span class="token parameter variable">-r</span>
+<span class="token number">3.10</span>.0-862.el7.x86_64<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>如果想要查看更详细的内核信息，可以使用<code>uname -a</code>命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">uname</span> <span class="token parameter variable">-a</span>
+Linux 101c7 <span class="token number">3.10</span>.0-862.el7.x86_64 <span class="token comment">#1 SMP Fri Apr 20 16:44:24 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h1 id="查看操作系统位数"><a class="markdownIt-Anchor" href="#查看操作系统位数"></a> 查看操作系统位数</h1>
+<p>使用<code>getconf</code>命令查看<code>LONG_BIT</code>变量可以得到操作系统位数：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ getconf LONG_BIT
+<span class="token number">64</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h1 id="查看发行版本"><a class="markdownIt-Anchor" href="#查看发行版本"></a> 查看发行版本</h1>
+<p>在 CentOS 5 中，可以使用命令<code>lsb_release -a</code>查看发行版本。</p>
+<p>在 CentOS 7 中，可以查看文件<code>/etc/centos-release</code>的内容来查看版本号：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/centos-release
+CentOS Linux release <span class="token number">7.9</span>.2009 <span class="token punctuation">(</span>Core<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h1 id="查看当前时间"><a class="markdownIt-Anchor" href="#查看当前时间"></a> 查看当前时间</h1>
+<p>使用<code>date</code>命令可以查看系统中当前的时间和日期：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">date</span>
+Sat Sep <span class="token number">11</span> 00:16:31 EDT <span class="token number">2021</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>可以使用<code>systemd-analyze</code>命令查看系统启动时间：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-m1-pro ~<span class="token punctuation">]</span><span class="token comment"># systemd-analyze</span>
+Startup finished <span class="token keyword">in</span> 614ms <span class="token punctuation">(</span>kernel<span class="token punctuation">)</span> + <span class="token number">1</span>.192s <span class="token punctuation">(</span>initrd<span class="token punctuation">)</span> + <span class="token number">27</span>.889s <span class="token punctuation">(</span>userspace<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">29</span>.695s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>其中，kernel 表示内核启动时间，initrd 表示 initramfs 加载时间，userspace 表示用户空间启动时间。</p>
+<h1 id="查看内存使用情况"><a class="markdownIt-Anchor" href="#查看内存使用情况"></a> 查看内存使用情况</h1>
+<p>使用<code>free</code>命令查看内存使用情况，单位默认为 KB：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">free</span>
+              total        used        <span class="token function">free</span>      shared  buff/cache   available
+Mem:        <span class="token number">3861280</span>      <span class="token number">283612</span>     <span class="token number">2429740</span>       <span class="token number">11956</span>     <span class="token number">1147928</span>     <span class="token number">3272400</span>
+Swap:       <span class="token number">2097148</span>           <span class="token number">0</span>     <span class="token number">2097148</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>一般来说，内存被大量<code>buff/cache</code>了是正常现象，但<code>swap</code>用量超过 20%说明物理内存不足。</p>
+<h1 id="查看内核检测信息"><a class="markdownIt-Anchor" href="#查看内核检测信息"></a> 查看内核检测信息</h1>
+<p>可以使用<code>dmesg</code>来输出所有的内核开机时的信息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">dmesg</span> <span class="token operator">|</span> <span class="token function">less</span>
+<span class="token punctuation">[</span>    <span class="token number">0.000000</span><span class="token punctuation">]</span> Initializing cgroup subsys cpuset
+<span class="token punctuation">[</span>    <span class="token number">0.000000</span><span class="token punctuation">]</span> Initializing cgroup subsys cpu
+<span class="token punctuation">[</span>    <span class="token number">0.000000</span><span class="token punctuation">]</span> Initializing cgroup subsys cpuacct<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="系统资源占用信息"><a class="markdownIt-Anchor" href="#系统资源占用信息"></a> 系统资源占用信息</h1>
+<p>如果想要了解系统资源的运行情况，可以使用<code>vmstat</code>命令检测 CPU/内存/磁盘 IO 等。该命令常用参数如下：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-a</td>
+<td>使用 inactive/active 替代 buffer/.cache 的内存输出信息</td>
+</tr>
+<tr>
+<td>-f</td>
+<td>开机到目前为止系统复制（fork）的进程数</td>
+</tr>
+<tr>
+<td>-s</td>
+<td>将一些事件导致的内存变化情况列表说明</td>
+</tr>
+<tr>
+<td>-S</td>
+<td>接单位，让显示的数据有单位</td>
+</tr>
+<tr>
+<td>-d</td>
+<td>列出磁盘的读写总量统计</td>
+</tr>
+<tr>
+<td>-p</td>
+<td>列出分区，可显示该分区的读写总量统计</td>
+</tr>
+</tbody>
+</table>
+<p>例如统计目前主机 CPU 状态，每秒一次，共三次:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">vmstat</span> <span class="token number">1</span> <span class="token number">3</span>
+procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
+r  b   swpd   <span class="token function">free</span>   buff  cache   si   so    bi    bo   <span class="token keyword">in</span>   cs us sy <span class="token function">id</span> wa st
+<span class="token number">1</span>  <span class="token number">0</span>      <span class="token number">0</span> <span class="token number">2434408</span>  <span class="token number">15508</span> <span class="token number">1132464</span>    <span class="token number">0</span>    <span class="token number">0</span>     <span class="token number">0</span>     <span class="token number">0</span>    <span class="token number">4</span>    <span class="token number">6</span>  <span class="token number">0</span>  <span class="token number">0</span> <span class="token number">100</span>  <span class="token number">0</span>  <span class="token number">0</span>
+<span class="token number">0</span>  <span class="token number">0</span>      <span class="token number">0</span> <span class="token number">2434416</span>  <span class="token number">15508</span> <span class="token number">1132464</span>    <span class="token number">0</span>    <span class="token number">0</span>     <span class="token number">0</span>     <span class="token number">0</span>  <span class="token number">143</span>  <span class="token number">191</span>  <span class="token number">0</span>  <span class="token number">0</span> <span class="token number">100</span>  <span class="token number">0</span>  <span class="token number">0</span>
+<span class="token number">0</span>  <span class="token number">0</span>      <span class="token number">0</span> <span class="token number">2434416</span>  <span class="token number">15508</span> <span class="token number">1132464</span>    <span class="token number">0</span>    <span class="token number">0</span>     <span class="token number">0</span>     <span class="token number">0</span>   <span class="token number">87</span>  <span class="token number">113</span>  <span class="token number">0</span>  <span class="token number">0</span> <span class="token number">100</span>  <span class="token number">0</span>  <span class="token number">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>下面是各字段的说明。</p>
+<p>进程（procs）字段统计的数量越多，代表系统越繁忙：</p>
+<table>
+<thead>
+<tr>
+<th>标志</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>r</td>
+<td>就绪或正在运行的进程数</td>
+</tr>
+<tr>
+<td>b</td>
+<td>不可中断的睡眠进程数</td>
+</tr>
+</tbody>
+</table>
+<p>内存字段（memory）：</p>
+<table>
+<thead>
+<tr>
+<th>标志</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>swpd</td>
+<td>使用的虚拟内存大小（单位 KB）</td>
+</tr>
+<tr>
+<td>free</td>
+<td>空闲内存大小（单位 KB）</td>
+</tr>
+<tr>
+<td>buff</td>
+<td>用于缓存的内存大小（单位 KB）</td>
+</tr>
+<tr>
+<td>cache</td>
+<td>用于高速缓存的内存大小（单位 KB）</td>
+</tr>
+</tbody>
+</table>
+<p>内存交换空间（swap）数值越大代表内存不太够用：</p>
+<table>
+<thead>
+<tr>
+<th>标志</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>si</td>
+<td>从磁盘中交换到内存的块数量</td>
+</tr>
+<tr>
+<td>so</td>
+<td>从内存中交换到磁盘的块数量</td>
+</tr>
+</tbody>
+</table>
+<p>磁盘读写（io）数值越高代表磁盘越忙碌：</p>
+<table>
+<thead>
+<tr>
+<th>标志</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bi</td>
+<td>从块设备（磁盘）读取的块数</td>
+</tr>
+<tr>
+<td>bo</td>
+<td>写入到块设备（磁盘）的块数</td>
+</tr>
+</tbody>
+</table>
+<p>系统（system）项目计数越大，代表系统与接口设备的通信越频繁：</p>
+<table>
+<thead>
+<tr>
+<th>标志</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>in</td>
+<td>每秒中断次数（包括时钟中断）</td>
+</tr>
+<tr>
+<td>cs</td>
+<td>每秒上下文切换次数</td>
+</tr>
+</tbody>
+</table>
+<p>CPU 的选项：</p>
+<table>
+<thead>
+<tr>
+<th>标志</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>us</td>
+<td>用户空间占用 CPU 时间的百分比</td>
+</tr>
+<tr>
+<td>sy</td>
+<td>内核空间占用 CPU 时间的百分比</td>
+</tr>
+<tr>
+<td>id</td>
+<td>空闲 CPU 时间的百分比</td>
+</tr>
+<tr>
+<td>wa</td>
+<td>等待 I/O 操作占用 CPU 时间的百分比</td>
+</tr>
+<tr>
+<td>st</td>
+<td>用于运行虚拟机的 CPU 时间的百分比</td>
+</tr>
+</tbody>
+</table>
+<p>例如查看磁盘读写状态：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">vmstat</span> <span class="token parameter variable">-d</span>
+disk- ------------reads------------ ------------writes----------- -----IO------
+       total merged sectors      ms  total merged sectors      ms    cur    sec
+sdb    <span class="token number">11640</span>  <span class="token number">23419</span> <span class="token number">1679403</span>    <span class="token number">3097</span>   <span class="token number">3013</span> <span class="token number">143194</span>  <span class="token number">714969</span>    <span class="token number">2367</span>      <span class="token number">0</span>      <span class="token number">2</span>
+sda    <span class="token number">13672</span>     <span class="token number">28</span> <span class="token number">1219051</span>    <span class="token number">6501</span>  <span class="token number">22246</span>   <span class="token number">3488</span> <span class="token number">1921401</span>   <span class="token number">17945</span>      <span class="token number">0</span>     <span class="token number">10</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="查询内存中内容"><a class="markdownIt-Anchor" href="#查询内存中内容"></a> 查询内存中内容</h1>
+<p>内存中的数据都写入到目录<code>/proc/*</code>中（不占用实际硬盘空间）。查看目录<code>/proc</code>中的内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ ll /proc <span class="token operator">|</span> <span class="token function">head</span> 
+total <span class="token number">0</span>
+dr-xr-xr-x.  <span class="token number">9</span> root    root                  <span class="token number">0</span> Sep  <span class="token number">9</span> <span class="token number">15</span>:08 <span class="token number">1</span>
+dr-xr-xr-x.  <span class="token number">9</span> root    root                  <span class="token number">0</span> Sep  <span class="token number">9</span> <span class="token number">15</span>:08 <span class="token number">10</span>
+dr-xr-xr-x.  <span class="token number">9</span> root    root                  <span class="token number">0</span> Sep <span class="token number">14</span> 00:31 <span class="token number">10025</span>
+dr-xr-xr-x.  <span class="token number">9</span> root    root                  <span class="token number">0</span> Sep <span class="token number">14</span> 00:31 <span class="token number">10026</span>
+dr-xr-xr-x.  <span class="token number">9</span> root    root                  <span class="token number">0</span> Sep <span class="token number">14</span> 00:31 <span class="token number">10139</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到，各个进程的 PID 都是以目录的形式存在于 <code>/proc</code> 中。</p>
+<p>进一步查看进程在内存中写入的内容，以 PID=1 的 init 程序为例：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ ll /proc/1
+total <span class="token number">0</span>
+dr-xr-xr-x. <span class="token number">2</span> root root <span class="token number">0</span> Sep <span class="token number">10</span> 01:44 attr
+-rw-r--r--. <span class="token number">1</span> root root <span class="token number">0</span> Sep <span class="token number">10</span> 01:44 autogroup
+-r--------. <span class="token number">1</span> root root <span class="token number">0</span> Sep <span class="token number">10</span> 01:44 auxv
+-r--r--r--. <span class="token number">1</span> root root <span class="token number">0</span> Sep  <span class="token number">9</span> <span class="token number">15</span>:08 cgroup
+--w-------. <span class="token number">1</span> root root <span class="token number">0</span> Sep <span class="token number">10</span> 01:44 clear_refs
+-r--r--r--. <span class="token number">1</span> root root <span class="token number">0</span> Sep  <span class="token number">9</span> <span class="token number">15</span>:08 cmdline
+-rw-r--r--. <span class="token number">1</span> root root <span class="token number">0</span> Sep  <span class="token number">9</span> <span class="token number">15</span>:08 <span class="token function">comm</span>
+-rw-r--r--. <span class="token number">1</span> root root <span class="token number">0</span> Sep <span class="token number">10</span> 01:44 coredump_filter
+-r--r--r--. <span class="token number">1</span> root root <span class="token number">0</span> Sep <span class="token number">10</span> 01:44 cpuset
+lrwxrwxrwx. <span class="token number">1</span> root root <span class="token number">0</span> Sep <span class="token number">10</span> 01:44 cwd -<span class="token operator">></span> /
+-r--------. <span class="token number">1</span> root root <span class="token number">0</span> Sep  <span class="token number">9</span> <span class="token number">15</span>:08 environ
+lrwxrwxrwx. <span class="token number">1</span> root root <span class="token number">0</span> Sep  <span class="token number">9</span> <span class="token number">15</span>:08 exe -<span class="token operator">></span> /usr/lib/systemd/systemd<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中 <code>cmdline</code> 定义了 init 被启动的命令串，<code>environ</code> 定义了这个进程的环境变量。</p>
+<p>以下是在 <code>/proc</code> 目录下常见文件的内容：</p>
+<table>
+<thead>
+<tr>
+<th><strong>文件名</strong></th>
+<th><strong>文件内容</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cmdline</td>
+<td>加载 kernel 时所执行的相关参数</td>
+</tr>
+<tr>
+<td>cpuinfo</td>
+<td>本机 CPU 的相关信息，包括频率、类型和运算功能等</td>
+</tr>
+<tr>
+<td>devices</td>
+<td>记录各个主要设备的主要设备代号，与 mknod 有关</td>
+</tr>
+<tr>
+<td>filesystems</td>
+<td>目前系统已经加载的文件系统</td>
+</tr>
+<tr>
+<td>interrupts</td>
+<td>目前系统上的 IRQ 分配状态</td>
+</tr>
+<tr>
+<td>ioports</td>
+<td>目前系统上各个设备所配置的 I/O 地址</td>
+</tr>
+<tr>
+<td>kcore</td>
+<td>内存的大小</td>
+</tr>
+<tr>
+<td>loadavg</td>
+<td>系统负载情况</td>
+</tr>
+<tr>
+<td>meminfo</td>
+<td>内存信息</td>
+</tr>
+<tr>
+<td>modules</td>
+<td>已经加载的模块列表，主要是驱动程序</td>
+</tr>
+<tr>
+<td>mounts</td>
+<td>系统已挂载的数据</td>
+</tr>
+<tr>
+<td>swaps</td>
+<td>系统加载的内存使用的分区记录</td>
+</tr>
+<tr>
+<td>partitions</td>
+<td>记录系统分区信息</td>
+</tr>
+<tr>
+<td>pci</td>
+<td>在 PCI 总线上每个设备的详细情况，可用 lspci 查询</td>
+</tr>
+<tr>
+<td>uptime</td>
+<td>系统运行时长记录</td>
+</tr>
+<tr>
+<td>version</td>
+<td>内核版本</td>
+</tr>
+<tr>
+<td>bus/*</td>
+<td>一些总线设备，包括 USB 记录设备</td>
+</tr>
+</tbody>
+</table>
+<p>对 <code>/proc</code> 下的文件进行修改后，修改将立即生效。</p>
+<h1 id="查询使用中的文件"><a class="markdownIt-Anchor" href="#查询使用中的文件"></a> 查询使用中的文件</h1>
+<p>查询文件正在被什么程序使用可以使用 <code>fuser</code>命令查询（使用 yum install psmisc 安装）。可用参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-u</td>
+<td>列出进程所有者</td>
+</tr>
+<tr>
+<td>-m</td>
+<td>列出占用文件系统的进程</td>
+</tr>
+<tr>
+<td>-v</td>
+<td>列出文件与程序还有命令的完整相关性</td>
+</tr>
+<tr>
+<td>-k</td>
+<td>找出使用文件的 PID，并试图强制结束程序</td>
+</tr>
+<tr>
+<td>-i</td>
+<td>结束程序前询问用户</td>
+</tr>
+</tbody>
+</table>
+<p>例如找到当前目录正在使用它的 PID/所属账户/权限：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">fuser</span> <span class="token parameter variable">-uv</span> <span class="token builtin class-name">.</span>
+            <span class="token environment constant">USER</span>      PID   ACCESS COMMAND
+/root/bin:  root      <span class="token number">40090</span> <span class="token punctuation">..</span>c<span class="token punctuation">..</span> <span class="token punctuation">(</span>root<span class="token punctuation">)</span>bash
+            root      <span class="token number">40855</span> <span class="token punctuation">..</span>c<span class="token punctuation">..</span> <span class="token punctuation">(</span>root<span class="token punctuation">)</span>tail<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>结果显示有两个 PID 为 40090 和 40855 的程序在使用该目录，程序所属为 root，命令是 <code>bash</code> 和 <code>tail</code>。可以直接使用<code>fuser -k</code>命令来终止使用该目录的进程：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">fuser</span> <span class="token parameter variable">-k</span> /root/bin<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>ACCESS 选项代表的意义为：</p>
+<table>
+<thead>
+<tr>
+<th>字符</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>c</td>
+<td>此进程在当前目录下（非子目录）</td>
+</tr>
+<tr>
+<td>e</td>
+<td>可被触发为执行状态</td>
+</tr>
+<tr>
+<td>f</td>
+<td>是一个被打开的文件</td>
+</tr>
+<tr>
+<td>r</td>
+<td>代表顶层目录</td>
+</tr>
+<tr>
+<td>F</td>
+<td>该文件被打开了，不过在等待回应中</td>
+</tr>
+<tr>
+<td>m</td>
+<td>可能为分享的动态函数库</td>
+</tr>
+</tbody>
+</table>
+<h1 id="查询程序打开的文件"><a class="markdownIt-Anchor" href="#查询程序打开的文件"></a> 查询程序打开的文件</h1>
+<p>要查询某个程序正在使用的文件，可以使用 <code>lsof</code> 命令。命令参数如下：</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-a</td>
+<td>多项数据需要同时成立才显示出结果时</td>
+</tr>
+<tr>
+<td>-p</td>
+<td>指定进程 PID</td>
+</tr>
+<tr>
+<td>-U</td>
+<td>仅列出 Unix like 系统的 socket 文件类型</td>
+</tr>
+<tr>
+<td>-u</td>
+<td>接 username，列出该用户相关进程所打开的文件</td>
+</tr>
+<tr>
+<td>+d</td>
+<td>接目录，找出某个目录下面已经被打开的文件</td>
+</tr>
+</tbody>
+</table>
+<p>例如，列出关于 root 的所有进程打开的 socket 文件（-a 表示逻辑与，限定了必须为 root 用户和 socket 文件）：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">lsof</span> <span class="token parameter variable">-u</span> root <span class="token parameter variable">-a</span> <span class="token parameter variable">-U</span>
+COMMAND     PID <span class="token environment constant">USER</span>   FD   TYPE             DEVICE SIZE/OFF   NODE NAME
+systemd       <span class="token number">1</span> root   12u  unix 0xffff9ac438950000      0t0  <span class="token number">20565</span> /run/systemd/private
+systemd       <span class="token number">1</span> root   13u  unix 0xffff9ac438b14400      0t0 <span class="token number">605204</span> socket
+systemd       <span class="token number">1</span> root   18u  unix 0xffff9ac4b5ec8440      0t0     <span class="token number">29</span> /run/systemd/notify<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>例如，查询属于 root 的 tail 命令所打开的文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">lsof</span> <span class="token parameter variable">-u</span> root <span class="token operator">|</span> <span class="token function">grep</span> <span class="token function">tail</span>
+<span class="token function">tail</span>       <span class="token number">40855</span> root  cwd       DIR      <span class="token number">253,0</span>       <span class="token number">246</span>   <span class="token number">33607964</span> /root/bin
+<span class="token function">tail</span>       <span class="token number">40855</span> root  rtd       DIR      <span class="token number">253,0</span>       <span class="token number">253</span>         <span class="token number">64</span> /
+<span class="token function">tail</span>       <span class="token number">40855</span> root  txt       REG      <span class="token number">253,0</span>     <span class="token number">66816</span>   <span class="token number">50333754</span> /usr/bin/tail
+<span class="token function">tail</span>       <span class="token number">40855</span> root    0w      CHR        <span class="token number">1,3</span>       0t0       <span class="token number">1028</span> /dev/null
+<span class="token function">tail</span>       <span class="token number">40855</span> root    1w      REG      <span class="token number">253,0</span>       <span class="token number">236</span>   <span class="token number">33607951</span> /root/bin/nomarl.log
+<span class="token function">tail</span>       <span class="token number">40855</span> root    2w      REG      <span class="token number">253,0</span>        <span class="token number">54</span>   <span class="token number">33607959</span> /root/bin/error.log
+<span class="token function">tail</span>       <span class="token number">40855</span> root    3r      REG      <span class="token number">253,0</span>       <span class="token number">236</span>   <span class="token number">33607979</span> /root/bin/sh01.sh
+<span class="token function">tail</span>       <span class="token number">40855</span> root    4r  a_inode      <span class="token number">0,10</span>         <span class="token number">0</span>       <span class="token number">8534</span> inotify<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>显示结果字段含义如下：</p>
+<ul>
+<li>COMMAND：正在运行的命令名前 9 个字符。</li>
+<li>PID：进程的 PID。</li>
+<li>USER：进程属主的登录名。</li>
+<li>FD：文件描述符号以及访问类型。r 读，w 写，u 代表读写。</li>
+<li>TYPE：文件的类型。CHR 字符型，BLK 块型，DIR 目录，REG 代表常规文件。</li>
+<li>DEVICE：设备的设备号。</li>
+<li>SIZE：文件的大小。</li>
+<li>NODE：本地文件的 inode 号。</li>
+<li>NAME：文件名。</li>
+</ul>
+<h1 id="查询硬件信息"><a class="markdownIt-Anchor" href="#查询硬件信息"></a> 查询硬件信息</h1>
+<p>使用 <code>dmidecode</code> 命令可以查询当前计算机的硬件配置。主要查询的项目有：1（主板信息）、4（CPU 信息）、9（插槽信息）、17（内存信息）。例如查看 CPU 信息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ dmidecode <span class="token parameter variable">-t</span> <span class="token number">4</span> <span class="token operator">|</span> <span class="token function">head</span> <span class="token parameter variable">-n</span> <span class="token number">50</span>
+<span class="token comment"># dmidecode 3.2</span>
+Getting SMBIOS data from sysfs.
+SMBIOS <span class="token number">2.7</span> present.
+
+Handle 0x0004, DMI <span class="token builtin class-name">type</span> <span class="token number">4</span>, <span class="token number">42</span> bytes
+Processor Information
+        Socket Designation: CPU <span class="token comment">#000</span>
+        Type: Central Processor
+        Family: Unknown
+        Manufacturer: AuthenticAMD
+        ID: <span class="token number">82</span> 0F <span class="token number">80</span> 00 FF FB 8B <span class="token number">17</span>
+        Version: AMD Ryzen Threadripper 2990WX <span class="token number">32</span>-Core Processor
+        Voltage: <span class="token number">3.3</span> V
+        External Clock: Unknown
+        Max Speed: <span class="token number">30000</span> MHz
+        Current Speed: <span class="token number">3200</span> MHz<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以使用<code>dmesg</code>命令来查询系统中硬盘信息。例如，使用<code>grep ATA</code>过滤掉无关的信息，查询 SATA 接口硬盘信息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@s55 ~<span class="token punctuation">]</span>$ <span class="token function">dmesg</span> <span class="token operator">|</span> <span class="token function">grep</span> ATA
+<span class="token punctuation">[</span>    <span class="token number">3.367870</span><span class="token punctuation">]</span> ata6.00: ATA-10: HGST HUS722T1TALA604, RAGNWA09, max UDMA/133
+<span class="token punctuation">[</span>    <span class="token number">3.369145</span><span class="token punctuation">]</span> ata5.00: ATA-10: HGST HUS722T1TALA604, RAGNWA09, max UDMA/133<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>以下是一些常用的 Linux 系统硬件信息查询命令：</p>
+<ul>
+<li><code>gdisk</code>/<code>fdisk</code>：查询分区信息。</li>
+<li><code>dmesg</code>：查询内核运行时的记录日志。</li>
+<li><code>vmstat</code>：分析系统状态。</li>
+<li><code>lscpu</code>：查询 CPU 相关信息。</li>
+<li><code>lspci</code>：查询 PCI 接口设备。</li>
+<li><code>lsusb</code>：查询 USB 接口状态。</li>
+<li><code>iostat</code>：查询系统 I/O 状态。</li>
+<li><code>smartctl</code>：查询硬盘 S.M.A.R.T 信息。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/741506456/" title="Linux 查询系统信息">https://blog.x2b.net/741506456/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../517799084/" rel="prev" title="Linux 工作控制">
+                  <i class="fa fa-chevron-left"></i> Linux 工作控制
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../4291230975/" rel="next" title="Linux 启动流程">
+                  Linux 启动流程 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">46k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:34</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes 1.21
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@next-theme/pjax@0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://unpkg.com/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://unpkg.com/katex@0.16.4/dist/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/741506456/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://unpkg.com/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'blog.x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>
