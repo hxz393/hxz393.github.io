@@ -1945,143 +1945,6 @@ key        semid      owner      perms      nsems   <span aria-hidden="true" cla
       </categories>
   </entry>
   <entry>
-    <title>Linux 文件属性解释</title>
-    <url>/1872252014/</url>
-    <content><![CDATA[<h1 id="查看文件属性"><a class="markdownIt-Anchor" href="#查看文件属性"></a> 查看文件属性</h1>
-<p>执行 <code>ls -la</code> 命令后，可以看到当前目录下所有文件的权限和属性：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ll -la</span>
-total <span class="token number">32</span>
-dr-xr-x---.  <span class="token number">4</span> root root  <span class="token number">175</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 <span class="token builtin class-name">.</span>
-dr-xr-xr-x. <span class="token number">17</span> root root  <span class="token number">224</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:37 <span class="token punctuation">..</span>
--rw-------.  <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
--rw-------.  <span class="token number">1</span> root root  <span class="token number">847</span> Sep  <span class="token number">8</span> <span class="token number">12</span>:32 .bash_history
--rw-r--r--.  <span class="token number">1</span> root root   <span class="token number">18</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bash_logout
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">176</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bash_profile
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">176</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bashrc
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">100</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .cshrc
-drwxr-xr-x.  <span class="token number">2</span> root root    <span class="token number">6</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 dir1
-drwxr-----.  <span class="token number">3</span> root root   <span class="token number">19</span> Sep  <span class="token number">7</span> 05:51 .pki
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">129</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .tcshrc
--rw-------.  <span class="token number">1</span> root root  <span class="token number">508</span> Sep  <span class="token number">7</span> 05:52 .viminfo<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>total 为该目录下的所有数据所占用的实际块数量乘以块大小的值。</p>
-<p>从左到右以空格分隔成七列，分别代表：类型和权限、连接、所有者、所有组、大小、修改时间、文件名。</p>
-<h1 id="文件类型"><a class="markdownIt-Anchor" href="#文件类型"></a> 文件类型</h1>
-<p>第一列第一个字段用来表示文件的类型，文件类型有下面几种：</p>
-<table>
-<thead>
-<tr>
-<th><strong>标记</strong></th>
-<th><strong>类型</strong></th>
-<th><strong>说明</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>-</td>
-<td>普通文件</td>
-<td>文本文件、数据文件、可执行程序等都作为普通文件存储</td>
-</tr>
-<tr>
-<td>d</td>
-<td>目录</td>
-<td>目录不存放常规数据，它用来组织访问其他文件</td>
-</tr>
-<tr>
-<td>c</td>
-<td>字符设备文件</td>
-<td>指处理数据时每次只能处理一个字符的设备，例如鼠标、键盘（一次性读取设备）</td>
-</tr>
-<tr>
-<td>b</td>
-<td>块设备文件</td>
-<td>指处理数据时每次能处理大块数据的设备，例如硬盘</td>
-</tr>
-<tr>
-<td>s</td>
-<td>本地域套接字</td>
-<td>实现进程间通信的连接，本地域套接字由系统调用 socket 创建</td>
-</tr>
-<tr>
-<td>p</td>
-<td>有名管道(FIFO)</td>
-<td>让运行在同一主机上的两个进程相互通信，和 socket 文件相似</td>
-</tr>
-<tr>
-<td>l</td>
-<td>符号链接</td>
-<td>也叫做软链接（Linkfile），通过名字指向文件</td>
-</tr>
-</tbody>
-</table>
-<p><code>ls</code> 命令结果展示文件颜色含义：</p>
-<table>
-<thead>
-<tr>
-<th><strong>颜色</strong></th>
-<th><strong>含义</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>灰色</td>
-<td>普通文件</td>
-</tr>
-<tr>
-<td>蓝色</td>
-<td>目录</td>
-</tr>
-<tr>
-<td>绿色</td>
-<td>可执行文件</td>
-</tr>
-<tr>
-<td>黄色</td>
-<td>特殊文件</td>
-</tr>
-<tr>
-<td>红色</td>
-<td>压缩文件</td>
-</tr>
-</tbody>
-</table>
-<h1 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h1>
-<p>第一列后九个字段以三个为一组，分别表示：</p>
-<ul>
-<li>文件所有者权限</li>
-<li>同用户组权限</li>
-<li>其他用户权限</li>
-</ul>
-<p>权限为&quot;rwx&quot;的三个参数组合，没有权限显示为&quot;-&quot;减号。</p>
-<h1 id="连接节点"><a class="markdownIt-Anchor" href="#连接节点"></a> 连接节点</h1>
-<p>第二列数字表示节点，每个文件都会将它的权限与属性记录到文件系统的 inode 中。</p>
-<p>这个属性记录的就是有多少不同的文件名连接到相同的一个 inode 号码。</p>
-<h1 id="所有者所有组"><a class="markdownIt-Anchor" href="#所有者所有组"></a> 所有者/所有组</h1>
-<p>第三列和第四列分别表示文件所属的用户和用户组。</p>
-<h1 id="文件大小"><a class="markdownIt-Anchor" href="#文件大小"></a> 文件大小</h1>
-<p>第五列表示文件的容量大小，默认单位为 Bytes。</p>
-<p>目录显示的大小不是文件夹大小，而是目录元数据的大小。</p>
-<h1 id="修改日期"><a class="markdownIt-Anchor" href="#修改日期"></a> 修改日期</h1>
-<p>第六列为文件的创建日期或最近修改时间。</p>
-<p>如果修改时间距离太久，那时间部分会显示成年份。</p>
-<h1 id="文件名"><a class="markdownIt-Anchor" href="#文件名"></a> 文件名</h1>
-<p>第七列为文件名或文件夹名。</p>
-<p>Linux 的文件名是大小写敏感的。</p>
-<p>文件或目录名的第一个字母是&quot;.&quot;表示隐藏文件。</p>
-<p><strong>文件名规则</strong>：</p>
-<ul>
-<li>由大写字母、小写字母、数字和一些特殊符号组成；</li>
-<li>不可以包含 * ? &lt; &gt; ( ) [ ] { } / \ | &quot;  ` ＆ ;  ! 等符号；</li>
-<li>＋-可以出现在文件名中，但是不能作为文件名中的第一个字母；</li>
-<li>文件名中一般不应该包含空格；</li>
-<li>使用 Ext 文件系统时，文件名最长 255 个字符，路径最长 4096 个字符。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>0.基础概论</category>
-      </categories>
-  </entry>
-  <entry>
     <title>Linux 命令行使用</title>
     <url>/1784829336/</url>
     <content><![CDATA[<h1 id="终端类型"><a class="markdownIt-Anchor" href="#终端类型"></a> 终端类型</h1>
@@ -2893,6 +2756,143 @@ drwx------. <span class="token number">2</span> root root  16K Sep  <span class=
       </categories>
   </entry>
   <entry>
+    <title>Linux 文件属性解释</title>
+    <url>/1872252014/</url>
+    <content><![CDATA[<h1 id="查看文件属性"><a class="markdownIt-Anchor" href="#查看文件属性"></a> 查看文件属性</h1>
+<p>执行 <code>ls -la</code> 命令后，可以看到当前目录下所有文件的权限和属性：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ll -la</span>
+total <span class="token number">32</span>
+dr-xr-x---.  <span class="token number">4</span> root root  <span class="token number">175</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 <span class="token builtin class-name">.</span>
+dr-xr-xr-x. <span class="token number">17</span> root root  <span class="token number">224</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:37 <span class="token punctuation">..</span>
+-rw-------.  <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
+-rw-------.  <span class="token number">1</span> root root  <span class="token number">847</span> Sep  <span class="token number">8</span> <span class="token number">12</span>:32 .bash_history
+-rw-r--r--.  <span class="token number">1</span> root root   <span class="token number">18</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bash_logout
+-rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">176</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bash_profile
+-rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">176</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bashrc
+-rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">100</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .cshrc
+drwxr-xr-x.  <span class="token number">2</span> root root    <span class="token number">6</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 dir1
+drwxr-----.  <span class="token number">3</span> root root   <span class="token number">19</span> Sep  <span class="token number">7</span> 05:51 .pki
+-rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">129</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .tcshrc
+-rw-------.  <span class="token number">1</span> root root  <span class="token number">508</span> Sep  <span class="token number">7</span> 05:52 .viminfo<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>total 为该目录下的所有数据所占用的实际块数量乘以块大小的值。</p>
+<p>从左到右以空格分隔成七列，分别代表：类型和权限、连接、所有者、所有组、大小、修改时间、文件名。</p>
+<h1 id="文件类型"><a class="markdownIt-Anchor" href="#文件类型"></a> 文件类型</h1>
+<p>第一列第一个字段用来表示文件的类型，文件类型有下面几种：</p>
+<table>
+<thead>
+<tr>
+<th><strong>标记</strong></th>
+<th><strong>类型</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-</td>
+<td>普通文件</td>
+<td>文本文件、数据文件、可执行程序等都作为普通文件存储</td>
+</tr>
+<tr>
+<td>d</td>
+<td>目录</td>
+<td>目录不存放常规数据，它用来组织访问其他文件</td>
+</tr>
+<tr>
+<td>c</td>
+<td>字符设备文件</td>
+<td>指处理数据时每次只能处理一个字符的设备，例如鼠标、键盘（一次性读取设备）</td>
+</tr>
+<tr>
+<td>b</td>
+<td>块设备文件</td>
+<td>指处理数据时每次能处理大块数据的设备，例如硬盘</td>
+</tr>
+<tr>
+<td>s</td>
+<td>本地域套接字</td>
+<td>实现进程间通信的连接，本地域套接字由系统调用 socket 创建</td>
+</tr>
+<tr>
+<td>p</td>
+<td>有名管道(FIFO)</td>
+<td>让运行在同一主机上的两个进程相互通信，和 socket 文件相似</td>
+</tr>
+<tr>
+<td>l</td>
+<td>符号链接</td>
+<td>也叫做软链接（Linkfile），通过名字指向文件</td>
+</tr>
+</tbody>
+</table>
+<p><code>ls</code> 命令结果展示文件颜色含义：</p>
+<table>
+<thead>
+<tr>
+<th><strong>颜色</strong></th>
+<th><strong>含义</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>灰色</td>
+<td>普通文件</td>
+</tr>
+<tr>
+<td>蓝色</td>
+<td>目录</td>
+</tr>
+<tr>
+<td>绿色</td>
+<td>可执行文件</td>
+</tr>
+<tr>
+<td>黄色</td>
+<td>特殊文件</td>
+</tr>
+<tr>
+<td>红色</td>
+<td>压缩文件</td>
+</tr>
+</tbody>
+</table>
+<h1 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h1>
+<p>第一列后九个字段以三个为一组，分别表示：</p>
+<ul>
+<li>文件所有者权限</li>
+<li>同用户组权限</li>
+<li>其他用户权限</li>
+</ul>
+<p>权限为&quot;rwx&quot;的三个参数组合，没有权限显示为&quot;-&quot;减号。</p>
+<h1 id="连接节点"><a class="markdownIt-Anchor" href="#连接节点"></a> 连接节点</h1>
+<p>第二列数字表示节点，每个文件都会将它的权限与属性记录到文件系统的 inode 中。</p>
+<p>这个属性记录的就是有多少不同的文件名连接到相同的一个 inode 号码。</p>
+<h1 id="所有者所有组"><a class="markdownIt-Anchor" href="#所有者所有组"></a> 所有者/所有组</h1>
+<p>第三列和第四列分别表示文件所属的用户和用户组。</p>
+<h1 id="文件大小"><a class="markdownIt-Anchor" href="#文件大小"></a> 文件大小</h1>
+<p>第五列表示文件的容量大小，默认单位为 Bytes。</p>
+<p>目录显示的大小不是文件夹大小，而是目录元数据的大小。</p>
+<h1 id="修改日期"><a class="markdownIt-Anchor" href="#修改日期"></a> 修改日期</h1>
+<p>第六列为文件的创建日期或最近修改时间。</p>
+<p>如果修改时间距离太久，那时间部分会显示成年份。</p>
+<h1 id="文件名"><a class="markdownIt-Anchor" href="#文件名"></a> 文件名</h1>
+<p>第七列为文件名或文件夹名。</p>
+<p>Linux 的文件名是大小写敏感的。</p>
+<p>文件或目录名的第一个字母是&quot;.&quot;表示隐藏文件。</p>
+<p><strong>文件名规则</strong>：</p>
+<ul>
+<li>由大写字母、小写字母、数字和一些特殊符号组成；</li>
+<li>不可以包含 * ? &lt; &gt; ( ) [ ] { } / \ | &quot;  ` ＆ ;  ! 等符号；</li>
+<li>＋-可以出现在文件名中，但是不能作为文件名中的第一个字母；</li>
+<li>文件名中一般不应该包含空格；</li>
+<li>使用 Ext 文件系统时，文件名最长 255 个字符，路径最长 4096 个字符。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>0.基础概论</category>
+      </categories>
+  </entry>
+  <entry>
     <title>磁盘分区知识</title>
     <url>/3200821655/</url>
     <content><![CDATA[<h1 id="磁盘设备名"><a class="markdownIt-Anchor" href="#磁盘设备名"></a> 磁盘设备名</h1>
@@ -3433,5 +3433,148 @@ drwx------. <span class="token number">2</span> root root  16K Sep  <span class=
         <category>Linux</category>
         <category>0.基础概论</category>
       </categories>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/0/</url>
+    <content><![CDATA[<h1 id="帮助命令"><a class="markdownIt-Anchor" href="#帮助命令"></a> 帮助命令</h1>
+<p>某些命令可以使用 <code>--help</code> 参数来查看简短的帮助信息。例如，要查看命令 <code>mkdir</code> 的帮助信息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> <span class="token parameter variable">--help</span>
+Usage: <span class="token function">mkdir</span> <span class="token punctuation">[</span>OPTION<span class="token punctuation">]</span><span class="token punctuation">..</span>. DIRECTORY<span class="token punctuation">..</span>.
+Create the DIRECTORY<span class="token punctuation">(</span>ies<span class="token punctuation">)</span>, <span class="token keyword">if</span> they <span class="token keyword">do</span> not already exist.
+
+Mandatory arguments to long options are mandatory <span class="token keyword">for</span> short options too.
+  -m, <span class="token parameter variable">--mode</span><span class="token operator">=</span>MODE   <span class="token builtin class-name">set</span> <span class="token function">file</span> mode <span class="token punctuation">(</span>as <span class="token keyword">in</span> <span class="token function">chmod</span><span class="token punctuation">)</span>, not <span class="token assign-left variable">a</span><span class="token operator">=</span>rwx - <span class="token builtin class-name">umask</span>
+  -p, <span class="token parameter variable">--parents</span>     no error <span class="token keyword">if</span> existing, <span class="token function">make</span> parent directories as needed
+  -v, <span class="token parameter variable">--verbose</span>     print a message <span class="token keyword">for</span> each created directory
+  <span class="token parameter variable">-Z</span>                   <span class="token builtin class-name">set</span> SELinux security context of each created directory
+                         to the default <span class="token builtin class-name">type</span>
+      --context<span class="token punctuation">[</span><span class="token operator">=</span>CTX<span class="token punctuation">]</span>  like -Z, or <span class="token keyword">if</span> CTX is specified <span class="token keyword">then</span> <span class="token builtin class-name">set</span> the SELinux
+                         or SMACK security context to CTX
+      <span class="token parameter variable">--help</span>     display this <span class="token builtin class-name">help</span> and <span class="token builtin class-name">exit</span>
+      <span class="token parameter variable">--version</span>  output version information and <span class="token builtin class-name">exit</span>
+
+GNU coreutils online help: <span class="token operator">&lt;</span>http://www.gnu.org/software/coreutils/<span class="token operator">></span>
+For complete documentation, run: info coreutils 'mkdir invocation<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>一些特殊符号的含义：</p>
+<ul>
+<li>省略号<code>...</code>：表示可以有多个选项或参数。</li>
+<li>中括号<code>[]</code>：之间的任何内容都是可选的。</li>
+<li>大括号<code>&#123;&#125;</code>：表示应该选择由|隔开的各项中一个。</li>
+<li>尖括号<code>&lt;&gt;</code>：内为变量表示参数可变。</li>
+<li>不带中括号<code>[]</code>：表示<strong>必选项</strong>，必须作为命令的一部分输入。</li>
+</ul>
+<h1 id="查询手册"><a class="markdownIt-Anchor" href="#查询手册"></a> 查询手册</h1>
+<p>使用 <code>man</code> 命令可以查询操作手册（manual），所有内建命令都有对应的操作手册页面。</p>
+<p>手册存放在 <code>/usr/share/man</code> 目录中，可以通过修改 <code>/etc/man_db.conf</code> 文件来定义 man 查询手册的位置。</p>
+<p>例如使用 <code>man</code> 命令查询 <code>mkdir</code> 命令的手册：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">man</span> <span class="token function">mkdir</span>
+MKDIR<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>                                      User Commands                                     MKDIR<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+
+NAME
+       <span class="token function">mkdir</span> - <span class="token function">make</span> directories
+
+SYNOPSIS
+       <span class="token function">mkdir</span> <span class="token punctuation">[</span>OPTION<span class="token punctuation">]</span><span class="token punctuation">..</span>. DIRECTORY<span class="token punctuation">..</span>.
+
+DESCRIPTION
+       Create the DIRECTORY<span class="token punctuation">(</span>ies<span class="token punctuation">)</span>, <span class="token keyword">if</span> they <span class="token keyword">do</span> not already exist.
+
+       Mandatory arguments to long options are mandatory <span class="token keyword">for</span> short options too.
+
+       -m, <span class="token parameter variable">--mode</span><span class="token operator">=</span>MODE
+              <span class="token builtin class-name">set</span> <span class="token function">file</span> mode <span class="token punctuation">(</span>as <span class="token keyword">in</span> <span class="token function">chmod</span><span class="token punctuation">)</span>, not <span class="token assign-left variable">a</span><span class="token operator">=</span>rwx - <span class="token builtin class-name">umask</span>
+
+       -p, <span class="token parameter variable">--parents</span>
+              no error <span class="token keyword">if</span> existing, <span class="token function">make</span> parent directories as needed
+
+       -v, <span class="token parameter variable">--verbose</span>
+              print a message <span class="token keyword">for</span> each created directory
+
+ Manual page mkdir<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> line <span class="token number">1</span> <span class="token punctuation">(</span>press h <span class="token keyword">for</span> <span class="token builtin class-name">help</span> or q to quit<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在 man 页面使用方向键浏览，用空格或[PageUp]，[PageDown]翻页。</p>
+<p>输入/关键字来向下（?关键字向上）搜索手册中的内容，在搜索中按 n 和 N 进行正向查询和反向查询。</p>
+<p>使用 <code>-f</code> 选项查询命令相关说明文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">man</span> <span class="token parameter variable">-f</span> <span class="token function">date</span>
+<span class="token function">date</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>             - print or <span class="token builtin class-name">set</span> the system <span class="token function">date</span> and <span class="token function">time</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>通常查询显示的是最低编号的内容（可以在 man_db.conf 中设置）。可以使用数字指定查询相应区块文档：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">man</span> <span class="token parameter variable">-f</span> info
+info <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>             - <span class="token builtin class-name">read</span> Info documents
+info <span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>             - readable online documentation
+<span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">man</span> <span class="token number">5</span> info
+INFO<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>                                    File Formats Manual                                   INFO<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>
+
+NAME
+       info - readable online documentation<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以使用 <code>-k</code> 选项进行模糊查询：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">man</span> <span class="token parameter variable">-k</span> setse
+setsebool <span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span>        - <span class="token builtin class-name">set</span> SELinux boolean value
+<span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">man</span> <span class="token parameter variable">-k</span> sets
+cpupower <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>         - Shows and sets processor power related values
+ExtUtils::XSSymSet <span class="token punctuation">(</span>3pm<span class="token punctuation">)</span> - keep sets of symbol names palatable to the VMS linker
+ipset <span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span>            - administration tool <span class="token keyword">for</span> IP sets
+setsebool <span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span>        - <span class="token builtin class-name">set</span> SELinux boolean value
+setsid <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>           - run a program <span class="token keyword">in</span> a new session
+systemd.preset <span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>   - Service enablement presets<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>man 手册约定：</p>
+<table>
+<thead>
+<tr>
+<th>区域号</th>
+<th>所涵盖的内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>可执行程序或 shell 命令。</td>
+</tr>
+<tr>
+<td>2</td>
+<td>系统内核可调用的函数和工具等。</td>
+</tr>
+<tr>
+<td>3</td>
+<td>一些常用函数（Function）与函数库（Library），大部分为 C 的函数库（libc）。</td>
+</tr>
+<tr>
+<td>4</td>
+<td>设备文件的说明，通常在 <code>/dev</code> 下的文件。</td>
+</tr>
+<tr>
+<td>5</td>
+<td>配置文件或者是某些文件的格式。</td>
+</tr>
+<tr>
+<td>6</td>
+<td>游戏和演示。</td>
+</tr>
+<tr>
+<td>7</td>
+<td>惯例与协议等，例如文件系统、网络协议等名词解释。</td>
+</tr>
+<tr>
+<td>8</td>
+<td>只有超级用户和系统管理员可使用的系统管理命令。</td>
+</tr>
+<tr>
+<td>9</td>
+<td>内核例程，与 Kernel 有关的文件。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="查询-info-文档"><a class="markdownIt-Anchor" href="#查询-info-文档"></a> 查询 Info 文档</h1>
+<p>类似于在命令行中浏览网页，使用<code>info</code>可以查询存放在 <code>/usr/share/info/</code> 目录下的文档。例如，可以使用以下命令查询有关 <code>mkdir</code> 的信息：</p>
+ <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ info <span class="token function">mkdir</span>
+File: libc.info,  Node: Creating Directories,  Next: File Attributes,  Prev: Renaming Files,  Up: File Sys<span class="token punctuation">\</span>
+tem Interface
+
+<span class="token number">14.8</span> Creating Directories
+<span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">=</span>
+
+Directories are created with the <span class="token string">'mkdir'</span> function.  <span class="token punctuation">(</span>There is also a
+shell <span class="token builtin class-name">command</span> <span class="token string">'mkdir'</span> <span class="token function">which</span> does the same thing.<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中，File 表示 info 页面的数据来源文件，Node 表示页面所属节点。<a href="http://xn--3ds.info">在.info</a> 的说明文件中，每个节点都有定位与链接，类似于超链接，可以快速跳转。</p>
+]]></content>
   </entry>
 </search>
