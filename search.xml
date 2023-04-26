@@ -425,6 +425,215 @@
       </categories>
   </entry>
   <entry>
+    <title>Linux 目录结构</title>
+    <url>/4087499240/</url>
+    <content><![CDATA[<h1 id="目录配置标准"><a class="markdownIt-Anchor" href="#目录配置标准"></a> 目录配置标准</h1>
+<p>Linux 采用将文件储存在单个目录结构中，这种目录被称为虚拟目录（Virtual Directory）。虚拟目录将安装在主机上的所有储存设备的文件路径纳入单个目录结构中。</p>
+<p>各种发行版遵循同一套文件系统层次结构标准（FHS，Filesystem Hierarchy Standard），目的在于规范每个特定目录应该放什么数据。FHS 依据文件系统使用的频繁与否，以及是否允许使用者随意变更，将目录定义为四种交互形态：</p>
+<ul>
+<li>
+<p><strong>可分享的</strong>（Shareable）</p>
+<p>可以分享给其他系统挂载使用的目录，包括可执行文件与使用者的邮件等数据。</p>
+</li>
+<li>
+<p><strong>不可分享的</strong>（Unshareable）</p>
+<p>自己机器上面运行的设备文件或者是与程序有关的 socket 文件等，仅能自己使用，所以不适合分享。</p>
+</li>
+<li>
+<p><strong>不变的</strong>（Static）</p>
+<p>有些数据是不会经常变动的，例如函数库、文件说明文档、系统管理员所管理的主机服务配置文件等。</p>
+</li>
+<li>
+<p><strong>可变动的</strong>（Variable）</p>
+<p>经常改变的数据，例如日志文件等。</p>
+</li>
+</ul>
+<h1 id="顶级目录"><a class="markdownIt-Anchor" href="#顶级目录"></a> 顶级目录</h1>
+<p>所有目录都由根目录/衍生而来，因此 FHS 标准建议根目录所在分区应该越小越好，最好不要将应用程序所安装的软件与根目录放在同一个分区。这样可以提高性能，根目录所在的文件系统也较不容易发生问题。</p>
+<p>开机过程中仅有根目录会被挂载，其他分区则是在开机完成后陆续进行挂载。</p>
+<p>必须存在的顶级目录：</p>
+<table>
+<thead>
+<tr>
+<th><strong>目录</strong></th>
+<th><strong>目录说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/bin</code></td>
+<td>二进制目录，存放可以被 root 和一般账户所用的命令，以及在单用户维护模式下仍能被操作的常用命令，如 <code>cat</code>、<code>mv</code>、<code>chown</code> 等。</td>
+</tr>
+<tr>
+<td><code>/boot</code></td>
+<td>启动目录，存放开机会使用到的文件，包括内核文件及开机所需配置文件。</td>
+</tr>
+<tr>
+<td><code>/dev</code></td>
+<td>设备目录，Linux 上任何设备与接口设备都是以文件的形式存在于这个目录下，访问目录下的某个文件就等于访问某个设备。主要分为三类硬件，例如硬盘（sda）和打印机（lp0），终端如控制台（tty），伪设备如 <code>/dev/null</code> 和 <code>/dev/zero</code>。</td>
+</tr>
+<tr>
+<td><code>/etc</code></td>
+<td>系统配置文件目录，系统配置文件几乎都放在这里，如账号密码，服务起始文件等。一般不要放可执行文件到这个目录下。<br /><code>/etc/X11</code>：与 X Window 有关的配置文件放在这里，尤其是 xorg.conf 这个 XServer 的配置文件。<br /><code>/etc/opt</code>：放置第三方软件配置文件。<br /><code>/etc/sgml</code>：与 SGML 格式有关的各项配置文件。<br /><code>/etc/xml</code>：与 XML 格式有关的配置文件。</td>
+</tr>
+<tr>
+<td><code>/home</code></td>
+<td>主目录，系统默认用户主文件夹，一般子文件夹以用户账号命名。</td>
+</tr>
+<tr>
+<td><code>/lib</code>、<code>/lib64</code></td>
+<td>库目录，存放开机时会用到的函数库，以及在 <code>/bin</code> 或 <code>/sbin</code> 中命令会调用的函数库。<br /><code>/lib/modules/</code>：存放内核相关的模块（驱动程序）。</td>
+</tr>
+<tr>
+<td><code>/media</code></td>
+<td>媒体目录，存放可删除设备，包括 CD、DVD、U 盘等设备都暂时挂载于此。</td>
+</tr>
+<tr>
+<td><code>/mnt</code></td>
+<td>挂载目录，如果想要暂时挂载某些额外的设备，一般放置到这个目录中。</td>
+</tr>
+<tr>
+<td><code>/opt</code></td>
+<td>可选目录，给第三方软件放置的目录，包括发行版附加的一些软件包。</td>
+</tr>
+<tr>
+<td><code>/root</code></td>
+<td>系统管理员的主文件夹。</td>
+</tr>
+<tr>
+<td><code>/sbin</code></td>
+<td>系统二进制目录，只有 root 可用，包括开机，修复，还原系统所需要的系统命令，如 <code>fdisk</code>、<code>ifconfig</code>、<code>init</code> 等。</td>
+</tr>
+<tr>
+<td><code>/srv</code></td>
+<td>服务目录，一些网络服务启动后，这些服务所需要取用的数据目录，如将 www 服务需要的网页文件放置到 <code>/srv/www</code> 里。</td>
+</tr>
+<tr>
+<td><code>/tmp</code></td>
+<td>临时目录，重要数据不可放置到此目录，会被一些系统进程定期清空。</td>
+</tr>
+<tr>
+<td><code>/run</code></td>
+<td>运行目录，存放系统运作时的运行时数据。</td>
+</tr>
+</tbody>
+</table>
+<p>其他重要目录：</p>
+<table>
+<thead>
+<tr>
+<th><strong>目录</strong></th>
+<th><strong>目录说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/lost+found</code></td>
+<td>只有 ext 文件系统格式才会产生的目录，用来放置丢失的文件片段。</td>
+</tr>
+<tr>
+<td><code>/proc</code></td>
+<td>进程目录。这个目录本身是一个虚拟文件系统（Virtual Filesystem），它放置的数据都在内存中，如系统内核、进程、外部设备的状态及网络状态等，所以实际不占任何硬盘空间。</td>
+</tr>
+<tr>
+<td><code>/sys</code></td>
+<td>系统目录。和 <code>/proc</code> 类似的虚拟文件系统，记录与内核相关信息，包括目前已加载的内核模块与硬件设备信息。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="usr-目录"><a class="markdownIt-Anchor" href="#usr-目录"></a> /usr 目录</h1>
+<p><code>/usr</code> 目录存放静态数据,即不会随时间改变的文件,原则上放置独立安装的软件数据。系统默认软件也放在 <code>/usr</code> 目录下。</p>
+<p><code>/usr</code> 目录下的子目录说明：</p>
+<table>
+<thead>
+<tr>
+<th><strong>目录</strong></th>
+<th><strong>目录说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/usr/bin/</code></td>
+<td>存放所有的用户命令。</td>
+</tr>
+<tr>
+<td><code>/usr/include/</code></td>
+<td>存放 C/C++ 等编程语言的头文件（header）和包含文件（include）。</td>
+</tr>
+<tr>
+<td><code>/usr/lib/</code></td>
+<td>存放各种应用软件的函数库、目标文件，以及一般用户不使用的执行文件或脚本。</td>
+</tr>
+<tr>
+<td><code>/usr/local/</code></td>
+<td>推荐系统管理员自行下载安装的软件存放目录。</td>
+</tr>
+<tr>
+<td><code>/usr/sbin/</code></td>
+<td>存放非正常运行所需的系统命令，例如网络服务器软件的服务命令。</td>
+</tr>
+<tr>
+<td><code>/usr/share/</code></td>
+<td>存放共享文件，如 man 手册和 doc 帮助文档。</td>
+</tr>
+<tr>
+<td><code>/usr/src/</code></td>
+<td>一般建议将源码放在该目录下。内核源码建议放在 <code>/usr/src/linux/</code> 下。</td>
+</tr>
+<tr>
+<td><code>/usr/libexec/</code></td>
+<td>存放某些不被一般使用者惯用的可执行文件或脚本。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="var-目录"><a class="markdownIt-Anchor" href="#var-目录"></a> /var 目录</h1>
+<p><code>/var</code> 目录是用来存放会经常变动的文件的，包括缓存（cache）、日志文件（log file）以及某些软件运行时所产生的文件（lock file、run file）或 MySQL 数据库的文件等等。最好可以将它独立出来挂在单独的一个分区中。</p>
+<p><code>/var</code> 目录下的子目录说明：</p>
+<table>
+<thead>
+<tr>
+<th>目录</th>
+<th>目录说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/var/cache/</code></td>
+<td>应用程序本身运行过程中会产生一些暂存文件。</td>
+</tr>
+<tr>
+<td><code>/var/lib/</code></td>
+<td>程序执行的过程中需要使用到的数据文件的放置目录。在此目录下各自的软件应该要有自己的目录，例如 MySQL 数据库放置到 <code>/var/lib/mysql/</code> 下。</td>
+</tr>
+<tr>
+<td><code>/var/lock/</code></td>
+<td>某些设备或文件资源一次只能被一个应用程序所使用，为了避免使用冲突就得给该设备上锁。例如刻录机设备在刻录中时会被锁上。目前此目录已被挪到 <code>/run/lock/</code> 中。</td>
+</tr>
+<tr>
+<td><code>/var/log/</code></td>
+<td>日志文件放置的目录，例如记录登录者信息的文件 <code>/var/log/messages</code>、<code>/var/log/wtmp</code>。</td>
+</tr>
+<tr>
+<td><code>/var/mail/</code></td>
+<td>放置个人电子邮件信箱的目录，等同于 <code>/var/spool/mail/</code>。</td>
+</tr>
+<tr>
+<td><code>/var/run/</code></td>
+<td>某些程序或服务启动后，会将它们的 PID 放置在这个目录下。</td>
+</tr>
+<tr>
+<td><code>/var/spool/</code></td>
+<td>放置一些队列数据，通常在使用后会被删除。</td>
+</tr>
+</tbody>
+</table>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>0.基础概论</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Linux 启动流程</title>
     <url>/4291230975/</url>
     <content><![CDATA[<h1 id="bios-启动流程"><a class="markdownIt-Anchor" href="#bios-启动流程"></a> BIOS 启动流程</h1>
@@ -732,18 +941,18 @@ multi-user.target
 <p>磁盘阵列（RAID，Redundant Arrays of Inexpensive Disks）即容错廉价磁盘阵列，指通过一些技术（软件或硬件）将多个较小的磁盘整合成一个较大的磁盘设备，并且具有一定数据保护的功能。</p>
 <h2 id="磁盘阵列类型"><a class="markdownIt-Anchor" href="#磁盘阵列类型"></a> 磁盘阵列类型</h2>
 <p>磁盘整列有两种组建方式。</p>
-<h3 id="硬件磁盘阵列hardware"><a class="markdownIt-Anchor" href="#硬件磁盘阵列hardware"></a> 硬件磁盘阵列（hardware）</h3>
-<p>硬件磁盘阵列通过磁盘阵列卡完成组建任务，拥有专门芯片来处理 RAID 任务。性能比较好，例如用来处理 RAID 5 的同位检查码计算，并不会重复消耗原本系统的 I/O 总线。硬件磁盘阵列的设备文件名为/dev/sd[a-p]。</p>
-<h3 id="软件磁盘阵列software"><a class="markdownIt-Anchor" href="#软件磁盘阵列software"></a> 软件磁盘阵列（software）</h3>
-<p>软件磁盘阵列利用软件来仿真磁盘阵列功能，与 CPU 运算和 I/O 总线速度关系很大。在 CentOS 中提供的软件磁盘阵列软件为 mdadm，支持以分区为单位组建 RAID0/1/5 等。软件磁盘阵列使用的设备文件名是系统的设备文件/dev/md[0-1]。</p>
+<h3 id="硬件磁盘阵列"><a class="markdownIt-Anchor" href="#硬件磁盘阵列"></a> 硬件磁盘阵列</h3>
+<p>硬件（hardware）磁盘阵列通过磁盘阵列卡完成组建任务，拥有专门芯片来处理 RAID 任务。性能比较好，例如用来处理 RAID 5 的同位检查码计算，并不会重复消耗原本系统的 I/O 总线。硬件磁盘阵列的设备文件名为/dev/sd[a-p]。</p>
+<h3 id="软件磁盘阵列"><a class="markdownIt-Anchor" href="#软件磁盘阵列"></a> 软件磁盘阵列</h3>
+<p>软件（software）磁盘阵列利用软件来仿真磁盘阵列功能，与 CPU 运算和 I/O 总线速度关系很大。在 CentOS 中提供的软件磁盘阵列软件为 mdadm，支持以分区为单位组建 RAID0/1/5 等。软件磁盘阵列使用的设备文件名是系统的设备文件/dev/md[0-1]。</p>
 <h2 id="磁盘阵列等级"><a class="markdownIt-Anchor" href="#磁盘阵列等级"></a> 磁盘阵列等级</h2>
-<p>常见磁盘阵列等级有 4 种。</p>
-<h3 id="raid-0等量模式stripe"><a class="markdownIt-Anchor" href="#raid-0等量模式stripe"></a> RAID 0（等量模式，stripe）</h3>
+<p>常见磁盘阵列等级有 4 种：RAID 0（等量模式，stripe）、RAID 1（映像模式，mirror）、RAID 0+1 或 RAID 1+0、RAID 5。</p>
+<h3 id="raid-0"><a class="markdownIt-Anchor" href="#raid-0"></a> RAID 0</h3>
 <p>此模式下，RAID 会将磁盘先切出等量的区块（名为 chunk，大小 4KB ~ 1MB），写入文件时，该文件依据块大小切割好，依序放到各个磁盘中去。</p>
 <p>磁盘可用容量为所有磁盘容量之和。</p>
 <p>读写性能最佳。</p>
 <p>安全性最糟，任意一块磁盘损坏，所有文件数据将缺损，所有数据都会丢失。</p>
-<h3 id="raid-1映像模式mirror"><a class="markdownIt-Anchor" href="#raid-1映像模式mirror"></a> RAID 1（映像模式，mirror）</h3>
+<h3 id="raid-1"><a class="markdownIt-Anchor" href="#raid-1"></a> RAID 1</h3>
 <p>此模式让同一份数据完整保存在两块磁盘上面，写入文件时，该文件复制为两份，并分别写入到各个磁盘中去。</p>
 <p>磁盘可用容量为所有磁盘容量之和的一半。</p>
 <p>写性能在使用软阵列时不好，因为南桥芯片的 I/O 性能有限，同时写入会导致带宽不够。读取性能和 RAID 0 一样。</p>
