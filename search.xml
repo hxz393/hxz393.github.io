@@ -15,7 +15,7 @@
 </ol>
 <h2 id="etcpasswd-文件结构"><a class="markdownIt-Anchor" href="#etcpasswd-文件结构"></a> /etc/passwd 文件结构</h2>
 <p>passwd 中以行为单位记录系统中所有账号，各字段之间用冒号分隔开：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span><span class="token comment"># head -4 /etc/passwd</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">head</span> <span class="token parameter variable">-4</span> /etc/passwd
 root:x:0:0:root:/root:/bin/bash
 bin:x:1:1:bin:/bin:/sbin/nologin
 daemon:x:2:2:daemon:/sbin:/sbin/nologin
@@ -69,7 +69,7 @@ adm:x:3:4:adm:/var/adm:/sbin/nologin<span aria-hidden="true" class="line-numbers
 </table>
 <h2 id="etcshadow-文件结构"><a class="markdownIt-Anchor" href="#etcshadow-文件结构"></a> /etc/shadow 文件结构</h2>
 <p>shadow 文件中保存了密码和相关限制设置：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span><span class="token comment"># cat /etc/shadow</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/shadow
 root:<span class="token variable">$6</span><span class="token variable">$A7YdIFXQJ47yq0</span>::0:99999:7:::
 bin:*:17632:0:99999:7:::<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>以第一条记录为例，总共有九个字段，说明如下：</p>
@@ -133,7 +133,7 @@ bin:*:17632:0:99999:7:::<span aria-hidden="true" class="line-numbers-rows"><span
 <p>用户组可以将账户集中在一起组成一个逻辑排列，从而简化特权管理。和用户组有关的文件记录在 <code>/etc/group</code> 与 <code>/etc/gshadow</code> 中。</p>
 <h2 id="etcgroup-文件结构"><a class="markdownIt-Anchor" href="#etcgroup-文件结构"></a> /etc/group 文件结构</h2>
 <p>group 文件记录 GID 与组名的对应：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span><span class="token comment"># cat /etc/group</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/group
 root:x:0:
 bin:x:1:
 daemon:x:2:<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
@@ -176,7 +176,7 @@ daemon:x:2:<span aria-hidden="true" class="line-numbers-rows"><span></span><span
 </ul>
 <h2 id="etcgshadow-文件结构"><a class="markdownIt-Anchor" href="#etcgshadow-文件结构"></a> /etc/gshadow 文件结构</h2>
 <p>gshadow 用来设定组密码：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span><span class="token comment"># cat /etc/gshadow</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/gshadow
 root:::
 bin:::<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>文件内容和 <code>/etc/group</code> 差不多，除了第二列用来记录组密码。</p>
@@ -201,7 +201,7 @@ bin:::<span aria-hidden="true" class="line-numbers-rows"><span></span><span></sp
 <li>在 <code>/home</code> 下面创建与账户同名的目录作为用户主文件夹，权限为 700。</li>
 </ol>
 <p>可以通过<code>useradd -D</code>查看创建用户时使用的默认值：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span><span class="token comment"># useradd -D</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">useradd</span> <span class="token parameter variable">-D</span>
 <span class="token assign-left variable">GROUP</span><span class="token operator">=</span><span class="token number">100</span>
 <span class="token assign-left variable"><span class="token environment constant">HOME</span></span><span class="token operator">=</span>/home
 <span class="token assign-left variable">INACTIVE</span><span class="token operator">=</span>-1
@@ -257,7 +257,7 @@ bin:::<span aria-hidden="true" class="line-numbers-rows"><span></span><span></sp
 </tbody>
 </table>
 <p>其他一些设置，如密码策略、邮箱目录等，存放在 <code>/etc/login.defs</code> 文件下：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span><span class="token comment"># cat /etc/login.defs | grep -v -E "^$|^#"</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/login.defs <span class="token operator">|</span> <span class="token function">grep</span> <span class="token parameter variable">-v</span> <span class="token parameter variable">-E</span> <span class="token string">"^$|^#"</span>
 MAIL_DIR        /var/spool/mail
 PASS_MAX_DAYS   <span class="token number">99999</span>
 PASS_MIN_DAYS   <span class="token number">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
@@ -312,7 +312,7 @@ PASS_MIN_DAYS   <span class="token number">0</span><span aria-hidden="true" clas
 <p>root 修改密码时不需要旧密码，可以忽略密码规则。一般账号改密码需要输入旧密码，密码需要符合复杂性要求。</p>
 <p>密码管理机制由 <code>/etc/pam.d/passwd</code> 控制，密码测试模块使用 pam_cracklib.so。</p>
 <p>可以通过 <code>authconfig</code> 命令来查看密码哈希使用算法:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># authconfig --test | grep hashing</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ authconfig <span class="token parameter variable">--test</span> <span class="token operator">|</span> <span class="token function">grep</span> hashing
 password hashing algorithm is sha512<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>假设作为一般用户，原始密码为 A2345678b，则修改密码时的错误示例如下：</p>
 <table>
@@ -358,7 +358,7 @@ password hashing algorithm is sha512<span aria-hidden="true" class="line-numbers
 <li>passwd 根据 PAM 回传结果决定下一个操作（通过或要求重试）。</li>
 </ol>
 <p>查看 <code>/etc/pam.d/passwd</code> 文件内容如下:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># cat /etc/pam.d/passwd</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/pam.d/passwd
 <span class="token comment">#%PAM-1.0</span>
 auth       include      system-auth
 account    include      system-auth
@@ -489,7 +489,7 @@ password   substack     postlogin<span aria-hidden="true" class="line-numbers-ro
 </table>
 <p>另外一个比较常用的是 <code>/etc/security/limits.conf</code> 这个配置文件，可以直接修改这个文件来对用户的系统使用配额做一些设置。</p>
 <p>例如修改用户 user1 只能新建小于 100MB 的文件（hard），且大于 80MB 会警告（soft）：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># vim /etc/security/limits.conf </span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vim</span> /etc/security/limits.conf 
 <span class="token comment">#&lt;domain>      &lt;type>  &lt;item>         &lt;value></span>
 <span class="token comment">#</span>
 <span class="token comment">#*               soft    core            0</span>
@@ -511,7 +511,7 @@ File size limit exceeded
 <span class="token punctuation">[</span>user1@101c7 ~<span class="token punctuation">]</span>$ ll <span class="token parameter variable">-k</span> filetest
 -rw-rw-r--. <span class="token number">1</span> user1 user1 <span class="token number">81920000</span> Sep <span class="token number">13</span> <span class="token number">11</span>:23 filetest<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>例如限制用户组 group1 每次只能有一个用户登录系统（maxlogins）：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># vim /etc/security/limits.conf </span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vim</span> /etc/security/limits.conf 
 <span class="token comment">#&lt;domain>      &lt;type>  &lt;item>         &lt;value></span>
 @group1          hard    maxlogins       <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>登录相关日志文件存放目录有 <code>/var/log/secure</code> 和 <code>/var/log/messages</code>。如果发生任何无法登录或是产生意外错误，由 PAM 模块将数据记录在 <code>/var/log/secure</code> 中。</p>
@@ -741,7 +741,7 @@ File size limit exceeded
 <p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mn>1101101</mn><mo>=</mo><mn>1</mn><mo>∗</mo><msup><mn>2</mn><mn>6</mn></msup><mo>+</mo><mn>1</mn><mo>∗</mo><msup><mn>2</mn><mn>5</mn></msup><mo>+</mo><mn>0</mn><mo>∗</mo><msup><mn>2</mn><mn>4</mn></msup><mo>+</mo><mn>1</mn><mo>∗</mo><msup><mn>2</mn><mn>3</mn></msup><mo>+</mo><mn>1</mn><mo>∗</mo><msup><mn>2</mn><mn>2</mn></msup><mo>+</mo><mn>0</mn><mo>∗</mo><msup><mn>2</mn><mn>1</mn></msup><mo>+</mo><mn>1</mn><mo>=</mo><mn>64</mn><mo>+</mo><mn>32</mn><mo>+</mo><mn>0</mn><mo>+</mo><mn>8</mn><mo>+</mo><mn>4</mn><mo>+</mo><mn>0</mn><mo>+</mo><mn>1</mn><mo>=</mo><mn>109</mn></mrow><annotation encoding="application/x-tex">1101101=1*2^6+1*2^5+0*2^4+1*2^3+1*2^2+0*2^1+1=64+32+0+8+4+0+1=109
 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mord">1</span><span class="mord">0</span><span class="mord">1</span><span class="mord">1</span><span class="mord">0</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.9474379999999999em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">6</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.9474379999999999em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">5</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.9474379999999999em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">4</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.9474379999999999em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.9474379999999999em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.9474379999999999em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">6</span><span class="mord">4</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">3</span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">8</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">4</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mord">0</span><span class="mord">9</span></span></span></span></span></p>
 <p>在 Bash 中，可以使用<code>echo $(())</code>来直接将二进制数转换为十进制数：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span><span class="token comment"># echo $((2#1101101))</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token variable"><span class="token variable">$((</span><span class="token number">2</span>#<span class="token number">1101101</span><span class="token variable">))</span></span>
 <span class="token number">109</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <h2 id="十进制转二进制"><a class="markdownIt-Anchor" href="#十进制转二进制"></a> 十进制转二进制</h2>
 <p>例如，将十进制数 109 转换为二进制数：</p>
@@ -754,7 +754,7 @@ File size limit exceeded
 001/2<span class="token operator">=</span>00<span class="token punctuation">..</span>.1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>将商除到 0 为止，把所有的余数从下往上读，得到的就是二进制结果 1101101。</p>
 <p>在 Bash 中，可以通过调用<code>bc</code>来进行计算：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span><span class="token comment"># echo "obase=2;ibase=10;109"|bc -l</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token string">"obase=2;ibase=10;109"</span><span class="token operator">|</span><span class="token function">bc</span> <span class="token parameter variable">-l</span>
 <span class="token number">1101101</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <h2 id="二进制转十六进制"><a class="markdownIt-Anchor" href="#二进制转十六进制"></a> 二进制转十六进制</h2>
 <p>例如，将二进制数 1101101 转换为十六进制数。</p>
@@ -1207,7 +1207,7 @@ File size limit exceeded
 </tbody>
 </table>
 <p>可以同时查看多个文件信息，路径之间用空格隔开：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ll ./dir1/ ./audit/</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll ./dir1/ ./audit/
 ./audit/:
 total <span class="token number">360</span>
 -rw-------. <span class="token number">2</span> root root <span class="token number">182023</span> Sep <span class="token number">9</span> 05:01 audit.log
@@ -1218,7 +1218,7 @@ lrwxrwxrwx. <span class="token number">1</span> root root <span class="token num
 total <span class="token number">0</span>
 -rwxrwxr--. <span class="token number">1</span> <span class="token function">ftp</span> root <span class="token number">0</span> Sep <span class="token number">8</span> <span class="token number">23</span>:29 xx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>可以使用通配符 *（? 匹配单字母）来显示所有匹配的文件和目录，包括子文件夹中的文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ls -l s*</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> <span class="token parameter variable">-l</span> s*
 -rw-r--r--. <span class="token number">1</span> root root <span class="token number">83886080</span> Sep <span class="token number">10</span> <span class="token number">22</span>:20 sdb5.disk
 
 sdb4m:
@@ -1226,23 +1226,23 @@ total <span class="token number">20</span>
 -rw-------. <span class="token number">1</span> root root <span class="token number">1260</span> Sep <span class="token number">10</span> <span class="token number">15</span>:05 a.cfg
 drwx------. <span class="token number">2</span> root root <span class="token number">16384</span> Sep <span class="token number">10</span> <span class="token number">15</span>:03 lost+found<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>展示完整的文件修改时间使用 <code>--full-time</code> 参数：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ls -Al --full-time /etc/bash_completion.d/</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> <span class="token parameter variable">-Al</span> --full-time /etc/bash_completion.d/
 total <span class="token number">72</span>
 -rw-r--r--. <span class="token number">1</span> root root <span class="token number">56178</span> <span class="token number">2020</span>-05-28 <span class="token number">16</span>:32:30.000000000 <span class="token parameter variable">-0400</span> <span class="token function">git</span>
 -rw-r--r--. <span class="token number">1</span> root root <span class="token number">829</span> <span class="token number">2020</span>-02-05 07:58:44.000000000 <span class="token parameter variable">-0500</span> iprutils
 -rw-r--r--. <span class="token number">1</span> root root <span class="token number">11736</span> <span class="token number">2020</span>-03-31 <span class="token number">23</span>:33:31.000000000 <span class="token parameter variable">-0400</span> mercurial.sh<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>可以指定展示特定时间戳，比如查询文件访问时间：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span><span class="token comment"># ls -l --time=atime </span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">ls</span> <span class="token parameter variable">-l</span> <span class="token parameter variable">--time</span><span class="token operator">=</span>atime 
 total <span class="token number">364</span>
 -rw-------. <span class="token number">1</span> root root <span class="token number">182023</span> Sep <span class="token number">9</span> 05:51 b.log
 -rw-r--r--. <span class="token number">1</span> root root <span class="token number">178</span> Sep <span class="token number">9</span> 05:57 c.log
 -rw-------. <span class="token number">1</span> root root <span class="token number">182023</span> Sep <span class="token number">9</span> 05:48 mvau.log<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>使用 <code>-F</code> 参数能在文件名末显示该文件的类型：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ls -F /sbin/</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> <span class="token parameter variable">-F</span> /sbin/
 accessdb*              fsfreeze*                   mkdict@ <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>结果中可执行文件会在文件名后加*，软链接加@，目录加/，管道加|，并用不同颜色表示结果。</p>
 <p>此外，还可以使用 stat 命令来查看某个文件的具体属性，其展示结果一步到位，包括文件大小、块数、I/O 块大小、设备号、Inode 号码、硬链接数量、文件权限、UID 和 GID、SELinux 安全上下文、文件访问时间、修改时间、变化时间和创建时间等信息。例如，查看 <a href="http://ftp.sh">ftp.sh</a> 文件的属性：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span><span class="token comment"># stat ftp.sh</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">stat</span> ftp.sh
   File: ‘ftp.sh’
   Size: <span class="token number">52</span>              Blocks: <span class="token number">8</span>          IO Block: <span class="token number">4096</span>   regular <span class="token function">file</span>
 Device: fd00h/64768d    Inode: <span class="token number">4215134</span>     Links: <span class="token number">1</span>
@@ -1256,43 +1256,43 @@ Change: <span class="token number">2021</span>-09-23 <span class="token number">
 <h1 id="检查文件类型"><a class="markdownIt-Anchor" href="#检查文件类型"></a> 检查文件类型</h1>
 <p>想了解某个文件的基本数据类型，可以使用 file 命令。</p>
 <p>例如，查看二进制文件 passwd 的信息：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># file /usr/bin/passwd </span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">file</span> /usr/bin/passwd 
 /usr/bin/passwd: setuid ELF <span class="token number">64</span>-bit LSB shared object, x86-64, version <span class="token number">1</span> <span class="token punctuation">(</span>SYSV<span class="token punctuation">)</span>, dynamically linked <span class="token punctuation">(</span>uses shared libs<span class="token punctuation">)</span>, <span class="token keyword">for</span> GNU/Linux <span class="token number">2.6</span>.32, BuildID<span class="token punctuation">[</span>sha1<span class="token punctuation">]</span><span class="token operator">=</span>dee1b9ab6618c6bfb84a14f85ba258c742cf4aec, stripped<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>再比如，查看日志文件 b.log 的信息：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span><span class="token comment"># file b.log </span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">file</span> b.log 
 b.log: ASCII text, with very long lines<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <h1 id="复制文件与目录"><a class="markdownIt-Anchor" href="#复制文件与目录"></a> 复制文件与目录</h1>
 <p>使用 <code>cp</code> 命令可以复制文件和文件夹，系统已经为 <code>cp</code> 加入 <code>-i</code> 选项以询问用户是否覆盖文件。</p>
 <p>例如，复制当前目录下的 anaconda-ks.cfg 文件到 <code>/home/</code> 下并命名为 anac.cfg:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># cp anaconda-ks.cfg /home/anac.cfg ; ll /home</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cp</span> anaconda-ks.cfg /home/anac.cfg <span class="token punctuation">;</span> ll /home
 total <span class="token number">4</span>
 -rw-------. <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">9</span> 05:12 anac.cfg<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>复制文件夹需要使用递归参数 <code>-r</code>，例如复制 <code>/var/log</code> 下的文件夹 audit 到当前目录:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># cp -r /var/log/audit/ . ; ll ./audit/</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cp</span> <span class="token parameter variable">-r</span> /var/log/audit/ <span class="token builtin class-name">.</span> <span class="token punctuation">;</span> ll ./audit/
 total <span class="token number">180</span>
 -rw-------. <span class="token number">1</span> root root <span class="token number">182023</span> Sep  <span class="token number">9</span> 05:14 audit.log<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>复制后的文件属性，如修改时间和权限（所有者变为操作者）会改变。如果要保留源文件属性，可以使用 <code>-a</code> 参数：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ll /var/log/audit/</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll /var/log/audit/
 total <span class="token number">180</span>
 -rw-------. <span class="token number">1</span> root root <span class="token number">182023</span> Sep  <span class="token number">9</span> 05:01 audit.log
-<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ll audit/</span>
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll audit/
 total <span class="token number">180</span>
 -rw-------. <span class="token number">1</span> root root <span class="token number">182023</span> Sep  <span class="token number">9</span> 05:14 audit.log
-<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># rm -rf audit/ ; cp -ra /var/log/audit/ . ; ll audit/</span>
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">rm</span> <span class="token parameter variable">-rf</span> audit/ <span class="token punctuation">;</span> <span class="token function">cp</span> <span class="token parameter variable">-ra</span> /var/log/audit/ <span class="token builtin class-name">.</span> <span class="token punctuation">;</span> ll audit/
 total <span class="token number">180</span>
 -rw-------. <span class="token number">1</span> root root <span class="token number">182023</span> Sep  <span class="token number">9</span> 05:01 audit.log<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h1 id="删除文件与目录"><a class="markdownIt-Anchor" href="#删除文件与目录"></a> 删除文件与目录</h1>
 <p>删除文件或文件夹使用 rm 命令。如果需要删除以-开头的特殊文件，需要使用相对路径。</p>
 <p>例如，要删除当前目录下的 la.log 和 ha.log 两个文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span><span class="token comment"># rm -f la.log ha.log</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">rm</span> <span class="token parameter variable">-f</span> la.log ha.log<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>如果需要删除文件夹，则需要使用 <code>-r</code> 参数，并且可以使用通配符*。例如，要删除当前文件夹下以 app 开头的所有文件和文件夹：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># rm -rf app*</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">rm</span> <span class="token parameter variable">-rf</span> app*<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h1 id="移动和更名文件和目录"><a class="markdownIt-Anchor" href="#移动和更名文件和目录"></a> 移动和更名文件和目录</h1>
 <p>在 Linux 中，可以使用 <code>mv</code> 命令移动和更名文件和目录。移动文件或目录会保持其 inode 编号和时间戳不变。</p>
 <p>例如，将文件 audit.log 移动到其上级目录并将其更名为 mvau.log：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span><span class="token comment"># mv audit.log ../mvau.log</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">mv</span> audit.log <span class="token punctuation">..</span>/mvau.log<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>也可以同时移动多个文件到指定目录。例如，将 mvau.log 和 b.log 一次性移动到目录 audit 中：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># mv mvau.log b.log audit/</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mv</span> mvau.log b.log audit/<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h1 id="修改文件时间戳"><a class="markdownIt-Anchor" href="#修改文件时间戳"></a> 修改文件时间戳</h1>
 <p>在 Linux 系统中，每个文件都有三个时间戳：</p>
 <table>
@@ -1319,28 +1319,28 @@ total <span class="token number">180</span>
 </table>
 <p>可以使用 <code>touch</code> 命令来修改文件的时间戳。如果不指定时间，则修改为当前时间。</p>
 <p>例如，将 a.log 文件的修改时间和访问时间修改为 2007 年 1 月 1 日 1 点 1 分：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span><span class="token comment"># ll a.log;ll --time=atime a.log; ll --time=ctime a.log </span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ ll a.log<span class="token punctuation">;</span>ll <span class="token parameter variable">--time</span><span class="token operator">=</span>atime a.log<span class="token punctuation">;</span> ll <span class="token parameter variable">--time</span><span class="token operator">=</span>ctime a.log 
 -rw-r--r--. <span class="token number">1</span> root root <span class="token number">0</span> Sep  <span class="token number">9</span> 07:35 a.log
 -rw-r--r--. <span class="token number">1</span> root root <span class="token number">0</span> Sep  <span class="token number">9</span> 07:35 a.log
 -rw-r--r--. <span class="token number">1</span> root root <span class="token number">0</span> Sep  <span class="token number">9</span> 07:35 a.log
-<span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span><span class="token comment"># touch -t 0701010101 a.log</span>
-<span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span><span class="token comment"># ll a.log;ll --time=atime a.log; ll --time=ctime a.log </span>
+<span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">touch</span> <span class="token parameter variable">-t</span> 0701010101 a.log
+<span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ ll a.log<span class="token punctuation">;</span>ll <span class="token parameter variable">--time</span><span class="token operator">=</span>atime a.log<span class="token punctuation">;</span> ll <span class="token parameter variable">--time</span><span class="token operator">=</span>ctime a.log 
 -rw-r--r--. <span class="token number">1</span> root root <span class="token number">0</span> Jan  <span class="token number">1</span>  <span class="token number">2007</span> a.log
 -rw-r--r--. <span class="token number">1</span> root root <span class="token number">0</span> Jan  <span class="token number">1</span>  <span class="token number">2007</span> a.log
 -rw-r--r--. <span class="token number">1</span> root root <span class="token number">0</span> Sep  <span class="token number">9</span> 07:38 a.log<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h1 id="创建文件"><a class="markdownIt-Anchor" href="#创建文件"></a> 创建文件</h1>
 <p><code>touch</code> 命令本意用来更新文件时间戳，当文件不存在时会创建一个新的空文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span><span class="token comment"># touch a.log ; ll</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">touch</span> a.log <span class="token punctuation">;</span> ll
 total <span class="token number">364</span>
 -rw-r--r--. <span class="token number">1</span> root root      <span class="token number">0</span> Sep  <span class="token number">9</span> 07:35 a.log<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>也可以使用 <code>cat</code> 命令接收用户输入，并将其重定向到文件中：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># cat > catfile</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> <span class="token operator">></span> catfile
 <span class="token number">123</span>
 <span class="token number">32</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>输入完毕后按下 Ctrl+d 组合键以结束输入。</p>
 <h1 id="擦除文件内容"><a class="markdownIt-Anchor" href="#擦除文件内容"></a> 擦除文件内容</h1>
 <p>当使用 <code>rm</code> 命令删除文件时，实际上只是将文件的块标记为可写，而磁盘上的数据并没有被删除。如果要安全删除文件并保证不留下任何痕迹，可以使用 <code>shred</code> 命令，它会用随机数据对目标文件进行多次覆写。例如，以下命令对名为 www 的文件进行四次覆写，最后填充为零后再删除文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span><span class="token comment"># shred -fuvz www </span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ shred <span class="token parameter variable">-fuvz</span> www 
 shred: www: pass <span class="token number">1</span>/4 <span class="token punctuation">(</span>random<span class="token punctuation">)</span><span class="token punctuation">..</span>.
 shred: www: pass <span class="token number">2</span>/4 <span class="token punctuation">(</span>random<span class="token punctuation">)</span><span class="token punctuation">..</span>.
 shred: www: pass <span class="token number">3</span>/4 <span class="token punctuation">(</span>random<span class="token punctuation">)</span><span class="token punctuation">..</span>.
@@ -1376,13 +1376,13 @@ shred: www: removed<span aria-hidden="true" class="line-numbers-rows"><span></sp
 <p>而上层目录的连接数会增加 1，也就是增加了 <code>/root/1/..</code> 这个硬连接。</p>
 <h2 id="创建连接"><a class="markdownIt-Anchor" href="#创建连接"></a> 创建连接</h2>
 <p>使用 <code>ln</code> 和 <code>cp</code> 命令都可以创建连接。默认不加参数使用 <code>ln</code> 建立的就是硬连接：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span><span class="token comment"># ln hhh hhh_hark; ll -i</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ <span class="token function">ln</span> hhh hhh_hark<span class="token punctuation">;</span> ll <span class="token parameter variable">-i</span>
 total <span class="token number">24</span>
 <span class="token number">16</span> -rw-r--r--. <span class="token number">2</span> root root     <span class="token number">4</span> Sep <span class="token number">10</span> 01:57 hhh
 <span class="token number">16</span> -rw-r--r--. <span class="token number">2</span> root root     <span class="token number">4</span> Sep <span class="token number">10</span> 01:57 hhh_hark
 <span class="token number">11</span> drwx------. <span class="token number">2</span> root root <span class="token number">16384</span> Sep  <span class="token number">9</span> <span class="token number">15</span>:54 lost+found<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>创建符号连接使用参数 <code>-s</code> 来建立：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span><span class="token comment"># ln -s hhh hhh_soft; ll -i</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ <span class="token function">ln</span> <span class="token parameter variable">-s</span> hhh hhh_soft<span class="token punctuation">;</span> ll <span class="token parameter variable">-i</span>
 total <span class="token number">24</span>
 <span class="token number">16</span> -rw-r--r--. <span class="token number">2</span> root root     <span class="token number">4</span> Sep <span class="token number">10</span> 01:57 hhh
 <span class="token number">16</span> -rw-r--r--. <span class="token number">2</span> root root     <span class="token number">4</span> Sep <span class="token number">10</span> 01:57 hhh_hark
@@ -1435,15 +1435,15 @@ total <span class="token number">24</span>
 <p>上表是在 ext 文件系统中可用的属性，xfs 文件系统仅支持部分隐藏属性。</p>
 <h2 id="设置隐藏属性"><a class="markdownIt-Anchor" href="#设置隐藏属性"></a> 设置隐藏属性</h2>
 <p>使用 <code>chattr</code> 命令来给文件设置隐藏属性。例如给文件 1 加上 i 和 a 属性：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># chattr +ia 1</span>
-<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># rm -rf 1</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ chattr +ia <span class="token number">1</span>
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">rm</span> <span class="token parameter variable">-rf</span> <span class="token number">1</span>
 rm: cannot remove <span class="token string">'1'</span><span class="token builtin class-name">:</span> Operation not permitted<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>取消文件的隐藏属性 i：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># chattr -i 1</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ chattr <span class="token parameter variable">-i</span> <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>如果设置对象是文件夹，使用 <code>-R</code> 可以递归修改，在文件夹中新建的文件会继承隐藏属性。</p>
 <h2 id="显示文件隐藏属性"><a class="markdownIt-Anchor" href="#显示文件隐藏属性"></a> 显示文件隐藏属性</h2>
 <p>使用 <code>lsattr</code> ming’l 来查看文件或目录的隐藏属性：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># lsattr -R</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ lsattr <span class="token parameter variable">-R</span>
 ---------------- ./anaconda-ks.cfg
 ---------------- ./audit
 
@@ -1513,57 +1513,57 @@ rm: cannot remove <span class="token string">'1'</span><span class="token builti
 <h1 id="显示当前目录"><a class="markdownIt-Anchor" href="#显示当前目录"></a> 显示当前目录</h1>
 <p>使用 <code>pwd</code> 命令（Print Working Directory 的缩写）显示目前所在目录。</p>
 <p>如显示当前路径：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 init.d<span class="token punctuation">]</span><span class="token comment"># pwd</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 init.d<span class="token punctuation">]</span>$ <span class="token builtin class-name">pwd</span>
 /etc/init.d<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>追踪链接文件显示实际路径加 <code>-P</code> 参数：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 init.d<span class="token punctuation">]</span><span class="token comment"># cd /var/mail ; pwd</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 init.d<span class="token punctuation">]</span>$ <span class="token builtin class-name">cd</span> /var/mail <span class="token punctuation">;</span> <span class="token builtin class-name">pwd</span>
 /var/mail
-<span class="token punctuation">[</span>root@101c7 mail<span class="token punctuation">]</span><span class="token comment"># pwd -P</span>
+<span class="token punctuation">[</span>root@101c7 mail<span class="token punctuation">]</span>$ <span class="token builtin class-name">pwd</span> <span class="token parameter variable">-P</span>
 /var/spool/mail<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <h1 id="切换目录"><a class="markdownIt-Anchor" href="#切换目录"></a> 切换目录</h1>
 <p>切换目录使用 <code>cd</code> 命令（change directory 的缩写）。</p>
 <p>例如进入到用户 abc 主目录下：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># cd ~abc</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">cd</span> ~abc<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>使用绝对路径写法进入到 <code>/etc/fonts/</code> 目录中：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># cd /etc/fonts/</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">cd</span> /etc/fonts/<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>回退到上个目录：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># cd -</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">cd</span> -
 /etc/fonts<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>使用相对路径写法进入到上级目录下的 init.d 目录：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 fonts<span class="token punctuation">]</span><span class="token comment"># cd ../init.d/</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 fonts<span class="token punctuation">]</span>$ <span class="token builtin class-name">cd</span> <span class="token punctuation">..</span>/init.d/<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>不接参数直接进入当前用户的主目录：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span><span class="token comment"># cd ; pwd</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">cd</span> <span class="token punctuation">;</span> <span class="token builtin class-name">pwd</span>
 /root<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <h1 id="新建目录"><a class="markdownIt-Anchor" href="#新建目录"></a> 新建目录</h1>
 <p>使用 <code>mkdir</code> 命令（make directory 的简写）来建立目录。</p>
 <p>如建立一个名为 test1 的目录：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># mkdir test1</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> test1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>可以用 -p 参数建立嵌套目录，比如建立 test2 文件夹后，在其下建立 test3 文件夹：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># mkdir -p test2/test3 ; ll test2</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> <span class="token parameter variable">-p</span> test2/test3 <span class="token punctuation">;</span> ll test2
 total <span class="token number">0</span>
 drwxr-xr-x. <span class="token number">2</span> root root <span class="token number">6</span> Sep <span class="token number">9</span> 04:19 test3<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>可以同时创建多个目录，目录名之间用空格分开。如一次建立 a1、b2、c3 三个文件夹：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># mkdir a1 b2 c3 ; ll</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> a1 b2 c3 <span class="token punctuation">;</span> ll
 total <span class="token number">3</span>
 drwxr-xr-x. <span class="token number">2</span> root root <span class="token number">6</span> Sep <span class="token number">9</span> 04:21 a1
 drwxr-xr-x. <span class="token number">2</span> root root <span class="token number">6</span> Sep <span class="token number">9</span> 04:21 b2
 drwxr-xr-x. <span class="token number">2</span> root root <span class="token number">6</span> Sep <span class="token number">9</span> 04:21 c3<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>新建目录默认权限是 755，可以用 <code>-m</code> 参数在创建目录时自定义权限，比如建立权限为 777 的文件夹 decay：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 a1<span class="token punctuation">]</span><span class="token comment"># mkdir -m 777 decay ; ll</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 a1<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> <span class="token parameter variable">-m</span> <span class="token number">777</span> decay <span class="token punctuation">;</span> ll
 total <span class="token number">0</span>
 drwxrwxrwx. <span class="token number">2</span> root root <span class="token number">6</span> Sep <span class="token number">9</span> 04:23 decay<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <h1 id="删除空目录"><a class="markdownIt-Anchor" href="#删除空目录"></a> 删除空目录</h1>
 <p>使用 <code>rmdir</code> 只能删除空目录。例如同时删除空目录 b2、c3：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># rmdir b2 c3</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">rmdir</span> b2 c3<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>可以加入 <code>-p</code> 来递归删除多级空目录。例如删除 decay 目录下面的空文件夹 cc，再删除 decay 目录：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 a1<span class="token punctuation">]</span><span class="token comment"># ll</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 a1<span class="token punctuation">]</span>$ ll
 total <span class="token number">0</span>
 drwxrwxrwx. <span class="token number">3</span> root root <span class="token number">16</span> Sep <span class="token number">9</span> 04:31 decay
-<span class="token punctuation">[</span>root@101c7 a1<span class="token punctuation">]</span><span class="token comment"># rmdir -p decay/cc/ ; ll</span>
+<span class="token punctuation">[</span>root@101c7 a1<span class="token punctuation">]</span>$ <span class="token function">rmdir</span> <span class="token parameter variable">-p</span> decay/cc/ <span class="token punctuation">;</span> ll
 total <span class="token number">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h1 id="查询目录大小"><a class="markdownIt-Anchor" href="#查询目录大小"></a> 查询目录大小</h1>
 <p>使用 <code>du</code> 可以查询到文件或目录所占大小。列出当前目录下面所有文件与目录大小：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span><span class="token comment"># du -ha</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ <span class="token function">du</span> <span class="token parameter variable">-ha</span>
 102K    ./100K2
 21M     ./1.copy
 21M     ./lost+found/1.copy
@@ -1576,7 +1576,7 @@ total <span class="token number">0</span><span aria-hidden="true" class="line-nu
 61M     <span class="token builtin class-name">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>最末一行显示整个文件夹大小为 61MB。</p>
 <p>只统计当前目录下文件和文件夹（不列出文件夹下文件）大小，不包括隐藏文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span><span class="token comment"># du -sh *</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ <span class="token function">du</span> <span class="token parameter variable">-sh</span> *
 102K    ./100K
 102K    ./100K2
 21M     ./1.copy
@@ -1585,7 +1585,7 @@ total <span class="token number">0</span><span aria-hidden="true" class="line-nu
 21M     ./lost+found
 <span class="token number">4</span>.0K    ./users<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>统计包含隐藏文件和文件夹大小：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-250 ~<span class="token punctuation">]</span><span class="token comment"># du -h --max-depth=1</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-250 ~<span class="token punctuation">]</span>$ <span class="token function">du</span> <span class="token parameter variable">-h</span> --max-depth<span class="token operator">=</span><span class="token number">1</span>
 <span class="token number">0</span>       ./.pki
 16M     ./.kube
 16K     ./.ssh
@@ -1624,7 +1624,7 @@ total <span class="token number">0</span><span aria-hidden="true" class="line-nu
 <p>如果要安装多重开机，一般先安装 Windows 再安装 Linux，因为 Windows 安装时会直接覆盖掉 MBR 以及自己所在分区的引导扇区，并且 Windows 的引导程序默认没有转移引导功能。而 Linux 安装时可以选择引导加载程序不安装到 MBR，只装在指定分区的引导扇区。之后修改引导程序加入 Windows 开机选项，完成双系统引导功能。</p>
 <h1 id="引导目录说明"><a class="markdownIt-Anchor" href="#引导目录说明"></a> 引导目录说明</h1>
 <p>如果使用 GRUB 引导，需给 <code>/boot</code> 分区来放置开机过程所需的文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ll /boot</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll /boot
 total <span class="token number">149232</span>
 -rw-r--r--. <span class="token number">1</span> root root   <span class="token number">153596</span> Aug <span class="token number">31</span> <span class="token number">10</span>:57 config-3.10.0-1160.41.1.el7.x86_64
 -rw-r--r--. <span class="token number">1</span> root root   <span class="token number">147819</span> Apr <span class="token number">20</span>  <span class="token number">2018</span> config-3.10.0-862.el7.x86_64
@@ -1692,7 +1692,7 @@ drwx------. <span class="token number">5</span> root root      <span class="toke
 <p>虚拟文件系统的 img 文件也能被引导加载程序载入到内存中，解压后在内存中仿真成一个根目录。内核会读取虚拟文件系统内的驱动，通常是与磁盘接口和文件系统格式支持有关的驱动程序。</p>
 <p>等驱动载入完毕，根目录所在分区信息被正确识别后，此虚拟文件系统被卸载，并挂载实际的根目录文件系统，继续后续开机流程。</p>
 <p>可以用 <code>lsinitrd</code> 命令查看 initramfs 镜像的内容：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># lsinitrd /boot/initramfs-3.10.0-1160.41.1.el7.x86_64.img </span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ lsinitrd /boot/initramfs-3.10.0-1160.41.1.el7.x86_64.img 
 Image: /boot/initramfs-3.10.0-1160.41.1.el7.x86_64.img: 21M
 <span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span>
 Early CPIO image
@@ -1723,14 +1723,14 @@ lrwxrwxrwx   <span class="token number">1</span> root     root            <span 
 drwxr-xr-x   <span class="token number">2</span> root     root            <span class="token number">0</span> Sep  <span class="token number">7</span> 05:55 dev<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>可以看到，这个 img 文件可以分为两部分。前半部分包括一些预先声明的数据，其中包括一个可执行的 bin 文件；而后半部分才是内核会去读取的重要文件。</p>
 <p>进一步解压整个 img 文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 initrams<span class="token punctuation">]</span><span class="token comment"># cp /boot/initramfs-3.10.0-1160.41.1.el7.x86_64.img init.img</span>
-<span class="token punctuation">[</span>root@101c7 initrams<span class="token punctuation">]</span><span class="token comment"># file init.img </span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 initrams<span class="token punctuation">]</span>$ <span class="token function">cp</span> /boot/initramfs-3.10.0-1160.41.1.el7.x86_64.img init.img
+<span class="token punctuation">[</span>root@101c7 initrams<span class="token punctuation">]</span>$ <span class="token function">file</span> init.img 
 init.img: ASCII cpio archive <span class="token punctuation">(</span>SVR4 with no CRC<span class="token punctuation">)</span>
-<span class="token punctuation">[</span>root@101c7 initrams<span class="token punctuation">]</span><span class="token comment"># /usr/lib/dracut/skipcpio init.img | zcat | cpio -div</span>
+<span class="token punctuation">[</span>root@101c7 initrams<span class="token punctuation">]</span>$ /usr/lib/dracut/skipcpio init.img <span class="token operator">|</span> zcat <span class="token operator">|</span> cpio <span class="token parameter variable">-div</span>
 init
 <span class="token function">shutdown</span>
 <span class="token number">88189</span> blocks
-<span class="token punctuation">[</span>root@101c7 initrams<span class="token punctuation">]</span><span class="token comment"># ll</span>
+<span class="token punctuation">[</span>root@101c7 initrams<span class="token punctuation">]</span>$ ll
 total <span class="token number">8</span>
 lrwxrwxrwx.  <span class="token number">1</span> root root    <span class="token number">7</span> Sep <span class="token number">19</span> 09:10 bin -<span class="token operator">></span> usr/bin
 drwxr-xr-x.  <span class="token number">2</span> root root   <span class="token number">45</span> Sep <span class="token number">19</span> 09:10 dev
@@ -1749,9 +1749,9 @@ drwxr-xr-x.  <span class="token number">2</span> root root    <span class="token
 drwxr-xr-x.  <span class="token number">7</span> root root   <span class="token number">66</span> Sep <span class="token number">19</span> 09:10 usr
 drwxr-xr-x.  <span class="token number">2</span> root root   <span class="token number">29</span> Sep <span class="token number">19</span> 09:10 var<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>解压后查询下这个文件系统中 systemd 调用的运行模式：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 initrams<span class="token punctuation">]</span><span class="token comment"># ll usr/lib/systemd/system/default.target</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 initrams<span class="token punctuation">]</span>$ ll usr/lib/systemd/system/default.target
 lrwxrwxrwx. <span class="token number">1</span> root root <span class="token number">13</span> Sep <span class="token number">19</span> 09:10 usr/lib/systemd/system/default.target -<span class="token operator">></span> initrd.target
-<span class="token punctuation">[</span>root@101c7 initrams<span class="token punctuation">]</span><span class="token comment"># systemctl list-dependencies initrd.target</span>
+<span class="token punctuation">[</span>root@101c7 initrams<span class="token punctuation">]</span>$ systemctl list-dependencies initrd.target
 initrd.target
 ● ├─dracut-cmdline.service
 ● ├─dracut-initqueue.service
@@ -1759,7 +1759,7 @@ initrd.target
 ● ├─dracut-pre-mount.service<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>通过查询 initrd.target 可以知道内核先是用载入虚拟文件系统中的 basic.target、sysinit.target 等功能启用的流程，让系统顺利运行，再卸载虚拟文件系统，挂载实际系统根目录。</p>
 <p>如果想要创建一个自定义的 initramfs 镜像，可以使用 dracut 或 mkinitrd 来处理。例如，新建一个添加了 x200 网卡驱动和 nfs 文件系统驱动的 initramfs 镜像：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># dracut -v -add-drivers "x200" --filesystems "nfs" > initramfs-new.img &amp; (uname -r)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ dracut <span class="token parameter variable">-v</span> -add-drivers <span class="token string">"x200"</span> <span class="token parameter variable">--filesystems</span> <span class="token string">"nfs"</span> <span class="token operator">></span> initramfs-new.img <span class="token operator">&amp;</span> <span class="token punctuation">(</span>uname -r<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h1 id="systemd-启动流程"><a class="markdownIt-Anchor" href="#systemd-启动流程"></a> Systemd 启动流程</h1>
 <p>Systemd 是一种系统和服务管理器，是 Linux 系统中的一项关键技术。它可以用于启动、停止和管理系统进程、网络、文件系统和其他系统资源。Systemd 最初是为 Red Hat Linux 发行版设计的，但现在已被广泛采用，并被大多数 Linux 发行版所使用。</p>
 <p>Systemd 的主要优势是速度和可靠性。它的启动速度远远快于传统的 init 系统，因为它能够并行启动多个服务。此外，Systemd 还提供了强大的日志功能和灵活的单元文件格式，可用于管理各种类型的服务和资源。</p>
@@ -1774,7 +1774,7 @@ initrd.target
 <li>（非必须）执行 graphical 需要的服务。</li>
 </ol>
 <p>至于最终启动的服务有哪些，可以用<code>systemctl list-dependencies</code>命令查询：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 initrams<span class="token punctuation">]</span><span class="token comment"># systemctl list-dependencies multi-user.target | grep target</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 initrams<span class="token punctuation">]</span>$ systemctl list-dependencies multi-user.target <span class="token operator">|</span> <span class="token function">grep</span> target
 multi-user.target
 ● ├─basic.target
 ● │ ├─selinux-policy-migrate-local-changes@targeted.service
@@ -1886,8 +1886,8 @@ multi-user.target
 <p>登录系统后，会获得一个 bash 的 shell。通过 bash 提供的接口执行另一个命令，如 <code>vim</code>，它也会被分配一个 PID。此时，原本的 bash 就是 <code>vim</code> 的父进程。父进程的 PID 可以用 PPID（Parent ID）表示。</p>
 <p>通常，子进程会继承父进程的相关权限和环境变量。</p>
 <p>例如，在 bash 中执行 <code>bash</code>，再用<code>ps -l</code>命令查看：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># bash</span>
-<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ps -l</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">bash</span>
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">ps</span> <span class="token parameter variable">-l</span>
 F S   <span class="token environment constant">UID</span>    PID   <span class="token environment constant">PPID</span>  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
 <span class="token number">4</span> S     <span class="token number">0</span>   <span class="token number">5713</span>   <span class="token number">5709</span>  <span class="token number">0</span>  <span class="token number">80</span>   <span class="token number">0</span> - <span class="token number">28920</span> do_wai pts/0    00:00:00 <span class="token function">bash</span>
 <span class="token number">4</span> S     <span class="token number">0</span>  <span class="token number">35555</span>   <span class="token number">5713</span>  <span class="token number">0</span>  <span class="token number">80</span>   <span class="token number">0</span> - <span class="token number">28919</span> do_wai pts/0    00:00:00 <span class="token function">bash</span>
@@ -1920,7 +1920,7 @@ F S   <span class="token environment constant">UID</span>    PID   <span class="
 </table>
 <h1 id="内部程序沟通"><a class="markdownIt-Anchor" href="#内部程序沟通"></a> 内部程序沟通</h1>
 <p>在系统内，许多进程需要互相交换信息。除了通过文件进行沟通，还包括共享内存（Shared Memory）、消息队列（Message Queues）、管道（Pipe）等方式，统称为内部程序沟通（Interprocess Communication）。可以用命令 <code>ipcs</code> 观察沟通状态：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span><span class="token comment"># ipcs</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ ipcs
 
  Message Queues 
 key        msqid      owner      perms      used-bytes   messages    
@@ -1945,11 +1945,207 @@ key        semid      owner      perms      nsems   <span aria-hidden="true" cla
       </categories>
   </entry>
   <entry>
+    <title>Linux 命令行使用</title>
+    <url>/1784829336/</url>
+    <content><![CDATA[<h1 id="终端类型"><a class="markdownIt-Anchor" href="#终端类型"></a> 终端类型</h1>
+<p>只使用文本的终端被称为字符终端（Character Terminal）或基于文本的终端（Text-Based Terminal），统称命令行界面（CLI，Command Line Interface）。其硬件设备标准代表是 DEC 公司 1978 年生产的 VT100。</p>
+<p>图形终端（Graphics Terminal）不仅可以处理文本，还可以显示任何能使用小点在屏幕上进行绘制的内容，也就是可以通过图形用户界面（GUI，Graphical User Interface）和服务端交互。Unix 的 GUI 都基于 X Window System。在图形终端中，用户可以通过鼠标、键盘和触摸屏等设备进行交互操作，相比于命令行界面，图形终端更加直观和易用。</p>
+<p>在现代计算机系统中，通常都同时支持命令行界面和图形界面。命令行界面通常用于系统维护、编程和高级用户操作等任务，而图形界面则主要用于日常应用程序的操作和交互。</p>
+<p>可以通过查看 <code>$TERM</code> 变量来了解当前使用的终端配置文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token environment constant">$TERM</span>
+vt100<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h1 id="常用组合快捷键"><a class="markdownIt-Anchor" href="#常用组合快捷键"></a> 常用组合快捷键</h1>
+<p>在终端中常用的快捷键如下：</p>
+<table>
+<thead>
+<tr>
+<th>快捷键</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>【Tab】</td>
+<td>命令补全/文件名补齐。</td>
+</tr>
+<tr>
+<td>【Ctrl】+C</td>
+<td>中断操作，停止程序运行。</td>
+</tr>
+<tr>
+<td>【Ctrl】+D</td>
+<td>键盘输入结束/退出终端/删除光标后字符。</td>
+</tr>
+<tr>
+<td>【Ctrl】+Z</td>
+<td>暂停当前进程并丢入后台。</td>
+</tr>
+<tr>
+<td>【Ctrl】+S</td>
+<td>暂停当前程序，暂停后按下任意键恢复运行。</td>
+</tr>
+<tr>
+<td>【Ctrl】+A</td>
+<td>将光标移动到命令行首。</td>
+</tr>
+<tr>
+<td>【Ctrl】+E</td>
+<td>将光标移动到命令行尾。</td>
+</tr>
+<tr>
+<td>【Ctrl】+L</td>
+<td>清屏。</td>
+</tr>
+<tr>
+<td>【Ctrl】+【Shift】+N</td>
+<td>新建终端窗口。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="命令提示符"><a class="markdownIt-Anchor" href="#命令提示符"></a> 命令提示符</h1>
+<p>成功登录系统后，终端会显示如下命令提示符：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>各字段的含义如下：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>root</td>
+<td>标识当前登录的用户身份</td>
+</tr>
+<tr>
+<td>101c7</td>
+<td>表示当前主机的名称</td>
+</tr>
+<tr>
+<td>~</td>
+<td>表示当前所在的目录。其中，~表示当前用户的主目录，是一个变量。</td>
+</tr>
+<tr>
+<td>#</td>
+<td>如果当前用户为 root，命令提示符为 #；如果为普通用户，则为 $。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="命令格式"><a class="markdownIt-Anchor" href="#命令格式"></a> 命令格式</h1>
+<p>一般命令格式如下，中括号 [] 表示非必须输入：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">命令名称 <span class="token punctuation">[</span>-选项<span class="token punctuation">]</span> <span class="token punctuation">[</span>参数1<span class="token punctuation">]</span> <span class="token punctuation">[</span>参数2<span class="token punctuation">]</span><span class="token punctuation">..</span>.<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="命令名称"><a class="markdownIt-Anchor" href="#命令名称"></a> 命令名称</h2>
+<p>一行命令第一个输入的部分绝对是命令（command）或可执行文件。</p>
+<p>当命令太长时，可以使用反斜杠 \ 来转义回车（必须立刻接特殊字符才能转义），使命令输入连续到下一行。</p>
+<p>命令严格区分大小写，通常由小写字母构成。</p>
+<h2 id="选项"><a class="markdownIt-Anchor" href="#选项"></a> 选项</h2>
+<p>选项（options）前通常会加 - 号，例如 -h。</p>
+<p>有时表示输入选项完整全名，则使用 – 符号，例如 <code>--help</code>。</p>
+<p>多个选项可以用一个 - 连接起来，例如 -abc，表示同时使用 a、b、c 三个选项。</p>
+<h2 id="参数"><a class="markdownIt-Anchor" href="#参数"></a> 参数</h2>
+<p>参数（parameter）用于向希望运行的程序传递信息，通常是一些文件名，告诉命令从哪里可以得到输入，以及把输出送到什么地方。</p>
+<p>参数之间用空格隔开，多个空格会被视为一个空格。如果参数中含有空格，应该使用双引号或单引号将其括起来，例如：<code>&quot;file name&quot;</code>。</p>
+<h1 id="执行命令"><a class="markdownIt-Anchor" href="#执行命令"></a> 执行命令</h1>
+<p>在命令行执行命令时，通常有以下两种情况：</p>
+<ul>
+<li>按下回车键后，命令立即运行并显示结果，等待下一条命令输入。</li>
+<li>进入到该命令的环境中，直到结束该命令才回到命令提示符的环境。</li>
+</ul>
+<p>在命令正常执行完毕后，会返回一个值。如果命令执行成功，则返回值为 0。如果命令执行过程中出错没有完成全部工作，则返回一个非零值（可以通过变量$?查看）。</p>
+<h2 id="命令执行顺序"><a class="markdownIt-Anchor" href="#命令执行顺序"></a> 命令执行顺序</h2>
+<p>命令的执行顺序按照以下优先级排列：</p>
+<ol>
+<li>以相对/绝对路径执行命令，例如 <code>/bin/ls</code> 或 <code>ls</code>。</li>
+<li>由别名（alias）找到该命令来执行。</li>
+<li>由 bash 内置的（builtin）命令来执行。</li>
+<li>通过$PATH 变量的顺序找到的第一个命令来执行。</li>
+</ol>
+<h2 id="执行多条命令"><a class="markdownIt-Anchor" href="#执行多条命令"></a> 执行多条命令</h2>
+<p>可以用分号将多条命令写在同一行，这些命令将会依次执行。</p>
+<p>例如：查看 root.txt 文件属性；修改其权限为 6755；再次查看 root.txt 的属性：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll root.txt <span class="token punctuation">;</span> <span class="token function">chmod</span> <span class="token number">6775</span> root.txt <span class="token punctuation">;</span> ll root.txt 
+-rw-r--r--. <span class="token number">1</span> root root <span class="token number">7549</span> Sep <span class="token number">11</span> <span class="token number">11</span>:59 root.txt
+-rwsrwsr-x. <span class="token number">1</span> root root <span class="token number">7549</span> Sep <span class="token number">11</span> <span class="token number">11</span>:59 root.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h2 id="报错信息"><a class="markdownIt-Anchor" href="#报错信息"></a> 报错信息</h2>
+<p>以下是两条报错信息:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">cat</span> nohup.out <span class="token punctuation">;</span> catt
+cat: nohup.out: Permission denied
+bash: catt: <span class="token builtin class-name">command</span> not found<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>上面的报错信息使用冒号 : 分隔成了三段，分别表示：命令、参数和报错原因。</p>
+<h1 id="命令别名"><a class="markdownIt-Anchor" href="#命令别名"></a> 命令别名</h1>
+<p>使用<code>alias</code>命令可以为命令或一组命令指定自定义名称。例如，将命令<code>ll -a | more</code>设置为<code>lm</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">alias</span> <span class="token assign-left variable">lm</span><span class="token operator">=</span><span class="token string">'ll -a | more'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>要查询已定义的别名，可以使用<code>-p</code>参数：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">alias</span> <span class="token parameter variable">-p</span>
+<span class="token builtin class-name">alias</span> <span class="token assign-left variable">cp</span><span class="token operator">=</span><span class="token string">'cp -i'</span>
+<span class="token builtin class-name">alias</span> <span class="token assign-left variable">egrep</span><span class="token operator">=</span><span class="token string">'egrep --color=auto'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>如果要取消别名，使用<code>unalias</code>命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">unalias</span> lm<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>如果要临时挂起别名，例如想要使用原始的<code>ls</code>命令而不是带有<code>--color=auto</code>参数的别名<code>ls</code>，可以在命令前面加上反斜杠\字符：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span>$ <span class="token punctuation">\</span>ls <span class="token parameter variable">-la</span>
+total <span class="token number">64</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h1 id="历史命令"><a class="markdownIt-Anchor" href="#历史命令"></a> 历史命令</h1>
+<p>使用快捷键 [Ctrl]+r 可以搜索历史命令记录。搜索结果继续按 [Ctrl]+r 显示上一个找到的命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">(</span>reverse-i-search<span class="token punctuation">)</span>`history': <span class="token function">history</span> <span class="token operator">|</span> <span class="token function">grep</span> dump<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>可以使用 <code>history</code> 命令查询输入过的历史命令列表。默认情况下，历史命令保存在 <code>~/.bash_history</code> 中。只有在注销登录后，此次会话所执行的命令才会写入文件中。</p>
+<p>可用参数:</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-c</td>
+<td>清除所有记录。</td>
+</tr>
+<tr>
+<td>-d</td>
+<td>删除指定编号的命令记录。</td>
+</tr>
+<tr>
+<td>-a</td>
+<td>插入当前历史记录到指定文件末尾，默认会将此次会话的历史记录写入到 .bash_history 文件中。</td>
+</tr>
+<tr>
+<td>-w</td>
+<td>写入当前的历史记录到指定文件中。</td>
+</tr>
+</tbody>
+</table>
+<p>例如，要显示最近的 5 条历史记录：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">history</span> <span class="token number">5</span>
+  <span class="token number">888</span>  <span class="token function">date</span>
+  <span class="token number">889</span>  <span class="token function">time</span>
+  <span class="token number">890</span>  w <span class="token parameter variable">-i</span>
+  <span class="token number">891</span>  <span class="token function">cat</span> .bash_history 
+  <span class="token number">892</span>  <span class="token function">history</span> <span class="token operator">|</span> <span class="token function">tail</span> <span class="token parameter variable">-n5</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以通过<code>!记录编号</code>直接执行对应的命令。例如，要重新运行第 890 条记录，可以输入：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token operator">!</span><span class="token number">890</span>
+w <span class="token parameter variable">-i</span>
+<span class="token number">23</span>:41:23 up <span class="token number">1</span> day,  <span class="token number">8</span>:32,  <span class="token number">2</span> users,  load average: <span class="token number">0.00</span>, <span class="token number">0.01</span>, <span class="token number">0.05</span>
+<span class="token environment constant">USER</span>     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+root     pts/0    <span class="token number">192.168</span>.2.101    04:01    <span class="token number">3</span>.00s  <span class="token number">0</span>.84s  <span class="token number">0</span>.00s w <span class="token parameter variable">-i</span>
+root     pts/1    <span class="token number">192.168</span>.2.101    <span class="token number">15</span>:12    <span class="token number">8</span>:28m  <span class="token number">0</span>.01s  <span class="token number">0</span>.01s <span class="token parameter variable">-bash</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果使用<code>!!</code>，则会执行上一个命令。</p>
+<h1 id="清屏"><a class="markdownIt-Anchor" href="#清屏"></a> 清屏</h1>
+<p>直接输入 <code>clear</code> 命令能清屏：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">clear</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>0.基础概论</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Linux 文件属性解释</title>
     <url>/1872252014/</url>
     <content><![CDATA[<h1 id="查看文件属性"><a class="markdownIt-Anchor" href="#查看文件属性"></a> 查看文件属性</h1>
 <p>执行 <code>ls -la</code> 命令后，可以看到当前目录下所有文件的权限和属性：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ll -la</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll <span class="token parameter variable">-la</span>
 total <span class="token number">32</span>
 dr-xr-x---.  <span class="token number">4</span> root root  <span class="token number">175</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 <span class="token builtin class-name">.</span>
 dr-xr-xr-x. <span class="token number">17</span> root root  <span class="token number">224</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:37 <span class="token punctuation">..</span>
@@ -2082,195 +2278,128 @@ drwxr-----.  <span class="token number">3</span> root root   <span class="token 
       </categories>
   </entry>
   <entry>
-    <title>Linux 命令行使用</title>
-    <url>/1784829336/</url>
-    <content><![CDATA[<h1 id="终端类型"><a class="markdownIt-Anchor" href="#终端类型"></a> 终端类型</h1>
-<p>只使用文本的终端被称为字符终端（Character Terminal）或基于文本的终端（Text-Based Terminal），统称命令行界面（CLI，Command Line Interface）。其硬件设备标准代表是 DEC 公司 1978 年生产的 VT100。</p>
-<p>图形终端（Graphics Terminal）不仅可以处理文本，还可以显示任何能使用小点在屏幕上进行绘制的内容，也就是可以通过图形用户界面（GUI，Graphical User Interface）和服务端交互。Unix 的 GUI 都基于 X Window System。在图形终端中，用户可以通过鼠标、键盘和触摸屏等设备进行交互操作，相比于命令行界面，图形终端更加直观和易用。</p>
-<p>在现代计算机系统中，通常都同时支持命令行界面和图形界面。命令行界面通常用于系统维护、编程和高级用户操作等任务，而图形界面则主要用于日常应用程序的操作和交互。</p>
-<p>可以通过查看 <code>$TERM</code> 变量来了解当前使用的终端配置文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span><span class="token comment"># echo $TERM</span>
-vt100<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h1 id="常用组合快捷键"><a class="markdownIt-Anchor" href="#常用组合快捷键"></a> 常用组合快捷键</h1>
-<p>在终端中常用的快捷键如下：</p>
+    <title>Linux 文件权限</title>
+    <url>/46662635/</url>
+    <content><![CDATA[<h1 id="基本权限"><a class="markdownIt-Anchor" href="#基本权限"></a> 基本权限</h1>
+<p>基础权限有三种，分别是：读（r，Read）、写（w，Write）、执行（x，eXecute）。</p>
+<p>同样的权限标记对于文件和目录代表不同的意义。</p>
+<h2 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h2>
+<p>文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。</p>
 <table>
 <thead>
 <tr>
-<th>快捷键</th>
-<th>说明</th>
+<th>数字</th>
+<th>字符</th>
+<th>权限</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>【Tab】</td>
-<td>命令补全/文件名补齐。</td>
+<td>4</td>
+<td>r</td>
+<td><strong>读取文件内容</strong>。例如使用 <code>cat</code> 命令查看，使用 <code>vim</code> 以<strong>只读</strong>方式打开。</td>
 </tr>
 <tr>
-<td>【Ctrl】+C</td>
-<td>中断操作，停止程序运行。</td>
+<td>2</td>
+<td>w</td>
+<td><strong>编辑修改</strong>文件内容，但<strong>不包括删除</strong>文件。例如使用 <code>vim</code>、<code>sed</code> 等对文件内容进行修改并保存。</td>
 </tr>
 <tr>
-<td>【Ctrl】+D</td>
-<td>键盘输入结束/退出终端/删除光标后字符。</td>
-</tr>
-<tr>
-<td>【Ctrl】+Z</td>
-<td>暂停当前进程并丢入后台。</td>
-</tr>
-<tr>
-<td>【Ctrl】+S</td>
-<td>暂停当前程序，暂停后按下任意键恢复运行。</td>
-</tr>
-<tr>
-<td>【Ctrl】+A</td>
-<td>将光标移动到命令行首。</td>
-</tr>
-<tr>
-<td>【Ctrl】+E</td>
-<td>将光标移动到命令行尾。</td>
-</tr>
-<tr>
-<td>【Ctrl】+L</td>
-<td>清屏。</td>
-</tr>
-<tr>
-<td>【Ctrl】+【Shift】+N</td>
-<td>新建终端窗口。</td>
+<td>1</td>
+<td>x</td>
+<td>文件具有可以被系统<strong>执行</strong>的权限。例如命令和脚本必须拥有此权限才能直接执行。</td>
 </tr>
 </tbody>
 </table>
-<h1 id="命令提示符"><a class="markdownIt-Anchor" href="#命令提示符"></a> 命令提示符</h1>
-<p>成功登录系统后，终端会显示如下命令提示符：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment">#</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>各字段的含义如下：</p>
+<h2 id="目录权限"><a class="markdownIt-Anchor" href="#目录权限"></a> 目录权限</h2>
+<p>目录主要的内容是记录文件名清单，所以目录权限实际关联的是目录下文件属性查看与更改。</p>
 <table>
 <thead>
 <tr>
-<th>字段</th>
-<th>说明</th>
+<th>数字</th>
+<th>字符</th>
+<th>权限</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>root</td>
-<td>标识当前登录的用户身份</td>
+<td>4</td>
+<td>r</td>
+<td><strong>仅查询</strong>目录下的文件或目录<strong>名称</strong>，无法看到属性，相当于执行不加参数的 <code>ls</code> 命令。</td>
 </tr>
 <tr>
-<td>101c7</td>
-<td>表示当前主机的名称</td>
+<td>2</td>
+<td>w</td>
+<td>改变目录结构清单权限，也就是在目录下<strong>新建、删除、重命名</strong>文件或目录。</td>
 </tr>
 <tr>
-<td>~</td>
-<td>表示当前所在的目录。其中，~表示当前用户的主目录，是一个变量。</td>
-</tr>
-<tr>
-<td>#</td>
-<td>如果当前用户为 root，命令提示符为 #；如果为普通用户，则为 $。</td>
+<td>1</td>
+<td>x</td>
+<td><strong>进入目录</strong>的权限，<strong>查询</strong>目录下的文件<strong>属性</strong>。</td>
 </tr>
 </tbody>
 </table>
-<h1 id="命令格式"><a class="markdownIt-Anchor" href="#命令格式"></a> 命令格式</h1>
-<p>一般命令格式如下，中括号 [] 表示非必须输入：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">命令名称 <span class="token punctuation">[</span>-选项<span class="token punctuation">]</span> <span class="token punctuation">[</span>参数1<span class="token punctuation">]</span> <span class="token punctuation">[</span>参数2<span class="token punctuation">]</span><span class="token punctuation">..</span>.<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="命令名称"><a class="markdownIt-Anchor" href="#命令名称"></a> 命令名称</h2>
-<p>一行命令第一个输入的部分绝对是命令（command）或可执行文件。</p>
-<p>当命令太长时，可以使用反斜杠 \ 来转义回车（必须立刻接特殊字符才能转义），使命令输入连续到下一行。</p>
-<p>命令严格区分大小写，通常由小写字母构成。</p>
-<h2 id="选项"><a class="markdownIt-Anchor" href="#选项"></a> 选项</h2>
-<p>选项（options）前通常会加 - 号，例如 -h。</p>
-<p>有时表示输入选项完整全名，则使用 – 符号，例如 <code>--help</code>。</p>
-<p>多个选项可以用一个 - 连接起来，例如 -abc，表示同时使用 a、b、c 三个选项。</p>
-<h2 id="参数"><a class="markdownIt-Anchor" href="#参数"></a> 参数</h2>
-<p>参数（parameter）用于向希望运行的程序传递信息，通常是一些文件名，告诉命令从哪里可以得到输入，以及把输出送到什么地方。</p>
-<p>参数之间用空格隔开，多个空格会被视为一个空格。如果参数中含有空格，应该使用双引号或单引号将其括起来，例如：<code>&quot;file name&quot;</code>。</p>
-<h1 id="执行命令"><a class="markdownIt-Anchor" href="#执行命令"></a> 执行命令</h1>
-<p>在命令行执行命令时，通常有以下两种情况：</p>
+<h1 id="权限参考"><a class="markdownIt-Anchor" href="#权限参考"></a> 权限参考</h1>
+<p>根据使用场景来配置权限。</p>
+<p><strong>用户进入目录所需权限</strong>：</p>
 <ul>
-<li>按下回车键后，命令立即运行并显示结果，等待下一条命令输入。</li>
-<li>进入到该命令的环境中，直到结束该命令才回到命令提示符的环境。</li>
+<li>目录需要 x 权限，来运行 <code>cd</code> 切换目录。</li>
+<li>目录需要 r 权限，来使用 <code>ls</code> 命令查看目录中文件列表。</li>
 </ul>
-<p>在命令正常执行完毕后，会返回一个值。如果命令执行成功，则返回值为 0。如果命令执行过程中出错没有完成全部工作，则返回一个非零值（可以通过变量$?查看）。</p>
-<h2 id="命令执行顺序"><a class="markdownIt-Anchor" href="#命令执行顺序"></a> 命令执行顺序</h2>
-<p>命令的执行顺序按照以下优先级排列：</p>
-<ol>
-<li>以相对/绝对路径执行命令，例如 <code>/bin/ls</code> 或 <code>ls</code>。</li>
-<li>由别名（alias）找到该命令来执行。</li>
-<li>由 bash 内置的（builtin）命令来执行。</li>
-<li>通过$PATH 变量的顺序找到的第一个命令来执行。</li>
-</ol>
-<h2 id="执行多条命令"><a class="markdownIt-Anchor" href="#执行多条命令"></a> 执行多条命令</h2>
-<p>可以用分号将多条命令写在同一行，这些命令将会依次执行。</p>
-<p>例如：查看 root.txt 文件属性；修改其权限为 6755；再次查看 root.txt 的属性：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># ll root.txt ; chmod 6775 root.txt ; ll root.txt </span>
--rw-r--r--. <span class="token number">1</span> root root <span class="token number">7549</span> Sep <span class="token number">11</span> <span class="token number">11</span>:59 root.txt
--rwsrwsr-x. <span class="token number">1</span> root root <span class="token number">7549</span> Sep <span class="token number">11</span> <span class="token number">11</span>:59 root.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h2 id="报错信息"><a class="markdownIt-Anchor" href="#报错信息"></a> 报错信息</h2>
-<p>以下是两条报错信息:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">cat</span> nohup.out <span class="token punctuation">;</span> catt
-cat: nohup.out: Permission denied
-bash: catt: <span class="token builtin class-name">command</span> not found<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>上面的报错信息使用冒号 : 分隔成了三段，分别表示：命令、参数和报错原因。</p>
-<h1 id="命令别名"><a class="markdownIt-Anchor" href="#命令别名"></a> 命令别名</h1>
-<p>使用<code>alias</code>命令可以为命令或一组命令指定自定义名称。例如，将命令<code>ll -a | more</code>设置为<code>lm</code>：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># alias lm='ll -a | more'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>要查询已定义的别名，可以使用<code>-p</code>参数：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># alias -p</span>
-<span class="token builtin class-name">alias</span> <span class="token assign-left variable">cp</span><span class="token operator">=</span><span class="token string">'cp -i'</span>
-<span class="token builtin class-name">alias</span> <span class="token assign-left variable">egrep</span><span class="token operator">=</span><span class="token string">'egrep --color=auto'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>如果要取消别名，使用<code>unalias</code>命令：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># unalias lm</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>如果要临时挂起别名，例如想要使用原始的<code>ls</code>命令而不是带有<code>--color=auto</code>参数的别名<code>ls</code>，可以在命令前面加上反斜杠\字符：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span><span class="token comment"># \ls -la</span>
-total <span class="token number">64</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h1 id="历史命令"><a class="markdownIt-Anchor" href="#历史命令"></a> 历史命令</h1>
-<p>使用快捷键 [Ctrl]+r 可以搜索历史命令记录。搜索结果继续按 [Ctrl]+r 显示上一个找到的命令：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">(</span>reverse-i-search<span class="token punctuation">)</span>`history': <span class="token function">history</span> <span class="token operator">|</span> <span class="token function">grep</span> dump<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>可以使用 <code>history</code> 命令查询输入过的历史命令列表。默认情况下，历史命令保存在 <code>~/.bash_history</code> 中。只有在注销登录后，此次会话所执行的命令才会写入文件中。</p>
-<p>可用参数:</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>-c</td>
-<td>清除所有记录。</td>
-</tr>
-<tr>
-<td>-d</td>
-<td>删除指定编号的命令记录。</td>
-</tr>
-<tr>
-<td>-a</td>
-<td>插入当前历史记录到指定文件末尾，默认会将此次会话的历史记录写入到 .bash_history 文件中。</td>
-</tr>
-<tr>
-<td>-w</td>
-<td>写入当前的历史记录到指定文件中。</td>
-</tr>
-</tbody>
-</table>
-<p>例如，要显示最近的 5 条历史记录：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># history 5</span>
-  <span class="token number">888</span>  <span class="token function">date</span>
-  <span class="token number">889</span>  <span class="token function">time</span>
-  <span class="token number">890</span>  w <span class="token parameter variable">-i</span>
-  <span class="token number">891</span>  <span class="token function">cat</span> .bash_history 
-  <span class="token number">892</span>  <span class="token function">history</span> <span class="token operator">|</span> <span class="token function">tail</span> <span class="token parameter variable">-n5</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以通过<code>!记录编号</code>直接执行对应的命令。例如，要重新运行第 890 条记录，可以输入：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># !890</span>
-w <span class="token parameter variable">-i</span>
-<span class="token number">23</span>:41:23 up <span class="token number">1</span> day,  <span class="token number">8</span>:32,  <span class="token number">2</span> users,  load average: <span class="token number">0.00</span>, <span class="token number">0.01</span>, <span class="token number">0.05</span>
-<span class="token environment constant">USER</span>     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
-root     pts/0    <span class="token number">192.168</span>.2.101    04:01    <span class="token number">3</span>.00s  <span class="token number">0</span>.84s  <span class="token number">0</span>.00s w <span class="token parameter variable">-i</span>
-root     pts/1    <span class="token number">192.168</span>.2.101    <span class="token number">15</span>:12    <span class="token number">8</span>:28m  <span class="token number">0</span>.01s  <span class="token number">0</span>.01s <span class="token parameter variable">-bash</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>如果使用<code>!!</code>，则会执行上一个命令。</p>
-<h1 id="清屏"><a class="markdownIt-Anchor" href="#清屏"></a> 清屏</h1>
-<p>直接输入 <code>clear</code> 命令能清屏：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span><span class="token comment"># clear</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><strong>用户读取目录内文件所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 r 权限来运行 <code>cat</code>、<code>more</code> 等读取文件命令。</li>
+</ul>
+<p><strong>用户修改目录内文件所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 r 和 w 权限来使用 <code>vi</code> 等工具进行文件读写。</li>
+</ul>
+<p><strong>用户创建一个文件所需权限</strong>：</p>
+<ul>
+<li>目录需要 w 和 x 权限来创建文件。</li>
+</ul>
+<p><strong>用户执行目录下的命令所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 x 权限来运行命令。</li>
+</ul>
+<h1 id="特殊权限"><a class="markdownIt-Anchor" href="#特殊权限"></a> 特殊权限</h1>
+<p>在 Linux 系统中，还有一些特殊权限。</p>
+<h2 id="suid"><a class="markdownIt-Anchor" href="#suid"></a> SUID</h2>
+<p>当 s 标志出现在文件所有者的 x 权限上时，被称为 Set UID，其含义为：</p>
+<ul>
+<li>SUID 权限<strong>仅对二进制程序有效</strong>，不能用在脚本上；</li>
+<li>执行者对该程序需要具有 x 的可执行权限；</li>
+<li>本权限仅在执行该程序的过程中（run-time）有效；</li>
+<li><strong>执行者将具有该程序所有者的权限</strong>。</li>
+</ul>
+<p>例如一般用户运行 <code>passwd</code> 命令修改密码，需要修改 <code>/etc/shadow</code> 文件。但是该文件的权限只有 root 可读写，而用户运行 passwd 程序时，会暂时获得 passwd 程序的 root 权限，从而可以通过 <code>passwd</code> 命令修改 <code>/etc/shadow</code> 文件。</p>
+<p>这是因为运行 <code>passwd</code> 后会启动一个新的进程，该进程会产生一个新的 PID。在该 PID 产生时，SUID 会给予该 PID 特殊的权限设置，使得执行者在该进程中具有该程序所有者的权限。</p>
+<h2 id="sgid"><a class="markdownIt-Anchor" href="#sgid"></a> SGID</h2>
+<p>当 s 标志出现在文件所属组的 x 权限上时，被称为 Set GID。SGID 可以针对文件或目录来设置。</p>
+<p><strong>针对文件</strong>，SGID 有以下功能：</p>
+<ul>
+<li>SGID 对二进制程序有效；</li>
+<li>程序执行者对该程序来说，需要具备 x 的权限；</li>
+<li><strong>执行者在执行的过程中将会获得该程序所属组的权限</strong>。</li>
+</ul>
+<p>例如，一般用户使用 <code>locate</code> 这个程序可以查询 <code>/var/lib/mlocate/mlocate.db</code> 文件的内容，会暂时获得 slocate 用户组的权限。</p>
+<p><strong>针对目录</strong>，SGID 有以下功能：</p>
+<ul>
+<li>用户若对此目录具有 r 和 x 的权限时，该用户能够进入此目录；</li>
+<li>用户在此目录下的有效用户组将会变成该目录的用户组；</li>
+<li><strong>若用户在此目录下具有 w 的权限，则用户所创建的新文件的所属组与此目录的所属组相同。</strong></li>
+</ul>
+<h2 id="sbit"><a class="markdownIt-Anchor" href="#sbit"></a> SBIT</h2>
+<p>当 t 出现在文件所有者的其他用户 x 权限上时，被称为 Sticky Bit。其含义为：</p>
+<ul>
+<li>SBIT 权限<strong>仅对目录有效</strong>；</li>
+<li>当用户对该目录具有 w 和 x 权限时，即具有写入权限时；</li>
+<li><strong>当用户在该目录下创建文件或目录时，仅有自己与 root 才有权力删除该文件。</strong></li>
+</ul>
+<p>例如，用户 1 对目录 A 具有 w 的权限，里面还有其他用户的文件。此时，目录 A 加上了 SBIT 权限时，用户 1 只能修改自己创建的文件，无法删除他人文件。</p>
 ]]></content>
       <categories>
         <category>Linux</category>
@@ -2373,14 +2502,14 @@ root     pts/1    <span class="token number">192.168</span>.2.101    <span class
 </tbody>
 </table>
 <p>可以通过查看 fs 目录了解支持的文件系统有哪些：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 /<span class="token punctuation">]</span><span class="token comment"># ls -l /lib/modules/$(uname -r)/kernel/fs</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 /<span class="token punctuation">]</span>$ <span class="token function">ls</span> <span class="token parameter variable">-l</span> /lib/modules/<span class="token variable"><span class="token variable">$(</span><span class="token function">uname</span> <span class="token parameter variable">-r</span><span class="token variable">)</span></span>/kernel/fs
 total <span class="token number">20</span>
 -rw-r--r--. <span class="token number">1</span> root root <span class="token number">5992</span> Aug <span class="token number">31</span> <span class="token number">11</span>:05 binfmt_misc.ko.xz
 drwxr-xr-x. <span class="token number">2</span> root root   <span class="token number">25</span> Sep  <span class="token number">7</span> 05:54 btrfs
 drwxr-xr-x. <span class="token number">2</span> root root   <span class="token number">30</span> Sep  <span class="token number">7</span> 05:54 cachefiles
 drwxr-xr-x. <span class="token number">2</span> root root   <span class="token number">24</span> Sep  <span class="token number">7</span> 05:54 ceph<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>查看系统目前已加载到内存中支持的文件系统：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 /<span class="token punctuation">]</span><span class="token comment"># cat /proc/filesystems </span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 /<span class="token punctuation">]</span>$ <span class="token function">cat</span> /proc/filesystems 
 nodev   sysfs
 nodev   rootfs
 nodev   ramfs<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
@@ -2560,7 +2689,7 @@ nodev   ramfs<span aria-hidden="true" class="line-numbers-rows"><span></span><sp
 <p>因为超级块非常重要，所以除了第一个块组中含有超级块外，其他块组中可能存在超级块备份，用来在关键时进行救援修复。</p>
 <h2 id="查询文件系统详情"><a class="markdownIt-Anchor" href="#查询文件系统详情"></a> 查询文件系统详情</h2>
 <p>使用 <code>dumpe2fs</code> 命令可以查询 ext 文件系统信息.例如查询设备 sdb1：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 /<span class="token punctuation">]</span><span class="token comment"># dumpe2fs /dev/sdb1</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 /<span class="token punctuation">]</span>$ dumpe2fs /dev/sdb1
 dumpe2fs <span class="token number">1.42</span>.9 <span class="token punctuation">(</span><span class="token number">28</span>-Dec-2013<span class="token punctuation">)</span>
 Filesystem volume name:   <span class="token operator">&lt;</span>none<span class="token operator">></span>
 Last mounted on:          <span class="token operator">&lt;</span>not available<span class="token operator">></span>
@@ -2650,7 +2779,7 @@ Group <span class="token number">1</span>: <span class="token punctuation">(</sp
 <p>extent 区块在格式化时可以指定，范围从 4KB 到 1GB，一般默认设置为 64KB 容量。</p>
 <h2 id="查询文件系统详情-2"><a class="markdownIt-Anchor" href="#查询文件系统详情-2"></a> 查询文件系统详情</h2>
 <p>在 XFS 文件系统中，使用 <code>xfs_info</code> 命令来查看分区详情：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span><span class="token comment"># xfs_info /dev/mapper/centos-root</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ xfs_info /dev/mapper/centos-root
 meta-data<span class="token operator">=</span>/dev/mapper/centos-root <span class="token assign-left variable">isize</span><span class="token operator">=</span><span class="token number">512</span>    <span class="token assign-left variable">agcount</span><span class="token operator">=</span><span class="token number">4</span>, <span class="token assign-left variable">agsize</span><span class="token operator">=</span><span class="token number">1113856</span> blks
          <span class="token operator">=</span>                       <span class="token assign-left variable">sectsz</span><span class="token operator">=</span><span class="token number">512</span>   <span class="token assign-left variable">attr</span><span class="token operator">=</span><span class="token number">2</span>, <span class="token assign-left variable">projid32bit</span><span class="token operator">=</span><span class="token number">1</span>
          <span class="token operator">=</span>                       <span class="token assign-left variable">crc</span><span class="token operator">=</span><span class="token number">1</span>        <span class="token assign-left variable">finobt</span><span class="token operator">=</span><span class="token number">0</span> <span class="token assign-left variable">spinodes</span><span class="token operator">=</span><span class="token number">0</span>
@@ -2708,13 +2837,13 @@ realtime <span class="token operator">=</span>none                   <span class
 <li><strong>block 记录在这个目录下的文件名与该文件（或目录）对应的 inode 号码</strong>。</li>
 </ul>
 <p>例如使用 <code>ls -i</code> 查看目录 ext333 内文件所占用 inode 号码：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span><span class="token comment"># ls -li</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ <span class="token function">ls</span> <span class="token parameter variable">-li</span>
 total <span class="token number">16</span>
 <span class="token number">12</span> -rw-r--r--. <span class="token number">1</span> root root     <span class="token number">0</span> Sep  <span class="token number">9</span> <span class="token number">15</span>:37 fist.log
 <span class="token number">11</span> drwx------. <span class="token number">2</span> root root <span class="token number">16384</span> Sep  <span class="token number">9</span> <span class="token number">15</span>:10 lost+found<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>fist.log 文件的 inode 号码是 12，lost+found 目录的 inode 号码是 11，这些就是记录在 ext333 目录 block 中的数据。</p>
 <p>再查看一下目录占用的大小：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span><span class="token comment"># ll -dh /ext333/lost+found/ /ext333/</span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ ll <span class="token parameter variable">-dh</span> /ext333/lost+found/ /ext333/
 drwxr-xr-x. <span class="token number">3</span> root root <span class="token number">4</span>.0K Sep  <span class="token number">9</span> <span class="token number">15</span>:37 /ext333/
 drwx------. <span class="token number">2</span> root root  16K Sep  <span class="token number">9</span> <span class="token number">15</span>:10 /ext333/lost+found/<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>可以看到 ext333 目录大小为 4KB，而分区时设置的一个 block 大小也是 4KB，因此它使用了 1 个 block 来记录文件和目录 inode 号码信息。另外 lost+found 目录大小 16KB，说明记录信息太多 1 个 block 不够用，分配了 4 个 block 来记录。</p>
@@ -2725,7 +2854,7 @@ drwx------. <span class="token number">2</span> root root  16K Sep  <span class=
 <p>inode 本身并不记录文件名，文件名的记录在目录的 block 当中。所以给目录写权限，实际上操作的是修改目录的 block 数据。</p>
 <p>删除文件记录（<code>rm</code> 命令），修改文件指向 inode 记录（<code>mv</code> 命令），或者新增文件指向 inode 记录（<code>cp</code> 命令），对应的就是在目录下进行删除、重命名、新增操作。</p>
 <p>以下面记录为例：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span><span class="token comment"># ll -di /ext333/ /ext333/lost+found/ /ext333/lost+found/pass </span>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ ll <span class="token parameter variable">-di</span> /ext333/ /ext333/lost+found/ /ext333/lost+found/pass 
 <span class="token number">2</span>  drwxr-xr-x. <span class="token number">3</span> root root  <span class="token number">4096</span> Sep  <span class="token number">9</span> <span class="token number">15</span>:37 /ext333/
 <span class="token number">11</span> drwx------. <span class="token number">2</span> root root <span class="token number">16384</span> Sep  <span class="token number">9</span> <span class="token number">15</span>:54 /ext333/lost+found/
 <span class="token number">14</span> -rw-r--r--. <span class="token number">1</span> root root     <span class="token number">5</span> Sep  <span class="token number">9</span> <span class="token number">15</span>:54 /ext333/lost+found/pass<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
@@ -2757,135 +2886,6 @@ drwx------. <span class="token number">2</span> root root  16K Sep  <span class=
 <p>Btrfs 文件系统也被称为 B 树文件系统，它稳定易用，能够动态调整已挂载文件系统的大小。目前 OpenSUSE Linux 把 Btrfs 作为其默认文件系统。</p>
 </li>
 </ul>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>0.基础概论</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>Linux 文件权限</title>
-    <url>/46662635/</url>
-    <content><![CDATA[<h1 id="基本权限"><a class="markdownIt-Anchor" href="#基本权限"></a> 基本权限</h1>
-<p>基础权限有三种，分别是：读（r，Read）、写（w，Write）、执行（x，eXecute）。</p>
-<p>同样的权限标记对于文件和目录代表不同的意义。</p>
-<h2 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h2>
-<p>文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。</p>
-<table>
-<thead>
-<tr>
-<th>数字</th>
-<th>字符</th>
-<th>权限</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>4</td>
-<td>r</td>
-<td><strong>读取文件内容</strong>。例如使用 <code>cat</code> 命令查看，使用 <code>vim</code> 以<strong>只读</strong>方式打开。</td>
-</tr>
-<tr>
-<td>2</td>
-<td>w</td>
-<td><strong>编辑修改</strong>文件内容，但<strong>不包括删除</strong>文件。例如使用 <code>vim</code>、<code>sed</code> 等对文件内容进行修改并保存。</td>
-</tr>
-<tr>
-<td>1</td>
-<td>x</td>
-<td>文件具有可以被系统<strong>执行</strong>的权限。例如命令和脚本必须拥有此权限才能直接执行。</td>
-</tr>
-</tbody>
-</table>
-<h2 id="目录权限"><a class="markdownIt-Anchor" href="#目录权限"></a> 目录权限</h2>
-<p>目录主要的内容是记录文件名清单，所以目录权限实际关联的是目录下文件属性查看与更改。</p>
-<table>
-<thead>
-<tr>
-<th>数字</th>
-<th>字符</th>
-<th>权限</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>4</td>
-<td>r</td>
-<td><strong>仅查询</strong>目录下的文件或目录<strong>名称</strong>，无法看到属性，相当于执行不加参数的 <code>ls</code> 命令。</td>
-</tr>
-<tr>
-<td>2</td>
-<td>w</td>
-<td>改变目录结构清单权限，也就是在目录下<strong>新建、删除、重命名</strong>文件或目录。</td>
-</tr>
-<tr>
-<td>1</td>
-<td>x</td>
-<td><strong>进入目录</strong>的权限，<strong>查询</strong>目录下的文件<strong>属性</strong>。</td>
-</tr>
-</tbody>
-</table>
-<h1 id="权限参考"><a class="markdownIt-Anchor" href="#权限参考"></a> 权限参考</h1>
-<p>根据使用场景来配置权限。</p>
-<p><strong>用户进入目录所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限，来运行 <code>cd</code> 切换目录。</li>
-<li>目录需要 r 权限，来使用 <code>ls</code> 命令查看目录中文件列表。</li>
-</ul>
-<p><strong>用户读取目录内文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 r 权限来运行 <code>cat</code>、<code>more</code> 等读取文件命令。</li>
-</ul>
-<p><strong>用户修改目录内文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 r 和 w 权限来使用 <code>vi</code> 等工具进行文件读写。</li>
-</ul>
-<p><strong>用户创建一个文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 w 和 x 权限来创建文件。</li>
-</ul>
-<p><strong>用户执行目录下的命令所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 x 权限来运行命令。</li>
-</ul>
-<h1 id="特殊权限"><a class="markdownIt-Anchor" href="#特殊权限"></a> 特殊权限</h1>
-<p>在 Linux 系统中，还有一些特殊权限。</p>
-<h2 id="suid"><a class="markdownIt-Anchor" href="#suid"></a> SUID</h2>
-<p>当 s 标志出现在文件所有者的 x 权限上时，被称为 Set UID，其含义为：</p>
-<ul>
-<li>SUID 权限<strong>仅对二进制程序有效</strong>，不能用在脚本上；</li>
-<li>执行者对该程序需要具有 x 的可执行权限；</li>
-<li>本权限仅在执行该程序的过程中（run-time）有效；</li>
-<li><strong>执行者将具有该程序所有者的权限</strong>。</li>
-</ul>
-<p>例如一般用户运行 <code>passwd</code> 命令修改密码，需要修改 <code>/etc/shadow</code> 文件。但是该文件的权限只有 root 可读写，而用户运行 passwd 程序时，会暂时获得 passwd 程序的 root 权限，从而可以通过 <code>passwd</code> 命令修改 <code>/etc/shadow</code> 文件。</p>
-<p>这是因为运行 <code>passwd</code> 后会启动一个新的进程，该进程会产生一个新的 PID。在该 PID 产生时，SUID 会给予该 PID 特殊的权限设置，使得执行者在该进程中具有该程序所有者的权限。</p>
-<h2 id="sgid"><a class="markdownIt-Anchor" href="#sgid"></a> SGID</h2>
-<p>当 s 标志出现在文件所属组的 x 权限上时，被称为 Set GID。SGID 可以针对文件或目录来设置。</p>
-<p><strong>针对文件</strong>，SGID 有以下功能：</p>
-<ul>
-<li>SGID 对二进制程序有效；</li>
-<li>程序执行者对该程序来说，需要具备 x 的权限；</li>
-<li><strong>执行者在执行的过程中将会获得该程序所属组的权限</strong>。</li>
-</ul>
-<p>例如，一般用户使用 <code>locate</code> 这个程序可以查询 <code>/var/lib/mlocate/mlocate.db</code> 文件的内容，会暂时获得 slocate 用户组的权限。</p>
-<p><strong>针对目录</strong>，SGID 有以下功能：</p>
-<ul>
-<li>用户若对此目录具有 r 和 x 的权限时，该用户能够进入此目录；</li>
-<li>用户在此目录下的有效用户组将会变成该目录的用户组；</li>
-<li><strong>若用户在此目录下具有 w 的权限，则用户所创建的新文件的所属组与此目录的所属组相同。</strong></li>
-</ul>
-<h2 id="sbit"><a class="markdownIt-Anchor" href="#sbit"></a> SBIT</h2>
-<p>当 t 出现在文件所有者的其他用户 x 权限上时，被称为 Sticky Bit。其含义为：</p>
-<ul>
-<li>SBIT 权限<strong>仅对目录有效</strong>；</li>
-<li>当用户对该目录具有 w 和 x 权限时，即具有写入权限时；</li>
-<li><strong>当用户在该目录下创建文件或目录时，仅有自己与 root 才有权力删除该文件。</strong></li>
-</ul>
-<p>例如，用户 1 对目录 A 具有 w 的权限，里面还有其他用户的文件。此时，目录 A 加上了 SBIT 权限时，用户 1 只能修改自己创建的文件，无法删除他人文件。</p>
 ]]></content>
       <categories>
         <category>Linux</category>
