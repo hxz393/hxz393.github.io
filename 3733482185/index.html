@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="备份基础 系统备份重要目录有：&#x2F;etc&#x2F;、&#x2F;home&#x2F;、&#x2F;root&#x2F;、&#x2F;var。不需要备份的目录有：&#x2F;dev、&#x2F;proc、&#x2F;sys、&#x2F;run、&#x2F;mnt、&#x2F;media、&#x2F;tmp。 常见备份类型有 3 种：  完全备份（full）：在备份定义的范围内备份所有数据。 差分备份（differential）：备份所有自上次备份之后发生过变化的数据。在恢复时需要用到完全备份和最近的差分备份。 增量备份（in">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 备份刻录">
+<meta property="og:url" content="https://blog.x2b.net/3733482185/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="备份基础 系统备份重要目录有：&#x2F;etc&#x2F;、&#x2F;home&#x2F;、&#x2F;root&#x2F;、&#x2F;var。不需要备份的目录有：&#x2F;dev、&#x2F;proc、&#x2F;sys、&#x2F;run、&#x2F;mnt、&#x2F;media、&#x2F;tmp。 常见备份类型有 3 种：  完全备份（full）：在备份定义的范围内备份所有数据。 差分备份（differential）：备份所有自上次备份之后发生过变化的数据。在恢复时需要用到完全备份和最近的差分备份。 增量备份（in">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-20T01:01:17.000Z">
+<meta property="article:modified_time" content="2023-04-30T08:35:24.126Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/3733482185/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/3733482185/","path":"3733482185/","title":"Linux 备份刻录"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Linux 备份刻录 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">4</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">32</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%87%E4%BB%BD%E5%9F%BA%E7%A1%80"><span class="nav-number">1.</span> <span class="nav-text"> 备份基础</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-rsync-%E5%A4%87%E4%BB%BD"><span class="nav-number">2.</span> <span class="nav-text"> 使用 rsync 备份</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-dump-%E5%A4%87%E4%BB%BD"><span class="nav-number">3.</span> <span class="nav-text"> 使用 Dump 备份</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E7%AE%80%E4%BB%8B"><span class="nav-number">3.1.</span> <span class="nav-text"> 工具简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E5%A4%87%E4%BB%BD"><span class="nav-number">3.2.</span> <span class="nav-text"> 完整备份</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%AE%E5%BC%82%E5%A4%87%E4%BB%BD"><span class="nav-number">3.3.</span> <span class="nav-text"> 差异备份</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%87%E4%BB%BD%E7%9B%AE%E5%BD%95"><span class="nav-number">3.4.</span> <span class="nav-text"> 备份目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%98%E5%8E%9F%E5%A4%87%E4%BB%BD"><span class="nav-number">3.5.</span> <span class="nav-text"> 还原备份</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-xfsdump-%E5%A4%87%E4%BB%BD"><span class="nav-number">4.</span> <span class="nav-text"> 使用 XfsDump 备份</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E7%AE%80%E4%BB%8B-2"><span class="nav-number">4.1.</span> <span class="nav-text"> 工具简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E5%A4%87%E4%BB%BD-2"><span class="nav-number">4.2.</span> <span class="nav-text"> 完整备份</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A2%9E%E9%87%8F%E5%A4%87%E4%BB%BD"><span class="nav-number">4.3.</span> <span class="nav-text"> 增量备份</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%98%E5%8E%9F%E5%A4%87%E4%BB%BD-2"><span class="nav-number">4.4.</span> <span class="nav-text"> 还原备份</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E5%A4%87%E4%BB%BD%E6%96%B9%E5%BC%8F"><span class="nav-number">5.</span> <span class="nav-text"> 其他备份方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-dd-%E5%A4%87%E4%BB%BD"><span class="nav-number">5.1.</span> <span class="nav-text"> 使用 dd 备份</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-cpio-%E5%A4%87%E4%BB%BD"><span class="nav-number">5.2.</span> <span class="nav-text"> 使用 cpio 备份</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E5%88%B6%E4%BD%9C"><span class="nav-number">6.</span> <span class="nav-text"> 镜像制作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%89%E7%9B%98%E5%88%BB%E5%BD%95"><span class="nav-number">7.</span> <span class="nav-text"> 光盘刻录</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.douban.com/people/Cyber.DraFonS" title="https:&#x2F;&#x2F;www.douban.com&#x2F;people&#x2F;Cyber.DraFonS" rel="noopener external nofollow noreferrer" target="_blank">豆瓣</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/3733482185/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Linux 备份刻录 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux 备份刻录
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-03-20 09:01:17" itemprop="dateCreated datePublished" datetime="2022-03-20T09:01:17+08:00">2022-03-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-04-30 16:35:24" itemprop="dateModified" datetime="2023-04-30T16:35:24+08:00">2023-04-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/2-%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">2.系统管理</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>11 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="备份基础"><a class="markdownIt-Anchor" href="#备份基础"></a> 备份基础</h1>
+<p>系统备份重要目录有：<code>/etc/</code>、<code>/home/</code>、<code>/root/</code>、<code>/var</code>。不需要备份的目录有：<code>/dev</code>、<code>/proc</code>、<code>/sys</code>、<code>/run</code>、<code>/mnt</code>、<code>/media</code>、<code>/tmp</code>。</p>
+<p>常见备份类型有 3 种：</p>
+<ul>
+<li>完全备份（full）：在备份定义的范围内备份所有数据。</li>
+<li>差分备份（differential）：备份所有自上次备份之后发生过变化的数据。在恢复时需要用到完全备份和最近的差分备份。</li>
+<li>增量备份（incremental）：备份上次备份完成之后所有发生变化的数据，而不考虑上次备份是什么类型。</li>
+</ul>
+<h1 id="使用-rsync-备份"><a class="markdownIt-Anchor" href="#使用-rsync-备份"></a> 使用 rsync 备份</h1>
+<p><code>rsync</code>可以对两个目录进行镜像，用法非常简单：<code>rsync -av 来源目录 目标目录</code></p>
+<p>例如备份<code>/root</code>目录到<code>/backup</code>目录：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">rsync</span> <span class="token parameter variable">-av</span> /root /backup/
+sending incremental <span class="token function">file</span> list
+root/
+root/.bash_history
+root/.bash_logout
+root/.bash_profile
+root/.bashrc
+root/.cshrc
+root/.tcshrc
+root/.viminfo
+root/anaconda-ks.cfg
+root/.pki/
+root/.pki/nssdb/
+
+sent <span class="token number">4,095</span> bytes  received <span class="token number">184</span> bytes  <span class="token number">8,558</span>.00 bytes/sec
+total size is <span class="token number">3,458</span>  speedup is <span class="token number">0.81</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>进行差异备份使用同样的命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cp</span> anaconda-ks.cfg <span class="token number">1</span>.cfg
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">rsync</span> <span class="token parameter variable">-av</span> /root /backup/
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">rm</span> <span class="token parameter variable">-rf</span> <span class="token number">1</span>.cfg 
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">rsync</span> <span class="token parameter variable">-av</span> /root /backup/
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll /backup/root/
+total <span class="token number">8</span>
+-rw-------. <span class="token number">1</span> root root  <span class="token number">240</span> Sep <span class="token number">21</span> <span class="token number">18</span>:02 <span class="token number">1</span>.cfg
+-rw-------. <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">8</span> 01:38 anaconda-ks.cfg<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>从结果可以看到在当前目录新增或修改文件，备份后<code>/backup</code>目录下会一同新增和修改。当前目录删除文件，备份后<code>/backup</code>目录并不会同步删除文件。</p>
+<p>另外，<code>rsync</code>还支持通过网络备份。例如将本地<code>/root</code>备份到<code>192.168.2.102</code>主机上面：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token function">rsync</span> <span class="token parameter variable">-av</span> <span class="token parameter variable">-e</span> <span class="token function">ssh</span> /root root@192.168.2.234:/backup
+sending incremental <span class="token function">file</span> list
+root/
+root/.bash_history
+root/iptables/
+root/iptables/iptables.allow
+root/iptables/iptables.deny
+root/iptables/iptables.rules
+
+sent <span class="token number">33,124</span> bytes  received <span class="token number">363</span> bytes  <span class="token number">22,324</span>.67 bytes/sec
+total size is <span class="token number">31,780</span>  speedup is <span class="token number">0.95</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>种方式要求远端服务器也安装了<code>rsync</code>软件。</p>
+<h1 id="使用-dump-备份"><a class="markdownIt-Anchor" href="#使用-dump-备份"></a> 使用 Dump 备份</h1>
+<p>Dump 是 ext 文件系统的备份工具。</p>
+<h2 id="工具简介"><a class="markdownIt-Anchor" href="#工具简介"></a> 工具简介</h2>
+<p>Dump 备份工具可以指定备份等级，与上一等级比较只备份差异文件。</p>
+<p>备份对象为单一文件系统时，可以使用完整 dump 功能，可以使用挂载点或设备名来进行备份。</p>
+<p>备份对象为目录时，仅能使用 level 0 完整备份，不能使用 -u 参数创建时间记录文件。</p>
+<p>命令用法：</p>
+<p><code>dump [-Suvj] [-level] [-f 备份文件] 待备份数据</code></p>
+<p>可用参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-S</td>
+<td>仅列出后面的待备份数据需要多少容量才能备份完毕。</td>
+</tr>
+<tr>
+<td>-u</td>
+<td>将这次的 dump 时间记录到 /etc/dumpdateS 文件中。</td>
+</tr>
+<tr>
+<td>-v</td>
+<td>将备份过程显示出来。</td>
+</tr>
+<tr>
+<td>-j</td>
+<td>假如对 bzip2 的支持，将数据压缩，默认压缩等级 2。</td>
+</tr>
+<tr>
+<td>-level</td>
+<td>从 0 到 9 共 10 个等级。</td>
+</tr>
+<tr>
+<td>-f</td>
+<td>接备份生成的文件名。</td>
+</tr>
+<tr>
+<td>-W</td>
+<td>列出在 /etc/fstab 里面具有 dump 设置的分区是否有备份过。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="完整备份"><a class="markdownIt-Anchor" href="#完整备份"></a> 完整备份</h2>
+<p>先测试备份目标需要多少容量:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">df</span> <span class="token parameter variable">-h</span> <span class="token operator">|</span> <span class="token function">grep</span> sdb
+/dev/sdb4                 91M  342K   86M   <span class="token number">1</span>% /root/sdb4m
+<span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ dump <span class="token parameter variable">-S</span> /dev/sdb4
+<span class="token number">39936</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>单位为B，所以需要容量为39KB。</p>
+<p>将 <code>/dev/sdb4</code> 备份到<code>/root/backup/sdb4.dump</code>中，同时更新记录文件:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 backup<span class="token punctuation">]</span>$ dump <span class="token parameter variable">-0u</span> <span class="token parameter variable">-f</span> /root/backup/sdb4.dump /dev/sdb4
+  DUMP: Date of this level <span class="token number">0</span> dump: Fri Sep <span class="token number">10</span> <span class="token number">14</span>:26:24 <span class="token number">2021</span>
+  DUMP: Dumping /dev/sdb4 <span class="token punctuation">(</span>/root/sdb4m<span class="token punctuation">)</span> to /root/backup/sdb4.dump
+  DUMP: DUMP IS DONE<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>查看备份更新记录:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 backup<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/dumpdates 
+/dev/sdb4 <span class="token number">0</span> Fri Sep <span class="token number">10</span> <span class="token number">14</span>:26:24 <span class="token number">2021</span> <span class="token parameter variable">-0400</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="差异备份"><a class="markdownIt-Anchor" href="#差异备份"></a> 差异备份</h2>
+<p>先查看上次备份的时间：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 backup<span class="token punctuation">]</span>$ dump <span class="token parameter variable">-W</span>
+Last dump<span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token keyword">done</span> <span class="token punctuation">(</span>Dump <span class="token string">'>'</span> <span class="token function">file</span> systems<span class="token punctuation">)</span>:
+  /dev/sdb4     <span class="token punctuation">(</span>/root/sdb4m<span class="token punctuation">)</span> Last dump: Level <span class="token number">0</span>, Date Fri Sep <span class="token number">10</span> <span class="token number">14</span>:26:24 <span class="token number">2021</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>可以看到 <code>/dev/sdb4</code> 已经进行过一次 level 0 备份。使用 level 1 备份 <code>/dev/sdb4</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ dump <span class="token parameter variable">-1u</span> <span class="token parameter variable">-f</span> /root/backup/sdb4.dump1 /dev/sdb4
+  DUMP: Date of this level <span class="token number">1</span> dump: Fri Sep <span class="token number">10</span> <span class="token number">14</span>:34:25 <span class="token number">2021</span>
+  DUMP: Date of last level <span class="token number">0</span> dump: Fri Sep <span class="token number">10</span> <span class="token number">14</span>:26:24 <span class="token number">2021</span>
+  DUMP: Dumping /dev/sdb4 <span class="token punctuation">(</span>/root/sdb4m<span class="token punctuation">)</span> to /root/backup/sdb4.dump1
+  DUMP: DUMP IS DONE<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="备份目录"><a class="markdownIt-Anchor" href="#备份目录"></a> 备份目录</h2>
+<p>对目录备份只能使用 level 0 来完成备份。</p>
+<p>下面将 <code>/root/sdb4m/lost+found</code> 目录压缩备份到 <code>/root/backup/lost.dump.bz2</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ dump <span class="token parameter variable">-0j</span> <span class="token parameter variable">-f</span> /root/backup/lost.dump.bz2 /root/sdb4m/lost+found/
+  DUMP: Date of this level <span class="token number">0</span> dump: Fri Sep <span class="token number">10</span> <span class="token number">14</span>:39:46 <span class="token number">2021</span>
+  DUMP: Dumping /dev/sdb4 <span class="token punctuation">(</span>/root/sdb4m <span class="token punctuation">(</span>dir /lost+found<span class="token punctuation">))</span> to /root/backup/lost.dump.bz2
+  DUMP: DUMP IS DONE<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="还原备份"><a class="markdownIt-Anchor" href="#还原备份"></a> 还原备份</h2>
+<p>还原备份使用<code>restore</code>工具，主要参数有：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-t</td>
+<td>查看<code>dump</code>文件的内容。</td>
+</tr>
+<tr>
+<td>-C</td>
+<td>将<code>dump</code>文件内的数据拿来与实际的文件系统作比较，列出不相同的文件。</td>
+</tr>
+<tr>
+<td>-i</td>
+<td>进入互动模式，可以仅还原部分文件。</td>
+</tr>
+<tr>
+<td>-r</td>
+<td>将整个文件系统还原。</td>
+</tr>
+<tr>
+<td>-h</td>
+<td>查看完整备份数据中的<code>inode</code>与文件系统<code>label</code>等信息。</td>
+</tr>
+<tr>
+<td>-f</td>
+<td>选择要读取的<code>dump</code>文件。</td>
+</tr>
+<tr>
+<td>-D</td>
+<td>与<code>-C</code>搭配，查出后面接的挂载点与<code>dump</code>内有不同的文件。</td>
+</tr>
+</tbody>
+</table>
+<p>查看<code>dump</code>文件<code>sdb4.dmp</code>的内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 backup<span class="token punctuation">]</span>$ restore <span class="token parameter variable">-t</span> <span class="token parameter variable">-f</span> sdb4.dump 
+Dump   date: Fri Sep <span class="token number">10</span> <span class="token number">14</span>:34:25 <span class="token number">2021</span>
+Dumped from: Fri Sep <span class="token number">10</span> <span class="token number">14</span>:26:24 <span class="token number">2021</span>
+Level <span class="token number">1</span> dump of /root/sdb4m on 101c7:/dev/sdb4
+Label: P1
+         <span class="token number">2</span>      <span class="token builtin class-name">.</span>
+        <span class="token number">13</span>      ./test10m.img<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>显示出文件名与原文件的<code>inode</code>号码。</p>
+<p>查询<code>sdb4.dmp</code>与文件系统的差异：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 backup<span class="token punctuation">]</span>$ restore <span class="token parameter variable">-C</span> <span class="token parameter variable">-f</span> sdb4.dump <span class="token parameter variable">-D</span> /root/sdb4m/
+Dump   date: Fri Sep <span class="token number">10</span> <span class="token number">14</span>:34:25 <span class="token number">2021</span>
+Dumped from: Fri Sep <span class="token number">10</span> <span class="token number">14</span>:26:24 <span class="token number">2021</span>
+Level <span class="token number">1</span> dump of /root/sdb4m on 101c7:/dev/sdb4
+Label: P1
+filesys <span class="token operator">=</span> /root/sdb4m/
+restore: unable to <span class="token function">stat</span> ./test10m.img: No such <span class="token function">file</span> or directory
+Some files were modified<span class="token operator">!</span>  <span class="token number">1</span> compare errors<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>提示有一个文件被更改。</p>
+<p>进入到需要还原的文件系统的挂载点下，将<code>sdb4.dump</code>还原到当前文件系统：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ restore <span class="token parameter variable">-r</span> <span class="token parameter variable">-f</span> /root/backup/sdb4.dump 
+restore: ./lost+found: File exists<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>此文件系统中已存在的文件不会被修改，同名文件则会被覆盖。</p>
+<p>想还原部分文件可以使用交互模式：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ restore <span class="token parameter variable">-i</span> <span class="token parameter variable">-f</span> /root/backup/sdb4.dump 
+restore <span class="token operator">></span> <span class="token function">ls</span>
+.:
+a.cfg       lost+found/
+
+restore <span class="token operator">></span> <span class="token builtin class-name">help</span>
+Available commands are:
+        <span class="token function">ls</span> <span class="token punctuation">[</span>arg<span class="token punctuation">]</span> - list directory
+        <span class="token builtin class-name">cd</span> arg - change directory
+        <span class="token builtin class-name">pwd</span> - print current directory
+        <span class="token function">add</span> <span class="token punctuation">[</span>arg<span class="token punctuation">]</span> - <span class="token function">add</span> <span class="token variable"><span class="token variable">`</span>arg' to list of files to be extracted
+        delete <span class="token punctuation">[</span>arg<span class="token punctuation">]</span> - delete <span class="token variable">`</span></span>arg<span class="token string">' from list of files to be extracted
+        extract - extract requested files
+        setmodes - set modes of requested directories
+        quit - immediately exit program
+        what - list dump header information
+        verbose - toggle verbose flag (useful with ``ls'</span>'<span class="token punctuation">)</span>
+        prompt - toggle the prompt display
+        <span class="token builtin class-name">help</span> or <span class="token variable"><span class="token variable">`</span>?' - print this list
+If no <span class="token variable">`</span></span>arg' is supplied, the current directory is used
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>除了可以使用<code>ls</code>，<code>cd</code>等命令，主要操作命令为：</p>
+<ul>
+<li><code>add</code> 将文件加入等下要解压缩的文件列表中；</li>
+<li><code>delete</code> 将文件从解压缩的列表中删除；</li>
+<li><code>extract</code> 开始将刚才选择的文件列表解压。</li>
+</ul>
+<p>将<code>a.cfg</code>加入解压缩列表：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">restore <span class="token operator">></span> <span class="token function">add</span> a.cfg  
+restore <span class="token operator">></span> <span class="token function">ls</span>
+.:
+*a.cfg        lost+found/<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>要被解压缩的文件前面会出现*符号。</p>
+<p>开始进行解压缩：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">restore <span class="token operator">></span> extract
+You have not <span class="token builtin class-name">read</span> any volumes yet.
+Unless you know <span class="token function">which</span> volume your file<span class="token punctuation">(</span>s<span class="token punctuation">)</span> are on you should start
+with the last volume and work towards the first.
+Specify next volume <span class="token comment"># (none if no more volumes): 1</span>
+<span class="token builtin class-name">set</span> owner/mode <span class="token keyword">for</span> <span class="token string">'.'</span>? <span class="token punctuation">[</span>yn<span class="token punctuation">]</span> n
+restore <span class="token operator">></span> quit
+<span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ ll
+total <span class="token number">3</span>
+-rw-------. <span class="token number">1</span> root root <span class="token number">1260</span> Sep <span class="token number">10</span> <span class="token number">15</span>:05 a.cfg<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>交互过程中分别会询问：</p>
+<ul>
+<li>需要的volume是什么：1</li>
+<li>是否需要修改权限：n</li>
+</ul>
+<p>完成后使用quit命令退出，就可以查看到需要的文件已经被解压出来了。</p>
+<h1 id="使用-xfsdump-备份"><a class="markdownIt-Anchor" href="#使用-xfsdump-备份"></a> 使用 XfsDump 备份</h1>
+<p>CentOS 7中常用<code>xfsdump</code>和<code>xfsrestore</code>工具来备份<code>XFS</code>格式文件系统。</p>
+<h2 id="工具简介-2"><a class="markdownIt-Anchor" href="#工具简介-2"></a> 工具简介</h2>
+<p><code>xfsdump</code>和<code>dump</code>的备份原理相似，但<code>xfsdump</code>通过文件系统的UUID来区分各个备份文件，因此不能备份具有相同UUID的两个文件系统。此外，<code>xfsdump</code>不支持对特定目录进行备份。</p>
+<p>命令用法：<code>xfsdump [-L 标签] [-M 说明] [-l 备份等级] [-f 输出备份文件] 待备份数据</code></p>
+<h2 id="完整备份-2"><a class="markdownIt-Anchor" href="#完整备份-2"></a> 完整备份</h2>
+<p>对分区<code>/xfs333</code>做完整备份并将结果保存在<code>/root/backup/sdd1.dump</code>中：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 xfs333<span class="token punctuation">]</span>$ xfsdump <span class="token parameter variable">-l</span> <span class="token number">0</span> <span class="token parameter variable">-L</span> sdd1 <span class="token parameter variable">-M</span> sdd1 <span class="token parameter variable">-f</span> /root/backup/sdd1.dump /xfs333
+xfsdump: using <span class="token function">file</span> dump <span class="token punctuation">(</span>drive_simple<span class="token punctuation">)</span> strategy
+xfsdump: version <span class="token number">3.1</span>.7 <span class="token punctuation">(</span>dump <span class="token function">format</span> <span class="token number">3.0</span><span class="token punctuation">)</span> - <span class="token builtin class-name">type</span> ^C <span class="token keyword">for</span> status and control
+xfsdump: level <span class="token number">0</span> dump of 101c7:/xfs333
+xfsdump: dump date: Thu Sep <span class="token number">16</span> <span class="token number">14</span>:59:39 <span class="token number">2021</span>
+xfsdump: session id: 4545d809-55e2-4de6-ba33-381ed071399c
+xfsdump: session label: <span class="token string">"sdd1_all"</span>
+xfsdump:   stream <span class="token number">0</span> /root/backup/sdd1.dump OK <span class="token punctuation">(</span>success<span class="token punctuation">)</span>
+xfsdump: Dump Status: SUCCESS<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>备份记录保存在<code>/var/lib/xfsdump/inventory</code>中。</p>
+<h2 id="增量备份"><a class="markdownIt-Anchor" href="#增量备份"></a> 增量备份</h2>
+<p>先查询是否存在备份记录：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 xfs333<span class="token punctuation">]</span>$ xfsdump <span class="token parameter variable">-I</span>
+<span class="token function">file</span> system <span class="token number">0</span>:
+        fs id:          c96b6650-756a-4496-bf26-6e7286c55891
+        session <span class="token number">0</span>:
+                <span class="token function">mount</span> point:    101c7:/xfs333
+                device:         101c7:/dev/sdd1
+                time:           Thu Sep <span class="token number">16</span> <span class="token number">14</span>:59:39 <span class="token number">2021</span>
+                session label:  <span class="token string">"sdd1_all"</span>
+                session id:     4545d809-55e2-4de6-ba33-381ed071399c
+                level:          <span class="token number">0</span>
+                resumed:        NO
+                subtree:        NO
+                streams:        <span class="token number">1</span>
+                stream <span class="token number">0</span>:
+                        pathname:       /root/backup/sdd1.dump
+                        start:          ino <span class="token number">67</span> offset <span class="token number">0</span>
+                        end:            ino <span class="token number">70</span> offset <span class="token number">0</span>
+                        interrupted:    NO
+                        media files:    <span class="token number">1</span>
+                        media <span class="token function">file</span> <span class="token number">0</span>:
+                                mfile index:    <span class="token number">0</span>
+                                mfile type:     data
+                                mfile size:     <span class="token number">10512128</span>
+                                mfile start:    ino <span class="token number">67</span> offset <span class="token number">0</span>
+                                mfile end:      ino <span class="token number">70</span> offset <span class="token number">0</span>
+                                media label:    <span class="token string">"sdd1_all"</span>
+                                media id:       e2964845-d8da-4b5f-8226-9390468d538f
+xfsdump: Dump Status: SUCCESS<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到存在一个 session 0 的 level 0 备份。接着进行 level 1 的增量备份，备份参数和制作 level 0 时一样：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 xfs333<span class="token punctuation">]</span>$ xfsdump <span class="token parameter variable">-l</span> <span class="token number">1</span> <span class="token parameter variable">-L</span> sdd1_1 <span class="token parameter variable">-M</span> sdd1_1 <span class="token parameter variable">-f</span> /root/backup/sdd1.dump1 /xfs333
+xfsdump: using <span class="token function">file</span> dump <span class="token punctuation">(</span>drive_simple<span class="token punctuation">)</span> strategy
+xfsdump: version <span class="token number">3.1</span>.7 <span class="token punctuation">(</span>dump <span class="token function">format</span> <span class="token number">3.0</span><span class="token punctuation">)</span> - <span class="token builtin class-name">type</span> ^C <span class="token keyword">for</span> status and control
+xfsdump: level <span class="token number">1</span> incremental dump of 101c7:/xfs333 based on level <span class="token number">0</span> dump begun Thu Sep <span class="token number">16</span> <span class="token number">14</span>:59:39 <span class="token number">2021</span>
+xfsdump:   stream <span class="token number">0</span> /root/backup/sdd1.dump1 OK <span class="token punctuation">(</span>success<span class="token punctuation">)</span>
+xfsdump: Dump Status: SUCCESS<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>完成后可以用 <code>xfsdump -I</code> 查询备份记录，多了一个 session 1 的记录。</p>
+<h2 id="还原备份-2"><a class="markdownIt-Anchor" href="#还原备份-2"></a> 还原备份</h2>
+<p>备份还原使用的是 <code>xfsrestore</code> 命令，基本使用方法如下：</p>
+<p><code>xfsrestore [-f 备份文件] [-L S_label] [-s] 待复原目录</code></p>
+<p>常用选项如下：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-I</td>
+<td>查询备份数据，包括 Label 名称与备份时间等。</td>
+</tr>
+<tr>
+<td>-f</td>
+<td>后面指定备份文件目录。</td>
+</tr>
+<tr>
+<td>-L</td>
+<td>指定备份等级。</td>
+</tr>
+<tr>
+<td>-s</td>
+<td>仅恢复特定目录或文件。</td>
+</tr>
+<tr>
+<td>-i</td>
+<td>进入交互模式。</td>
+</tr>
+</tbody>
+</table>
+<p>恢复完整备份，需要先查询到 session label 值，用来代表要恢复的备份等级：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 xfs333<span class="token punctuation">]</span>$ xfsrestore <span class="token parameter variable">-f</span> /root/backup/sdd1.dump <span class="token parameter variable">-L</span> sdd1_all /xfs333
+xfsrestore: using <span class="token function">file</span> dump <span class="token punctuation">(</span>drive_simple<span class="token punctuation">)</span> strategy
+xfsrestore:   stream <span class="token number">0</span> /root/backup/sdd1.dump OK <span class="token punctuation">(</span>success<span class="token punctuation">)</span>
+xfsrestore: Restore Status: SUCCESS<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>指定将备份数据恢复到 <code>/tmp/xfs/</code> 目录下：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 xfs333<span class="token punctuation">]</span>$ xfsrestore <span class="token parameter variable">-f</span> /root/backup/sdd1.dump <span class="token parameter variable">-L</span> sdd1_all /tmp/xfs/<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>指定仅还原备份文件中的 <code>255</code> 目录到 <code>/tmp/xfs</code> 目录：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 xfs333<span class="token punctuation">]</span>$ xfsrestore <span class="token parameter variable">-f</span> /root/backup/sdd1.dump <span class="token parameter variable">-L</span> sdd1_all <span class="token parameter variable">-s</span> <span class="token number">255</span> /tmp/xfs/<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>恢复 level 1 备份到 <code>/tmp/xfs</code> 目录：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 xfs333<span class="token punctuation">]</span>$ xfsrestore <span class="token parameter variable">-f</span> /root/backup/sdd1.dump1 /tmp/xfs/
+xfsrestore:   stream <span class="token number">0</span> /root/backup/sdd1.dump1 OK <span class="token punctuation">(</span>success<span class="token punctuation">)</span>
+xfsrestore: Restore Status: SUCCESS<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>使用交互模式来恢复文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 xfs333<span class="token punctuation">]</span>$ xfsrestore <span class="token parameter variable">-f</span> /root/backup/sdd1.dump <span class="token parameter variable">-i</span> /tmp/xfs/
+
+ <span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span> subtree selection dialog <span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span>
+
+the following commands are available:
+        <span class="token builtin class-name">pwd</span> 
+        <span class="token function">ls</span> <span class="token punctuation">[</span> <span class="token operator">&lt;</span>path<span class="token operator">></span> <span class="token punctuation">]</span>
+        <span class="token builtin class-name">cd</span> <span class="token punctuation">[</span> <span class="token operator">&lt;</span>path<span class="token operator">></span> <span class="token punctuation">]</span>
+        <span class="token function">add</span> <span class="token punctuation">[</span> <span class="token operator">&lt;</span>path<span class="token operator">></span> <span class="token punctuation">]</span>
+        delete <span class="token punctuation">[</span> <span class="token operator">&lt;</span>path<span class="token operator">></span> <span class="token punctuation">]</span>
+        extract 
+        quit 
+        <span class="token builtin class-name">help</span> 
+
+ -<span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用方式与 <code>restoredump</code> 一样，选择好文件后（比如 <code>10M</code>）使用 <code>extract</code> 命令解压：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"> -<span class="token operator">></span> <span class="token function">add</span> 10M
+
+ -<span class="token operator">></span> <span class="token function">ls</span>
+              <span class="token number">68</span> <span class="token number">255</span>/
+    *         <span class="token number">67</span> 10M 
+
+ -<span class="token operator">></span> extract
+
+ --------------------------------- end dialog ---------------------------------
+
+xfsrestore: restoring non-directory files
+xfsrestore: restore complete: <span class="token number">154</span> seconds elapsed
+xfsrestore: Restore Summary:
+xfsrestore:   stream <span class="token number">0</span> /root/backup/sdd1.dump OK <span class="token punctuation">(</span>success<span class="token punctuation">)</span>
+xfsrestore: Restore Status: SUCCESS
+<span class="token punctuation">[</span>root@101c7 xfs333<span class="token punctuation">]</span>$ ll /tmp/xfs/
+total <span class="token number">10240</span>
+-rw-r--r--. <span class="token number">1</span> root root <span class="token number">10485760</span> Sep <span class="token number">16</span> <span class="token number">14</span>:55 10M<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="其他备份方式"><a class="markdownIt-Anchor" href="#其他备份方式"></a> 其他备份方式</h1>
+<p>遇到一些特殊的需求时，可能需要使用 <code>dd</code> 和 <code>cpio</code> 命令来进行备份。</p>
+<h2 id="使用-dd-备份"><a class="markdownIt-Anchor" href="#使用-dd-备份"></a> 使用 dd 备份</h2>
+<p><code>dd</code> 可以通过直接读取扇区的方式，将整个设备备份成一个文件，使用方法如下：</p>
+<p><code>dd if=&quot;输入文件&quot; of=&quot;输出文件&quot; bs=&quot;block大小&quot; count=&quot;block数量&quot;</code></p>
+<p>例如备份磁盘第一个扇区：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ <span class="token function">dd</span> <span class="token assign-left variable">if</span><span class="token operator">=</span>/dev/sdb <span class="token assign-left variable">of</span><span class="token operator">=</span>/tmp/bmr.back <span class="token assign-left variable">bs</span><span class="token operator">=</span><span class="token number">512</span> <span class="token assign-left variable">count</span><span class="token operator">=</span><span class="token number">1</span>
+<span class="token number">1</span>+0 records <span class="token keyword">in</span>
+<span class="token number">1</span>+0 records out
+<span class="token number">512</span> bytes <span class="token punctuation">(</span><span class="token number">512</span> B<span class="token punctuation">)</span> copied, <span class="token number">0.000158292</span> s, <span class="token number">3.2</span> MB/s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>备份 <code>sdb5</code> 整个分区，类似于 Ghost 软件做的镜像：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">dd</span> <span class="token assign-left variable">if</span><span class="token operator">=</span>/dev/sdb5 <span class="token assign-left variable">of</span><span class="token operator">=</span>/root/sdb5.disk
+<span class="token number">163840</span>+0 records <span class="token keyword">in</span>
+<span class="token number">163840</span>+0 records out
+<span class="token number">83886080</span> bytes <span class="token punctuation">(</span><span class="token number">84</span> MB<span class="token punctuation">)</span> copied, <span class="token number">0.476346</span> s, <span class="token number">176</span> MB/s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>还原备份到 <code>sdb5</code> 只需要将 <code>if</code> 和 <code>of</code> 交换一下：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">dd</span> <span class="token assign-left variable">if</span><span class="token operator">=</span>/root/sdb5.disk <span class="token assign-left variable">of</span><span class="token operator">=</span>/dev/sdb5
+<span class="token number">163840</span>+0 records <span class="token keyword">in</span>
+<span class="token number">163840</span>+0 records out
+<span class="token number">83886080</span> bytes <span class="token punctuation">(</span><span class="token number">84</span> MB<span class="token punctuation">)</span> copied, <span class="token number">0.246963</span> s, <span class="token number">340</span> MB/s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="使用-cpio-备份"><a class="markdownIt-Anchor" href="#使用-cpio-备份"></a> 使用 cpio 备份</h2>
+<p><code>cpio</code>（copy in/out）命令从其他命令获取输入，因此需要配合类似 <code>find</code> 等命令来获取需要备份的文件名。<code>cpio</code> 可以将数据备份到磁带机上。常见用法：</p>
+<table>
+<thead>
+<tr>
+<th>目标</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>备份</td>
+<td><code>cpio -ovcB &gt; 文件或设备</code></td>
+</tr>
+<tr>
+<td>还原</td>
+<td><code>cpio -ivcdu &lt; 文件或设备</code></td>
+</tr>
+<tr>
+<td>查看</td>
+<td><code>cpio -ivct &lt; 文件或设备</code></td>
+</tr>
+</tbody>
+</table>
+<p>例如将 <code>/boot</code> 目录备份到 <code>boot.cpio</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> /boot <span class="token operator">|</span> cpio <span class="token parameter variable">-ocvB</span> <span class="token operator">></span> boot.cpio
+/boot/initramfs-3.10.0-862.el7.x86_64kdump.img
+/boot/initramfs-3.10.0-1160.41.1.el7.x86_64kdump.img
+<span class="token number">31339</span> blocks<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>将 <code>boot.cpio</code> 解压：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ cpio <span class="token parameter variable">-idvc</span> <span class="token operator">&lt;</span> boot.cpio<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="镜像制作"><a class="markdownIt-Anchor" href="#镜像制作"></a> 镜像制作</h1>
+<p>在Linux下制作镜像可以使用 <code>mkisofs</code> 命令，可用参数如下:</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-o</td>
+<td>生成的镜像文件名字。</td>
+</tr>
+<tr>
+<td>-r</td>
+<td>附带记录文件属性。</td>
+</tr>
+<tr>
+<td>-v</td>
+<td>显示过程。</td>
+</tr>
+<tr>
+<td>-m</td>
+<td>要排除的文件。</td>
+</tr>
+<tr>
+<td>-V</td>
+<td>新建 Volume。</td>
+</tr>
+<tr>
+<td>-graft-point</td>
+<td>保留文件结构，否则文件将会全部存在顶层目录下。</td>
+</tr>
+</tbody>
+</table>
+<p>例如将 <code>/root</code> 和 <code>/etc</code> 目录制作成 <code>system.img</code>:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ <span class="token function">mkisofs</span> <span class="token parameter variable">-r</span> <span class="token parameter variable">-V</span> <span class="token string">'home'</span> <span class="token parameter variable">-o</span> /tmp/system.img -graft-point /root<span class="token operator">=</span>/root /home<span class="token operator">=</span>/home
+I: -input-charset not specified, using utf-8 <span class="token punctuation">(</span>detected <span class="token keyword">in</span> locale settings<span class="token punctuation">)</span>
+<span class="token number">47.36</span>% done, estimate finish Fri Sep <span class="token number">10</span> <span class="token number">21</span>:42:20 <span class="token number">2021</span>
+<span class="token number">94.80</span>% done, estimate finish Fri Sep <span class="token number">10</span> <span class="token number">21</span>:42:20 <span class="token number">2021</span>
+Total translation table size: <span class="token number">0</span>
+Total rockridge attributes bytes: <span class="token number">4458</span>
+Total directory bytes: <span class="token number">26624</span>
+Path table size<span class="token punctuation">(</span>bytes<span class="token punctuation">)</span>: <span class="token number">160</span>
+Max brk space used <span class="token number">24000</span>
+<span class="token number">10557</span> extents written <span class="token punctuation">(</span><span class="token number">20</span> MB<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>-graft-point</code> 后面接要备份的数据，等号左边代表镜像文件内的目录，右侧是实际路径。</p>
+<h1 id="光盘刻录"><a class="markdownIt-Anchor" href="#光盘刻录"></a> 光盘刻录</h1>
+<p>在Linux下，使用<code>cdrecord</code>命令进行CD/DVD刻录。</p>
+<p>首先扫描系统中的光驱设备：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ cdrecord <span class="token parameter variable">--devices</span>
+wodim: Overview of accessible drives <span class="token punctuation">(</span><span class="token number">1</span> found<span class="token punctuation">)</span> <span class="token builtin class-name">:</span>
+-------------------------------------------------------------------------
+<span class="token number">0</span>  <span class="token assign-left variable">dev</span><span class="token operator">=</span><span class="token string">'/dev/sg2'</span>      rwrw-- <span class="token builtin class-name">:</span> <span class="token string">'NECVMWar'</span> <span class="token string">'VMware IDE CDR10'</span>
+-------------------------------------------------------------------------
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>将<code>system.img</code>刻录成数据CD：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ cdrecord <span class="token parameter variable">-v</span> <span class="token assign-left variable">dev</span><span class="token operator">=</span><span class="token string">'/dev/sg2'</span> <span class="token assign-left variable">fs</span><span class="token operator">=</span>8m <span class="token parameter variable">-dummy</span> <span class="token parameter variable">-data</span> /tmp/system.img 
+wodim: No <span class="token function">write</span> mode specified.
+wodim: Assuming <span class="token parameter variable">-tao</span> mode.
+wodim: Future versions of wodim may have different drive dependent defaults.
+TOC Type: <span class="token number">1</span> <span class="token operator">=</span> CD-ROM
+scsidev: <span class="token string">'/dev/sg2'</span>
+devname: <span class="token string">'/dev/sg2'</span>
+scsibus: <span class="token parameter variable">-2</span> target: <span class="token parameter variable">-2</span> lun: <span class="token parameter variable">-2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用<code>wodim</code>命令刻录<code>system.img</code>文件如下：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 xfs333<span class="token punctuation">]</span>$ wodim <span class="token parameter variable">-v</span> <span class="token assign-left variable">dev</span><span class="token operator">=</span>/dev/sr0 <span class="token assign-left variable">speed</span><span class="token operator">=</span><span class="token number">8</span> <span class="token parameter variable">-dummy</span> <span class="token parameter variable">-eject</span> /tmp/system.img
+wodim: No <span class="token function">write</span> mode specified.
+wodim: Assuming <span class="token parameter variable">-tao</span> mode.
+wodim: Future versions of wodim may have different drive dependent defaults.
+TOC Type: <span class="token number">1</span> <span class="token operator">=</span> CD-ROM
+scsidev: <span class="token string">'/dev/sr0'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/3733482185/" title="Linux 备份刻录">https://blog.x2b.net/3733482185/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../3199649610/" rel="prev" title="Linux 用户管理">
+                  <i class="fa fa-chevron-left"></i> Linux 用户管理
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../2759544459/" rel="next" title="计算机软件基础">
+                  计算机软件基础 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">73k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">4:03</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes 1.21
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@next-theme/pjax@0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://unpkg.com/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://unpkg.com/katex@0.16.4/dist/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/3733482185/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://unpkg.com/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'blog.x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>
