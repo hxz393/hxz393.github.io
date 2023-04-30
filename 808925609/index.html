@@ -30,7 +30,7 @@
 <meta property="og:description" content="日志系统 日志记录简单来说就是记录系统何时由哪个程序做了什么行为，发生了什么事件等等。 常见日志文件有下面一些：  &#x2F;var&#x2F;log&#x2F;boot.log：开机硬件检测产生的记录信息，在 CentOS 合并到了 dmesg 中。 &#x2F;var&#x2F;log&#x2F;cron：记录 crontab 调度工作运行情况。 &#x2F;var&#x2F;log&#x2F;dmesg：记录开机检测信息。 &#x2F;var&#x2F;log&#x2F;lastlog：记录系统上所有账号">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-09-19T07:56:17.000Z">
-<meta property="article:modified_time" content="2023-04-30T07:02:59.579Z">
+<meta property="article:modified_time" content="2023-04-30T07:22:33.548Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python">
 <meta name="twitter:card" content="summary">
@@ -258,7 +258,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-04-30 15:02:59" itemprop="dateModified" datetime="2023-04-30T15:02:59+08:00">2023-04-30</time>
+      <time title="修改时间：2023-04-30 15:22:33" itemprop="dateModified" datetime="2023-04-30T15:22:33+08:00">2023-04-30</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -501,8 +501,8 @@ Sep <span class="token number">19</span> 06:34:57 101c7 root<span class="token p
 <span class="token comment"># Provides TCP syslog reception</span>
 <span class="token variable">$ModLoad</span> imtcp
 <span class="token variable">$InputTCPServerRun</span> <span class="token number">514</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>如上所示，开启了通过TCP传输日志，监听端口514。重启服务以使设置生效。</p>
-<p>对于客户端，只需在 <code>/etc/rsyslog.conf</code> 文件中设置一条记录，将日志文件发送到服务端。例如，如果服务端IP地址为192.168.2.234，则可以这样设置：<code>*.* @@192.168.2.234</code>。</p>
+<p>如上所示，开启了通过 TCP 传输日志，监听端口 514。重启服务以使设置生效。</p>
+<p>对于客户端，只需在 <code>/etc/rsyslog.conf</code> 文件中设置一条记录，将日志文件发送到服务端。例如，如果服务端 IP 地址为 192.168.2.234，则可以这样设置：<code>*.* @@192.168.2.234</code>。</p>
 <p>重启后生效，服务端接收的日志内容中的第二段会标明日志发送的来源主机。</p>
 <h1 id="日志轮替"><a class="markdownIt-Anchor" href="#日志轮替"></a> 日志轮替</h1>
 <p>执行日志轮替操作的程序 <code>logrotate</code> 会定期将旧有日志文件重命名，再建立一个空的新文件来写入新日志。</p>
@@ -553,7 +553,7 @@ include /etc/logrotate.d
 <span class="token punctuation">&#125;</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>由配置文件注释可以得知目前的设置为：每周进行一次轮替工作，保留最多四个记录，轮替后创建新的空文件作日志记录，被轮替文件名上加日期，不压缩日志，读取 <code>/etc/logrotate.d</code> 目录内的配置文件。</p>
-<p>下面以 <code>&#123;&#125;</code> 括起来的段落是针对不同文件的单独配置，例如针对 <code>wtmp</code>，轮替周期为月而不是周，指定新建文件的权限与所属，文件大小超过1M才进行轮替（比时间条件优先），最后是只保留一个记录。</p>
+<p>下面以 <code>&#123;&#125;</code> 括起来的段落是针对不同文件的单独配置，例如针对 <code>wtmp</code>，轮替周期为月而不是周，指定新建文件的权限与所属，文件大小超过 1M 才进行轮替（比时间条件优先），最后是只保留一个记录。</p>
 <p>再看看保存在 <code>/etc/logrotate.d</code> 中针对个别程序的独立设置：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/logrotate.d/syslog 
 /var/log/cron
