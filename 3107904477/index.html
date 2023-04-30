@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="启动引导程序 目前在 Linux 下主要的引导启动程序是 Grub(Grand Unified Bootloader) 或 Grub2。通常 Grub2 主程序会将配置文件放到 &#x2F;boot&#x2F;grub2 目录下。Grub 则是直接修改 &#x2F;boot&#x2F;grub&#x2F;grub.conf，一个很简单的配置文件。 Grub2 引导程序的特点有：   认识与支持更多文件系统，并且可以使用 Grub2 的主程序直接">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 启动与关闭">
+<meta property="og:url" content="https://blog.x2b.net/3107904477/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="启动引导程序 目前在 Linux 下主要的引导启动程序是 Grub(Grand Unified Bootloader) 或 Grub2。通常 Grub2 主程序会将配置文件放到 &#x2F;boot&#x2F;grub2 目录下。Grub 则是直接修改 &#x2F;boot&#x2F;grub&#x2F;grub.conf，一个很简单的配置文件。 Grub2 引导程序的特点有：   认识与支持更多文件系统，并且可以使用 Grub2 的主程序直接">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-09-18T03:57:47.000Z">
+<meta property="article:modified_time" content="2023-04-30T02:47:26.936Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/3107904477/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/3107904477/","path":"3107904477/","title":"Linux 启动与关闭"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Linux 启动与关闭 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">3</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">25</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E5%BC%95%E5%AF%BC%E7%A8%8B%E5%BA%8F"><span class="nav-number">1.</span> <span class="nav-text"> 启动引导程序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#grub2-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">1.1.</span> <span class="nav-text"> Grub2 配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#grub2-%E9%85%8D%E7%BD%AE%E7%BB%B4%E6%8A%A4"><span class="nav-number">1.2.</span> <span class="nav-text"> Grub2 配置维护</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E5%A4%9A%E9%87%8D%E5%BC%95%E5%AF%BC"><span class="nav-number">1.3.</span> <span class="nav-text"> 设置多重引导</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E9%A1%B9%E7%BC%96%E8%BE%91%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.4.</span> <span class="nav-text"> 启动项编辑模式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text"> 启动异常处理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%98%E8%AE%B0-root-%E5%AF%86%E7%A0%81"><span class="nav-number">2.1.</span> <span class="nav-text"> 忘记 root 密码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E9%94%99%E8%AF%AF"><span class="nav-number">2.2.</span> <span class="nav-text"> 文件系统错误</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B3%E6%9C%BA%E9%87%8D%E5%90%AF"><span class="nav-number">3.</span> <span class="nav-text"> 关机重启</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E7%94%A8%E6%88%B7%E5%9C%A8%E7%BA%BF%E7%8A%B6%E6%80%81"><span class="nav-number">3.1.</span> <span class="nav-text"> 查看用户在线状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%86%99%E5%9B%9E"><span class="nav-number">3.2.</span> <span class="nav-text"> 数据写回</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E6%9C%BA%E6%93%8D%E4%BD%9C"><span class="nav-number">3.3.</span> <span class="nav-text"> 关机操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E5%90%AF%E6%93%8D%E4%BD%9C"><span class="nav-number">3.4.</span> <span class="nav-text"> 重启操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%87%E6%8D%A2%E6%89%A7%E8%A1%8C%E7%AD%89%E7%BA%A7"><span class="nav-number">3.5.</span> <span class="nav-text"> 切换执行等级</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.douban.com/people/Cyber.DraFonS" title="https:&#x2F;&#x2F;www.douban.com&#x2F;people&#x2F;Cyber.DraFonS" rel="noopener external nofollow noreferrer" target="_blank">豆瓣</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/3107904477/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Linux 启动与关闭 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux 启动与关闭
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-09-18 11:57:47" itemprop="dateCreated datePublished" datetime="2021-09-18T11:57:47+08:00">2021-09-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-04-30 10:47:26" itemprop="dateModified" datetime="2023-04-30T10:47:26+08:00">2023-04-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/1-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">1.基本操作</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>11 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="启动引导程序"><a class="markdownIt-Anchor" href="#启动引导程序"></a> 启动引导程序</h1>
+<p>目前在 Linux 下主要的引导启动程序是 Grub(Grand Unified Bootloader) 或 Grub2。通常 Grub2 主程序会将配置文件放到 /boot/grub2 目录下。Grub 则是直接修改 /boot/grub/grub.conf，一个很简单的配置文件。</p>
+<p>Grub2 引导程序的特点有：</p>
+<ul>
+<li>
+<p>认识与支持更多文件系统，并且可以使用 Grub2 的主程序直接在文件系统中搜寻内核文件名。</p>
+</li>
+<li>
+<p>开机时候，可以自行编辑与修改开机设置项目，类似 bash 的命令模式。</p>
+</li>
+<li>
+<p>可以动态搜寻配置文件，而不需要在修改配置后重新安装 Grub2。</p>
+</li>
+</ul>
+<p>Grub2 对硬盘的代号设置与 Linux 中不同，一般用下面代号：</p>
+<ul>
+<li>
+<p>(hd0,1)：一般的默认语法，由 Grub2 自动判断分区格式。</p>
+</li>
+<li>
+<p>(hd0,msdos1)：磁盘的分区为传统的 MBR 模式。</p>
+</li>
+<li>
+<p>(hd0,gpt1)：磁盘的分区为 GPT 模式。</p>
+</li>
+</ul>
+<p>硬盘代号用小括号()括起来，以搜寻顺序做硬盘编号，第一个分区从 1 开始计算，而不是 Grub 的 0 开始算。</p>
+<p>默认情况下 Grub2 随系统已经装好了，特殊情况下要手动安装 Grub2 可以使用 grub2-install 命令。例如安装到 /dev/sdc 下面：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ grub2-install /dev/sdc
+Installing <span class="token keyword">for</span> i386-pc platform.
+Installation finished. No error reported.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h2 id="grub2-配置文件"><a class="markdownIt-Anchor" href="#grub2-配置文件"></a> Grub2 配置文件</h2>
+<p>Grub2 的配置文件路径为 /boot/grub2/grub.cfg：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /boot/grub2/grub.cfg
+<span class="token comment">#</span>
+<span class="token comment"># DO NOT EDIT THIS FILE</span>
+<span class="token comment">#</span>
+<span class="token comment"># It is automatically generated by grub2-mkconfig using templates</span>
+<span class="token comment"># from /etc/grub.d and settings from /etc/default/grub</span>
+<span class="token comment">#</span>
+
+<span class="token comment">### BEGIN /etc/grub.d/00_header ###</span>
+<span class="token builtin class-name">set</span> <span class="token assign-left variable">pager</span><span class="token operator">=</span><span class="token number">1</span>
+
+<span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token parameter variable">-s</span> <span class="token variable">$prefix</span>/grubenv <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>此文件内容繁多，开头第一句就警告应该由<code>grub2-mkconfig</code>命令来创建配置，而不是直接修改它。</p>
+<p>第一部分以### BEGIN /etc/grub.d/00_header ###开头下面的内容，大多与环境设置与默认值设置等。比较重要的是<code>set default</code>默认开机选项和<code>set timeout</code>默认超时时间。</p>
+<p>第四部分以### BEGIN /etc/grub.d/10_linux ###开头段的内容设置了<code>menuentry</code>，也就是开机给的选择项。每个选项都有不同启动参数与模块载入。比较重要的有：</p>
+<ul>
+<li>
+<p><code>set root</code>：设置grub2配置文件所在的分区<code>(hd0,msdos1)</code>，可以用<code>mount</code>查一下挂载的分区。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mount</span> <span class="token operator">|</span> <span class="token function">grep</span> boot
+/dev/sda1 on /boot <span class="token builtin class-name">type</span> xfs <span class="token punctuation">(</span>rw,relatime,seclabel,attr2,inode64,noquota<span class="token punctuation">)</span>
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">fdisk</span> <span class="token parameter variable">-l</span>
+Disk /dev/sda: <span class="token number">21.5</span> GB, <span class="token number">21474836480</span> bytes, <span class="token number">41943040</span> sectors
+Units <span class="token operator">=</span> sectors of <span class="token number">1</span> * <span class="token number">512</span> <span class="token operator">=</span> <span class="token number">512</span> bytes
+Sector size <span class="token punctuation">(</span>logical/physical<span class="token punctuation">)</span>: <span class="token number">512</span> bytes / <span class="token number">512</span> bytes
+I/O size <span class="token punctuation">(</span>minimum/optimal<span class="token punctuation">)</span>: <span class="token number">512</span> bytes / <span class="token number">512</span> bytes
+Disk label type: dos<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>结果显示 /boot 是挂载在<code>/dev/sda1</code>下面，分区为 MBR 格式。</p>
+</li>
+<li>
+<p><code>linux16 /vmlinuz</code>：指定内核文件以及内核文件运行时加的参数。因为/boot独立分区的缘故，这里的内核文件路径是<code>(hd0,msdos1)/vmlinuz</code>。如果/boot挂载在根目录下面，内核文件路径会变成<code>(hd0,msdos1)/boot/vmlinuz</code>，也就是<code>linux16 /boot/vmlinuz</code>这样。后面的<code>root</code>指定的是Linux系统中根目录挂载的设备。</p>
+</li>
+<li>
+<p><code>initrd16 /initramfs</code>：指定虚拟文件系统img的位置。</p>
+</li>
+</ul>
+<h2 id="grub2-配置维护"><a class="markdownIt-Anchor" href="#grub2-配置维护"></a> Grub2 配置维护</h2>
+<p>我们可以通过修改<code>/etc/default/grub</code>文件和<code>/etc/grub.d/</code>目录内的相关配置文件来达成修改Grub2配置的目的。</p>
+<p>可以查看<code>/etc/default/grub</code>文件的内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/default/grub 
+<span class="token assign-left variable">GRUB_TIMEOUT</span><span class="token operator">=</span><span class="token number">5</span>
+<span class="token assign-left variable">GRUB_DISTRIBUTOR</span><span class="token operator">=</span><span class="token string">"<span class="token variable"><span class="token variable">$(</span><span class="token function">sed</span> <span class="token string">'s, release .*$,,g'</span> /etc/system-release<span class="token variable">)</span></span>"</span>
+<span class="token assign-left variable">GRUB_DEFAULT</span><span class="token operator">=</span>saved
+<span class="token assign-left variable">GRUB_DISABLE_SUBMENU</span><span class="token operator">=</span>true
+<span class="token assign-left variable">GRUB_TERMINAL_OUTPUT</span><span class="token operator">=</span><span class="token string">"console"</span>
+<span class="token assign-left variable">GRUB_CMDLINE_LINUX</span><span class="token operator">=</span><span class="token string">"crashkernel=auto rd.lvm.lv=centos/root rd.lvm.lv=centos/swap rhgb quiet"</span>
+<span class="token assign-left variable">GRUB_DISABLE_RECOVERY</span><span class="token operator">=</span><span class="token string">"true"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中，重点选项的含义如下：</p>
+<ul>
+<li>
+<p><code>GRUB_TIMEOUT</code>：设置选择菜单等待超时的秒数。设为0表示不等待，设为-1表示必须手动选择。</p>
+</li>
+<li>
+<p><code>GRUB_TIMEOUT_STYLE</code>：可以设置的值为<code>menu</code>、<code>countdown</code>、<code>hidden</code>等，默认为<code>menu</code>。这个参数也就是设置是否要显示菜单。设置为<code>countdown</code>或者<code>hidden</code>会让用户看不到任何内容。</p>
+</li>
+<li>
+<p><code>GRUB_DEFAULT</code>：菜单默认选择项目。可以设置的值有<code>saved</code>、数字、title名、ID名等，依据<code>menuentry</code>的设置而定。例如，在配置中定义了三条<code>menuentry</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">menuentry <span class="token string">'CentOS'</span> <span class="token parameter variable">--unrestricted</span> <span class="token variable">$menuentry_id_option</span> <span class="token string">'linux-1'</span>
+menuentry <span class="token string">'Debian'</span> <span class="token parameter variable">--unrestricted</span> <span class="token variable">$menuentry_id_option</span> <span class="token string">'gnulinux'</span>
+menuentry <span class="token string">'Windows'</span> <span class="token parameter variable">--unrestricted</span> <span class="token variable">$menuentry_id_option</span> <span class="token string">'win'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>那么对应<code>GRUB_DEFAULT</code>的值：</p>
+<ul>
+<li>值为1表示选用排在第2个定义的Debian系统，因为数字编号从0开始算。</li>
+<li>值为win表示选择排在第3个定义的Windows系统，通过ID选的值。</li>
+<li>值为saved表示使用<code>grub2-set-default</code>来设置哪个为默认值，通常默认为0。</li>
+</ul>
+</li>
+<li>
+<p><code>GRUB_TERMINAL_OUTPUT</code>：信息输出的终端模式。可以设置值有<code>console</code>、<code>serial</code>、<code>gfxterm</code>、<code>vga_text</code>等。</p>
+</li>
+<li>
+<p><code>GRUB_CMDLINE_LINUX</code>：内核的外加参数功能，用来设置内核启动时还需要额外加入的参数。</p>
+</li>
+</ul>
+<p>例如修改菜单等待时间为30秒，之后使用<code>grub2-mkconfig</code>命令重建<code>grub.cfg</code>:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-i</span> <span class="token string">'s/GRUB_TIMEOUT=5/GRUB_TIMEOUT=30/g'</span> /etc/default/grub <span class="token punctuation">;</span> <span class="token function">head</span> <span class="token parameter variable">-1</span> /etc/default/grub
+<span class="token assign-left variable">GRUB_TIMEOUT</span><span class="token operator">=</span><span class="token number">30</span>
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ grub2-mkconfig <span class="token parameter variable">-o</span> /boot/grub2/grub.cfg
+Generating grub configuration <span class="token function">file</span> <span class="token punctuation">..</span>.
+Found linux image: /boot/vmlinuz-3.10.0-1160.41.1.el7.x86_64
+Found initrd image: /boot/initramfs-3.10.0-1160.41.1.el7.x86_64.img
+Found linux image: /boot/vmlinuz-3.10.0-862.el7.x86_64
+Found initrd image: /boot/initramfs-3.10.0-862.el7.x86_64.img
+Found linux image: /boot/vmlinuz-0-rescue-77a36143eb014dd5a0d6e738b1d84778
+Found initrd image: /boot/initramfs-0-rescue-77a36143eb014dd5a0d6e738b1d84778.img
+<span class="token keyword">done</span>
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token function">timeout</span> /boot/grub2/grub.cfg
+<span class="token keyword">if</span> <span class="token punctuation">[</span> x<span class="token variable">$feature_timeout_style</span> <span class="token operator">=</span> xy <span class="token punctuation">]</span> <span class="token punctuation">;</span> <span class="token keyword">then</span>
+  <span class="token builtin class-name">set</span> <span class="token assign-left variable">timeout_style</span><span class="token operator">=</span>menu
+  <span class="token builtin class-name">set</span> <span class="token assign-left variable">timeout</span><span class="token operator">=</span><span class="token number">30</span>
+<span class="token comment"># Fallback normal timeout code in case the timeout_style feature is</span>
+  <span class="token builtin class-name">set</span> <span class="token assign-left variable">timeout</span><span class="token operator">=</span><span class="token number">30</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>再看一看<code>/etc/grub.d</code>文件夹的内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll /etc/grub.d
+total <span class="token number">72</span>
+-rwxr-xr-x. <span class="token number">1</span> root root  <span class="token number">8702</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> 00_header
+-rwxr-xr-x. <span class="token number">1</span> root root  <span class="token number">1043</span> Mar <span class="token number">21</span>  <span class="token number">2019</span> 00_tuned
+-rwxr-xr-x. <span class="token number">1</span> root root   <span class="token number">232</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> 01_users
+-rwxr-xr-x. <span class="token number">1</span> root root <span class="token number">10781</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> 10_linux
+-rwxr-xr-x. <span class="token number">1</span> root root <span class="token number">10275</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> 20_linux_xen
+-rwxr-xr-x. <span class="token number">1</span> root root  <span class="token number">2559</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> 20_ppc_terminfo
+-rwxr-xr-x. <span class="token number">1</span> root root <span class="token number">11169</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> 30_os-prober
+-rwxr-xr-x. <span class="token number">1</span> root root   <span class="token number">214</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> 40_custom
+-rwxr-xr-x. <span class="token number">1</span> root root   <span class="token number">216</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> 41_custom
+-rw-r--r--. <span class="token number">1</span> root root   <span class="token number">483</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> README<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到文件名刚好和<code>grub.cfg</code>中段头对应。主要文件有：</p>
+<ul>
+<li><code>00_header</code>: 主要在创建初始的显示项目，包括需要载入的模块分析，屏幕终端格式，倒数秒数，菜单是否要隐藏等，大部分在<code>/etc/default/grub</code>里面设置的变量，用到这个脚本里用来重建<code>grub.cfg</code>。</li>
+<li><code>01_users</code>: 设置账号密码，用来管控每个菜单选项进入权限。权限用在<code>menuentry</code>中有三种：不受限(<code>unrestricted</code>)，用户(<code>users</code>)，超级用户(<code>superusers</code>)。其中只有超级用户可以使用启动项编辑模式。</li>
+<li><code>10_linux</code>: 根据分析<code>/boot</code>下面的文件，尝试找到正确的Linux内核文件与虚拟文件系统镜像等，脚本会将找到的文件路径写入到<code>grub.cfg</code>中。因为每一内核文件都会建立一个启动选项，所以可以适当删除旧内核文件来精简启动菜单。</li>
+<li><code>30_os-prober</code>: 这个脚本用来找其他分区中可能存在的操作系统，如果找到则将其加入启动菜单中。可以在<code>/etc/default/grub</code>中加上<code>GRUB_DISABLE_OS_PROBER=true</code>参数来取消这一扫描。</li>
+<li><code>40_custom</code>: 用来手动添加菜单项目。例如想新增一个<code>menuentry</code>来指定开机进入图形模式，可以在<code>grub.cfg</code>中复制一个<code>menuentry</code>段，修改对应的<code>title</code>、<code>id</code>与<code>linux16</code>后面的参数（增加 <code>systemd.unit=graphical.target</code>），然后再用<code>grub2-mkconfig</code>命令重建<code>grub.cfg</code>即可。</li>
+</ul>
+<h2 id="设置多重引导"><a class="markdownIt-Anchor" href="#设置多重引导"></a> 设置多重引导</h2>
+<p>多重引导使用开机管理程序的链接（Chain Loader）功能，将开机引导程序指向其他位置。只需要设置另一个开机引导程序所在分区代号和所在扇区就可以了。</p>
+<p>假设系统有一块硬盘两个分区，分别装了 Linux（sdb1）和 Windows（sdb2），我们需要增加两个开机选项，一个指向 Windows 开机菜单，一个回到 MBR 的默认环境。<code>40_custom</code>文件内容大致如下：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/grub.d/40_custom 
+<span class="token comment">#!/bin/sh</span>
+<span class="token builtin class-name">exec</span> <span class="token function">tail</span> <span class="token parameter variable">-n</span> +3 <span class="token variable">$0</span>
+<span class="token comment"># This file provides an easy way to add custom menu entries.  Simply type the</span>
+<span class="token comment"># menu entries you want to add after this comment.  Be careful not to change</span>
+<span class="token comment"># the 'exec tail' line above.</span>
+menuentry <span class="token string">'Windows'</span> <span class="token parameter variable">--id</span> <span class="token string">'win'</span> <span class="token punctuation">&#123;</span>
+        insmod chain
+        insmod ntfs
+        <span class="token builtin class-name">set</span> <span class="token assign-left variable">root</span><span class="token operator">=</span><span class="token punctuation">(</span>hd0,msdos2<span class="token punctuation">)</span>
+        chainloader +1
+menuentry <span class="token string">'MBR'</span> <span class="token parameter variable">--id</span> <span class="token string">'mbr'</span> <span class="token punctuation">&#123;</span>
+        insmod chain
+        <span class="token builtin class-name">set</span> <span class="token assign-left variable">root</span><span class="token operator">=</span><span class="token punctuation">(</span>hd0<span class="token punctuation">)</span>
+        chainloader +1
+<span class="token string">"/etc/grub.d/40_custom"</span> 14L, 469C written
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中最重要的是载入 <code>chain</code> 和 <code>ntfs</code> 模块，由此 Grub2 才能正确读取文件系统执行 Chain Loader 功能。</p>
+<h2 id="启动项编辑模式"><a class="markdownIt-Anchor" href="#启动项编辑模式"></a> 启动项编辑模式</h2>
+<p>在启动菜单出现后，可以按下e进入启动项编辑模式。也就是直接编辑<code>grub.cfg</code>文件内容。</p>
+<p>例如，可以在<code>systemd.unit</code>中指定为<code>rescue.target</code>，这样就能直接进入救援模式，而不需要先进入系统。修改完毕后，使用快捷键 <code>[Ctrl]+x</code> 来执行。</p>
+<h1 id="启动异常处理"><a class="markdownIt-Anchor" href="#启动异常处理"></a> 启动异常处理</h1>
+<p>通常因为某些不正常的设置或不正常关机导致无法顺利开机时,可以进入rescue模式去处理.</p>
+<h2 id="忘记-root-密码"><a class="markdownIt-Anchor" href="#忘记-root-密码"></a> 忘记 root 密码</h2>
+<p>在使用grub做引导的系统可以这样处理：</p>
+<ol>
+<li>启动系统，在选择启动项的界面下，按 <code>e</code> 进入默认启动项grub编辑模式。</li>
+<li>移动到有 kernel 那行，再按一次 <code>e</code> 进入编辑界面，在最后方输入 <code>single</code>。</li>
+<li>按下回车，再按下 <code>b</code> 就可以进入单用户维护模式。</li>
+<li>这一模式下可以直接用 <code>passwd</code> 命令修改 root 密码。</li>
+</ol>
+<p>CentOS 7 中 rescue 模式也需要 root 密码才能登录，因此可以进入 emergency 救援模式：</p>
+<ol>
+<li>按 <code>e</code> 进入编辑默认启动项 grub，找到 linux16 那行，在最末尾输入 <code>init=/bin/sh</code>，按 <code>[Ctrl]+x</code> 执行；</li>
+<li>进入 emergency 模式后，输入 <code>mount -o remount,rw /</code> 命令将根目录挂载为可读写模式；</li>
+<li>然后使用 <code>passwd</code> 命令设置新的 root 密码；</li>
+<li>最后输入 <code>touch /.autorelabel</code> 更新系统信息，让 SELinux 生效；</li>
+<li>执行 <code>exec /sbin/init</code> 或 <code>reboot</code> 即可退出救援模式。</li>
+</ol>
+<p>通过 rd.break（Ram Disk 里面的操作系统）内核启动参数也可以处理：</p>
+<ol>
+<li>同样在编辑默认启动项 grub，在 linux16 那行末尾加入 <code>rd.break</code> 参数，按 <code>[Ctrl]+x</code> 执行；</li>
+<li>此时进入的是 Ram Disk 环境，系统被挂载到 <code>/sysroot</code> 目录下，用 <code>mount -o remount,rw /sysroot</code> 重新挂载；</li>
+<li>用命令 <code>chroot /sysroot</code> 来切换根目录，并使用 <code>passwd</code> 命令修改密码；</li>
+<li>同样用 <code>touch /.autorelabel</code> 来变回 SELinux 的安全标签。重启即可。</li>
+</ol>
+<p><code>touch /.autorelabel</code> 命令的作用：</p>
+<ul>
+<li>
+<p>在救援模式下系统没有 SELinux，所以用 <code>passwd</code> 命令修改了 <code>/etc/shadow</code> 文件后，它的 SELinux 安全标签会被取消，在 SELinux 为 Enforcing 模式下会无法登录系统。</p>
+</li>
+<li>
+<p>创建 <code>/.autorelabel</code> 文件就是要让系统在开机时自动使用默认 SELinux 类型重写入 SELinux 安全标签到每个文件。</p>
+</li>
+<li>
+<p>如果不想让每个文件都更新标签，可以改完密码后，将 SELinux 运行模式改为 permissive（修改 <code>/etc/selinux/config</code> 文件）。再重新开机后运行 <code>restorecon -Rv /etc</code> 仅恢复 <code>/etc</code> 目录下的默认安全上下文类型。最后将 SELinux 配置文件的运行模式改回 enforcing，用 <code>setenforce 1</code> 来生效。</p>
+</li>
+</ul>
+<h2 id="文件系统错误"><a class="markdownIt-Anchor" href="#文件系统错误"></a> 文件系统错误</h2>
+<p>断电或不正常关机会导致文件系统错误，通常是软件数据问题。如果根目录没有损坏，可以进入维护模式下使用<code>fsck</code>命令修复<code>ext4</code>格式的分区。修复完毕后以<code>reboot</code>重启即可：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">fsck</span> /dev/sda2
+<span class="token function">fsck</span> from util-linux <span class="token number">2.23</span>.2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>如果是<code>xfs</code>格式分区则使用<code>xfs_repair</code>命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_repair /dev/sda2
+xfs_repair: cannot <span class="token function">open</span> /dev/sda2: Device or resource busy<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>如果整个硬盘只有一个大区，那文件系统错误一定是根目录的问题。这时候需要将硬盘拔下来，接到另外一台Linux系统的机器上，并且不要挂载，以<code>root</code>身份执行<code>fsck</code>或<code>xfs_repair</code>命令修复。</p>
+<p>还有一种方法是使用U盘刻成Live CD，在U盘启动的系统中执行修复命令。</p>
+<h1 id="关机重启"><a class="markdownIt-Anchor" href="#关机重启"></a> 关机重启</h1>
+<p>切换运行级别和模式并不会重启.</p>
+<h2 id="查看用户在线状态"><a class="markdownIt-Anchor" href="#查看用户在线状态"></a> 查看用户在线状态</h2>
+<p>如果有其他用户在线，强制关机可能会导致用户文件丢失，可以先使用<code>who</code>命令查看当前已登录的用户信息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">who</span> <span class="token parameter variable">-Hu</span>
+NAME     LINE         TIME             IDLE          PID COMMENT
+root     tty1         <span class="token number">2021</span>-09-11 09:35  old          <span class="token number">897</span>
+root     pts/0        <span class="token number">2021</span>-09-15 <span class="token number">12</span>:12   <span class="token builtin class-name">.</span>          <span class="token number">5334</span> <span class="token punctuation">(</span><span class="token number">192.168</span>.2.101<span class="token punctuation">)</span>
+root     pts/1        <span class="token number">2021</span>-09-14 08:40  old        <span class="token number">55207</span> <span class="token punctuation">(</span><span class="token number">192.168</span>.2.101<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="数据写回"><a class="markdownIt-Anchor" href="#数据写回"></a> 数据写回</h2>
+<p>默认情况下，某些加载到内存中的数据不会直接被写回硬盘，而是暂存在内存中。可以手动同步将数据写入硬盘：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">sync</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>使用重启或关机命令前也会自动调用<code>sync</code>命令。</p>
+<p>当非管理员使用<code>sync</code>命令时，只会更新该用户的操作数据。</p>
+<h2 id="关机操作"><a class="markdownIt-Anchor" href="#关机操作"></a> 关机操作</h2>
+<p>通常使用<code>shutdown</code>命令来进行关机操作。</p>
+<p>立即关机：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">shutdown</span> <span class="token parameter variable">-h</span> now<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>预定在21:00关机。如果当前时间超过21:00则会在隔天21:00才关机：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">shutdown</span> <span class="token parameter variable">-h</span> <span class="token number">21</span>:00<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>预定2分钟后关机，并发送消息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">shutdown</span> <span class="token parameter variable">-P</span> <span class="token number">120</span> <span class="token string">"will  poweroff"</span>
+Shutdown scheduled <span class="token keyword">for</span> Wed <span class="token number">2021</span>-09-15 <span class="token number">16</span>:01:48 EDT, use <span class="token string">'shutdown -c'</span> to cancel.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>取消即将进行的关机操作：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">shutdown</span> <span class="token parameter variable">-c</span>
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ 
+Broadcast message from root@101c7 <span class="token punctuation">(</span>Wed <span class="token number">2021</span>-09-15 <span class="token number">14</span>:01:54 EDT<span class="token punctuation">)</span>:
+
+The system <span class="token function">shutdown</span> has been cancelled at Wed <span class="token number">2021</span>-09-15 <span class="token number">14</span>:02:54 EDT<span class="token operator">!</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="重启操作"><a class="markdownIt-Anchor" href="#重启操作"></a> 重启操作</h2>
+<p>重启命令可用<code>reboot</code>或<code>halt</code>，选择其一即可。</p>
+<p>立即强制关机：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">halt</span> <span class="token parameter variable">-P</span> <span class="token parameter variable">-f</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>同步后重启系统：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">sync</span><span class="token punctuation">;</span> <span class="token function">sync</span><span class="token punctuation">;</span> <span class="token function">sync</span><span class="token punctuation">;</span> <span class="token function">reboot</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="切换执行等级"><a class="markdownIt-Anchor" href="#切换执行等级"></a> 切换执行等级</h2>
+<p>可以通过<code>init</code>命令来切换运行级别，例如进入单用户维护模式：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ init <span class="token number">1</span>
+Broadcast message from root@localhost.localdomain on pts/1 <span class="token punctuation">(</span>Fri <span class="token number">2019</span>-07-05 <span class="token number">15</span>:40:59 CST<span class="token punctuation">)</span>:
+
+The system is going down to rescue mode NOW<span class="token operator">!</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在 CentOS 7 中则是由<code>systemctl</code>来管理模式之间的切换，例如切换到救援模式：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ systemctl isolate rescue.target<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/3107904477/" title="Linux 启动与关闭">https://blog.x2b.net/3107904477/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../3847284551/" rel="prev" title="Linux 文件处理">
+                  <i class="fa fa-chevron-left"></i> Linux 文件处理
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../4039294623/" rel="next" title="Linux 中使用帮助">
+                  Linux 中使用帮助 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">54k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:02</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes 1.21
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@next-theme/pjax@0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://unpkg.com/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://unpkg.com/katex@0.16.4/dist/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/3107904477/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://unpkg.com/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'blog.x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>
