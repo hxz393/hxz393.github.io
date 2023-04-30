@@ -13,16 +13,16 @@
 - 2021-10-10 [Linux 启动流程](https://blog.x2b.net/4291230975/)  
   
   
-### **2021-09** (17)  
+### **2021-09** (18)  
 - 2021-09-21 [Linux 系统设置](https://blog.x2b.net/3511703514/)  
 - 2021-09-18 [Linux 查询系统信息](https://blog.x2b.net/741506456/)  
 - 2021-09-18 [Linux 工作控制](https://blog.x2b.net/517799084/)  
 - 2021-09-18 [Linux 程序和进程](https://blog.x2b.net/630034191/)  
 - 2021-09-18 [Linux 工作调度](https://blog.x2b.net/3847284551/)  
 - 2021-09-18 [Linux 文件属性解释](https://blog.x2b.net/1872252014/)  
-- 2021-09-18 [Linux 文件权限](https://blog.x2b.net/46662635/)  
-- 2021-09-18 [Linux 命令行使用](https://blog.x2b.net/1784829336/)  
 - 2021-09-18 [Linux 文件系统](https://blog.x2b.net/2794564793/)  
+- 2021-09-18 [Linux 命令行使用](https://blog.x2b.net/1784829336/)  
+- 2021-09-18 [Linux 文件权限](https://blog.x2b.net/46662635/)  
 - 2021-09-18 [磁盘分区知识](https://blog.x2b.net/3200821655/)  
 - 2021-09-18 [计算机硬件基础](https://blog.x2b.net/3847559470/)  
 - 2021-09-18 [Linux 下压缩和解压文件](https://blog.x2b.net/635683850/)  
@@ -31,4 +31,5 @@
 - 2021-09-18 [Linux 启动与关闭](https://blog.x2b.net/3107904477/)  
 - 2021-09-18 [Linux 文件处理](https://blog.x2b.net/3847284551/)  
 - 2021-09-18 [Linux 环境配置](https://blog.x2b.net/1849958032/)  
+- 2021-09-18 [Linux 权限管理](https://blog.x2b.net/2354164977/)  
   

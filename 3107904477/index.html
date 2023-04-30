@@ -30,7 +30,7 @@
 <meta property="og:description" content="启动引导程序 目前在 Linux 下主要的引导启动程序是 Grub(Grand Unified Bootloader) 或 Grub2。通常 Grub2 主程序会将配置文件放到 &#x2F;boot&#x2F;grub2 目录下。Grub 则是直接修改 &#x2F;boot&#x2F;grub&#x2F;grub.conf，一个很简单的配置文件。 Grub2 引导程序的特点有：   认识与支持更多文件系统，并且可以使用 Grub2 的主程序直接">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-09-18T03:57:47.000Z">
-<meta property="article:modified_time" content="2023-04-30T02:47:26.936Z">
+<meta property="article:modified_time" content="2023-04-30T02:53:05.634Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python">
 <meta name="twitter:card" content="summary">
@@ -94,7 +94,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">3</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">25</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">4</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">26</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -160,13 +160,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="../archives/">
-          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-count">26</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="../categories/">
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
@@ -258,7 +258,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-04-30 10:47:26" itemprop="dateModified" datetime="2023-04-30T10:47:26+08:00">2023-04-30</time>
+      <time title="修改时间：2023-04-30 10:53:05" itemprop="dateModified" datetime="2023-04-30T10:53:05+08:00">2023-04-30</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -356,7 +356,7 @@ Installation finished. No error reported.<span aria-hidden="true" class="line-nu
 <p>第四部分以### BEGIN /etc/grub.d/10_linux ###开头段的内容设置了<code>menuentry</code>，也就是开机给的选择项。每个选项都有不同启动参数与模块载入。比较重要的有：</p>
 <ul>
 <li>
-<p><code>set root</code>：设置grub2配置文件所在的分区<code>(hd0,msdos1)</code>，可以用<code>mount</code>查一下挂载的分区。</p>
+<p><code>set root</code>：设置 grub2 配置文件所在的分区<code>(hd0,msdos1)</code>，可以用<code>mount</code>查一下挂载的分区。</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mount</span> <span class="token operator">|</span> <span class="token function">grep</span> boot
 /dev/sda1 on /boot <span class="token builtin class-name">type</span> xfs <span class="token punctuation">(</span>rw,relatime,seclabel,attr2,inode64,noquota<span class="token punctuation">)</span>
 <span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">fdisk</span> <span class="token parameter variable">-l</span>
@@ -368,14 +368,14 @@ Disk label type: dos<span aria-hidden="true" class="line-numbers-rows"><span></s
 <p>结果显示 /boot 是挂载在<code>/dev/sda1</code>下面，分区为 MBR 格式。</p>
 </li>
 <li>
-<p><code>linux16 /vmlinuz</code>：指定内核文件以及内核文件运行时加的参数。因为/boot独立分区的缘故，这里的内核文件路径是<code>(hd0,msdos1)/vmlinuz</code>。如果/boot挂载在根目录下面，内核文件路径会变成<code>(hd0,msdos1)/boot/vmlinuz</code>，也就是<code>linux16 /boot/vmlinuz</code>这样。后面的<code>root</code>指定的是Linux系统中根目录挂载的设备。</p>
+<p><code>linux16 /vmlinuz</code>：指定内核文件以及内核文件运行时加的参数。因为/boot 独立分区的缘故，这里的内核文件路径是<code>(hd0,msdos1)/vmlinuz</code>。如果/boot 挂载在根目录下面，内核文件路径会变成<code>(hd0,msdos1)/boot/vmlinuz</code>，也就是<code>linux16 /boot/vmlinuz</code>这样。后面的<code>root</code>指定的是 Linux 系统中根目录挂载的设备。</p>
 </li>
 <li>
-<p><code>initrd16 /initramfs</code>：指定虚拟文件系统img的位置。</p>
+<p><code>initrd16 /initramfs</code>：指定虚拟文件系统 img 的位置。</p>
 </li>
 </ul>
 <h2 id="grub2-配置维护"><a class="markdownIt-Anchor" href="#grub2-配置维护"></a> Grub2 配置维护</h2>
-<p>我们可以通过修改<code>/etc/default/grub</code>文件和<code>/etc/grub.d/</code>目录内的相关配置文件来达成修改Grub2配置的目的。</p>
+<p>我们可以通过修改<code>/etc/default/grub</code>文件和<code>/etc/grub.d/</code>目录内的相关配置文件来达成修改 Grub2 配置的目的。</p>
 <p>可以查看<code>/etc/default/grub</code>文件的内容：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/default/grub 
 <span class="token assign-left variable">GRUB_TIMEOUT</span><span class="token operator">=</span><span class="token number">5</span>
@@ -388,21 +388,21 @@ Disk label type: dos<span aria-hidden="true" class="line-numbers-rows"><span></s
 <p>其中，重点选项的含义如下：</p>
 <ul>
 <li>
-<p><code>GRUB_TIMEOUT</code>：设置选择菜单等待超时的秒数。设为0表示不等待，设为-1表示必须手动选择。</p>
+<p><code>GRUB_TIMEOUT</code>：设置选择菜单等待超时的秒数。设为 0 表示不等待，设为-1 表示必须手动选择。</p>
 </li>
 <li>
 <p><code>GRUB_TIMEOUT_STYLE</code>：可以设置的值为<code>menu</code>、<code>countdown</code>、<code>hidden</code>等，默认为<code>menu</code>。这个参数也就是设置是否要显示菜单。设置为<code>countdown</code>或者<code>hidden</code>会让用户看不到任何内容。</p>
 </li>
 <li>
-<p><code>GRUB_DEFAULT</code>：菜单默认选择项目。可以设置的值有<code>saved</code>、数字、title名、ID名等，依据<code>menuentry</code>的设置而定。例如，在配置中定义了三条<code>menuentry</code>：</p>
+<p><code>GRUB_DEFAULT</code>：菜单默认选择项目。可以设置的值有<code>saved</code>、数字、title 名、ID 名等，依据<code>menuentry</code>的设置而定。例如，在配置中定义了三条<code>menuentry</code>：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">menuentry <span class="token string">'CentOS'</span> <span class="token parameter variable">--unrestricted</span> <span class="token variable">$menuentry_id_option</span> <span class="token string">'linux-1'</span>
 menuentry <span class="token string">'Debian'</span> <span class="token parameter variable">--unrestricted</span> <span class="token variable">$menuentry_id_option</span> <span class="token string">'gnulinux'</span>
 menuentry <span class="token string">'Windows'</span> <span class="token parameter variable">--unrestricted</span> <span class="token variable">$menuentry_id_option</span> <span class="token string">'win'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>那么对应<code>GRUB_DEFAULT</code>的值：</p>
 <ul>
-<li>值为1表示选用排在第2个定义的Debian系统，因为数字编号从0开始算。</li>
-<li>值为win表示选择排在第3个定义的Windows系统，通过ID选的值。</li>
-<li>值为saved表示使用<code>grub2-set-default</code>来设置哪个为默认值，通常默认为0。</li>
+<li>值为 1 表示选用排在第 2 个定义的 Debian 系统，因为数字编号从 0 开始算。</li>
+<li>值为 win 表示选择排在第 3 个定义的 Windows 系统，通过 ID 选的值。</li>
+<li>值为 saved 表示使用<code>grub2-set-default</code>来设置哪个为默认值，通常默认为 0。</li>
 </ul>
 </li>
 <li>
@@ -412,7 +412,7 @@ menuentry <span class="token string">'Windows'</span> <span class="token paramet
 <p><code>GRUB_CMDLINE_LINUX</code>：内核的外加参数功能，用来设置内核启动时还需要额外加入的参数。</p>
 </li>
 </ul>
-<p>例如修改菜单等待时间为30秒，之后使用<code>grub2-mkconfig</code>命令重建<code>grub.cfg</code>:</p>
+<p>例如修改菜单等待时间为 30 秒，之后使用<code>grub2-mkconfig</code>命令重建<code>grub.cfg</code>:</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-i</span> <span class="token string">'s/GRUB_TIMEOUT=5/GRUB_TIMEOUT=30/g'</span> /etc/default/grub <span class="token punctuation">;</span> <span class="token function">head</span> <span class="token parameter variable">-1</span> /etc/default/grub
 <span class="token assign-left variable">GRUB_TIMEOUT</span><span class="token operator">=</span><span class="token number">30</span>
 <span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ grub2-mkconfig <span class="token parameter variable">-o</span> /boot/grub2/grub.cfg
@@ -447,7 +447,7 @@ total <span class="token number">72</span>
 <ul>
 <li><code>00_header</code>: 主要在创建初始的显示项目，包括需要载入的模块分析，屏幕终端格式，倒数秒数，菜单是否要隐藏等，大部分在<code>/etc/default/grub</code>里面设置的变量，用到这个脚本里用来重建<code>grub.cfg</code>。</li>
 <li><code>01_users</code>: 设置账号密码，用来管控每个菜单选项进入权限。权限用在<code>menuentry</code>中有三种：不受限(<code>unrestricted</code>)，用户(<code>users</code>)，超级用户(<code>superusers</code>)。其中只有超级用户可以使用启动项编辑模式。</li>
-<li><code>10_linux</code>: 根据分析<code>/boot</code>下面的文件，尝试找到正确的Linux内核文件与虚拟文件系统镜像等，脚本会将找到的文件路径写入到<code>grub.cfg</code>中。因为每一内核文件都会建立一个启动选项，所以可以适当删除旧内核文件来精简启动菜单。</li>
+<li><code>10_linux</code>: 根据分析<code>/boot</code>下面的文件，尝试找到正确的 Linux 内核文件与虚拟文件系统镜像等，脚本会将找到的文件路径写入到<code>grub.cfg</code>中。因为每一内核文件都会建立一个启动选项，所以可以适当删除旧内核文件来精简启动菜单。</li>
 <li><code>30_os-prober</code>: 这个脚本用来找其他分区中可能存在的操作系统，如果找到则将其加入启动菜单中。可以在<code>/etc/default/grub</code>中加上<code>GRUB_DISABLE_OS_PROBER=true</code>参数来取消这一扫描。</li>
 <li><code>40_custom</code>: 用来手动添加菜单项目。例如想新增一个<code>menuentry</code>来指定开机进入图形模式，可以在<code>grub.cfg</code>中复制一个<code>menuentry</code>段，修改对应的<code>title</code>、<code>id</code>与<code>linux16</code>后面的参数（增加 <code>systemd.unit=graphical.target</code>），然后再用<code>grub2-mkconfig</code>命令重建<code>grub.cfg</code>即可。</li>
 </ul>
@@ -473,14 +473,14 @@ menuentry <span class="token string">'MBR'</span> <span class="token parameter v
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>其中最重要的是载入 <code>chain</code> 和 <code>ntfs</code> 模块，由此 Grub2 才能正确读取文件系统执行 Chain Loader 功能。</p>
 <h2 id="启动项编辑模式"><a class="markdownIt-Anchor" href="#启动项编辑模式"></a> 启动项编辑模式</h2>
-<p>在启动菜单出现后，可以按下e进入启动项编辑模式。也就是直接编辑<code>grub.cfg</code>文件内容。</p>
+<p>在启动菜单出现后，可以按下 e 进入启动项编辑模式。也就是直接编辑<code>grub.cfg</code>文件内容。</p>
 <p>例如，可以在<code>systemd.unit</code>中指定为<code>rescue.target</code>，这样就能直接进入救援模式，而不需要先进入系统。修改完毕后，使用快捷键 <code>[Ctrl]+x</code> 来执行。</p>
 <h1 id="启动异常处理"><a class="markdownIt-Anchor" href="#启动异常处理"></a> 启动异常处理</h1>
-<p>通常因为某些不正常的设置或不正常关机导致无法顺利开机时,可以进入rescue模式去处理.</p>
+<p>通常因为某些不正常的设置或不正常关机导致无法顺利开机时,可以进入 rescue 模式去处理.</p>
 <h2 id="忘记-root-密码"><a class="markdownIt-Anchor" href="#忘记-root-密码"></a> 忘记 root 密码</h2>
-<p>在使用grub做引导的系统可以这样处理：</p>
+<p>在使用 grub 做引导的系统可以这样处理：</p>
 <ol>
-<li>启动系统，在选择启动项的界面下，按 <code>e</code> 进入默认启动项grub编辑模式。</li>
+<li>启动系统，在选择启动项的界面下，按 <code>e</code> 进入默认启动项 grub 编辑模式。</li>
 <li>移动到有 kernel 那行，再按一次 <code>e</code> 进入编辑界面，在最后方输入 <code>single</code>。</li>
 <li>按下回车，再按下 <code>b</code> 就可以进入单用户维护模式。</li>
 <li>这一模式下可以直接用 <code>passwd</code> 命令修改 root 密码。</li>
@@ -519,8 +519,8 @@ menuentry <span class="token string">'MBR'</span> <span class="token parameter v
 <p>如果是<code>xfs</code>格式分区则使用<code>xfs_repair</code>命令：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_repair /dev/sda2
 xfs_repair: cannot <span class="token function">open</span> /dev/sda2: Device or resource busy<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>如果整个硬盘只有一个大区，那文件系统错误一定是根目录的问题。这时候需要将硬盘拔下来，接到另外一台Linux系统的机器上，并且不要挂载，以<code>root</code>身份执行<code>fsck</code>或<code>xfs_repair</code>命令修复。</p>
-<p>还有一种方法是使用U盘刻成Live CD，在U盘启动的系统中执行修复命令。</p>
+<p>如果整个硬盘只有一个大区，那文件系统错误一定是根目录的问题。这时候需要将硬盘拔下来，接到另外一台 Linux 系统的机器上，并且不要挂载，以<code>root</code>身份执行<code>fsck</code>或<code>xfs_repair</code>命令修复。</p>
+<p>还有一种方法是使用 U 盘刻成 Live CD，在 U 盘启动的系统中执行修复命令。</p>
 <h1 id="关机重启"><a class="markdownIt-Anchor" href="#关机重启"></a> 关机重启</h1>
 <p>切换运行级别和模式并不会重启.</p>
 <h2 id="查看用户在线状态"><a class="markdownIt-Anchor" href="#查看用户在线状态"></a> 查看用户在线状态</h2>
@@ -539,9 +539,9 @@ root     pts/1        <span class="token number">2021</span>-09-14 08:40  old   
 <p>通常使用<code>shutdown</code>命令来进行关机操作。</p>
 <p>立即关机：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">shutdown</span> <span class="token parameter variable">-h</span> now<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>预定在21:00关机。如果当前时间超过21:00则会在隔天21:00才关机：</p>
+<p>预定在 21:00 关机。如果当前时间超过 21:00 则会在隔天 21:00 才关机：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">shutdown</span> <span class="token parameter variable">-h</span> <span class="token number">21</span>:00<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>预定2分钟后关机，并发送消息：</p>
+<p>预定 2 分钟后关机，并发送消息：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">shutdown</span> <span class="token parameter variable">-P</span> <span class="token number">120</span> <span class="token string">"will  poweroff"</span>
 Shutdown scheduled <span class="token keyword">for</span> Wed <span class="token number">2021</span>-09-15 <span class="token number">16</span>:01:48 EDT, use <span class="token string">'shutdown -c'</span> to cancel.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>取消即将进行的关机操作：</p>
@@ -665,13 +665,13 @@ The system is going down to rescue mode NOW<span class="token operator">!</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">54k</span>
+    <span title="站点总字数">56k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:02</span>
+    <span title="站点阅读时长">3:07</span>
   </span>
 </div>
 <div class="busuanzi-count">

@@ -3491,331 +3491,6 @@ drwxr-----.  <span class="token number">3</span> root root   <span class="token 
       </categories>
   </entry>
   <entry>
-    <title>Linux 文件权限</title>
-    <url>/46662635/</url>
-    <content><![CDATA[<h1 id="基本权限"><a class="markdownIt-Anchor" href="#基本权限"></a> 基本权限</h1>
-<p>基础权限有三种，分别是：读（r，Read）、写（w，Write）、执行（x，eXecute）。</p>
-<p>同样的权限标记对于文件和目录代表不同的意义。</p>
-<h2 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h2>
-<p>文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。</p>
-<table>
-<thead>
-<tr>
-<th>数字</th>
-<th>字符</th>
-<th>权限</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>4</td>
-<td>r</td>
-<td><strong>读取文件内容</strong>。例如使用 <code>cat</code> 命令查看，使用 <code>vim</code> 以<strong>只读</strong>方式打开。</td>
-</tr>
-<tr>
-<td>2</td>
-<td>w</td>
-<td><strong>编辑修改</strong>文件内容，但<strong>不包括删除</strong>文件。例如使用 <code>vim</code>、<code>sed</code> 等对文件内容进行修改并保存。</td>
-</tr>
-<tr>
-<td>1</td>
-<td>x</td>
-<td>文件具有可以被系统<strong>执行</strong>的权限。例如命令和脚本必须拥有此权限才能直接执行。</td>
-</tr>
-</tbody>
-</table>
-<h2 id="目录权限"><a class="markdownIt-Anchor" href="#目录权限"></a> 目录权限</h2>
-<p>目录主要的内容是记录文件名清单，所以目录权限实际关联的是目录下文件属性查看与更改。</p>
-<table>
-<thead>
-<tr>
-<th>数字</th>
-<th>字符</th>
-<th>权限</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>4</td>
-<td>r</td>
-<td><strong>仅查询</strong>目录下的文件或目录<strong>名称</strong>，无法看到属性，相当于执行不加参数的 <code>ls</code> 命令。</td>
-</tr>
-<tr>
-<td>2</td>
-<td>w</td>
-<td>改变目录结构清单权限，也就是在目录下<strong>新建、删除、重命名</strong>文件或目录。</td>
-</tr>
-<tr>
-<td>1</td>
-<td>x</td>
-<td><strong>进入目录</strong>的权限，<strong>查询</strong>目录下的文件<strong>属性</strong>。</td>
-</tr>
-</tbody>
-</table>
-<h1 id="权限参考"><a class="markdownIt-Anchor" href="#权限参考"></a> 权限参考</h1>
-<p>根据使用场景来配置权限。</p>
-<p><strong>用户进入目录所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限，来运行 <code>cd</code> 切换目录。</li>
-<li>目录需要 r 权限，来使用 <code>ls</code> 命令查看目录中文件列表。</li>
-</ul>
-<p><strong>用户读取目录内文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 r 权限来运行 <code>cat</code>、<code>more</code> 等读取文件命令。</li>
-</ul>
-<p><strong>用户修改目录内文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 r 和 w 权限来使用 <code>vi</code> 等工具进行文件读写。</li>
-</ul>
-<p><strong>用户创建一个文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 w 和 x 权限来创建文件。</li>
-</ul>
-<p><strong>用户执行目录下的命令所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 x 权限来运行命令。</li>
-</ul>
-<h1 id="特殊权限"><a class="markdownIt-Anchor" href="#特殊权限"></a> 特殊权限</h1>
-<p>在 Linux 系统中，还有一些特殊权限。</p>
-<h2 id="suid"><a class="markdownIt-Anchor" href="#suid"></a> SUID</h2>
-<p>当 s 标志出现在文件所有者的 x 权限上时，被称为 Set UID，其含义为：</p>
-<ul>
-<li>SUID 权限<strong>仅对二进制程序有效</strong>，不能用在脚本上；</li>
-<li>执行者对该程序需要具有 x 的可执行权限；</li>
-<li>本权限仅在执行该程序的过程中（run-time）有效；</li>
-<li><strong>执行者将具有该程序所有者的权限</strong>。</li>
-</ul>
-<p>例如一般用户运行 <code>passwd</code> 命令修改密码，需要修改 <code>/etc/shadow</code> 文件。但是该文件的权限只有 root 可读写，而用户运行 passwd 程序时，会暂时获得 passwd 程序的 root 权限，从而可以通过 <code>passwd</code> 命令修改 <code>/etc/shadow</code> 文件。</p>
-<p>这是因为运行 <code>passwd</code> 后会启动一个新的进程，该进程会产生一个新的 PID。在该 PID 产生时，SUID 会给予该 PID 特殊的权限设置，使得执行者在该进程中具有该程序所有者的权限。</p>
-<h2 id="sgid"><a class="markdownIt-Anchor" href="#sgid"></a> SGID</h2>
-<p>当 s 标志出现在文件所属组的 x 权限上时，被称为 Set GID。SGID 可以针对文件或目录来设置。</p>
-<p><strong>针对文件</strong>，SGID 有以下功能：</p>
-<ul>
-<li>SGID 对二进制程序有效；</li>
-<li>程序执行者对该程序来说，需要具备 x 的权限；</li>
-<li><strong>执行者在执行的过程中将会获得该程序所属组的权限</strong>。</li>
-</ul>
-<p>例如，一般用户使用 <code>locate</code> 这个程序可以查询 <code>/var/lib/mlocate/mlocate.db</code> 文件的内容，会暂时获得 slocate 用户组的权限。</p>
-<p><strong>针对目录</strong>，SGID 有以下功能：</p>
-<ul>
-<li>用户若对此目录具有 r 和 x 的权限时，该用户能够进入此目录；</li>
-<li>用户在此目录下的有效用户组将会变成该目录的用户组；</li>
-<li><strong>若用户在此目录下具有 w 的权限，则用户所创建的新文件的所属组与此目录的所属组相同。</strong></li>
-</ul>
-<h2 id="sbit"><a class="markdownIt-Anchor" href="#sbit"></a> SBIT</h2>
-<p>当 t 出现在文件所有者的其他用户 x 权限上时，被称为 Sticky Bit。其含义为：</p>
-<ul>
-<li>SBIT 权限<strong>仅对目录有效</strong>；</li>
-<li>当用户对该目录具有 w 和 x 权限时，即具有写入权限时；</li>
-<li><strong>当用户在该目录下创建文件或目录时，仅有自己与 root 才有权力删除该文件。</strong></li>
-</ul>
-<p>例如，用户 1 对目录 A 具有 w 的权限，里面还有其他用户的文件。此时，目录 A 加上了 SBIT 权限时，用户 1 只能修改自己创建的文件，无法删除他人文件。</p>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>0.基础概论</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>Linux 命令行使用</title>
-    <url>/1784829336/</url>
-    <content><![CDATA[<h1 id="终端类型"><a class="markdownIt-Anchor" href="#终端类型"></a> 终端类型</h1>
-<p>只使用文本的终端被称为字符终端（Character Terminal）或基于文本的终端（Text-Based Terminal），统称命令行界面（CLI，Command Line Interface）。其硬件设备标准代表是 DEC 公司 1978 年生产的 VT100。</p>
-<p>图形终端（Graphics Terminal）不仅可以处理文本，还可以显示任何能使用小点在屏幕上进行绘制的内容，也就是可以通过图形用户界面（GUI，Graphical User Interface）和服务端交互。Unix 的 GUI 都基于 X Window System。在图形终端中，用户可以通过鼠标、键盘和触摸屏等设备进行交互操作，相比于命令行界面，图形终端更加直观和易用。</p>
-<p>在现代计算机系统中，通常都同时支持命令行界面和图形界面。命令行界面通常用于系统维护、编程和高级用户操作等任务，而图形界面则主要用于日常应用程序的操作和交互。</p>
-<p>可以通过查看 <code>$TERM</code> 变量来了解当前使用的终端配置文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token environment constant">$TERM</span>
-vt100<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h1 id="常用组合快捷键"><a class="markdownIt-Anchor" href="#常用组合快捷键"></a> 常用组合快捷键</h1>
-<p>在终端中常用的快捷键如下：</p>
-<table>
-<thead>
-<tr>
-<th>快捷键</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>【Tab】</td>
-<td>命令补全/文件名补齐。</td>
-</tr>
-<tr>
-<td>【Ctrl】+C</td>
-<td>中断操作，停止程序运行。</td>
-</tr>
-<tr>
-<td>【Ctrl】+D</td>
-<td>键盘输入结束/退出终端/删除光标后字符。</td>
-</tr>
-<tr>
-<td>【Ctrl】+Z</td>
-<td>暂停当前进程并丢入后台。</td>
-</tr>
-<tr>
-<td>【Ctrl】+S</td>
-<td>暂停当前程序，暂停后按下任意键恢复运行。</td>
-</tr>
-<tr>
-<td>【Ctrl】+A</td>
-<td>将光标移动到命令行首。</td>
-</tr>
-<tr>
-<td>【Ctrl】+E</td>
-<td>将光标移动到命令行尾。</td>
-</tr>
-<tr>
-<td>【Ctrl】+L</td>
-<td>清屏。</td>
-</tr>
-<tr>
-<td>【Ctrl】+【Shift】+N</td>
-<td>新建终端窗口。</td>
-</tr>
-</tbody>
-</table>
-<h1 id="命令提示符"><a class="markdownIt-Anchor" href="#命令提示符"></a> 命令提示符</h1>
-<p>成功登录系统后，终端会显示如下命令提示符：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>各字段的含义如下：</p>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>root</td>
-<td>标识当前登录的用户身份</td>
-</tr>
-<tr>
-<td>101c7</td>
-<td>表示当前主机的名称</td>
-</tr>
-<tr>
-<td>~</td>
-<td>表示当前所在的目录。其中，~表示当前用户的主目录，是一个变量。</td>
-</tr>
-<tr>
-<td>#</td>
-<td>如果当前用户为 root，命令提示符为 #；如果为普通用户，则为 $。</td>
-</tr>
-</tbody>
-</table>
-<h1 id="命令格式"><a class="markdownIt-Anchor" href="#命令格式"></a> 命令格式</h1>
-<p>一般命令格式如下，中括号 [] 表示非必须输入：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">命令名称 <span class="token punctuation">[</span>-选项<span class="token punctuation">]</span> <span class="token punctuation">[</span>参数1<span class="token punctuation">]</span> <span class="token punctuation">[</span>参数2<span class="token punctuation">]</span><span class="token punctuation">..</span>.<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="命令名称"><a class="markdownIt-Anchor" href="#命令名称"></a> 命令名称</h2>
-<p>一行命令第一个输入的部分绝对是命令（command）或可执行文件。</p>
-<p>当命令太长时，可以使用反斜杠 \ 来转义回车（必须立刻接特殊字符才能转义），使命令输入连续到下一行。</p>
-<p>命令严格区分大小写，通常由小写字母构成。</p>
-<h2 id="选项"><a class="markdownIt-Anchor" href="#选项"></a> 选项</h2>
-<p>选项（options）前通常会加 - 号，例如 -h。</p>
-<p>有时表示输入选项完整全名，则使用 – 符号，例如 <code>--help</code>。</p>
-<p>多个选项可以用一个 - 连接起来，例如 -abc，表示同时使用 a、b、c 三个选项。</p>
-<h2 id="参数"><a class="markdownIt-Anchor" href="#参数"></a> 参数</h2>
-<p>参数（parameter）用于向希望运行的程序传递信息，通常是一些文件名，告诉命令从哪里可以得到输入，以及把输出送到什么地方。</p>
-<p>参数之间用空格隔开，多个空格会被视为一个空格。如果参数中含有空格，应该使用双引号或单引号将其括起来，例如：<code>&quot;file name&quot;</code>。</p>
-<h1 id="执行命令"><a class="markdownIt-Anchor" href="#执行命令"></a> 执行命令</h1>
-<p>在命令行执行命令时，通常有以下两种情况：</p>
-<ul>
-<li>按下回车键后，命令立即运行并显示结果，等待下一条命令输入。</li>
-<li>进入到该命令的环境中，直到结束该命令才回到命令提示符的环境。</li>
-</ul>
-<p>在命令正常执行完毕后，会返回一个值。如果命令执行成功，则返回值为 0。如果命令执行过程中出错没有完成全部工作，则返回一个非零值（可以通过变量$?查看）。</p>
-<h2 id="命令执行顺序"><a class="markdownIt-Anchor" href="#命令执行顺序"></a> 命令执行顺序</h2>
-<p>命令的执行顺序按照以下优先级排列：</p>
-<ol>
-<li>以相对/绝对路径执行命令，例如 <code>/bin/ls</code> 或 <code>ls</code>。</li>
-<li>由别名（alias）找到该命令来执行。</li>
-<li>由 bash 内置的（builtin）命令来执行。</li>
-<li>通过$PATH 变量的顺序找到的第一个命令来执行。</li>
-</ol>
-<h2 id="执行多条命令"><a class="markdownIt-Anchor" href="#执行多条命令"></a> 执行多条命令</h2>
-<p>可以用分号将多条命令写在同一行，这些命令将会依次执行。</p>
-<p>例如：查看 root.txt 文件属性；修改其权限为 6755；再次查看 root.txt 的属性：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll root.txt <span class="token punctuation">;</span> <span class="token function">chmod</span> <span class="token number">6775</span> root.txt <span class="token punctuation">;</span> ll root.txt 
--rw-r--r--. <span class="token number">1</span> root root <span class="token number">7549</span> Sep <span class="token number">11</span> <span class="token number">11</span>:59 root.txt
--rwsrwsr-x. <span class="token number">1</span> root root <span class="token number">7549</span> Sep <span class="token number">11</span> <span class="token number">11</span>:59 root.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h2 id="报错信息"><a class="markdownIt-Anchor" href="#报错信息"></a> 报错信息</h2>
-<p>以下是两条报错信息:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">cat</span> nohup.out <span class="token punctuation">;</span> catt
-cat: nohup.out: Permission denied
-bash: catt: <span class="token builtin class-name">command</span> not found<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>上面的报错信息使用冒号 : 分隔成了三段，分别表示：命令、参数和报错原因。</p>
-<h1 id="命令别名"><a class="markdownIt-Anchor" href="#命令别名"></a> 命令别名</h1>
-<p>使用<code>alias</code>命令可以为命令或一组命令指定自定义名称。例如，将命令<code>ll -a | more</code>设置为<code>lm</code>：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">alias</span> <span class="token assign-left variable">lm</span><span class="token operator">=</span><span class="token string">'ll -a | more'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>要查询已定义的别名，可以使用<code>-p</code>参数：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">alias</span> <span class="token parameter variable">-p</span>
-<span class="token builtin class-name">alias</span> <span class="token assign-left variable">cp</span><span class="token operator">=</span><span class="token string">'cp -i'</span>
-<span class="token builtin class-name">alias</span> <span class="token assign-left variable">egrep</span><span class="token operator">=</span><span class="token string">'egrep --color=auto'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>如果要取消别名，使用<code>unalias</code>命令：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">unalias</span> lm<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>如果要临时挂起别名，例如想要使用原始的<code>ls</code>命令而不是带有<code>--color=auto</code>参数的别名<code>ls</code>，可以在命令前面加上反斜杠\字符：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span>$ <span class="token punctuation">\</span>ls <span class="token parameter variable">-la</span>
-total <span class="token number">64</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h1 id="历史命令"><a class="markdownIt-Anchor" href="#历史命令"></a> 历史命令</h1>
-<p>使用快捷键 [Ctrl]+r 可以搜索历史命令记录。搜索结果继续按 [Ctrl]+r 显示上一个找到的命令：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">(</span>reverse-i-search<span class="token punctuation">)</span>`history': <span class="token function">history</span> <span class="token operator">|</span> <span class="token function">grep</span> dump<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>可以使用 <code>history</code> 命令查询输入过的历史命令列表。默认情况下，历史命令保存在 <code>~/.bash_history</code> 中。只有在注销登录后，此次会话所执行的命令才会写入文件中。</p>
-<p>可用参数:</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>-c</td>
-<td>清除所有记录。</td>
-</tr>
-<tr>
-<td>-d</td>
-<td>删除指定编号的命令记录。</td>
-</tr>
-<tr>
-<td>-a</td>
-<td>插入当前历史记录到指定文件末尾，默认会将此次会话的历史记录写入到 .bash_history 文件中。</td>
-</tr>
-<tr>
-<td>-w</td>
-<td>写入当前的历史记录到指定文件中。</td>
-</tr>
-</tbody>
-</table>
-<p>例如，要显示最近的 5 条历史记录：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">history</span> <span class="token number">5</span>
-  <span class="token number">888</span>  <span class="token function">date</span>
-  <span class="token number">889</span>  <span class="token function">time</span>
-  <span class="token number">890</span>  w <span class="token parameter variable">-i</span>
-  <span class="token number">891</span>  <span class="token function">cat</span> .bash_history 
-  <span class="token number">892</span>  <span class="token function">history</span> <span class="token operator">|</span> <span class="token function">tail</span> <span class="token parameter variable">-n5</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以通过<code>!记录编号</code>直接执行对应的命令。例如，要重新运行第 890 条记录，可以输入：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token operator">!</span><span class="token number">890</span>
-w <span class="token parameter variable">-i</span>
-<span class="token number">23</span>:41:23 up <span class="token number">1</span> day,  <span class="token number">8</span>:32,  <span class="token number">2</span> users,  load average: <span class="token number">0.00</span>, <span class="token number">0.01</span>, <span class="token number">0.05</span>
-<span class="token environment constant">USER</span>     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
-root     pts/0    <span class="token number">192.168</span>.2.101    04:01    <span class="token number">3</span>.00s  <span class="token number">0</span>.84s  <span class="token number">0</span>.00s w <span class="token parameter variable">-i</span>
-root     pts/1    <span class="token number">192.168</span>.2.101    <span class="token number">15</span>:12    <span class="token number">8</span>:28m  <span class="token number">0</span>.01s  <span class="token number">0</span>.01s <span class="token parameter variable">-bash</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>如果使用<code>!!</code>，则会执行上一个命令。</p>
-<h1 id="清屏"><a class="markdownIt-Anchor" href="#清屏"></a> 清屏</h1>
-<p>直接输入 <code>clear</code> 命令能清屏：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">clear</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>0.基础概论</category>
-      </categories>
-  </entry>
-  <entry>
     <title>Linux 文件系统</title>
     <url>/2794564793/</url>
     <content><![CDATA[<h1 id="查看文件系统支持"><a class="markdownIt-Anchor" href="#查看文件系统支持"></a> 查看文件系统支持</h1>
@@ -4295,6 +3970,331 @@ drwx------. <span class="token number">2</span> root root  16K Sep  <span class=
 <p>Btrfs 文件系统也被称为 B 树文件系统，它稳定易用，能够动态调整已挂载文件系统的大小。目前 OpenSUSE Linux 把 Btrfs 作为其默认文件系统。</p>
 </li>
 </ul>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>0.基础概论</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Linux 命令行使用</title>
+    <url>/1784829336/</url>
+    <content><![CDATA[<h1 id="终端类型"><a class="markdownIt-Anchor" href="#终端类型"></a> 终端类型</h1>
+<p>只使用文本的终端被称为字符终端（Character Terminal）或基于文本的终端（Text-Based Terminal），统称命令行界面（CLI，Command Line Interface）。其硬件设备标准代表是 DEC 公司 1978 年生产的 VT100。</p>
+<p>图形终端（Graphics Terminal）不仅可以处理文本，还可以显示任何能使用小点在屏幕上进行绘制的内容，也就是可以通过图形用户界面（GUI，Graphical User Interface）和服务端交互。Unix 的 GUI 都基于 X Window System。在图形终端中，用户可以通过鼠标、键盘和触摸屏等设备进行交互操作，相比于命令行界面，图形终端更加直观和易用。</p>
+<p>在现代计算机系统中，通常都同时支持命令行界面和图形界面。命令行界面通常用于系统维护、编程和高级用户操作等任务，而图形界面则主要用于日常应用程序的操作和交互。</p>
+<p>可以通过查看 <code>$TERM</code> 变量来了解当前使用的终端配置文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token environment constant">$TERM</span>
+vt100<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h1 id="常用组合快捷键"><a class="markdownIt-Anchor" href="#常用组合快捷键"></a> 常用组合快捷键</h1>
+<p>在终端中常用的快捷键如下：</p>
+<table>
+<thead>
+<tr>
+<th>快捷键</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>【Tab】</td>
+<td>命令补全/文件名补齐。</td>
+</tr>
+<tr>
+<td>【Ctrl】+C</td>
+<td>中断操作，停止程序运行。</td>
+</tr>
+<tr>
+<td>【Ctrl】+D</td>
+<td>键盘输入结束/退出终端/删除光标后字符。</td>
+</tr>
+<tr>
+<td>【Ctrl】+Z</td>
+<td>暂停当前进程并丢入后台。</td>
+</tr>
+<tr>
+<td>【Ctrl】+S</td>
+<td>暂停当前程序，暂停后按下任意键恢复运行。</td>
+</tr>
+<tr>
+<td>【Ctrl】+A</td>
+<td>将光标移动到命令行首。</td>
+</tr>
+<tr>
+<td>【Ctrl】+E</td>
+<td>将光标移动到命令行尾。</td>
+</tr>
+<tr>
+<td>【Ctrl】+L</td>
+<td>清屏。</td>
+</tr>
+<tr>
+<td>【Ctrl】+【Shift】+N</td>
+<td>新建终端窗口。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="命令提示符"><a class="markdownIt-Anchor" href="#命令提示符"></a> 命令提示符</h1>
+<p>成功登录系统后，终端会显示如下命令提示符：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>各字段的含义如下：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>root</td>
+<td>标识当前登录的用户身份</td>
+</tr>
+<tr>
+<td>101c7</td>
+<td>表示当前主机的名称</td>
+</tr>
+<tr>
+<td>~</td>
+<td>表示当前所在的目录。其中，~表示当前用户的主目录，是一个变量。</td>
+</tr>
+<tr>
+<td>#</td>
+<td>如果当前用户为 root，命令提示符为 #；如果为普通用户，则为 $。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="命令格式"><a class="markdownIt-Anchor" href="#命令格式"></a> 命令格式</h1>
+<p>一般命令格式如下，中括号 [] 表示非必须输入：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">命令名称 <span class="token punctuation">[</span>-选项<span class="token punctuation">]</span> <span class="token punctuation">[</span>参数1<span class="token punctuation">]</span> <span class="token punctuation">[</span>参数2<span class="token punctuation">]</span><span class="token punctuation">..</span>.<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="命令名称"><a class="markdownIt-Anchor" href="#命令名称"></a> 命令名称</h2>
+<p>一行命令第一个输入的部分绝对是命令（command）或可执行文件。</p>
+<p>当命令太长时，可以使用反斜杠 \ 来转义回车（必须立刻接特殊字符才能转义），使命令输入连续到下一行。</p>
+<p>命令严格区分大小写，通常由小写字母构成。</p>
+<h2 id="选项"><a class="markdownIt-Anchor" href="#选项"></a> 选项</h2>
+<p>选项（options）前通常会加 - 号，例如 -h。</p>
+<p>有时表示输入选项完整全名，则使用 – 符号，例如 <code>--help</code>。</p>
+<p>多个选项可以用一个 - 连接起来，例如 -abc，表示同时使用 a、b、c 三个选项。</p>
+<h2 id="参数"><a class="markdownIt-Anchor" href="#参数"></a> 参数</h2>
+<p>参数（parameter）用于向希望运行的程序传递信息，通常是一些文件名，告诉命令从哪里可以得到输入，以及把输出送到什么地方。</p>
+<p>参数之间用空格隔开，多个空格会被视为一个空格。如果参数中含有空格，应该使用双引号或单引号将其括起来，例如：<code>&quot;file name&quot;</code>。</p>
+<h1 id="执行命令"><a class="markdownIt-Anchor" href="#执行命令"></a> 执行命令</h1>
+<p>在命令行执行命令时，通常有以下两种情况：</p>
+<ul>
+<li>按下回车键后，命令立即运行并显示结果，等待下一条命令输入。</li>
+<li>进入到该命令的环境中，直到结束该命令才回到命令提示符的环境。</li>
+</ul>
+<p>在命令正常执行完毕后，会返回一个值。如果命令执行成功，则返回值为 0。如果命令执行过程中出错没有完成全部工作，则返回一个非零值（可以通过变量$?查看）。</p>
+<h2 id="命令执行顺序"><a class="markdownIt-Anchor" href="#命令执行顺序"></a> 命令执行顺序</h2>
+<p>命令的执行顺序按照以下优先级排列：</p>
+<ol>
+<li>以相对/绝对路径执行命令，例如 <code>/bin/ls</code> 或 <code>ls</code>。</li>
+<li>由别名（alias）找到该命令来执行。</li>
+<li>由 bash 内置的（builtin）命令来执行。</li>
+<li>通过$PATH 变量的顺序找到的第一个命令来执行。</li>
+</ol>
+<h2 id="执行多条命令"><a class="markdownIt-Anchor" href="#执行多条命令"></a> 执行多条命令</h2>
+<p>可以用分号将多条命令写在同一行，这些命令将会依次执行。</p>
+<p>例如：查看 root.txt 文件属性；修改其权限为 6755；再次查看 root.txt 的属性：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll root.txt <span class="token punctuation">;</span> <span class="token function">chmod</span> <span class="token number">6775</span> root.txt <span class="token punctuation">;</span> ll root.txt 
+-rw-r--r--. <span class="token number">1</span> root root <span class="token number">7549</span> Sep <span class="token number">11</span> <span class="token number">11</span>:59 root.txt
+-rwsrwsr-x. <span class="token number">1</span> root root <span class="token number">7549</span> Sep <span class="token number">11</span> <span class="token number">11</span>:59 root.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h2 id="报错信息"><a class="markdownIt-Anchor" href="#报错信息"></a> 报错信息</h2>
+<p>以下是两条报错信息:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">cat</span> nohup.out <span class="token punctuation">;</span> catt
+cat: nohup.out: Permission denied
+bash: catt: <span class="token builtin class-name">command</span> not found<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>上面的报错信息使用冒号 : 分隔成了三段，分别表示：命令、参数和报错原因。</p>
+<h1 id="命令别名"><a class="markdownIt-Anchor" href="#命令别名"></a> 命令别名</h1>
+<p>使用<code>alias</code>命令可以为命令或一组命令指定自定义名称。例如，将命令<code>ll -a | more</code>设置为<code>lm</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">alias</span> <span class="token assign-left variable">lm</span><span class="token operator">=</span><span class="token string">'ll -a | more'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>要查询已定义的别名，可以使用<code>-p</code>参数：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">alias</span> <span class="token parameter variable">-p</span>
+<span class="token builtin class-name">alias</span> <span class="token assign-left variable">cp</span><span class="token operator">=</span><span class="token string">'cp -i'</span>
+<span class="token builtin class-name">alias</span> <span class="token assign-left variable">egrep</span><span class="token operator">=</span><span class="token string">'egrep --color=auto'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>如果要取消别名，使用<code>unalias</code>命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">unalias</span> lm<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>如果要临时挂起别名，例如想要使用原始的<code>ls</code>命令而不是带有<code>--color=auto</code>参数的别名<code>ls</code>，可以在命令前面加上反斜杠\字符：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span>$ <span class="token punctuation">\</span>ls <span class="token parameter variable">-la</span>
+total <span class="token number">64</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h1 id="历史命令"><a class="markdownIt-Anchor" href="#历史命令"></a> 历史命令</h1>
+<p>使用快捷键 [Ctrl]+r 可以搜索历史命令记录。搜索结果继续按 [Ctrl]+r 显示上一个找到的命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">(</span>reverse-i-search<span class="token punctuation">)</span>`history': <span class="token function">history</span> <span class="token operator">|</span> <span class="token function">grep</span> dump<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>可以使用 <code>history</code> 命令查询输入过的历史命令列表。默认情况下，历史命令保存在 <code>~/.bash_history</code> 中。只有在注销登录后，此次会话所执行的命令才会写入文件中。</p>
+<p>可用参数:</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-c</td>
+<td>清除所有记录。</td>
+</tr>
+<tr>
+<td>-d</td>
+<td>删除指定编号的命令记录。</td>
+</tr>
+<tr>
+<td>-a</td>
+<td>插入当前历史记录到指定文件末尾，默认会将此次会话的历史记录写入到 .bash_history 文件中。</td>
+</tr>
+<tr>
+<td>-w</td>
+<td>写入当前的历史记录到指定文件中。</td>
+</tr>
+</tbody>
+</table>
+<p>例如，要显示最近的 5 条历史记录：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">history</span> <span class="token number">5</span>
+  <span class="token number">888</span>  <span class="token function">date</span>
+  <span class="token number">889</span>  <span class="token function">time</span>
+  <span class="token number">890</span>  w <span class="token parameter variable">-i</span>
+  <span class="token number">891</span>  <span class="token function">cat</span> .bash_history 
+  <span class="token number">892</span>  <span class="token function">history</span> <span class="token operator">|</span> <span class="token function">tail</span> <span class="token parameter variable">-n5</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以通过<code>!记录编号</code>直接执行对应的命令。例如，要重新运行第 890 条记录，可以输入：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token operator">!</span><span class="token number">890</span>
+w <span class="token parameter variable">-i</span>
+<span class="token number">23</span>:41:23 up <span class="token number">1</span> day,  <span class="token number">8</span>:32,  <span class="token number">2</span> users,  load average: <span class="token number">0.00</span>, <span class="token number">0.01</span>, <span class="token number">0.05</span>
+<span class="token environment constant">USER</span>     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+root     pts/0    <span class="token number">192.168</span>.2.101    04:01    <span class="token number">3</span>.00s  <span class="token number">0</span>.84s  <span class="token number">0</span>.00s w <span class="token parameter variable">-i</span>
+root     pts/1    <span class="token number">192.168</span>.2.101    <span class="token number">15</span>:12    <span class="token number">8</span>:28m  <span class="token number">0</span>.01s  <span class="token number">0</span>.01s <span class="token parameter variable">-bash</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果使用<code>!!</code>，则会执行上一个命令。</p>
+<h1 id="清屏"><a class="markdownIt-Anchor" href="#清屏"></a> 清屏</h1>
+<p>直接输入 <code>clear</code> 命令能清屏：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">clear</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>0.基础概论</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Linux 文件权限</title>
+    <url>/46662635/</url>
+    <content><![CDATA[<h1 id="基本权限"><a class="markdownIt-Anchor" href="#基本权限"></a> 基本权限</h1>
+<p>基础权限有三种，分别是：读（r，Read）、写（w，Write）、执行（x，eXecute）。</p>
+<p>同样的权限标记对于文件和目录代表不同的意义。</p>
+<h2 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h2>
+<p>文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。</p>
+<table>
+<thead>
+<tr>
+<th>数字</th>
+<th>字符</th>
+<th>权限</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td>r</td>
+<td><strong>读取文件内容</strong>。例如使用 <code>cat</code> 命令查看，使用 <code>vim</code> 以<strong>只读</strong>方式打开。</td>
+</tr>
+<tr>
+<td>2</td>
+<td>w</td>
+<td><strong>编辑修改</strong>文件内容，但<strong>不包括删除</strong>文件。例如使用 <code>vim</code>、<code>sed</code> 等对文件内容进行修改并保存。</td>
+</tr>
+<tr>
+<td>1</td>
+<td>x</td>
+<td>文件具有可以被系统<strong>执行</strong>的权限。例如命令和脚本必须拥有此权限才能直接执行。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="目录权限"><a class="markdownIt-Anchor" href="#目录权限"></a> 目录权限</h2>
+<p>目录主要的内容是记录文件名清单，所以目录权限实际关联的是目录下文件属性查看与更改。</p>
+<table>
+<thead>
+<tr>
+<th>数字</th>
+<th>字符</th>
+<th>权限</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td>r</td>
+<td><strong>仅查询</strong>目录下的文件或目录<strong>名称</strong>，无法看到属性，相当于执行不加参数的 <code>ls</code> 命令。</td>
+</tr>
+<tr>
+<td>2</td>
+<td>w</td>
+<td>改变目录结构清单权限，也就是在目录下<strong>新建、删除、重命名</strong>文件或目录。</td>
+</tr>
+<tr>
+<td>1</td>
+<td>x</td>
+<td><strong>进入目录</strong>的权限，<strong>查询</strong>目录下的文件<strong>属性</strong>。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="权限参考"><a class="markdownIt-Anchor" href="#权限参考"></a> 权限参考</h1>
+<p>根据使用场景来配置权限。</p>
+<p><strong>用户进入目录所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限，来运行 <code>cd</code> 切换目录。</li>
+<li>目录需要 r 权限，来使用 <code>ls</code> 命令查看目录中文件列表。</li>
+</ul>
+<p><strong>用户读取目录内文件所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 r 权限来运行 <code>cat</code>、<code>more</code> 等读取文件命令。</li>
+</ul>
+<p><strong>用户修改目录内文件所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 r 和 w 权限来使用 <code>vi</code> 等工具进行文件读写。</li>
+</ul>
+<p><strong>用户创建一个文件所需权限</strong>：</p>
+<ul>
+<li>目录需要 w 和 x 权限来创建文件。</li>
+</ul>
+<p><strong>用户执行目录下的命令所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 x 权限来运行命令。</li>
+</ul>
+<h1 id="特殊权限"><a class="markdownIt-Anchor" href="#特殊权限"></a> 特殊权限</h1>
+<p>在 Linux 系统中，还有一些特殊权限。</p>
+<h2 id="suid"><a class="markdownIt-Anchor" href="#suid"></a> SUID</h2>
+<p>当 s 标志出现在文件所有者的 x 权限上时，被称为 Set UID，其含义为：</p>
+<ul>
+<li>SUID 权限<strong>仅对二进制程序有效</strong>，不能用在脚本上；</li>
+<li>执行者对该程序需要具有 x 的可执行权限；</li>
+<li>本权限仅在执行该程序的过程中（run-time）有效；</li>
+<li><strong>执行者将具有该程序所有者的权限</strong>。</li>
+</ul>
+<p>例如一般用户运行 <code>passwd</code> 命令修改密码，需要修改 <code>/etc/shadow</code> 文件。但是该文件的权限只有 root 可读写，而用户运行 passwd 程序时，会暂时获得 passwd 程序的 root 权限，从而可以通过 <code>passwd</code> 命令修改 <code>/etc/shadow</code> 文件。</p>
+<p>这是因为运行 <code>passwd</code> 后会启动一个新的进程，该进程会产生一个新的 PID。在该 PID 产生时，SUID 会给予该 PID 特殊的权限设置，使得执行者在该进程中具有该程序所有者的权限。</p>
+<h2 id="sgid"><a class="markdownIt-Anchor" href="#sgid"></a> SGID</h2>
+<p>当 s 标志出现在文件所属组的 x 权限上时，被称为 Set GID。SGID 可以针对文件或目录来设置。</p>
+<p><strong>针对文件</strong>，SGID 有以下功能：</p>
+<ul>
+<li>SGID 对二进制程序有效；</li>
+<li>程序执行者对该程序来说，需要具备 x 的权限；</li>
+<li><strong>执行者在执行的过程中将会获得该程序所属组的权限</strong>。</li>
+</ul>
+<p>例如，一般用户使用 <code>locate</code> 这个程序可以查询 <code>/var/lib/mlocate/mlocate.db</code> 文件的内容，会暂时获得 slocate 用户组的权限。</p>
+<p><strong>针对目录</strong>，SGID 有以下功能：</p>
+<ul>
+<li>用户若对此目录具有 r 和 x 的权限时，该用户能够进入此目录；</li>
+<li>用户在此目录下的有效用户组将会变成该目录的用户组；</li>
+<li><strong>若用户在此目录下具有 w 的权限，则用户所创建的新文件的所属组与此目录的所属组相同。</strong></li>
+</ul>
+<h2 id="sbit"><a class="markdownIt-Anchor" href="#sbit"></a> SBIT</h2>
+<p>当 t 出现在文件所有者的其他用户 x 权限上时，被称为 Sticky Bit。其含义为：</p>
+<ul>
+<li>SBIT 权限<strong>仅对目录有效</strong>；</li>
+<li>当用户对该目录具有 w 和 x 权限时，即具有写入权限时；</li>
+<li><strong>当用户在该目录下创建文件或目录时，仅有自己与 root 才有权力删除该文件。</strong></li>
+</ul>
+<p>例如，用户 1 对目录 A 具有 w 的权限，里面还有其他用户的文件。此时，目录 A 加上了 SBIT 权限时，用户 1 只能修改自己创建的文件，无法删除他人文件。</p>
 ]]></content>
       <categories>
         <category>Linux</category>
@@ -5538,7 +5538,7 @@ Installation finished. No error reported.<span aria-hidden="true" class="line-nu
 <p>第四部分以### BEGIN /etc/grub.d/10_linux ###开头段的内容设置了<code>menuentry</code>，也就是开机给的选择项。每个选项都有不同启动参数与模块载入。比较重要的有：</p>
 <ul>
 <li>
-<p><code>set root</code>：设置grub2配置文件所在的分区<code>(hd0,msdos1)</code>，可以用<code>mount</code>查一下挂载的分区。</p>
+<p><code>set root</code>：设置 grub2 配置文件所在的分区<code>(hd0,msdos1)</code>，可以用<code>mount</code>查一下挂载的分区。</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mount</span> <span class="token operator">|</span> <span class="token function">grep</span> boot
 /dev/sda1 on /boot <span class="token builtin class-name">type</span> xfs <span class="token punctuation">(</span>rw,relatime,seclabel,attr2,inode64,noquota<span class="token punctuation">)</span>
 <span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">fdisk</span> <span class="token parameter variable">-l</span>
@@ -5550,14 +5550,14 @@ Disk label type: dos<span aria-hidden="true" class="line-numbers-rows"><span></s
 <p>结果显示 /boot 是挂载在<code>/dev/sda1</code>下面，分区为 MBR 格式。</p>
 </li>
 <li>
-<p><code>linux16 /vmlinuz</code>：指定内核文件以及内核文件运行时加的参数。因为/boot独立分区的缘故，这里的内核文件路径是<code>(hd0,msdos1)/vmlinuz</code>。如果/boot挂载在根目录下面，内核文件路径会变成<code>(hd0,msdos1)/boot/vmlinuz</code>，也就是<code>linux16 /boot/vmlinuz</code>这样。后面的<code>root</code>指定的是Linux系统中根目录挂载的设备。</p>
+<p><code>linux16 /vmlinuz</code>：指定内核文件以及内核文件运行时加的参数。因为/boot 独立分区的缘故，这里的内核文件路径是<code>(hd0,msdos1)/vmlinuz</code>。如果/boot 挂载在根目录下面，内核文件路径会变成<code>(hd0,msdos1)/boot/vmlinuz</code>，也就是<code>linux16 /boot/vmlinuz</code>这样。后面的<code>root</code>指定的是 Linux 系统中根目录挂载的设备。</p>
 </li>
 <li>
-<p><code>initrd16 /initramfs</code>：指定虚拟文件系统img的位置。</p>
+<p><code>initrd16 /initramfs</code>：指定虚拟文件系统 img 的位置。</p>
 </li>
 </ul>
 <h2 id="grub2-配置维护"><a class="markdownIt-Anchor" href="#grub2-配置维护"></a> Grub2 配置维护</h2>
-<p>我们可以通过修改<code>/etc/default/grub</code>文件和<code>/etc/grub.d/</code>目录内的相关配置文件来达成修改Grub2配置的目的。</p>
+<p>我们可以通过修改<code>/etc/default/grub</code>文件和<code>/etc/grub.d/</code>目录内的相关配置文件来达成修改 Grub2 配置的目的。</p>
 <p>可以查看<code>/etc/default/grub</code>文件的内容：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/default/grub 
 <span class="token assign-left variable">GRUB_TIMEOUT</span><span class="token operator">=</span><span class="token number">5</span>
@@ -5570,21 +5570,21 @@ Disk label type: dos<span aria-hidden="true" class="line-numbers-rows"><span></s
 <p>其中，重点选项的含义如下：</p>
 <ul>
 <li>
-<p><code>GRUB_TIMEOUT</code>：设置选择菜单等待超时的秒数。设为0表示不等待，设为-1表示必须手动选择。</p>
+<p><code>GRUB_TIMEOUT</code>：设置选择菜单等待超时的秒数。设为 0 表示不等待，设为-1 表示必须手动选择。</p>
 </li>
 <li>
 <p><code>GRUB_TIMEOUT_STYLE</code>：可以设置的值为<code>menu</code>、<code>countdown</code>、<code>hidden</code>等，默认为<code>menu</code>。这个参数也就是设置是否要显示菜单。设置为<code>countdown</code>或者<code>hidden</code>会让用户看不到任何内容。</p>
 </li>
 <li>
-<p><code>GRUB_DEFAULT</code>：菜单默认选择项目。可以设置的值有<code>saved</code>、数字、title名、ID名等，依据<code>menuentry</code>的设置而定。例如，在配置中定义了三条<code>menuentry</code>：</p>
+<p><code>GRUB_DEFAULT</code>：菜单默认选择项目。可以设置的值有<code>saved</code>、数字、title 名、ID 名等，依据<code>menuentry</code>的设置而定。例如，在配置中定义了三条<code>menuentry</code>：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">menuentry <span class="token string">'CentOS'</span> <span class="token parameter variable">--unrestricted</span> <span class="token variable">$menuentry_id_option</span> <span class="token string">'linux-1'</span>
 menuentry <span class="token string">'Debian'</span> <span class="token parameter variable">--unrestricted</span> <span class="token variable">$menuentry_id_option</span> <span class="token string">'gnulinux'</span>
 menuentry <span class="token string">'Windows'</span> <span class="token parameter variable">--unrestricted</span> <span class="token variable">$menuentry_id_option</span> <span class="token string">'win'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>那么对应<code>GRUB_DEFAULT</code>的值：</p>
 <ul>
-<li>值为1表示选用排在第2个定义的Debian系统，因为数字编号从0开始算。</li>
-<li>值为win表示选择排在第3个定义的Windows系统，通过ID选的值。</li>
-<li>值为saved表示使用<code>grub2-set-default</code>来设置哪个为默认值，通常默认为0。</li>
+<li>值为 1 表示选用排在第 2 个定义的 Debian 系统，因为数字编号从 0 开始算。</li>
+<li>值为 win 表示选择排在第 3 个定义的 Windows 系统，通过 ID 选的值。</li>
+<li>值为 saved 表示使用<code>grub2-set-default</code>来设置哪个为默认值，通常默认为 0。</li>
 </ul>
 </li>
 <li>
@@ -5594,7 +5594,7 @@ menuentry <span class="token string">'Windows'</span> <span class="token paramet
 <p><code>GRUB_CMDLINE_LINUX</code>：内核的外加参数功能，用来设置内核启动时还需要额外加入的参数。</p>
 </li>
 </ul>
-<p>例如修改菜单等待时间为30秒，之后使用<code>grub2-mkconfig</code>命令重建<code>grub.cfg</code>:</p>
+<p>例如修改菜单等待时间为 30 秒，之后使用<code>grub2-mkconfig</code>命令重建<code>grub.cfg</code>:</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-i</span> <span class="token string">'s/GRUB_TIMEOUT=5/GRUB_TIMEOUT=30/g'</span> /etc/default/grub <span class="token punctuation">;</span> <span class="token function">head</span> <span class="token parameter variable">-1</span> /etc/default/grub
 <span class="token assign-left variable">GRUB_TIMEOUT</span><span class="token operator">=</span><span class="token number">30</span>
 <span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ grub2-mkconfig <span class="token parameter variable">-o</span> /boot/grub2/grub.cfg
@@ -5629,7 +5629,7 @@ total <span class="token number">72</span>
 <ul>
 <li><code>00_header</code>: 主要在创建初始的显示项目，包括需要载入的模块分析，屏幕终端格式，倒数秒数，菜单是否要隐藏等，大部分在<code>/etc/default/grub</code>里面设置的变量，用到这个脚本里用来重建<code>grub.cfg</code>。</li>
 <li><code>01_users</code>: 设置账号密码，用来管控每个菜单选项进入权限。权限用在<code>menuentry</code>中有三种：不受限(<code>unrestricted</code>)，用户(<code>users</code>)，超级用户(<code>superusers</code>)。其中只有超级用户可以使用启动项编辑模式。</li>
-<li><code>10_linux</code>: 根据分析<code>/boot</code>下面的文件，尝试找到正确的Linux内核文件与虚拟文件系统镜像等，脚本会将找到的文件路径写入到<code>grub.cfg</code>中。因为每一内核文件都会建立一个启动选项，所以可以适当删除旧内核文件来精简启动菜单。</li>
+<li><code>10_linux</code>: 根据分析<code>/boot</code>下面的文件，尝试找到正确的 Linux 内核文件与虚拟文件系统镜像等，脚本会将找到的文件路径写入到<code>grub.cfg</code>中。因为每一内核文件都会建立一个启动选项，所以可以适当删除旧内核文件来精简启动菜单。</li>
 <li><code>30_os-prober</code>: 这个脚本用来找其他分区中可能存在的操作系统，如果找到则将其加入启动菜单中。可以在<code>/etc/default/grub</code>中加上<code>GRUB_DISABLE_OS_PROBER=true</code>参数来取消这一扫描。</li>
 <li><code>40_custom</code>: 用来手动添加菜单项目。例如想新增一个<code>menuentry</code>来指定开机进入图形模式，可以在<code>grub.cfg</code>中复制一个<code>menuentry</code>段，修改对应的<code>title</code>、<code>id</code>与<code>linux16</code>后面的参数（增加 <code>systemd.unit=graphical.target</code>），然后再用<code>grub2-mkconfig</code>命令重建<code>grub.cfg</code>即可。</li>
 </ul>
@@ -5655,14 +5655,14 @@ menuentry <span class="token string">'MBR'</span> <span class="token parameter v
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>其中最重要的是载入 <code>chain</code> 和 <code>ntfs</code> 模块，由此 Grub2 才能正确读取文件系统执行 Chain Loader 功能。</p>
 <h2 id="启动项编辑模式"><a class="markdownIt-Anchor" href="#启动项编辑模式"></a> 启动项编辑模式</h2>
-<p>在启动菜单出现后，可以按下e进入启动项编辑模式。也就是直接编辑<code>grub.cfg</code>文件内容。</p>
+<p>在启动菜单出现后，可以按下 e 进入启动项编辑模式。也就是直接编辑<code>grub.cfg</code>文件内容。</p>
 <p>例如，可以在<code>systemd.unit</code>中指定为<code>rescue.target</code>，这样就能直接进入救援模式，而不需要先进入系统。修改完毕后，使用快捷键 <code>[Ctrl]+x</code> 来执行。</p>
 <h1 id="启动异常处理"><a class="markdownIt-Anchor" href="#启动异常处理"></a> 启动异常处理</h1>
-<p>通常因为某些不正常的设置或不正常关机导致无法顺利开机时,可以进入rescue模式去处理.</p>
+<p>通常因为某些不正常的设置或不正常关机导致无法顺利开机时,可以进入 rescue 模式去处理.</p>
 <h2 id="忘记-root-密码"><a class="markdownIt-Anchor" href="#忘记-root-密码"></a> 忘记 root 密码</h2>
-<p>在使用grub做引导的系统可以这样处理：</p>
+<p>在使用 grub 做引导的系统可以这样处理：</p>
 <ol>
-<li>启动系统，在选择启动项的界面下，按 <code>e</code> 进入默认启动项grub编辑模式。</li>
+<li>启动系统，在选择启动项的界面下，按 <code>e</code> 进入默认启动项 grub 编辑模式。</li>
 <li>移动到有 kernel 那行，再按一次 <code>e</code> 进入编辑界面，在最后方输入 <code>single</code>。</li>
 <li>按下回车，再按下 <code>b</code> 就可以进入单用户维护模式。</li>
 <li>这一模式下可以直接用 <code>passwd</code> 命令修改 root 密码。</li>
@@ -5701,8 +5701,8 @@ menuentry <span class="token string">'MBR'</span> <span class="token parameter v
 <p>如果是<code>xfs</code>格式分区则使用<code>xfs_repair</code>命令：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_repair /dev/sda2
 xfs_repair: cannot <span class="token function">open</span> /dev/sda2: Device or resource busy<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>如果整个硬盘只有一个大区，那文件系统错误一定是根目录的问题。这时候需要将硬盘拔下来，接到另外一台Linux系统的机器上，并且不要挂载，以<code>root</code>身份执行<code>fsck</code>或<code>xfs_repair</code>命令修复。</p>
-<p>还有一种方法是使用U盘刻成Live CD，在U盘启动的系统中执行修复命令。</p>
+<p>如果整个硬盘只有一个大区，那文件系统错误一定是根目录的问题。这时候需要将硬盘拔下来，接到另外一台 Linux 系统的机器上，并且不要挂载，以<code>root</code>身份执行<code>fsck</code>或<code>xfs_repair</code>命令修复。</p>
+<p>还有一种方法是使用 U 盘刻成 Live CD，在 U 盘启动的系统中执行修复命令。</p>
 <h1 id="关机重启"><a class="markdownIt-Anchor" href="#关机重启"></a> 关机重启</h1>
 <p>切换运行级别和模式并不会重启.</p>
 <h2 id="查看用户在线状态"><a class="markdownIt-Anchor" href="#查看用户在线状态"></a> 查看用户在线状态</h2>
@@ -5721,9 +5721,9 @@ root     pts/1        <span class="token number">2021</span>-09-14 08:40  old   
 <p>通常使用<code>shutdown</code>命令来进行关机操作。</p>
 <p>立即关机：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">shutdown</span> <span class="token parameter variable">-h</span> now<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>预定在21:00关机。如果当前时间超过21:00则会在隔天21:00才关机：</p>
+<p>预定在 21:00 关机。如果当前时间超过 21:00 则会在隔天 21:00 才关机：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">shutdown</span> <span class="token parameter variable">-h</span> <span class="token number">21</span>:00<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>预定2分钟后关机，并发送消息：</p>
+<p>预定 2 分钟后关机，并发送消息：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">shutdown</span> <span class="token parameter variable">-P</span> <span class="token number">120</span> <span class="token string">"will  poweroff"</span>
 Shutdown scheduled <span class="token keyword">for</span> Wed <span class="token number">2021</span>-09-15 <span class="token number">16</span>:01:48 EDT, use <span class="token string">'shutdown -c'</span> to cancel.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>取消即将进行的关机操作：</p>
@@ -6409,6 +6409,227 @@ emacs           on<span aria-hidden="true" class="line-numbers-rows"><span></spa
       <categories>
         <category>Linux</category>
         <category>1.基本操作</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Linux 权限管理</title>
+    <url>/2354164977/</url>
+    <content><![CDATA[<h1 id="修改文件所属用户组"><a class="markdownIt-Anchor" href="#修改文件所属用户组"></a> 修改文件所属用户组</h1>
+<p>使用 <code>chgrp</code> 可以改变一个文件的所属用户组，目标组名必须已经存在于 <code>/etc/group</code>。</p>
+<p>例如修改 <code>dir1</code> 文件夹的所属组为 <code>tss</code>：</p>
+ <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chgrp</span> tss dir1 <span class="token punctuation">;</span> ll
+total <span class="token number">4</span>
+-rw-------. <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
+drwxr-xr-x. <span class="token number">2</span> <span class="token function">ftp</span>  tss    <span class="token number">16</span> Sep  <span class="token number">8</span> <span class="token number">23</span>:29 dir1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用选项 <code>-R</code> 可以递归修改目录 <code>dir1</code> 下内容的所属组：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chgrp</span> input <span class="token parameter variable">-R</span> dir1 <span class="token punctuation">;</span> ll dir1
+total <span class="token number">0</span>
+-rw-r--r--. <span class="token number">1</span> root input <span class="token number">0</span> Sep  <span class="token number">8</span> <span class="token number">23</span>:29 xx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h1 id="修改文件所有者"><a class="markdownIt-Anchor" href="#修改文件所有者"></a> 修改文件所有者</h1>
+<p>使用<code>chown</code>命令可以修改文件或目录的所有者和所属组。目标用户名必须已经存在于<code>/etc/passwd</code>文件中。</p>
+<p>例如，将文件夹<code>dir1</code>的所有者设置为<code>lp</code>，所属组设置为<code>tape</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chown</span> lp:tape dir1 <span class="token punctuation">;</span> ll
+total <span class="token number">4</span>
+-rw-------. <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
+drwxr-xr-x. <span class="token number">2</span> lp   tape   <span class="token number">16</span> Sep  <span class="token number">8</span> <span class="token number">23</span>:29 dir1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用<code>-R</code>参数可以递归修改目录下的文件或子目录的所有者和所属组：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chown</span> <span class="token parameter variable">-R</span> ftp:ftp dir1 <span class="token punctuation">;</span> ll dir1
+total <span class="token number">0</span>
+-rw-r--r--. <span class="token number">1</span> <span class="token function">ftp</span> <span class="token function">ftp</span> <span class="token number">0</span> Sep  <span class="token number">8</span> <span class="token number">23</span>:29 xx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h1 id="修改文件权限"><a class="markdownIt-Anchor" href="#修改文件权限"></a> 修改文件权限</h1>
+<p>使用<code>chmod</code>设置权限（只有文件所有者和 root 能执行），可以使用数字或字符来更改，数字类型采用数字累加来代表：</p>
+<table>
+<thead>
+<tr>
+<th>数字</th>
+<th>字符</th>
+<th>权限（文件/目录）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td>r</td>
+<td>读取文件内容/查看目录下的文件或目录名称（无法看到属性）</td>
+</tr>
+<tr>
+<td>2</td>
+<td>w</td>
+<td>修改文件内容（不包含删除）/在目录下新建、删除、重命名文件或目录</td>
+</tr>
+<tr>
+<td>1</td>
+<td>x</td>
+<td>文件可以被系统执行/进入目录、遍历目录</td>
+</tr>
+</tbody>
+</table>
+<p>特殊权限：</p>
+<table>
+<thead>
+<tr>
+<th>数字</th>
+<th>权限（文件/目录）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td>SUID（用在文件上）</td>
+</tr>
+<tr>
+<td>2</td>
+<td>SGID</td>
+</tr>
+<tr>
+<td>1</td>
+<td>SBIT（用在目录上）</td>
+</tr>
+</tbody>
+</table>
+<p>例如修改<code>dir1</code>文件夹的权限为<code>rwxrw---x</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> <span class="token number">761</span> dir1 <span class="token punctuation">;</span> ll
+total <span class="token number">4</span>
+-rw-------. <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
+drwxrw---x. <span class="token number">2</span> <span class="token function">ftp</span>  tss    <span class="token number">16</span> Sep  <span class="token number">8</span> <span class="token number">23</span>:29 dir1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>用字符类型改变文件权限方式：</p>
+<ul>
+<li>用<code>u</code>、<code>g</code>、<code>o</code>、<code>a</code>分别表示所有者、组、其他人和所有人。</li>
+<li>用<code>+</code>、<code>-</code>、<code>=</code>分别表示增加、去除、设置权限。如果没有指定权限，则该权限不会发生变化。</li>
+</ul>
+<p>例如设置 <code>dir1</code> 文件夹及其下的所有文件权限为 <code>rwxrwxr--</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> <span class="token parameter variable">-R</span> <span class="token assign-left variable">u</span><span class="token operator">=</span>rwx,g<span class="token operator">=</span>rwx,o<span class="token operator">=</span>r dir1
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll dir1
+total <span class="token number">0</span>
+-rwxrwxr--. <span class="token number">1</span> <span class="token function">ftp</span> root <span class="token number">0</span> Sep  <span class="token number">8</span> <span class="token number">23</span>:29 xx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>设置 <code>dir</code> 文件夹禁止进入：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> a-x dir1 <span class="token punctuation">;</span> ll
+total <span class="token number">4</span>
+-rw-------. <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
+drw-rw-r--. <span class="token number">2</span> <span class="token function">ftp</span>  tss    <span class="token number">16</span> Sep  <span class="token number">8</span> <span class="token number">23</span>:29 dir1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>要给文件 <code>2</code> 设置 SUID/SGID 的权限（也可以使用 <code>u+s,g+s,o+t</code> 命令来设置 SUID、SGID、SBIT），可以使用以下命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> <span class="token number">6755</span> <span class="token number">2</span><span class="token punctuation">;</span> <span class="token function">ls</span> <span class="token parameter variable">-l</span> <span class="token number">2</span>
+-rwsr-sr-x. <span class="token number">1</span> root root <span class="token number">0</span> Sep  <span class="token number">9</span> 07:57 <span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>当用户没有执行权限却设置了特殊权限时，特殊权限中的 <code>s</code> 和 <code>t</code> 会变成 <code>S</code> 和 <code>T</code>，表示无效权限。例如：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> <span class="token number">7666</span> <span class="token number">2</span><span class="token punctuation">;</span> ll <span class="token number">2</span>
+-rwSrwSrwT. <span class="token number">1</span> root root <span class="token number">0</span> Sep  <span class="token number">9</span> 08:57 <span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h1 id="修改默认权限"><a class="markdownIt-Anchor" href="#修改默认权限"></a> 修改默认权限</h1>
+<p>文件创建时默认（<code>umask</code> 为 <code>000</code> 的情况）权限是 <code>666</code>，文件夹是 <code>777</code>，可以使用 <code>umask</code> 来对这一权限进一步削弱。</p>
+<p><code>root</code> 用户的 <code>umask</code> 默认为 <code>022</code>，一般用户为 <code>002</code>。使用 <code>umask</code> 修改的值必须写入到 <code>.profile</code> 文件中才能一直生效。</p>
+<p>查看目前用户在新建文件和目录时的权限默认值：</p>
+  <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token builtin class-name">umask</span>
+0022<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>上述命令表示新建文件不包括属组和其他用户的写权限。如果要添加属组的写权限，需要定义 <code>umask</code> 值：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token builtin class-name">umask</span> 002 <span class="token punctuation">;</span> <span class="token builtin class-name">umask</span>
+0002<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h1 id="访问控制列表"><a class="markdownIt-Anchor" href="#访问控制列表"></a> 访问控制列表</h1>
+<p>在默认权限无法满足要求时，可以考虑使用访问控制列表。</p>
+<h2 id="acl访问控制列表"><a class="markdownIt-Anchor" href="#acl访问控制列表"></a> ACL访问控制列表</h2>
+<p>ACL 是 Access Control List 的缩写，主要用于提供传统权限之外的具体权限设置。ACL 可以针对单个用户或组、单个文件或目录进行权限控制。</p>
+<p>默认情况下，系统会自动启用 ACL 支持。可以使用 <code>dumpe2fs -h</code> 命令查询挂载参数：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mount</span> <span class="token operator">|</span> <span class="token function">grep</span> sd
+/dev/sda1 on /boot <span class="token builtin class-name">type</span> xfs <span class="token punctuation">(</span>rw,relatime,seclabel,attr2,inode64,noquota<span class="token punctuation">)</span>
+/dev/sdb4 on /root/sdb4m <span class="token builtin class-name">type</span> ext3 <span class="token punctuation">(</span>rw,relatime,seclabel,data<span class="token operator">=</span>ordered<span class="token punctuation">)</span>
+/dev/sdb5 on /ext333 <span class="token builtin class-name">type</span> ext3 <span class="token punctuation">(</span>rw,relatime,seclabel,data<span class="token operator">=</span>ordered<span class="token punctuation">)</span>
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ dumpe2fs <span class="token parameter variable">-h</span> /dev/sdb4 <span class="token operator">|</span> <span class="token function">grep</span> acl
+dumpe2fs <span class="token number">1.42</span>.9 <span class="token punctuation">(</span><span class="token number">28</span>-Dec-2013<span class="token punctuation">)</span>
+Default <span class="token function">mount</span> options:    user_xattr acl<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>若要手动挂载 ACL，可以使用 <code>mount -o remount,acl /</code> 命令，或者修改启动配置 <code>/etc/fstab</code>。</p>
+<h2 id="设置acl"><a class="markdownIt-Anchor" href="#设置acl"></a> 设置ACL</h2>
+<p>可以使用 <code>setfacl</code> 来设置某个文件或目录的 ACL 规定，命令用法如下：</p>
+<p><code>setfacl [-bkRd] [&#123;-m|-x&#125; acl 参数] 目标</code></p>
+<p>参数说明：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-m</td>
+<td>设置后续的 ACL 参数给文件使用</td>
+</tr>
+<tr>
+<td>-x</td>
+<td>删除后续的 ACL 参数</td>
+</tr>
+<tr>
+<td>-b</td>
+<td>删除所有的 ACL 设置参数</td>
+</tr>
+<tr>
+<td>-k</td>
+<td>删除默认的 ACL 参数</td>
+</tr>
+<tr>
+<td>-R</td>
+<td>递归设置</td>
+</tr>
+<tr>
+<td>-d</td>
+<td>设置默认 ACL 参数，只对目录有效，目录下新建的数据都会用此默认值</td>
+</tr>
+</tbody>
+</table>
+<p>针对单个用户设置，例如给用户 <code>user1</code> 设置目录 <code>dir1</code> 的读取和执行权限：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ setfacl <span class="token parameter variable">-m</span> u:user1:rx dir1
+<span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ ll <span class="token parameter variable">-d</span> dir1
+drwxr-xr-x+ <span class="token number">2</span> root root <span class="token number">2048</span> Sep <span class="token number">13</span> 07:34 dir1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>可以看到权限部分多了一个加号 <code>+</code>。</p>
+<h2 id="查询acl"><a class="markdownIt-Anchor" href="#查询acl"></a> 查询ACL</h2>
+<p>要查询特殊权限，可以使用 <code>getfacl</code> 命令，该命令参数与 <code>setfacl</code> 相同。例如，要查询 <code>dir1</code> 的权限内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ getfacl dir1
+<span class="token comment"># file: dir1</span>
+<span class="token comment"># owner: root</span>
+<span class="token comment"># group: root</span>
+user::rwx
+user:user1:r-x
+group::r-x
+mask::r-x
+other::r--<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中，<code>user</code>、<code>group</code>、<code>other</code> 代表普通权限。另外，还有一条刚设置的 <code>user1</code> 权限。</p>
+<h2 id="有效权限"><a class="markdownIt-Anchor" href="#有效权限"></a> 有效权限</h2>
+<p>ACL 中的 <code>mask</code> 规定了最大权限，也就是单独设置的权限不能超过 <code>mask</code> 显示的权限。</p>
+<p>首先，给用户组 <code>user1</code> 设置目录 <code>dir1</code> 的写权限：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ setfacl <span class="token parameter variable">-m</span> g:user1:w dir1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>然后，将 <code>dir1</code> 的 <code>mask</code> 权限设置为只读：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ setfacl <span class="token parameter variable">-m</span> m:r dir1
+<span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ getfacl dir1
+<span class="token comment"># file: dir1</span>
+<span class="token comment"># owner: root</span>
+<span class="token comment"># group: root</span>
+user::rwx
+user:user1:r-x                  <span class="token comment">#effective:r--</span>
+group::r-x                      <span class="token comment">#effective:r--</span>
+group:user1:-w-                 <span class="token comment">#effective:---</span>
+mask::r--
+other::r-x<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这样，<code>effective</code> 后面显示的才是有效权限。</p>
+<h2 id="权限继承"><a class="markdownIt-Anchor" href="#权限继承"></a> 权限继承</h2>
+<p>可以使用 <code>d:[ug]:用户列表:[rwx]</code> 命令设置 ACL 权限被后续子文件夹和目录继承：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ setfacl <span class="token parameter variable">-m</span> d:g:user1:w dir1
+<span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> dir2 <span class="token punctuation">;</span> <span class="token function">ls</span> <span class="token parameter variable">-ld</span> dir2 <span class="token punctuation">;</span> getfacl dir2
+drwxrwxr-x+ <span class="token number">2</span> root root <span class="token number">2048</span> Sep <span class="token number">13</span> 07:56 dir2
+<span class="token comment"># file: dir2</span>
+<span class="token comment"># owner: root</span>
+<span class="token comment"># group: root</span>
+user::rwx
+group::r-x
+group:user1:-w-
+mask::rwx
+other::r-x
+default:user::rwx
+default:group::r-x
+default:group:user1:-w-
+default:mask::rwx
+default:other::r-x<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这样设置后，<code>dir2</code> 目录会继承 <code>dir1</code> 目录的 ACL 权限。</p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>2.系统管理</category>
       </categories>
   </entry>
 </search>
