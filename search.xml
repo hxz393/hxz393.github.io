@@ -3240,6 +3240,135 @@ crontab: installing new <span class="token function">crontab</span><span aria-hi
       </categories>
   </entry>
   <entry>
+    <title>Linux 文件权限</title>
+    <url>/46662635/</url>
+    <content><![CDATA[<h1 id="基本权限"><a class="markdownIt-Anchor" href="#基本权限"></a> 基本权限</h1>
+<p>基础权限有三种，分别是：读（r，Read）、写（w，Write）、执行（x，eXecute）。</p>
+<p>同样的权限标记对于文件和目录代表不同的意义。</p>
+<h2 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h2>
+<p>文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。</p>
+<table>
+<thead>
+<tr>
+<th>数字</th>
+<th>字符</th>
+<th>权限</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td>r</td>
+<td><strong>读取文件内容</strong>。例如使用 <code>cat</code> 命令查看，使用 <code>vim</code> 以<strong>只读</strong>方式打开。</td>
+</tr>
+<tr>
+<td>2</td>
+<td>w</td>
+<td><strong>编辑修改</strong>文件内容，但<strong>不包括删除</strong>文件。例如使用 <code>vim</code>、<code>sed</code> 等对文件内容进行修改并保存。</td>
+</tr>
+<tr>
+<td>1</td>
+<td>x</td>
+<td>文件具有可以被系统<strong>执行</strong>的权限。例如命令和脚本必须拥有此权限才能直接执行。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="目录权限"><a class="markdownIt-Anchor" href="#目录权限"></a> 目录权限</h2>
+<p>目录主要的内容是记录文件名清单，所以目录权限实际关联的是目录下文件属性查看与更改。</p>
+<table>
+<thead>
+<tr>
+<th>数字</th>
+<th>字符</th>
+<th>权限</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td>r</td>
+<td><strong>仅查询</strong>目录下的文件或目录<strong>名称</strong>，无法看到属性，相当于执行不加参数的 <code>ls</code> 命令。</td>
+</tr>
+<tr>
+<td>2</td>
+<td>w</td>
+<td>改变目录结构清单权限，也就是在目录下<strong>新建、删除、重命名</strong>文件或目录。</td>
+</tr>
+<tr>
+<td>1</td>
+<td>x</td>
+<td><strong>进入目录</strong>的权限，<strong>查询</strong>目录下的文件<strong>属性</strong>。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="权限参考"><a class="markdownIt-Anchor" href="#权限参考"></a> 权限参考</h1>
+<p>根据使用场景来配置权限。</p>
+<p><strong>用户进入目录所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限，来运行 <code>cd</code> 切换目录。</li>
+<li>目录需要 r 权限，来使用 <code>ls</code> 命令查看目录中文件列表。</li>
+</ul>
+<p><strong>用户读取目录内文件所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 r 权限来运行 <code>cat</code>、<code>more</code> 等读取文件命令。</li>
+</ul>
+<p><strong>用户修改目录内文件所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 r 和 w 权限来使用 <code>vi</code> 等工具进行文件读写。</li>
+</ul>
+<p><strong>用户创建一个文件所需权限</strong>：</p>
+<ul>
+<li>目录需要 w 和 x 权限来创建文件。</li>
+</ul>
+<p><strong>用户执行目录下的命令所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 x 权限来运行命令。</li>
+</ul>
+<h1 id="特殊权限"><a class="markdownIt-Anchor" href="#特殊权限"></a> 特殊权限</h1>
+<p>在 Linux 系统中，还有一些特殊权限。</p>
+<h2 id="suid"><a class="markdownIt-Anchor" href="#suid"></a> SUID</h2>
+<p>当 s 标志出现在文件所有者的 x 权限上时，被称为 Set UID，其含义为：</p>
+<ul>
+<li>SUID 权限<strong>仅对二进制程序有效</strong>，不能用在脚本上；</li>
+<li>执行者对该程序需要具有 x 的可执行权限；</li>
+<li>本权限仅在执行该程序的过程中（run-time）有效；</li>
+<li><strong>执行者将具有该程序所有者的权限</strong>。</li>
+</ul>
+<p>例如一般用户运行 <code>passwd</code> 命令修改密码，需要修改 <code>/etc/shadow</code> 文件。但是该文件的权限只有 root 可读写，而用户运行 passwd 程序时，会暂时获得 passwd 程序的 root 权限，从而可以通过 <code>passwd</code> 命令修改 <code>/etc/shadow</code> 文件。</p>
+<p>这是因为运行 <code>passwd</code> 后会启动一个新的进程，该进程会产生一个新的 PID。在该 PID 产生时，SUID 会给予该 PID 特殊的权限设置，使得执行者在该进程中具有该程序所有者的权限。</p>
+<h2 id="sgid"><a class="markdownIt-Anchor" href="#sgid"></a> SGID</h2>
+<p>当 s 标志出现在文件所属组的 x 权限上时，被称为 Set GID。SGID 可以针对文件或目录来设置。</p>
+<p><strong>针对文件</strong>，SGID 有以下功能：</p>
+<ul>
+<li>SGID 对二进制程序有效；</li>
+<li>程序执行者对该程序来说，需要具备 x 的权限；</li>
+<li><strong>执行者在执行的过程中将会获得该程序所属组的权限</strong>。</li>
+</ul>
+<p>例如，一般用户使用 <code>locate</code> 这个程序可以查询 <code>/var/lib/mlocate/mlocate.db</code> 文件的内容，会暂时获得 slocate 用户组的权限。</p>
+<p><strong>针对目录</strong>，SGID 有以下功能：</p>
+<ul>
+<li>用户若对此目录具有 r 和 x 的权限时，该用户能够进入此目录；</li>
+<li>用户在此目录下的有效用户组将会变成该目录的用户组；</li>
+<li><strong>若用户在此目录下具有 w 的权限，则用户所创建的新文件的所属组与此目录的所属组相同。</strong></li>
+</ul>
+<h2 id="sbit"><a class="markdownIt-Anchor" href="#sbit"></a> SBIT</h2>
+<p>当 t 出现在文件所有者的其他用户 x 权限上时，被称为 Sticky Bit。其含义为：</p>
+<ul>
+<li>SBIT 权限<strong>仅对目录有效</strong>；</li>
+<li>当用户对该目录具有 w 和 x 权限时，即具有写入权限时；</li>
+<li><strong>当用户在该目录下创建文件或目录时，仅有自己与 root 才有权力删除该文件。</strong></li>
+</ul>
+<p>例如，用户 1 对目录 A 具有 w 的权限，里面还有其他用户的文件。此时，目录 A 加上了 SBIT 权限时，用户 1 只能修改自己创建的文件，无法删除他人文件。</p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>0.基础概论</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Linux 命令行使用</title>
     <url>/1784829336/</url>
     <content><![CDATA[<h1 id="终端类型"><a class="markdownIt-Anchor" href="#终端类型"></a> 终端类型</h1>
@@ -3429,6 +3558,143 @@ root     pts/1    <span class="token number">192.168</span>.2.101    <span class
 <h1 id="清屏"><a class="markdownIt-Anchor" href="#清屏"></a> 清屏</h1>
 <p>直接输入 <code>clear</code> 命令能清屏：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">clear</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>0.基础概论</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Linux 文件属性解释</title>
+    <url>/1872252014/</url>
+    <content><![CDATA[<h1 id="查看文件属性"><a class="markdownIt-Anchor" href="#查看文件属性"></a> 查看文件属性</h1>
+<p>执行 <code>ls -la</code> 命令后，可以看到当前目录下所有文件的权限和属性：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll <span class="token parameter variable">-la</span>
+total <span class="token number">32</span>
+dr-xr-x---.  <span class="token number">4</span> root root  <span class="token number">175</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 <span class="token builtin class-name">.</span>
+dr-xr-xr-x. <span class="token number">17</span> root root  <span class="token number">224</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:37 <span class="token punctuation">..</span>
+-rw-------.  <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
+-rw-------.  <span class="token number">1</span> root root  <span class="token number">847</span> Sep  <span class="token number">8</span> <span class="token number">12</span>:32 .bash_history
+-rw-r--r--.  <span class="token number">1</span> root root   <span class="token number">18</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bash_logout
+-rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">176</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bash_profile
+-rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">176</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bashrc
+-rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">100</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .cshrc
+drwxr-xr-x.  <span class="token number">2</span> root root    <span class="token number">6</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 dir1
+drwxr-----.  <span class="token number">3</span> root root   <span class="token number">19</span> Sep  <span class="token number">7</span> 05:51 .pki
+-rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">129</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .tcshrc
+-rw-------.  <span class="token number">1</span> root root  <span class="token number">508</span> Sep  <span class="token number">7</span> 05:52 .viminfo<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>total 为该目录下的所有数据所占用的实际块数量乘以块大小的值。</p>
+<p>从左到右以空格分隔成七列，分别代表：类型和权限、连接、所有者、所有组、大小、修改时间、文件名。</p>
+<h1 id="文件类型"><a class="markdownIt-Anchor" href="#文件类型"></a> 文件类型</h1>
+<p>第一列第一个字段用来表示文件的类型，文件类型有下面几种：</p>
+<table>
+<thead>
+<tr>
+<th><strong>标记</strong></th>
+<th><strong>类型</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-</td>
+<td>普通文件</td>
+<td>文本文件、数据文件、可执行程序等都作为普通文件存储</td>
+</tr>
+<tr>
+<td>d</td>
+<td>目录</td>
+<td>目录不存放常规数据，它用来组织访问其他文件</td>
+</tr>
+<tr>
+<td>c</td>
+<td>字符设备文件</td>
+<td>指处理数据时每次只能处理一个字符的设备，例如鼠标、键盘（一次性读取设备）</td>
+</tr>
+<tr>
+<td>b</td>
+<td>块设备文件</td>
+<td>指处理数据时每次能处理大块数据的设备，例如硬盘</td>
+</tr>
+<tr>
+<td>s</td>
+<td>本地域套接字</td>
+<td>实现进程间通信的连接，本地域套接字由系统调用 socket 创建</td>
+</tr>
+<tr>
+<td>p</td>
+<td>有名管道(FIFO)</td>
+<td>让运行在同一主机上的两个进程相互通信，和 socket 文件相似</td>
+</tr>
+<tr>
+<td>l</td>
+<td>符号链接</td>
+<td>也叫做软链接（Linkfile），通过名字指向文件</td>
+</tr>
+</tbody>
+</table>
+<p><code>ls</code> 命令结果展示文件颜色含义：</p>
+<table>
+<thead>
+<tr>
+<th><strong>颜色</strong></th>
+<th><strong>含义</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>灰色</td>
+<td>普通文件</td>
+</tr>
+<tr>
+<td>蓝色</td>
+<td>目录</td>
+</tr>
+<tr>
+<td>绿色</td>
+<td>可执行文件</td>
+</tr>
+<tr>
+<td>黄色</td>
+<td>特殊文件</td>
+</tr>
+<tr>
+<td>红色</td>
+<td>压缩文件</td>
+</tr>
+</tbody>
+</table>
+<h1 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h1>
+<p>第一列后九个字段以三个为一组，分别表示：</p>
+<ul>
+<li>文件所有者权限</li>
+<li>同用户组权限</li>
+<li>其他用户权限</li>
+</ul>
+<p>权限为&quot;rwx&quot;的三个参数组合，没有权限显示为&quot;-&quot;减号。</p>
+<h1 id="连接节点"><a class="markdownIt-Anchor" href="#连接节点"></a> 连接节点</h1>
+<p>第二列数字表示节点，每个文件都会将它的权限与属性记录到文件系统的 inode 中。</p>
+<p>这个属性记录的就是有多少不同的文件名连接到相同的一个 inode 号码。</p>
+<h1 id="所有者所有组"><a class="markdownIt-Anchor" href="#所有者所有组"></a> 所有者/所有组</h1>
+<p>第三列和第四列分别表示文件所属的用户和用户组。</p>
+<h1 id="文件大小"><a class="markdownIt-Anchor" href="#文件大小"></a> 文件大小</h1>
+<p>第五列表示文件的容量大小，默认单位为 Bytes。</p>
+<p>目录显示的大小不是文件夹大小，而是目录元数据的大小。</p>
+<h1 id="修改日期"><a class="markdownIt-Anchor" href="#修改日期"></a> 修改日期</h1>
+<p>第六列为文件的创建日期或最近修改时间。</p>
+<p>如果修改时间距离太久，那时间部分会显示成年份。</p>
+<h1 id="文件名"><a class="markdownIt-Anchor" href="#文件名"></a> 文件名</h1>
+<p>第七列为文件名或文件夹名。</p>
+<p>Linux 的文件名是大小写敏感的。</p>
+<p>文件或目录名的第一个字母是&quot;.&quot;表示隐藏文件。</p>
+<p><strong>文件名规则</strong>：</p>
+<ul>
+<li>由大写字母、小写字母、数字和一些特殊符号组成；</li>
+<li>不可以包含 * ? &lt; &gt; ( ) [ ] { } / \ | &quot;  ` ＆ ;  ! 等符号；</li>
+<li>＋-可以出现在文件名中，但是不能作为文件名中的第一个字母；</li>
+<li>文件名中一般不应该包含空格；</li>
+<li>使用 Ext 文件系统时，文件名最长 255 个字符，路径最长 4096 个字符。</li>
+</ul>
 ]]></content>
       <categories>
         <category>Linux</category>
@@ -3922,265 +4188,177 @@ drwx------. <span class="token number">2</span> root root  16K Sep  <span class=
       </categories>
   </entry>
   <entry>
-    <title>Linux 文件属性解释</title>
-    <url>/1872252014/</url>
-    <content><![CDATA[<h1 id="查看文件属性"><a class="markdownIt-Anchor" href="#查看文件属性"></a> 查看文件属性</h1>
-<p>执行 <code>ls -la</code> 命令后，可以看到当前目录下所有文件的权限和属性：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll <span class="token parameter variable">-la</span>
-total <span class="token number">32</span>
-dr-xr-x---.  <span class="token number">4</span> root root  <span class="token number">175</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 <span class="token builtin class-name">.</span>
-dr-xr-xr-x. <span class="token number">17</span> root root  <span class="token number">224</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:37 <span class="token punctuation">..</span>
--rw-------.  <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
--rw-------.  <span class="token number">1</span> root root  <span class="token number">847</span> Sep  <span class="token number">8</span> <span class="token number">12</span>:32 .bash_history
--rw-r--r--.  <span class="token number">1</span> root root   <span class="token number">18</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bash_logout
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">176</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bash_profile
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">176</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bashrc
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">100</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .cshrc
-drwxr-xr-x.  <span class="token number">2</span> root root    <span class="token number">6</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 dir1
-drwxr-----.  <span class="token number">3</span> root root   <span class="token number">19</span> Sep  <span class="token number">7</span> 05:51 .pki
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">129</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .tcshrc
--rw-------.  <span class="token number">1</span> root root  <span class="token number">508</span> Sep  <span class="token number">7</span> 05:52 .viminfo<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>total 为该目录下的所有数据所占用的实际块数量乘以块大小的值。</p>
-<p>从左到右以空格分隔成七列，分别代表：类型和权限、连接、所有者、所有组、大小、修改时间、文件名。</p>
-<h1 id="文件类型"><a class="markdownIt-Anchor" href="#文件类型"></a> 文件类型</h1>
-<p>第一列第一个字段用来表示文件的类型，文件类型有下面几种：</p>
+    <title>磁盘分区知识</title>
+    <url>/3200821655/</url>
+    <content><![CDATA[<h1 id="磁盘设备名"><a class="markdownIt-Anchor" href="#磁盘设备名"></a> 磁盘设备名</h1>
+<p>在新版 Linux 中，IDE 和 SATA 的磁盘命名没有区别。</p>
+<h2 id="ide-接口硬盘"><a class="markdownIt-Anchor" href="#ide-接口硬盘"></a> IDE 接口硬盘</h2>
+<p>由于一个 IDE 接口可以连接两个 IDE 设备，一般主板可以接 4 个 IDE 设备。在系统中，IDE 设备的命名如下：</p>
 <table>
 <thead>
 <tr>
-<th><strong>标记</strong></th>
-<th><strong>类型</strong></th>
-<th><strong>说明</strong></th>
+<th><strong>IDE(Jumper)</strong></th>
+<th><strong>Master</strong></th>
+<th><strong>Slave</strong></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>-</td>
-<td>普通文件</td>
-<td>文本文件、数据文件、可执行程序等都作为普通文件存储</td>
+<td>IDE1(Primary)</td>
+<td>/dev/hda</td>
+<td>/dev/hdb</td>
 </tr>
 <tr>
-<td>d</td>
-<td>目录</td>
-<td>目录不存放常规数据，它用来组织访问其他文件</td>
-</tr>
-<tr>
-<td>c</td>
-<td>字符设备文件</td>
-<td>指处理数据时每次只能处理一个字符的设备，例如鼠标、键盘（一次性读取设备）</td>
-</tr>
-<tr>
-<td>b</td>
-<td>块设备文件</td>
-<td>指处理数据时每次能处理大块数据的设备，例如硬盘</td>
-</tr>
-<tr>
-<td>s</td>
-<td>本地域套接字</td>
-<td>实现进程间通信的连接，本地域套接字由系统调用 socket 创建</td>
-</tr>
-<tr>
-<td>p</td>
-<td>有名管道(FIFO)</td>
-<td>让运行在同一主机上的两个进程相互通信，和 socket 文件相似</td>
-</tr>
-<tr>
-<td>l</td>
-<td>符号链接</td>
-<td>也叫做软链接（Linkfile），通过名字指向文件</td>
+<td>IDE2(Secondary)</td>
+<td>/dev/hdc</td>
+<td>/dev/hdd</td>
 </tr>
 </tbody>
 </table>
-<p><code>ls</code> 命令结果展示文件颜色含义：</p>
+<h2 id="sata-接口硬盘"><a class="markdownIt-Anchor" href="#sata-接口硬盘"></a> SATA 接口硬盘</h2>
+<p>SATA 接口设备名由 Linux 内核检测到磁盘的顺序从 a 开始排列，与插槽号无关。例如，两块磁盘插到 SATA1 和 SATA5 插槽上，系统中识别为 sda 和 sdb。</p>
+<h1 id="磁盘阵列"><a class="markdownIt-Anchor" href="#磁盘阵列"></a> 磁盘阵列</h1>
+<p>磁盘阵列（RAID，Redundant Arrays of Inexpensive Disks）即容错廉价磁盘阵列，指通过一些技术（软件或硬件）将多个较小的磁盘整合成一个较大的磁盘设备，并且具有一定数据保护的功能。</p>
+<h2 id="磁盘阵列类型"><a class="markdownIt-Anchor" href="#磁盘阵列类型"></a> 磁盘阵列类型</h2>
+<p>磁盘整列有两种组建方式。</p>
+<h3 id="硬件磁盘阵列"><a class="markdownIt-Anchor" href="#硬件磁盘阵列"></a> 硬件磁盘阵列</h3>
+<p>硬件（hardware）磁盘阵列通过磁盘阵列卡完成组建任务，拥有专门芯片来处理 RAID 任务。性能比较好，例如用来处理 RAID 5 的同位检查码计算，并不会重复消耗原本系统的 I/O 总线。硬件磁盘阵列的设备文件名为/dev/sd[a-p]。</p>
+<h3 id="软件磁盘阵列"><a class="markdownIt-Anchor" href="#软件磁盘阵列"></a> 软件磁盘阵列</h3>
+<p>软件（software）磁盘阵列利用软件来仿真磁盘阵列功能，与 CPU 运算和 I/O 总线速度关系很大。在 CentOS 中提供的软件磁盘阵列软件为 mdadm，支持以分区为单位组建 RAID0/1/5 等。软件磁盘阵列使用的设备文件名是系统的设备文件/dev/md[0-1]。</p>
+<h2 id="磁盘阵列等级"><a class="markdownIt-Anchor" href="#磁盘阵列等级"></a> 磁盘阵列等级</h2>
+<p>常见磁盘阵列等级有 4 种：RAID 0（等量模式，stripe）、RAID 1（映像模式，mirror）、RAID 0+1 或 RAID 1+0、RAID 5。</p>
+<h3 id="raid-0"><a class="markdownIt-Anchor" href="#raid-0"></a> RAID 0</h3>
+<p>此模式下，RAID 会将磁盘先切出等量的区块（名为 chunk，大小 4KB ~ 1MB），写入文件时，该文件依据块大小切割好，依序放到各个磁盘中去。</p>
+<p>磁盘可用容量为所有磁盘容量之和。</p>
+<p>读写性能最佳。</p>
+<p>安全性最糟，任意一块磁盘损坏，所有文件数据将缺损，所有数据都会丢失。</p>
+<h3 id="raid-1"><a class="markdownIt-Anchor" href="#raid-1"></a> RAID 1</h3>
+<p>此模式让同一份数据完整保存在两块磁盘上面，写入文件时，该文件复制为两份，并分别写入到各个磁盘中去。</p>
+<p>磁盘可用容量为所有磁盘容量之和的一半。</p>
+<p>写性能在使用软阵列时不好，因为南桥芯片的 I/O 性能有限，同时写入会导致带宽不够。读取性能和 RAID 0 一样。</p>
+<p>安全性最好。</p>
+<h3 id="raid-01raid-10"><a class="markdownIt-Anchor" href="#raid-01raid-10"></a> RAID 0+1，RAID 1+0</h3>
+<p>所谓 RAID 0+1 就是先让两块磁盘组成 RAID 0，再将两组 RAID 0 组成一组 RAID 1。RAID 1+0 则是先组 RAID 0，再组成 RAID 1。</p>
+<p>磁盘可用容量和 RAID 1 一样只有一半可用。</p>
+<p>读写性能和 RAID 0 一样。</p>
+<p>安全性和 RAID 1 一样。</p>
+<h3 id="raid-5"><a class="markdownIt-Anchor" href="#raid-5"></a> RAID 5</h3>
+<p>至少需要三块以上磁盘才能组建。在每个循环的写入过程中，每块磁盘还加入一个同位检查数据（Parity），这个数据会记录其他磁盘的备份数据，用于磁盘损坏时的恢复。</p>
+<p>磁盘可用容量为总磁盘容量减一块磁盘容量。</p>
+<p>读写取性能介于 RAID 1 和 RAID 0 之间。</p>
+<p>安全性能方面，只接受损坏不超过一块的硬盘情况下恢复数据。</p>
+<h2 id="预备磁盘"><a class="markdownIt-Anchor" href="#预备磁盘"></a> 预备磁盘</h2>
+<p>磁盘阵列中的磁盘损坏时，可更换坏掉的磁盘并插入新的磁盘，磁盘阵列会主动重建数据。这通常需要在关机重启时进行，但 SAS 支持热插拔，可以避免重启。</p>
+<p>为实现系统实时主动重建，需要预备磁盘。预备磁盘是指一块或多块未包含在原磁盘阵列等级中的磁盘。只有在磁盘阵列中出现磁盘损坏时，才会主动将预备磁盘引入磁盘阵列中进行数据重建。</p>
+<h1 id="逻辑卷管理器"><a class="markdownIt-Anchor" href="#逻辑卷管理器"></a> 逻辑卷管理器</h1>
+<p>逻辑卷管理器（LVM，Logical Volume Manager）通过软件组合几个物理分区（PV），将它们称为一块看起来是独立的大磁盘（VG），然后再将这块大磁盘分成可使用分区（LV），最终挂载使用。</p>
+<h2 id="物理卷"><a class="markdownIt-Anchor" href="#物理卷"></a> 物理卷</h2>
+<p>物理卷（PV，Physical Volume）分区需要通过 <code>fdisk</code> 调整系统标识符（system ID）为 8e（LVM 的标识符），然后通过 <code>pvcreate</code> 命令将其转换为 LVM 的最底层物理卷（PV），才能利用这些 PV。</p>
+<h2 id="卷用户组"><a class="markdownIt-Anchor" href="#卷用户组"></a> 卷用户组</h2>
+<p>LVM 将许多 PV 整合成卷用户组(VG，Volume Group)，在 32 位系统下每个 VG 最多仅能包含 65534 个 PE。如果使用 LVM 默认参数，则一个 VG 最大可达 256GB 容量。在 64 位系统下已不存在限制。</p>
+<h2 id="物理扩展块"><a class="markdownIt-Anchor" href="#物理扩展块"></a> 物理扩展块</h2>
+<p>LVM 默认使用 4MB 的物理扩展块（PE，即 Physical Extent），它是整个 LVM 中最小的存储块，类似于文件系统中的 block 大小。</p>
+<h2 id="逻辑卷"><a class="markdownIt-Anchor" href="#逻辑卷"></a> 逻辑卷</h2>
+<p>VG 会被切分成逻辑卷（LV，即 Logical Volume），这个 LV 就是最后可以被格式化使用的分区。</p>
+<p>LV 的大小与此 LV 内的 PE 总数有关。</p>
+<p>为了方便用户利用 LVM 管理其系统，LV 的设备文件名通常指定为 <code>/dev/vgname/lvname</code> 的样式。</p>
+<p>更改文件系统容量本质是通过交换 PE 来进行数据转换，将原本 LV 内的 PE 转移到其他设备中以降低 LV 容量，或将其他设备的 PE 加到此 LV 中以增大容量。</p>
+<p>对 LV 数据写入机制有两种：</p>
+<ul>
+<li>
+<p><strong>线性模式</strong>（linear）：如果有两个分区 sdb1 和 sdb2 加入到 VG 中，并且整个 VG 只有一个 LV 时，数据会先将 sdb1 写满，再开始写 sdb2。</p>
+</li>
+<li>
+<p><strong>交错模式</strong>（striped）：类似于 RAID 0 的模式，同时向两个分区内写入数据。</p>
+</li>
+</ul>
+<p>LVM 的重点在于可以弹性调整文件系统容量，而不是性能优先，因此默认使用线性模式进行读写。</p>
+<h1 id="mbr-分区表"><a class="markdownIt-Anchor" href="#mbr-分区表"></a> MBR 分区表</h1>
+<p>目前主流分区表格式有 MBR 和 GPT。早期的 Linux 系统为了兼容 Windows 磁盘，使用的是支持 Windows 的 MBR。</p>
+<p>MBR 分区表无法支持 2T 以上容量的硬盘。</p>
+<h2 id="第一个扇区"><a class="markdownIt-Anchor" href="#第一个扇区"></a> 第一个扇区</h2>
+<p>MBR 分区表第一个扇区（512Bytes）用来记录三个重要的信息：</p>
+<ul>
+<li>
+<p><strong>主引导分区</strong>（MBR，Master Boot Record）：用来安装引导加载程序的地方，有 446Bytes 大小。</p>
+</li>
+<li>
+<p><strong>分区表</strong>（Partition Table）：记录整块硬盘的分区状态，有 64Bytes 大小。</p>
+</li>
+<li>
+<p><strong>引导记录标识</strong>（BRID）：用来判断设备是否可以用于启动，只有 2 Bytes 大小。值为 55 或 AA 表示可引导。</p>
+</li>
+</ul>
+<p>如果第一个扇区出现物理坏道，整块硬盘都不可用。</p>
+<h2 id="主引导分区"><a class="markdownIt-Anchor" href="#主引导分区"></a> 主引导分区</h2>
+<p>MBR 只有 446Bytes，主要提供以下功能：</p>
+<ul>
+<li>提供菜单，可以选择不同开机选项，实现多重引导；</li>
+<li>载入内核文件，指向可开机的程序区段开启动系统；</li>
+<li>转交其他 Loader，将引导加载功能转交给其他 Loader 负责。</li>
+</ul>
+<h2 id="分区表"><a class="markdownIt-Anchor" href="#分区表"></a> 分区表</h2>
+<p>分区表记录了每个分区的起始柱面号，分区只是针对那 64Bytes 的分区表进行设置。由于只有 64Bytes 大小，所以仅能写入四组分区信息。这四组分区信息分为主（Primary）或扩展（Extended）分区。</p>
+<p>主分区和扩展分区在 Linux 系统中表示为 <code>sda[1-4]</code>。</p>
+<p>分区的最小单位为柱面（Cylinder），通常每个分区都包含一个或多个柱面。</p>
+<h2 id="扩展分区"><a class="markdownIt-Anchor" href="#扩展分区"></a> 扩展分区</h2>
+<p>扩展分区是指利用额外的扇区来记录分区信息，但无法进行格式化。可以在扩展分区中创建逻辑分区，具体做法是在每个逻辑分区的最前面几个扇区记录分区信息。需要注意的是，一个磁盘最多只能有一个扩展分区，这是操作系统的限制。</p>
+<p>为了确保磁盘的连续性，通常将扩展分区的柱面号分配在所有主分区之后。这样可以更好地利用磁盘空间，并有助于提高磁盘读写效率。</p>
+<h2 id="逻辑分区"><a class="markdownIt-Anchor" href="#逻辑分区"></a> 逻辑分区</h2>
+<p>从扩展分区分出的分区也称为逻辑分区（Logical Partition）。在 Linux 系统中，逻辑分区从 hda5 开始计算。</p>
+<p>在一个扩展分区内，相邻的逻辑分区可以合并。如果不相邻，则只能重建扩展分区。</p>
+<p>需要注意的是，如果扩展分区被破坏，所有的逻辑分区将被删除，因为逻辑分区的信息都记录在扩展分区中。</p>
+<h1 id="gpt-分区表"><a class="markdownIt-Anchor" href="#gpt-分区表"></a> GPT 分区表</h1>
+<p>GPT 分区表是为了适应 4K 扇区的硬盘和固态硬盘而设计的，它抛弃了原先以柱面为单位的计算法，改用逻辑区块位址（LBA，Logical Block Address）来规划分区。默认大小为 512Bytes，第一个 LBA 为 LBA0。</p>
+<p>GPT 分区表使用前 34 个 LBA 区块来记录分区信息。此外，磁盘最后 33 个 LBA 区块会用于存储分区表备份，以保障分区信息的安全。</p>
+<h2 id="mbr-兼容区块"><a class="markdownIt-Anchor" href="#mbr-兼容区块"></a> MBR 兼容区块</h2>
+<p>GPT 分区表中的 LBA0 用来兼容 MBR 格式。不同之处在于，原本分区表记录段仅放入一个特殊标志的分区，用来表示此磁盘为 GPT 磁盘。</p>
+<h2 id="gpt-表头记录"><a class="markdownIt-Anchor" href="#gpt-表头记录"></a> GPT 表头记录</h2>
+<p>GPT 分区表中的 LBA1 记录了分区表本身的位置和大小，备份分区表存放位置，以及分区表校验机制码（CRC32）。如果系统检测到分区表有错误，可以通过这个记录区来获取备份分区表并进行恢复。</p>
+<h2 id="分区表-2"><a class="markdownIt-Anchor" href="#分区表-2"></a> 分区表</h2>
+<p>分区表存放在 LBA2-33 位置。从 LBA2 开始，每个 LBA 都可以记录 4 笔分区记录，所以默认可以记录 128 个分区记录。</p>
+<p>每笔记录占用 128 字节空间，具体内容如下表：</p>
 <table>
 <thead>
 <tr>
-<th><strong>颜色</strong></th>
-<th><strong>含义</strong></th>
+<th>起始字节</th>
+<th>长度</th>
+<th>内容</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>灰色</td>
-<td>普通文件</td>
+<td>0</td>
+<td>16 字节</td>
+<td>分区类型 GUID</td>
 </tr>
 <tr>
-<td>蓝色</td>
-<td>目录</td>
+<td>16</td>
+<td>16 字节</td>
+<td>分区 GUID</td>
 </tr>
 <tr>
-<td>绿色</td>
-<td>可执行文件</td>
+<td>32</td>
+<td>8 字节</td>
+<td>起始 LBA（小端序）</td>
 </tr>
 <tr>
-<td>黄色</td>
-<td>特殊文件</td>
+<td>40</td>
+<td>8 字节</td>
+<td>末尾 LBA</td>
 </tr>
 <tr>
-<td>红色</td>
-<td>压缩文件</td>
+<td>48</td>
+<td>8 字节</td>
+<td>属性标签（如 bit60 表示“只读”）</td>
+</tr>
+<tr>
+<td>56</td>
+<td>72 字节</td>
+<td>分区名，可以包括 36 个 UTF-16（小端序）字符</td>
 </tr>
 </tbody>
 </table>
-<h1 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h1>
-<p>第一列后九个字段以三个为一组，分别表示：</p>
-<ul>
-<li>文件所有者权限</li>
-<li>同用户组权限</li>
-<li>其他用户权限</li>
-</ul>
-<p>权限为&quot;rwx&quot;的三个参数组合，没有权限显示为&quot;-&quot;减号。</p>
-<h1 id="连接节点"><a class="markdownIt-Anchor" href="#连接节点"></a> 连接节点</h1>
-<p>第二列数字表示节点，每个文件都会将它的权限与属性记录到文件系统的 inode 中。</p>
-<p>这个属性记录的就是有多少不同的文件名连接到相同的一个 inode 号码。</p>
-<h1 id="所有者所有组"><a class="markdownIt-Anchor" href="#所有者所有组"></a> 所有者/所有组</h1>
-<p>第三列和第四列分别表示文件所属的用户和用户组。</p>
-<h1 id="文件大小"><a class="markdownIt-Anchor" href="#文件大小"></a> 文件大小</h1>
-<p>第五列表示文件的容量大小，默认单位为 Bytes。</p>
-<p>目录显示的大小不是文件夹大小，而是目录元数据的大小。</p>
-<h1 id="修改日期"><a class="markdownIt-Anchor" href="#修改日期"></a> 修改日期</h1>
-<p>第六列为文件的创建日期或最近修改时间。</p>
-<p>如果修改时间距离太久，那时间部分会显示成年份。</p>
-<h1 id="文件名"><a class="markdownIt-Anchor" href="#文件名"></a> 文件名</h1>
-<p>第七列为文件名或文件夹名。</p>
-<p>Linux 的文件名是大小写敏感的。</p>
-<p>文件或目录名的第一个字母是&quot;.&quot;表示隐藏文件。</p>
-<p><strong>文件名规则</strong>：</p>
-<ul>
-<li>由大写字母、小写字母、数字和一些特殊符号组成；</li>
-<li>不可以包含 * ? &lt; &gt; ( ) [ ] { } / \ | &quot;  ` ＆ ;  ! 等符号；</li>
-<li>＋-可以出现在文件名中，但是不能作为文件名中的第一个字母；</li>
-<li>文件名中一般不应该包含空格；</li>
-<li>使用 Ext 文件系统时，文件名最长 255 个字符，路径最长 4096 个字符。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>0.基础概论</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>Linux 文件权限</title>
-    <url>/46662635/</url>
-    <content><![CDATA[<h1 id="基本权限"><a class="markdownIt-Anchor" href="#基本权限"></a> 基本权限</h1>
-<p>基础权限有三种，分别是：读（r，Read）、写（w，Write）、执行（x，eXecute）。</p>
-<p>同样的权限标记对于文件和目录代表不同的意义。</p>
-<h2 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h2>
-<p>文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。</p>
-<table>
-<thead>
-<tr>
-<th>数字</th>
-<th>字符</th>
-<th>权限</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>4</td>
-<td>r</td>
-<td><strong>读取文件内容</strong>。例如使用 <code>cat</code> 命令查看，使用 <code>vim</code> 以<strong>只读</strong>方式打开。</td>
-</tr>
-<tr>
-<td>2</td>
-<td>w</td>
-<td><strong>编辑修改</strong>文件内容，但<strong>不包括删除</strong>文件。例如使用 <code>vim</code>、<code>sed</code> 等对文件内容进行修改并保存。</td>
-</tr>
-<tr>
-<td>1</td>
-<td>x</td>
-<td>文件具有可以被系统<strong>执行</strong>的权限。例如命令和脚本必须拥有此权限才能直接执行。</td>
-</tr>
-</tbody>
-</table>
-<h2 id="目录权限"><a class="markdownIt-Anchor" href="#目录权限"></a> 目录权限</h2>
-<p>目录主要的内容是记录文件名清单，所以目录权限实际关联的是目录下文件属性查看与更改。</p>
-<table>
-<thead>
-<tr>
-<th>数字</th>
-<th>字符</th>
-<th>权限</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>4</td>
-<td>r</td>
-<td><strong>仅查询</strong>目录下的文件或目录<strong>名称</strong>，无法看到属性，相当于执行不加参数的 <code>ls</code> 命令。</td>
-</tr>
-<tr>
-<td>2</td>
-<td>w</td>
-<td>改变目录结构清单权限，也就是在目录下<strong>新建、删除、重命名</strong>文件或目录。</td>
-</tr>
-<tr>
-<td>1</td>
-<td>x</td>
-<td><strong>进入目录</strong>的权限，<strong>查询</strong>目录下的文件<strong>属性</strong>。</td>
-</tr>
-</tbody>
-</table>
-<h1 id="权限参考"><a class="markdownIt-Anchor" href="#权限参考"></a> 权限参考</h1>
-<p>根据使用场景来配置权限。</p>
-<p><strong>用户进入目录所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限，来运行 <code>cd</code> 切换目录。</li>
-<li>目录需要 r 权限，来使用 <code>ls</code> 命令查看目录中文件列表。</li>
-</ul>
-<p><strong>用户读取目录内文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 r 权限来运行 <code>cat</code>、<code>more</code> 等读取文件命令。</li>
-</ul>
-<p><strong>用户修改目录内文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 r 和 w 权限来使用 <code>vi</code> 等工具进行文件读写。</li>
-</ul>
-<p><strong>用户创建一个文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 w 和 x 权限来创建文件。</li>
-</ul>
-<p><strong>用户执行目录下的命令所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 x 权限来运行命令。</li>
-</ul>
-<h1 id="特殊权限"><a class="markdownIt-Anchor" href="#特殊权限"></a> 特殊权限</h1>
-<p>在 Linux 系统中，还有一些特殊权限。</p>
-<h2 id="suid"><a class="markdownIt-Anchor" href="#suid"></a> SUID</h2>
-<p>当 s 标志出现在文件所有者的 x 权限上时，被称为 Set UID，其含义为：</p>
-<ul>
-<li>SUID 权限<strong>仅对二进制程序有效</strong>，不能用在脚本上；</li>
-<li>执行者对该程序需要具有 x 的可执行权限；</li>
-<li>本权限仅在执行该程序的过程中（run-time）有效；</li>
-<li><strong>执行者将具有该程序所有者的权限</strong>。</li>
-</ul>
-<p>例如一般用户运行 <code>passwd</code> 命令修改密码，需要修改 <code>/etc/shadow</code> 文件。但是该文件的权限只有 root 可读写，而用户运行 passwd 程序时，会暂时获得 passwd 程序的 root 权限，从而可以通过 <code>passwd</code> 命令修改 <code>/etc/shadow</code> 文件。</p>
-<p>这是因为运行 <code>passwd</code> 后会启动一个新的进程，该进程会产生一个新的 PID。在该 PID 产生时，SUID 会给予该 PID 特殊的权限设置，使得执行者在该进程中具有该程序所有者的权限。</p>
-<h2 id="sgid"><a class="markdownIt-Anchor" href="#sgid"></a> SGID</h2>
-<p>当 s 标志出现在文件所属组的 x 权限上时，被称为 Set GID。SGID 可以针对文件或目录来设置。</p>
-<p><strong>针对文件</strong>，SGID 有以下功能：</p>
-<ul>
-<li>SGID 对二进制程序有效；</li>
-<li>程序执行者对该程序来说，需要具备 x 的权限；</li>
-<li><strong>执行者在执行的过程中将会获得该程序所属组的权限</strong>。</li>
-</ul>
-<p>例如，一般用户使用 <code>locate</code> 这个程序可以查询 <code>/var/lib/mlocate/mlocate.db</code> 文件的内容，会暂时获得 slocate 用户组的权限。</p>
-<p><strong>针对目录</strong>，SGID 有以下功能：</p>
-<ul>
-<li>用户若对此目录具有 r 和 x 的权限时，该用户能够进入此目录；</li>
-<li>用户在此目录下的有效用户组将会变成该目录的用户组；</li>
-<li><strong>若用户在此目录下具有 w 的权限，则用户所创建的新文件的所属组与此目录的所属组相同。</strong></li>
-</ul>
-<h2 id="sbit"><a class="markdownIt-Anchor" href="#sbit"></a> SBIT</h2>
-<p>当 t 出现在文件所有者的其他用户 x 权限上时，被称为 Sticky Bit。其含义为：</p>
-<ul>
-<li>SBIT 权限<strong>仅对目录有效</strong>；</li>
-<li>当用户对该目录具有 w 和 x 权限时，即具有写入权限时；</li>
-<li><strong>当用户在该目录下创建文件或目录时，仅有自己与 root 才有权力删除该文件。</strong></li>
-</ul>
-<p>例如，用户 1 对目录 A 具有 w 的权限，里面还有其他用户的文件。此时，目录 A 加上了 SBIT 权限时，用户 1 只能修改自己创建的文件，无法删除他人文件。</p>
 ]]></content>
       <categories>
         <category>Linux</category>
@@ -4545,184 +4723,6 @@ drwxr-----.  <span class="token number">3</span> root root   <span class="token 
 <p>电源供应器（Power Supply Unit，PSU）用于给主板、CPU、显卡和硬盘等硬件供电。选择质量好的电源可以有效降低硬件意外损坏的概率。</p>
 <p>如果使用诸如 AIDA 等软件对未超频的电脑进行测试时，在测试过程中出现中途断电或重启等情况，说明电源的额定功率不够或者不稳定。需要减少设备连接或者更换更高功率的电源。</p>
 <p>在选购电源时，除了考虑电源的额定功率之外，还需要考虑能源转换率，也就是 $ 输入功率 / 输出功率 $ 的值。转换率值越大越好。</p>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>0.基础概论</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>磁盘分区知识</title>
-    <url>/3200821655/</url>
-    <content><![CDATA[<h1 id="磁盘设备名"><a class="markdownIt-Anchor" href="#磁盘设备名"></a> 磁盘设备名</h1>
-<p>在新版 Linux 中，IDE 和 SATA 的磁盘命名没有区别。</p>
-<h2 id="ide-接口硬盘"><a class="markdownIt-Anchor" href="#ide-接口硬盘"></a> IDE 接口硬盘</h2>
-<p>由于一个 IDE 接口可以连接两个 IDE 设备，一般主板可以接 4 个 IDE 设备。在系统中，IDE 设备的命名如下：</p>
-<table>
-<thead>
-<tr>
-<th><strong>IDE(Jumper)</strong></th>
-<th><strong>Master</strong></th>
-<th><strong>Slave</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>IDE1(Primary)</td>
-<td>/dev/hda</td>
-<td>/dev/hdb</td>
-</tr>
-<tr>
-<td>IDE2(Secondary)</td>
-<td>/dev/hdc</td>
-<td>/dev/hdd</td>
-</tr>
-</tbody>
-</table>
-<h2 id="sata-接口硬盘"><a class="markdownIt-Anchor" href="#sata-接口硬盘"></a> SATA 接口硬盘</h2>
-<p>SATA 接口设备名由 Linux 内核检测到磁盘的顺序从 a 开始排列，与插槽号无关。例如，两块磁盘插到 SATA1 和 SATA5 插槽上，系统中识别为 sda 和 sdb。</p>
-<h1 id="磁盘阵列"><a class="markdownIt-Anchor" href="#磁盘阵列"></a> 磁盘阵列</h1>
-<p>磁盘阵列（RAID，Redundant Arrays of Inexpensive Disks）即容错廉价磁盘阵列，指通过一些技术（软件或硬件）将多个较小的磁盘整合成一个较大的磁盘设备，并且具有一定数据保护的功能。</p>
-<h2 id="磁盘阵列类型"><a class="markdownIt-Anchor" href="#磁盘阵列类型"></a> 磁盘阵列类型</h2>
-<p>磁盘整列有两种组建方式。</p>
-<h3 id="硬件磁盘阵列"><a class="markdownIt-Anchor" href="#硬件磁盘阵列"></a> 硬件磁盘阵列</h3>
-<p>硬件（hardware）磁盘阵列通过磁盘阵列卡完成组建任务，拥有专门芯片来处理 RAID 任务。性能比较好，例如用来处理 RAID 5 的同位检查码计算，并不会重复消耗原本系统的 I/O 总线。硬件磁盘阵列的设备文件名为/dev/sd[a-p]。</p>
-<h3 id="软件磁盘阵列"><a class="markdownIt-Anchor" href="#软件磁盘阵列"></a> 软件磁盘阵列</h3>
-<p>软件（software）磁盘阵列利用软件来仿真磁盘阵列功能，与 CPU 运算和 I/O 总线速度关系很大。在 CentOS 中提供的软件磁盘阵列软件为 mdadm，支持以分区为单位组建 RAID0/1/5 等。软件磁盘阵列使用的设备文件名是系统的设备文件/dev/md[0-1]。</p>
-<h2 id="磁盘阵列等级"><a class="markdownIt-Anchor" href="#磁盘阵列等级"></a> 磁盘阵列等级</h2>
-<p>常见磁盘阵列等级有 4 种：RAID 0（等量模式，stripe）、RAID 1（映像模式，mirror）、RAID 0+1 或 RAID 1+0、RAID 5。</p>
-<h3 id="raid-0"><a class="markdownIt-Anchor" href="#raid-0"></a> RAID 0</h3>
-<p>此模式下，RAID 会将磁盘先切出等量的区块（名为 chunk，大小 4KB ~ 1MB），写入文件时，该文件依据块大小切割好，依序放到各个磁盘中去。</p>
-<p>磁盘可用容量为所有磁盘容量之和。</p>
-<p>读写性能最佳。</p>
-<p>安全性最糟，任意一块磁盘损坏，所有文件数据将缺损，所有数据都会丢失。</p>
-<h3 id="raid-1"><a class="markdownIt-Anchor" href="#raid-1"></a> RAID 1</h3>
-<p>此模式让同一份数据完整保存在两块磁盘上面，写入文件时，该文件复制为两份，并分别写入到各个磁盘中去。</p>
-<p>磁盘可用容量为所有磁盘容量之和的一半。</p>
-<p>写性能在使用软阵列时不好，因为南桥芯片的 I/O 性能有限，同时写入会导致带宽不够。读取性能和 RAID 0 一样。</p>
-<p>安全性最好。</p>
-<h3 id="raid-01raid-10"><a class="markdownIt-Anchor" href="#raid-01raid-10"></a> RAID 0+1，RAID 1+0</h3>
-<p>所谓 RAID 0+1 就是先让两块磁盘组成 RAID 0，再将两组 RAID 0 组成一组 RAID 1。RAID 1+0 则是先组 RAID 0，再组成 RAID 1。</p>
-<p>磁盘可用容量和 RAID 1 一样只有一半可用。</p>
-<p>读写性能和 RAID 0 一样。</p>
-<p>安全性和 RAID 1 一样。</p>
-<h3 id="raid-5"><a class="markdownIt-Anchor" href="#raid-5"></a> RAID 5</h3>
-<p>至少需要三块以上磁盘才能组建。在每个循环的写入过程中，每块磁盘还加入一个同位检查数据（Parity），这个数据会记录其他磁盘的备份数据，用于磁盘损坏时的恢复。</p>
-<p>磁盘可用容量为总磁盘容量减一块磁盘容量。</p>
-<p>读写取性能介于 RAID 1 和 RAID 0 之间。</p>
-<p>安全性能方面，只接受损坏不超过一块的硬盘情况下恢复数据。</p>
-<h2 id="预备磁盘"><a class="markdownIt-Anchor" href="#预备磁盘"></a> 预备磁盘</h2>
-<p>磁盘阵列中的磁盘损坏时，可更换坏掉的磁盘并插入新的磁盘，磁盘阵列会主动重建数据。这通常需要在关机重启时进行，但 SAS 支持热插拔，可以避免重启。</p>
-<p>为实现系统实时主动重建，需要预备磁盘。预备磁盘是指一块或多块未包含在原磁盘阵列等级中的磁盘。只有在磁盘阵列中出现磁盘损坏时，才会主动将预备磁盘引入磁盘阵列中进行数据重建。</p>
-<h1 id="逻辑卷管理器"><a class="markdownIt-Anchor" href="#逻辑卷管理器"></a> 逻辑卷管理器</h1>
-<p>逻辑卷管理器（LVM，Logical Volume Manager）通过软件组合几个物理分区（PV），将它们称为一块看起来是独立的大磁盘（VG），然后再将这块大磁盘分成可使用分区（LV），最终挂载使用。</p>
-<h2 id="物理卷"><a class="markdownIt-Anchor" href="#物理卷"></a> 物理卷</h2>
-<p>物理卷（PV，Physical Volume）分区需要通过 <code>fdisk</code> 调整系统标识符（system ID）为 8e（LVM 的标识符），然后通过 <code>pvcreate</code> 命令将其转换为 LVM 的最底层物理卷（PV），才能利用这些 PV。</p>
-<h2 id="卷用户组"><a class="markdownIt-Anchor" href="#卷用户组"></a> 卷用户组</h2>
-<p>LVM 将许多 PV 整合成卷用户组(VG，Volume Group)，在 32 位系统下每个 VG 最多仅能包含 65534 个 PE。如果使用 LVM 默认参数，则一个 VG 最大可达 256GB 容量。在 64 位系统下已不存在限制。</p>
-<h2 id="物理扩展块"><a class="markdownIt-Anchor" href="#物理扩展块"></a> 物理扩展块</h2>
-<p>LVM 默认使用 4MB 的物理扩展块（PE，即 Physical Extent），它是整个 LVM 中最小的存储块，类似于文件系统中的 block 大小。</p>
-<h2 id="逻辑卷"><a class="markdownIt-Anchor" href="#逻辑卷"></a> 逻辑卷</h2>
-<p>VG 会被切分成逻辑卷（LV，即 Logical Volume），这个 LV 就是最后可以被格式化使用的分区。</p>
-<p>LV 的大小与此 LV 内的 PE 总数有关。</p>
-<p>为了方便用户利用 LVM 管理其系统，LV 的设备文件名通常指定为 <code>/dev/vgname/lvname</code> 的样式。</p>
-<p>更改文件系统容量本质是通过交换 PE 来进行数据转换，将原本 LV 内的 PE 转移到其他设备中以降低 LV 容量，或将其他设备的 PE 加到此 LV 中以增大容量。</p>
-<p>对 LV 数据写入机制有两种：</p>
-<ul>
-<li>
-<p><strong>线性模式</strong>（linear）：如果有两个分区 sdb1 和 sdb2 加入到 VG 中，并且整个 VG 只有一个 LV 时，数据会先将 sdb1 写满，再开始写 sdb2。</p>
-</li>
-<li>
-<p><strong>交错模式</strong>（striped）：类似于 RAID 0 的模式，同时向两个分区内写入数据。</p>
-</li>
-</ul>
-<p>LVM 的重点在于可以弹性调整文件系统容量，而不是性能优先，因此默认使用线性模式进行读写。</p>
-<h1 id="mbr-分区表"><a class="markdownIt-Anchor" href="#mbr-分区表"></a> MBR 分区表</h1>
-<p>目前主流分区表格式有 MBR 和 GPT。早期的 Linux 系统为了兼容 Windows 磁盘，使用的是支持 Windows 的 MBR。</p>
-<p>MBR 分区表无法支持 2T 以上容量的硬盘。</p>
-<h2 id="第一个扇区"><a class="markdownIt-Anchor" href="#第一个扇区"></a> 第一个扇区</h2>
-<p>MBR 分区表第一个扇区（512Bytes）用来记录三个重要的信息：</p>
-<ul>
-<li>
-<p><strong>主引导分区</strong>（MBR，Master Boot Record）：用来安装引导加载程序的地方，有 446Bytes 大小。</p>
-</li>
-<li>
-<p><strong>分区表</strong>（Partition Table）：记录整块硬盘的分区状态，有 64Bytes 大小。</p>
-</li>
-<li>
-<p><strong>引导记录标识</strong>（BRID）：用来判断设备是否可以用于启动，只有 2 Bytes 大小。值为 55 或 AA 表示可引导。</p>
-</li>
-</ul>
-<p>如果第一个扇区出现物理坏道，整块硬盘都不可用。</p>
-<h2 id="主引导分区"><a class="markdownIt-Anchor" href="#主引导分区"></a> 主引导分区</h2>
-<p>MBR 只有 446Bytes，主要提供以下功能：</p>
-<ul>
-<li>提供菜单，可以选择不同开机选项，实现多重引导；</li>
-<li>载入内核文件，指向可开机的程序区段开启动系统；</li>
-<li>转交其他 Loader，将引导加载功能转交给其他 Loader 负责。</li>
-</ul>
-<h2 id="分区表"><a class="markdownIt-Anchor" href="#分区表"></a> 分区表</h2>
-<p>分区表记录了每个分区的起始柱面号，分区只是针对那 64Bytes 的分区表进行设置。由于只有 64Bytes 大小，所以仅能写入四组分区信息。这四组分区信息分为主（Primary）或扩展（Extended）分区。</p>
-<p>主分区和扩展分区在 Linux 系统中表示为 <code>sda[1-4]</code>。</p>
-<p>分区的最小单位为柱面（Cylinder），通常每个分区都包含一个或多个柱面。</p>
-<h2 id="扩展分区"><a class="markdownIt-Anchor" href="#扩展分区"></a> 扩展分区</h2>
-<p>扩展分区是指利用额外的扇区来记录分区信息，但无法进行格式化。可以在扩展分区中创建逻辑分区，具体做法是在每个逻辑分区的最前面几个扇区记录分区信息。需要注意的是，一个磁盘最多只能有一个扩展分区，这是操作系统的限制。</p>
-<p>为了确保磁盘的连续性，通常将扩展分区的柱面号分配在所有主分区之后。这样可以更好地利用磁盘空间，并有助于提高磁盘读写效率。</p>
-<h2 id="逻辑分区"><a class="markdownIt-Anchor" href="#逻辑分区"></a> 逻辑分区</h2>
-<p>从扩展分区分出的分区也称为逻辑分区（Logical Partition）。在 Linux 系统中，逻辑分区从 hda5 开始计算。</p>
-<p>在一个扩展分区内，相邻的逻辑分区可以合并。如果不相邻，则只能重建扩展分区。</p>
-<p>需要注意的是，如果扩展分区被破坏，所有的逻辑分区将被删除，因为逻辑分区的信息都记录在扩展分区中。</p>
-<h1 id="gpt-分区表"><a class="markdownIt-Anchor" href="#gpt-分区表"></a> GPT 分区表</h1>
-<p>GPT 分区表是为了适应 4K 扇区的硬盘和固态硬盘而设计的，它抛弃了原先以柱面为单位的计算法，改用逻辑区块位址（LBA，Logical Block Address）来规划分区。默认大小为 512Bytes，第一个 LBA 为 LBA0。</p>
-<p>GPT 分区表使用前 34 个 LBA 区块来记录分区信息。此外，磁盘最后 33 个 LBA 区块会用于存储分区表备份，以保障分区信息的安全。</p>
-<h2 id="mbr-兼容区块"><a class="markdownIt-Anchor" href="#mbr-兼容区块"></a> MBR 兼容区块</h2>
-<p>GPT 分区表中的 LBA0 用来兼容 MBR 格式。不同之处在于，原本分区表记录段仅放入一个特殊标志的分区，用来表示此磁盘为 GPT 磁盘。</p>
-<h2 id="gpt-表头记录"><a class="markdownIt-Anchor" href="#gpt-表头记录"></a> GPT 表头记录</h2>
-<p>GPT 分区表中的 LBA1 记录了分区表本身的位置和大小，备份分区表存放位置，以及分区表校验机制码（CRC32）。如果系统检测到分区表有错误，可以通过这个记录区来获取备份分区表并进行恢复。</p>
-<h2 id="分区表-2"><a class="markdownIt-Anchor" href="#分区表-2"></a> 分区表</h2>
-<p>分区表存放在 LBA2-33 位置。从 LBA2 开始，每个 LBA 都可以记录 4 笔分区记录，所以默认可以记录 128 个分区记录。</p>
-<p>每笔记录占用 128 字节空间，具体内容如下表：</p>
-<table>
-<thead>
-<tr>
-<th>起始字节</th>
-<th>长度</th>
-<th>内容</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0</td>
-<td>16 字节</td>
-<td>分区类型 GUID</td>
-</tr>
-<tr>
-<td>16</td>
-<td>16 字节</td>
-<td>分区 GUID</td>
-</tr>
-<tr>
-<td>32</td>
-<td>8 字节</td>
-<td>起始 LBA（小端序）</td>
-</tr>
-<tr>
-<td>40</td>
-<td>8 字节</td>
-<td>末尾 LBA</td>
-</tr>
-<tr>
-<td>48</td>
-<td>8 字节</td>
-<td>属性标签（如 bit60 表示“只读”）</td>
-</tr>
-<tr>
-<td>56</td>
-<td>72 字节</td>
-<td>分区名，可以包括 36 个 UTF-16（小端序）字符</td>
-</tr>
-</tbody>
-</table>
 ]]></content>
       <categories>
         <category>Linux</category>
