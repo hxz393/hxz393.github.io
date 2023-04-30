@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="进程查看命令 查询系统上正在运行的进程，可以使用 ps 命令。常用参数如下：    参数 说明     -A 显示所有进程   -a 不与终端有关的所有进程   -u 与有效用户相关的进程   x 通常与 a 参数一起使用，可列出较完整信息   l 将 PID 信息较详细列出来   j 工作的格式（jobs format）   -f 生成更为完整的输出    要查询与当前登录会话相关的 PID">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 进程管理">
+<meta property="og:url" content="https://blog.x2b.net/1804980384/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="进程查看命令 查询系统上正在运行的进程，可以使用 ps 命令。常用参数如下：    参数 说明     -A 显示所有进程   -a 不与终端有关的所有进程   -u 与有效用户相关的进程   x 通常与 a 参数一起使用，可列出较完整信息   l 将 PID 信息较详细列出来   j 工作的格式（jobs format）   -f 生成更为完整的输出    要查询与当前登录会话相关的 PID">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-09-18T06:13:15.000Z">
+<meta property="article:modified_time" content="2023-04-30T07:21:54.908Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/1804980384/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/1804980384/","path":"1804980384/","title":"Linux 进程管理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Linux 进程管理 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">4</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">30</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E6%9F%A5%E7%9C%8B%E5%91%BD%E4%BB%A4"><span class="nav-number">1.</span> <span class="nav-text"> 进程查看命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E6%9F%A5%E7%9C%8B%E5%B7%A5%E5%85%B7"><span class="nav-number">2.</span> <span class="nav-text"> 进程查看工具</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text"> 进程管理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E4%BC%98%E5%85%88%E7%BA%A7"><span class="nav-number">4.</span> <span class="nav-text"> 进程优先级</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.douban.com/people/Cyber.DraFonS" title="https:&#x2F;&#x2F;www.douban.com&#x2F;people&#x2F;Cyber.DraFonS" rel="noopener external nofollow noreferrer" target="_blank">豆瓣</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/1804980384/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Linux 进程管理 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux 进程管理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-09-18 14:13:15" itemprop="dateCreated datePublished" datetime="2021-09-18T14:13:15+08:00">2021-09-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-04-30 15:21:54" itemprop="dateModified" datetime="2023-04-30T15:21:54+08:00">2023-04-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/2-%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">2.系统管理</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>9 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="进程查看命令"><a class="markdownIt-Anchor" href="#进程查看命令"></a> 进程查看命令</h1>
+<p>查询系统上正在运行的进程，可以使用 <code>ps</code> 命令。常用参数如下：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-A</td>
+<td>显示所有进程</td>
+</tr>
+<tr>
+<td>-a</td>
+<td>不与终端有关的所有进程</td>
+</tr>
+<tr>
+<td>-u</td>
+<td>与有效用户相关的进程</td>
+</tr>
+<tr>
+<td>x</td>
+<td>通常与 a 参数一起使用，可列出较完整信息</td>
+</tr>
+<tr>
+<td>l</td>
+<td>将 PID 信息较详细列出来</td>
+</tr>
+<tr>
+<td>j</td>
+<td>工作的格式（jobs format）</td>
+</tr>
+<tr>
+<td>-f</td>
+<td>生成更为完整的输出</td>
+</tr>
+</tbody>
+</table>
+<p>要查询与当前登录会话相关的 PID 和相关信息，可以使用 <code>ps -l</code> 命令，如下所示：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">ps</span> <span class="token parameter variable">-l</span>
+F S   <span class="token environment constant">UID</span>    PID   <span class="token environment constant">PPID</span>  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+<span class="token number">4</span> S     <span class="token number">0</span>  <span class="token number">40090</span>  <span class="token number">40085</span>  <span class="token number">0</span>  <span class="token number">80</span>   <span class="token number">0</span> - <span class="token number">28919</span> do_wai pts/0    00:00:00 <span class="token function">bash</span>
+<span class="token number">0</span> S     <span class="token number">0</span>  <span class="token number">40855</span>  <span class="token number">40090</span>  <span class="token number">0</span>  <span class="token number">80</span>   <span class="token number">0</span> - <span class="token number">27024</span> wait_w pts/0    00:00:00 <span class="token function">tail</span>
+<span class="token number">0</span> R     <span class="token number">0</span>  <span class="token number">42025</span>  <span class="token number">40090</span>  <span class="token number">0</span>  <span class="token number">80</span>   <span class="token number">0</span> - <span class="token number">38332</span> -      pts/0    00:00:00 <span class="token function">ps</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>结果仅显示与当前操作环境（bash）相关的进程。表格中各选项的含义如下：</p>
+<table>
+<thead>
+<tr>
+<th><strong>表头</strong></th>
+<th><strong>例值</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F</td>
+<td>4</td>
+<td>4：表示此进程权限为root；<br />1：表示此子进程仅可进行复制（fork）而不能执行（exec）。</td>
+</tr>
+<tr>
+<td>S</td>
+<td>S</td>
+<td>R（Runing）：程序正在运行；<br />I（Idle）：空闲，超过20秒的睡眠；<br />S（Sleep）：进程目前正在睡眠状态（idle），但可被唤醒（signal）；<br />D：不可被唤醒的睡眠状态，可能在等到I/O的情况；<br />T：停止状态，可能在工作控制（后台暂停）或除错（traced）；<br />Z（Zombie）：僵尸进程，进程已经被终止但无法被移出内存。</td>
+</tr>
+<tr>
+<td>UID/PID/PPID</td>
+<td>0/40090/40085</td>
+<td>代表进程被该UID所拥有/进程PID/父进程PID。</td>
+</tr>
+<tr>
+<td>C</td>
+<td>0</td>
+<td>代表 CPU 使用率，单位是百分比。</td>
+</tr>
+<tr>
+<td>PRI/NI</td>
+<td>80/0</td>
+<td>Priority/Nice 的缩写，代表进程执行优先级，越小优先级越高。</td>
+</tr>
+<tr>
+<td>ADDR</td>
+<td>-</td>
+<td>指出该进程在内存的虚拟地址，running 中的进程显示-。</td>
+</tr>
+<tr>
+<td>SZ</td>
+<td>28919</td>
+<td>代表此进程占用多少物理内存。</td>
+</tr>
+<tr>
+<td>WCHAN</td>
+<td>do_wai</td>
+<td>表示目前进程是否运行在，运行中显示-。</td>
+</tr>
+<tr>
+<td>TTY</td>
+<td>pts/0</td>
+<td>用户终端位置，远程登录使用动态终端接口(pts/n)，守护进程显示?。</td>
+</tr>
+<tr>
+<td>TIME</td>
+<td>00:00:00</td>
+<td>使用掉的 CPU 时间，指进程实际花费 CPU 运行的时间。</td>
+</tr>
+<tr>
+<td>CMD</td>
+<td>bash</td>
+<td>command 的缩写，正在执行的命令名称。</td>
+</tr>
+</tbody>
+</table>
+<p>另外，如果看到的 <code>bash</code> 状态为 S，则是因为它触发了 <code>ps</code>，此时 <code>ps</code> 状态为 R。</p>
+<p>查看系统所有进程可以使用 <code>ps aux</code> 命令组合:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">ps</span> aux <span class="token operator">|</span> <span class="token function">sed</span> <span class="token parameter variable">-n</span> <span class="token string">'1~17p'</span>
+<span class="token environment constant">USER</span>        PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         <span class="token number">21</span>  <span class="token number">0.0</span>  <span class="token number">0.0</span>      <span class="token number">0</span>     <span class="token number">0</span> ?        S<span class="token operator">&lt;</span>   Sep09   <span class="token number">0</span>:00 <span class="token punctuation">[</span>kworker/2:0H<span class="token punctuation">]</span>
+root        <span class="token number">788</span>  <span class="token number">0.0</span>  <span class="token number">0.0</span>      <span class="token number">0</span>     <span class="token number">0</span> ?        S<span class="token operator">&lt;</span>   Sep09   <span class="token number">0</span>:00 <span class="token punctuation">[</span>xfs-log/sda1<span class="token punctuation">]</span>
+root       <span class="token number">1131</span>  <span class="token number">0.0</span>  <span class="token number">0.1</span> <span class="token number">222740</span>  <span class="token number">5640</span> ?        Ssl  Sep09   <span class="token number">0</span>:19 /usr/sbin/rsyslogd <span class="token parameter variable">-n</span>
+root      <span class="token number">11078</span>  <span class="token number">0.0</span>  <span class="token number">0.0</span>      <span class="token number">0</span>     <span class="token number">0</span> ?        S<span class="token operator">&lt;</span>   Sep13   <span class="token number">0</span>:00 <span class="token punctuation">[</span>bioset<span class="token punctuation">]</span>
+root      <span class="token number">40855</span>  <span class="token number">0.0</span>  <span class="token number">0.0</span> <span class="token number">108096</span>   <span class="token number">616</span> pts/0    S    04:07   <span class="token number">0</span>:00 <span class="token function">tail</span> <span class="token parameter variable">-f</span> sh01.sh<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 BSD 选项显示结果表头说明如下:</p>
+<table>
+<thead>
+<tr>
+<th><strong>表头</strong></th>
+<th><strong>例值</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>USER</td>
+<td>root</td>
+<td>该进程所属账号。</td>
+</tr>
+<tr>
+<td>PID</td>
+<td>40855</td>
+<td>进程标识符。</td>
+</tr>
+<tr>
+<td>%CPU</td>
+<td>0.0</td>
+<td>进程使用掉的 CPU 资源百分比。</td>
+</tr>
+<tr>
+<td>%MEM</td>
+<td>0.1</td>
+<td>进程所占用的物理内存百分比。</td>
+</tr>
+<tr>
+<td>VSZ</td>
+<td>108096</td>
+<td>进程使用掉的虚拟内存量（KB）。</td>
+</tr>
+<tr>
+<td>RSS</td>
+<td>616</td>
+<td>该进程占用的固定内存量（KB）。</td>
+</tr>
+<tr>
+<td>TTY</td>
+<td>pts/0</td>
+<td>该进程运行的终端，和终端无关显示？</td>
+</tr>
+<tr>
+<td>STAT</td>
+<td>Ssl</td>
+<td><strong>进程主状态</strong>：<br />O（正在运行）R（可运行）/S（休眠）/D（挂起）/T（停止）/Z（僵尸进程）<br /><strong>进程副状态</strong>：<br />&lt;（运行在高优先级上）/N（运行在低优先级上）/L（该进程所有页面锁定在内存中）/s（该进程是控制进程）/l（该进程是多线程）/+（该进程运行在前台）。</td>
+</tr>
+<tr>
+<td>START</td>
+<td>04:07</td>
+<td>该进程被触发的启动时间。</td>
+</tr>
+<tr>
+<td>TIME</td>
+<td>0:19</td>
+<td>该进程被触发启动的时间。</td>
+</tr>
+<tr>
+<td>COMMAND</td>
+<td>tail -f</td>
+<td>该进程的实际命令。</td>
+</tr>
+</tbody>
+</table>
+<p>想要更直观展示进程间的关系，可以使用命令组合<code>ps axjf</code>将结果用进程树显示:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">ps</span> axjf
+  <span class="token environment constant">PPID</span>    PID   PGID    SID TTY       TPGID STAT   <span class="token environment constant">UID</span>   TIME COMMAND
+     <span class="token number">0</span>      <span class="token number">2</span>      <span class="token number">0</span>      <span class="token number">0</span> ?            <span class="token parameter variable">-1</span> S        <span class="token number">0</span>   <span class="token number">0</span>:00 <span class="token punctuation">[</span>kthreadd<span class="token punctuation">]</span>
+     <span class="token number">1</span>    <span class="token number">897</span>    <span class="token number">897</span>    <span class="token number">897</span> ?            <span class="token parameter variable">-1</span> Ss       <span class="token number">0</span>   <span class="token number">0</span>:00 login -- root
+   <span class="token number">897</span> <span class="token number">104660</span> <span class="token number">104660</span> <span class="token number">104660</span> tty1     <span class="token number">104660</span> Ss+      <span class="token number">0</span>   <span class="token number">0</span>:00  <span class="token punctuation">\</span>_ <span class="token parameter variable">-bash</span>
+     <span class="token number">1</span>   <span class="token number">1130</span>   <span class="token number">1130</span>   <span class="token number">1130</span> ?            <span class="token parameter variable">-1</span> Ss       <span class="token number">0</span>   <span class="token number">0</span>:00 /usr/sbin/sshd <span class="token parameter variable">-D</span>
+  <span class="token number">1130</span>  <span class="token number">40085</span>  <span class="token number">40085</span>  <span class="token number">40085</span> ?            <span class="token parameter variable">-1</span> Ss       <span class="token number">0</span>   <span class="token number">0</span>:00  <span class="token punctuation">\</span>_ sshd: root@pts/0
+<span class="token number">40085</span>  <span class="token number">40090</span>  <span class="token number">40090</span>  <span class="token number">40090</span> pts/0     <span class="token number">43864</span> Ss       <span class="token number">0</span>   <span class="token number">0</span>:00      <span class="token punctuation">\</span>_ <span class="token parameter variable">-bash</span>
+<span class="token number">40090</span>  <span class="token number">40855</span>  <span class="token number">40855</span>  <span class="token number">40090</span> pts/0     <span class="token number">43864</span> S        <span class="token number">0</span>   <span class="token number">0</span>:00          <span class="token punctuation">\</span>_ <span class="token function">tail</span> <span class="token parameter variable">-f</span> sh01.sh
+<span class="token number">40090</span>  <span class="token number">43864</span>  <span class="token number">43864</span>  <span class="token number">40090</span> pts/0     <span class="token number">43864</span> R+       <span class="token number">0</span>   <span class="token number">0</span>:00          <span class="token punctuation">\</span>_ <span class="token function">ps</span> axjf<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>更方便展示进程树用<code>pstree</code>命令:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 thin1<span class="token punctuation">]</span>$ pstree <span class="token parameter variable">-Apu</span>
+systemd<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>-+-NetworkManager<span class="token punctuation">(</span><span class="token number">881</span><span class="token punctuation">)</span>-+-<span class="token punctuation">&#123;</span>NetworkManager<span class="token punctuation">&#125;</span><span class="token punctuation">(</span><span class="token number">905</span><span class="token punctuation">)</span>
+           <span class="token operator">|</span>                     <span class="token variable"><span class="token variable">`</span>-<span class="token punctuation">&#123;</span>NetworkManager<span class="token punctuation">&#125;</span><span class="token punctuation">(</span><span class="token number">909</span><span class="token punctuation">)</span>
+           <span class="token operator">|</span>-VGAuthService<span class="token punctuation">(</span><span class="token number">867</span><span class="token punctuation">)</span>
+           <span class="token operator">|</span>-atd<span class="token punctuation">(</span><span class="token number">27679</span><span class="token punctuation">)</span>
+           <span class="token operator">|</span>-auditd<span class="token punctuation">(</span><span class="token number">843</span><span class="token punctuation">)</span>-+-audispd<span class="token punctuation">(</span><span class="token number">62781</span><span class="token punctuation">)</span>-+-sedispatch<span class="token punctuation">(</span><span class="token number">62782</span><span class="token punctuation">)</span>
+           <span class="token operator">|</span>             <span class="token operator">|</span>                <span class="token variable">`</span></span>-<span class="token punctuation">&#123;</span>audispd<span class="token punctuation">&#125;</span><span class="token punctuation">(</span><span class="token number">62783</span><span class="token punctuation">)</span>
+           <span class="token operator">|</span>             `-<span class="token punctuation">&#123;</span>auditd<span class="token punctuation">&#125;</span><span class="token punctuation">(</span><span class="token number">844</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="进程查看工具"><a class="markdownIt-Anchor" href="#进程查看工具"></a> 进程查看工具</h1>
+<p>使用<code>top</code>可以持续监测进程的运行状态。在启动<code>top</code>时可以使用以下参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-d</code></td>
+<td>定义界面刷新时间，默认为5秒</td>
+</tr>
+<tr>
+<td><code>-b</code></td>
+<td>以批次的方式执行<code>top</code>，通常搭配重定向将批处理结果输出到文件</td>
+</tr>
+<tr>
+<td><code>-n</code></td>
+<td>与<code>-b</code>搭配，设定刷新的总次数</td>
+</tr>
+<tr>
+<td><code>-p</code></td>
+<td>指定某个PID进行监测</td>
+</tr>
+</tbody>
+</table>
+<p>在top程序中常用的交互按键如下:</p>
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>?</code></td>
+<td>显示在<code>top</code>中可以输入的按键命令</td>
+</tr>
+<tr>
+<td><code>P</code></td>
+<td>以CPU使用率排序</td>
+</tr>
+<tr>
+<td><code>M</code></td>
+<td>以内存使用量排序</td>
+</tr>
+<tr>
+<td><code>N</code></td>
+<td>以PID排序</td>
+</tr>
+<tr>
+<td><code>T</code></td>
+<td>由该进程使用的CPU时间累积(TIME+)排序</td>
+</tr>
+<tr>
+<td><code>k</code></td>
+<td>给某个PID发送一个信号，相当于<code>kill</code>命令</td>
+</tr>
+<tr>
+<td><code>r</code></td>
+<td>给某个PID重新分配一个<code>nice</code>值</td>
+</tr>
+<tr>
+<td><code>f</code></td>
+<td>设置排序依据</td>
+</tr>
+<tr>
+<td><code>q</code></td>
+<td>退出<code>top</code></td>
+</tr>
+</tbody>
+</table>
+<p>进入<code>top</code>界面查看，按CPU使用率排序是默认选项：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">top</span>
+<span class="token function">top</span> - 05:47:44 up <span class="token number">4</span> days, <span class="token number">14</span>:38,  <span class="token number">2</span> users,  load average: <span class="token number">0.00</span>, <span class="token number">0.01</span>, <span class="token number">0.05</span>
+Tasks: <span class="token number">229</span> total,   <span class="token number">2</span> running, <span class="token number">227</span> sleeping,   <span class="token number">0</span> stopped,   <span class="token number">0</span> zombie
+%Cpu<span class="token punctuation">(</span>s<span class="token punctuation">)</span>:  <span class="token number">0.0</span> us,  <span class="token number">0.0</span> sy,  <span class="token number">0.0</span> ni,100.0 id,  <span class="token number">0.0</span> wa,  <span class="token number">0.0</span> hi,  <span class="token number">0.0</span> si,  <span class="token number">0.0</span> st
+KiB Mem <span class="token builtin class-name">:</span>  <span class="token number">3861280</span> total,  <span class="token number">2434616</span> free,   <span class="token number">278880</span> used,  <span class="token number">1147784</span> buff/cache
+KiB Swap:  <span class="token number">2097148</span> total,  <span class="token number">2097148</span> free,        <span class="token number">0</span> used.  <span class="token number">3277072</span> avail Mem 
+
+   PID <span class="token environment constant">USER</span>      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+     <span class="token number">1</span> root      <span class="token number">20</span>   <span class="token number">0</span>  <span class="token number">193840</span>   <span class="token number">6964</span>   <span class="token number">4200</span> S   <span class="token number">0.3</span>  <span class="token number">0.2</span>   <span class="token number">1</span>:49.89 systemd
+ <span class="token number">10771</span> root      <span class="token number">20</span>   <span class="token number">0</span>       <span class="token number">0</span>      <span class="token number">0</span>      <span class="token number">0</span> S   <span class="token number">0.3</span>  <span class="token number">0.0</span>   <span class="token number">0</span>:51.26 kworker/3:0
+ <span class="token number">46205</span> root      <span class="token number">20</span>   <span class="token number">0</span>  <span class="token number">162104</span>   <span class="token number">2340</span>   <span class="token number">1576</span> R   <span class="token number">0.3</span>  <span class="token number">0.1</span>   <span class="token number">0</span>:00.02 <span class="token function">top</span>
+     <span class="token number">2</span> root      <span class="token number">20</span>   <span class="token number">0</span>       <span class="token number">0</span>      <span class="token number">0</span>      <span class="token number">0</span> S   <span class="token number">0.0</span>  <span class="token number">0.0</span>   <span class="token number">0</span>:00.11 kthreadd
+     <span class="token number">4</span> root       <span class="token number">0</span> <span class="token parameter variable">-20</span>       <span class="token number">0</span>      <span class="token number">0</span>      <span class="token number">0</span> S   <span class="token number">0.0</span>  <span class="token number">0.0</span>   <span class="token number">0</span>:00.00 kworker/0:0H
+     <span class="token number">6</span> root      <span class="token number">20</span>   <span class="token number">0</span>       <span class="token number">0</span>      <span class="token number">0</span>      <span class="token number">0</span> S   <span class="token number">0.0</span>  <span class="token number">0.0</span>   <span class="token number">0</span>:00.01 ksoftirqd/0  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>顶部总共有五行，每个参数用逗号隔开。用上例做说明详细定义。</p>
+<p>第一行（top）：</p>
+<table>
+<thead>
+<tr>
+<th><strong>值</strong></th>
+<th><strong>定义</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>05:47:44 up 4 days, 14:38</td>
+<td>当前时间和系统运行时间4天14小时38分钟</td>
+</tr>
+<tr>
+<td>2 users</td>
+<td>已登录系统的用户数</td>
+</tr>
+<tr>
+<td>load average: 0.00, 0.01, 0.05</td>
+<td>系统在1分钟、5分钟和15分钟内的平均工作负载，多核处理器需要除以核心数</td>
+</tr>
+</tbody>
+</table>
+<p>第二行（Tasks）：</p>
+<table>
+<thead>
+<tr>
+<th><strong>值</strong></th>
+<th><strong>定义</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>229 total</td>
+<td>当前进程总数</td>
+</tr>
+<tr>
+<td>2 running, 227 sleeping, 0 stopped, 0 zombie</td>
+<td>运行状态为运行中（r）、睡眠中（s）、停止（t）和僵尸（z）的进程树数量</td>
+</tr>
+</tbody>
+</table>
+<p>第三行（%Cpu(s)）多核处理器可以使用数字键1来切换不同CPU的负载率：</p>
+<table>
+<thead>
+<tr>
+<th><strong>值</strong></th>
+<th><strong>定义</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0.0 us</td>
+<td>用户空间占用CPU</td>
+</tr>
+<tr>
+<td>0.1 sy</td>
+<td>内核空间占用CPU</td>
+</tr>
+<tr>
+<td>0.0 ni</td>
+<td>用户进程空间内改变过优先级的进程占用CPU百分比</td>
+</tr>
+<tr>
+<td>99.9 id</td>
+<td>空闲CPU百分比</td>
+</tr>
+<tr>
+<td>0.0 wa</td>
+<td>等待输入输出的CPU时间百分比，磁盘读写速度造成的卡顿体现在此</td>
+</tr>
+<tr>
+<td>0.0 hi</td>
+<td>硬件CPU中断占用百分比</td>
+</tr>
+<tr>
+<td>0.0 si</td>
+<td>软中断占用百分比</td>
+</tr>
+<tr>
+<td>0.0 st</td>
+<td>虚拟机占用百分比</td>
+</tr>
+</tbody>
+</table>
+<p>第四行（KiB Mem）：</p>
+<table>
+<thead>
+<tr>
+<th><strong>值</strong></th>
+<th><strong>定义</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3861280 total</td>
+<td>物理内存总量</td>
+</tr>
+<tr>
+<td>2434616 free</td>
+<td>空闲内存总量</td>
+</tr>
+<tr>
+<td>278880 used</td>
+<td>使用中的物理内存总量</td>
+</tr>
+<tr>
+<td>1147784 buff/cache</td>
+<td>作为内核缓存的内存量</td>
+</tr>
+</tbody>
+</table>
+<p>第五行（KiB Swap）：</p>
+<table>
+<thead>
+<tr>
+<th><strong>值</strong></th>
+<th><strong>定义</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2097148 total</td>
+<td>交换空间总量</td>
+</tr>
+<tr>
+<td>2097148 free</td>
+<td>交换空间空闲量</td>
+</tr>
+<tr>
+<td>0 used</td>
+<td>交换空间使用量</td>
+</tr>
+<tr>
+<td>3277072 avail Mem</td>
+<td>可用内存</td>
+</tr>
+</tbody>
+</table>
+<h1 id="进程管理"><a class="markdownIt-Anchor" href="#进程管理"></a> 进程管理</h1>
+<p>使用 <code>kill</code> 命令可以将 <code>signal</code> 传送给某个工作或 <code>PID</code>：<code>kill -signal PID</code></p>
+<p><code>kill</code> 参数可使用的信号(<code>signal</code>)能用 <code>kill -l</code> 查询，常用的有：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-1</td>
+<td>重新读取一次参数的配置文件，类似<code>reload</code>重新启动</td>
+</tr>
+<tr>
+<td>-2</td>
+<td>中断信号，与[Ctrl]+c发出的一样</td>
+</tr>
+<tr>
+<td>-9</td>
+<td>立刻强制中断一个进程运行</td>
+</tr>
+<tr>
+<td>-15</td>
+<td>以正常的程序方式终止进程(默认信号)</td>
+</tr>
+<tr>
+<td>-19</td>
+<td>暂停进程，与[Ctrl]+z发出的一样</td>
+</tr>
+</tbody>
+</table>
+<p><code>kill</code>的目标可以是<code>PID</code>（直接输入数字）也可以是后台工作号码(<code>%n</code>)。例如将后台第3个任务终止：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">kill</span> %2 <span class="token punctuation">;</span> <span class="token function">jobs</span>
+<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>+  Stopped                 <span class="token function">tail</span> <span class="token parameter variable">-f</span> root1.txt
+<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span>   Running                 <span class="token function">tail</span> <span class="token parameter variable">-f</span> root.txt <span class="token operator">&amp;</span>
+<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span>-  Running                 <span class="token function">tail</span> <span class="token parameter variable">-f</span> list_error.txt <span class="token operator">&amp;</span>
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">kill</span> %2 <span class="token punctuation">;</span> <span class="token function">jobs</span>
+-bash: kill: <span class="token punctuation">(</span><span class="token number">37698</span><span class="token punctuation">)</span> - No such process
+<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>+  Stopped                 <span class="token function">tail</span> <span class="token parameter variable">-f</span> root1.txt
+<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span>   Terminated              <span class="token function">tail</span> <span class="token parameter variable">-f</span> root.txt
+<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span>-  Running                 <span class="token function">tail</span> <span class="token parameter variable">-f</span> list_error.txt <span class="token operator">&amp;</span>
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">kill</span> %2 <span class="token punctuation">;</span> <span class="token function">jobs</span>
+-bash: kill: %2: no such job
+<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>+  Stopped                 <span class="token function">tail</span> <span class="token parameter variable">-f</span> root1.txt
+<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span>-  Running                 <span class="token function">tail</span> <span class="token parameter variable">-f</span> list_error.txt <span class="token operator">&amp;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到工作状态由<code>Running</code>转为<code>Terminated</code>，最后消失在后台工作列表中。</p>
+<p>加入<code>-2</code>发送中断信号：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">kill</span> <span class="token parameter variable">-2</span> %3<span class="token punctuation">;</span><span class="token function">jobs</span>
+-bash: kill: <span class="token punctuation">(</span><span class="token number">37916</span><span class="token punctuation">)</span> - No such process
+<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>+  Stopped                 <span class="token function">tail</span> <span class="token parameter variable">-f</span> root1.txt
+<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span>-  Interrupt               <span class="token function">tail</span> <span class="token parameter variable">-f</span> list_error.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>工作状态先变为<code>Interrupt</code>，然后再消失。</p>
+<p>使用<code>-9</code>强制结束工作：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">kill</span> <span class="token parameter variable">-9</span> %4 <span class="token punctuation">;</span> <span class="token function">jobs</span>
+-bash: kill: <span class="token punctuation">(</span><span class="token number">39089</span><span class="token punctuation">)</span> - No such process
+<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>+  Stopped                 <span class="token function">tail</span> <span class="token parameter variable">-f</span> root1.txt
+<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span>   Running                 <span class="token function">tail</span> <span class="token parameter variable">-f</span> root.txt <span class="token operator">&amp;</span>
+<span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">]</span>-  Killed                  <span class="token function">tail</span> <span class="token parameter variable">-f</span> root.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>工作状态先变为<code>killed</code>，然后消失。</p>
+<p>还可以通过<code>pkill</code>命令来将所有某个命令名称启动的进程全部删除。例如关闭<code>http</code>相关的进程：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ <span class="token function">pkill</span> <span class="token parameter variable">-ec</span> http
+httpd killed <span class="token punctuation">(</span>pid <span class="token number">6860</span><span class="token punctuation">)</span>
+httpd killed <span class="token punctuation">(</span>pid <span class="token number">6861</span><span class="token punctuation">)</span>
+httpd killed <span class="token punctuation">(</span>pid <span class="token number">6862</span><span class="token punctuation">)</span>
+httpd killed <span class="token punctuation">(</span>pid <span class="token number">6863</span><span class="token punctuation">)</span>
+httpd killed <span class="token punctuation">(</span>pid <span class="token number">6864</span><span class="token punctuation">)</span>
+<span class="token number">5</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>用<code>killall</code>命令也可以达到<code>pkill</code>同样的效果：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 thin1<span class="token punctuation">]</span>$ <span class="token function">killall</span> <span class="token parameter variable">-1</span> rsyslogd<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="进程优先级"><a class="markdownIt-Anchor" href="#进程优先级"></a> 进程优先级</h1>
+<p>程序优先执行序（PRI，Priority），值越低代表执行越优先，PRI值由内核动态调整，用户无法直接调整PRI值。</p>
+<p>用户能调整的是<code>nice</code>值，<code>nice</code>值与<code>pri</code>值求和得出程序实际优先值。<code>nice</code>值的设置规则：</p>
+<ul>
+<li><code>nice</code>值可调整范围为-20~19；</li>
+<li><code>root</code>可以随意调整他人进程<code>nice</code>值；</li>
+<li>一般用户只能调整自己进程的<code>nice</code>值，范围是0~19；</li>
+</ul>
+<p>用<code>nice</code>命令能在程序启动时设置<code>nice</code>值。例如以-10的<code>nice</code>值启动<code>top</code>:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">nice</span> <span class="token parameter variable">-n</span> <span class="token parameter variable">-10</span> <span class="token function">top</span> <span class="token parameter variable">-d</span> <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>对已存在的进程除了可以用<code>top</code>设置外，还能用<code>renice</code>命令重新调整。例如调整<code>bash</code>的<code>nice</code>值为10：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">renice</span> <span class="token number">10</span> <span class="token number">104660</span>
+<span class="token number">104660</span> <span class="token punctuation">(</span>process ID<span class="token punctuation">)</span> old priority <span class="token number">0</span>, new priority <span class="token number">10</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>修改了<code>bash</code>的<code>nice</code>值后，使用<code>bash</code>运行的命令也会继承这一<code>nice</code>值。也就是<code>nice</code>会由父程序传递给子程序。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/1804980384/" title="Linux 进程管理">https://blog.x2b.net/1804980384/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../517799084/" rel="prev" title="Linux 工作控制">
+                  <i class="fa fa-chevron-left"></i> Linux 工作控制
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../741506456/" rel="next" title="Linux 查询系统信息">
+                  Linux 查询系统信息 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">66k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:41</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes 1.21
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@next-theme/pjax@0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://unpkg.com/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://unpkg.com/katex@0.16.4/dist/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/1804980384/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://unpkg.com/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'blog.x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>

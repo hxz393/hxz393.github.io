@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="日志系统 日志记录简单来说就是记录系统何时由哪个程序做了什么行为，发生了什么事件等等。 常见日志文件有下面一些：  &#x2F;var&#x2F;log&#x2F;boot.log：开机硬件检测产生的记录信息，在 CentOS 合并到了 dmesg 中。 &#x2F;var&#x2F;log&#x2F;cron：记录 crontab 调度工作运行情况。 &#x2F;var&#x2F;log&#x2F;dmesg：记录开机检测信息。 &#x2F;var&#x2F;log&#x2F;lastlog：记录系统上所有账号">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 日志管理">
+<meta property="og:url" content="https://blog.x2b.net/808925609/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="日志系统 日志记录简单来说就是记录系统何时由哪个程序做了什么行为，发生了什么事件等等。 常见日志文件有下面一些：  &#x2F;var&#x2F;log&#x2F;boot.log：开机硬件检测产生的记录信息，在 CentOS 合并到了 dmesg 中。 &#x2F;var&#x2F;log&#x2F;cron：记录 crontab 调度工作运行情况。 &#x2F;var&#x2F;log&#x2F;dmesg：记录开机检测信息。 &#x2F;var&#x2F;log&#x2F;lastlog：记录系统上所有账号">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-09-19T07:56:17.000Z">
+<meta property="article:modified_time" content="2023-04-30T07:02:59.579Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/808925609/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/808925609/","path":"808925609/","title":"Linux 日志管理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Linux 日志管理 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">4</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">30</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.</span> <span class="nav-text"> 日志系统</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%A5%E5%BF%97%E8%A7%84%E8%8C%83"><span class="nav-number">2.</span> <span class="nav-text"> 日志规范</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%A5%E5%BF%97%E6%94%B6%E9%9B%86"><span class="nav-number">3.</span> <span class="nav-text"> 日志收集</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%A5%E5%BF%97%E8%BD%AE%E6%9B%BF"><span class="nav-number">4.</span> <span class="nav-text"> 日志轮替</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%A5%E5%BF%97%E6%9F%A5%E8%AF%A2"><span class="nav-number">5.</span> <span class="nav-text"> 日志查询</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90"><span class="nav-number">6.</span> <span class="nav-text"> 日志分析</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.douban.com/people/Cyber.DraFonS" title="https:&#x2F;&#x2F;www.douban.com&#x2F;people&#x2F;Cyber.DraFonS" rel="noopener external nofollow noreferrer" target="_blank">豆瓣</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/808925609/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Linux 日志管理 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux 日志管理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-09-19 15:56:17" itemprop="dateCreated datePublished" datetime="2021-09-19T15:56:17+08:00">2021-09-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-04-30 15:02:59" itemprop="dateModified" datetime="2023-04-30T15:02:59+08:00">2023-04-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/2-%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">2.系统管理</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.7k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>9 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="日志系统"><a class="markdownIt-Anchor" href="#日志系统"></a> 日志系统</h1>
+<p>日志记录简单来说就是记录系统何时由哪个程序做了什么行为，发生了什么事件等等。</p>
+<p>常见日志文件有下面一些：</p>
+<ul>
+<li><code>/var/log/boot.log</code>：开机硬件检测产生的记录信息，在 CentOS 合并到了 <code>dmesg</code> 中。</li>
+<li><code>/var/log/cron</code>：记录 <code>crontab</code> 调度工作运行情况。</li>
+<li><code>/var/log/dmesg</code>：记录开机检测信息。</li>
+<li><code>/var/log/lastlog</code>：记录系统上所有账号最近一次登录的信息。</li>
+<li><code>/var/log/maillog</code>：记录邮件的往来信息。</li>
+<li><code>/var/log/messages</code>：记录所有错误与重要信息。</li>
+<li><code>/var/log/secure</code>：记录账号登录验证信息。</li>
+<li><code>/var/log/wtmp</code>，<code>/var/log/faillog</code>：记录正确登录与错误登录时的账号信息。</li>
+<li><code>/var/log/服务名</code>：不同服务会使用各自的目录记录日志。</li>
+</ul>
+<p>系统提供日志记录相关的服务有：</p>
+<ul>
+<li><code>systemd-journald.service</code>：由 <code>systemd</code> 提供的日志系统；</li>
+<li><code>rsyslog.service</code>：主要登录系统与网络等服务的信息；</li>
+<li><code>logrotate</code>：对日志文件进行轮替处理。</li>
+</ul>
+<p>日志文件记录内容由四段组成：</p>
+<ul>
+<li>事件发生的时间与日期；</li>
+<li>发生此事件的主机名称；</li>
+<li>启动此事件的服务名称或命令与函数名；</li>
+<li>信息的实际内容。</li>
+</ul>
+<h1 id="日志规范"><a class="markdownIt-Anchor" href="#日志规范"></a> 日志规范</h1>
+<p>rsyslog 的配置文件位于 <code>/etc/rsyslog.conf</code>，可以配置服务、日志等级和日志存放位置：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/rsyslog.conf 
+<span class="token variable">$ModLoad</span> imuxsock <span class="token comment"># provides support for local system logging (e.g. via logger command)</span>
+<span class="token variable">$ModLoad</span> imjournal <span class="token comment"># provides access to the systemd journal</span>
+<span class="token variable">$WorkDirectory</span> /var/lib/rsyslog
+<span class="token variable">$IncludeConfig</span> /etc/rsyslog.d/*.conf
+mail.*                                                  -/var/log/maillog
+uucp,news.crit                                          /var/log/spooler<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Linux 的 syslog 有规范服务类型如下：</p>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>类别</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>kernel</td>
+<td>内核产生日志，比如硬件检测和内核功能启用</td>
+</tr>
+<tr>
+<td>1</td>
+<td>user</td>
+<td>使用者层级产生的日志</td>
+</tr>
+<tr>
+<td>2</td>
+<td>mail</td>
+<td>与邮件收发者有关的日志</td>
+</tr>
+<tr>
+<td>3</td>
+<td>daemon</td>
+<td>系统服务产生的日志</td>
+</tr>
+<tr>
+<td>4</td>
+<td>auth</td>
+<td>与认证/授权有关的日志</td>
+</tr>
+<tr>
+<td>5</td>
+<td>syslog</td>
+<td>rsyslogd 程序产生的日志</td>
+</tr>
+<tr>
+<td>6</td>
+<td>lpr</td>
+<td>与打印相关的日志</td>
+</tr>
+<tr>
+<td>7</td>
+<td>news</td>
+<td>与新闻组服务有关日志</td>
+</tr>
+<tr>
+<td>8</td>
+<td>uucp</td>
+<td>Unix to Unix Copy Protocol，早期 Unix 系统间程序数据交换日志</td>
+</tr>
+<tr>
+<td>9</td>
+<td>cron</td>
+<td>与工作调度有关日志</td>
+</tr>
+<tr>
+<td>10</td>
+<td>authpriv</td>
+<td>与 auth 类似，但记录较多私人信息，包括 pam 模块的运行等</td>
+</tr>
+<tr>
+<td>11</td>
+<td>ftp</td>
+<td>与 FTP 通讯协议有关的日志</td>
+</tr>
+<tr>
+<td>16~23</td>
+<td>local0~7</td>
+<td>保留给本机用户使用的一些日志文件信息，较常与终端机互动</td>
+</tr>
+</tbody>
+</table>
+<p>日志等级有八级，根据 syslog.h 的定义如下：</p>
+<table>
+<thead>
+<tr>
+<th>等级数值</th>
+<th>等级名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7</td>
+<td>debug</td>
+<td>Debug 时产生的日志</td>
+</tr>
+<tr>
+<td>6</td>
+<td>info</td>
+<td>一些基本运行记录</td>
+</tr>
+<tr>
+<td>5</td>
+<td>notice</td>
+<td>正常提示信息</td>
+</tr>
+<tr>
+<td>4</td>
+<td>warning (warn)</td>
+<td>警示信息，可能有问题，但还不至于影响服务运行</td>
+</tr>
+<tr>
+<td>3</td>
+<td>err (error)</td>
+<td>重大错误信息，例如配置文件错误导致的服务不能启动</td>
+</tr>
+<tr>
+<td>2</td>
+<td>crit</td>
+<td>致命错误信息</td>
+</tr>
+<tr>
+<td>1</td>
+<td>alert</td>
+<td>告警信息</td>
+</tr>
+<tr>
+<td>0</td>
+<td>emerg (panic)</td>
+<td>紧急级别，意味着出现了硬件问题导致系统无法运行</td>
+</tr>
+</tbody>
+</table>
+<p>在服务名和日志等级之间使用符号进行设置：</p>
+<ul>
+<li>. ：代表比后面等级更严重的日志都会被记录下来；</li>
+<li>.= ：代表只记录后面等级的日志；</li>
+<li>.! ：代表除该等级以外的其他等级日志都被记录。</li>
+</ul>
+<p>如果是 <code>*.emerg</code> 的写法，则代表所有程序的 <code>emerg</code> 等级的日志。</p>
+<p>在日志文件记录位置前的减号 <code>-</code> 代表日志会先放到内存中缓存，直到达到一定大小才会写入到硬盘。</p>
+<p>例如，要在 <code>/var/log/messages</code> 中排除掉 <code>news</code> 和 <code>mail</code> 的日志，可以设置为：</p>
+<p><code>*,*;news,mail.none   /var/log/messages</code></p>
+<p>或者：</p>
+<p><code>*.*;news.none;mail.none  /var/log/messages</code></p>
+<p>设置好记录规则后，需要重启 rsyslog 服务才能生效。</p>
+<p>注意，如果在记录中的日志文件被其他程序打开并修改，rsyslog 将不会再向这个日志文件中写入新内容，此时也需要重启 rsyslog 服务才能恢复。</p>
+<p>如果实在要向日志文件中插入数据，可以使用 <code>logger</code> 命令，用法为：<code>logger [-p 服务名称.日志等级] &quot;内容&quot;</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ logger <span class="token parameter variable">-p</span> user.info <span class="token string">"msg from logger"</span>
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ journalctl <span class="token parameter variable">-f</span>
+Sep <span class="token number">19</span> 06:34:57 101c7 root<span class="token punctuation">[</span><span class="token number">10003</span><span class="token punctuation">]</span>: msg from logger<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>这通常写在脚本中用来记录时间戳。</p>
+<h1 id="日志收集"><a class="markdownIt-Anchor" href="#日志收集"></a> 日志收集</h1>
+<p>rsyslogd 具有日志收集功能，也就是用一台主机做服务端，收集客户端发送的日志。</p>
+<p>日志收集功能需要手动启用，可以在 <code>/etc/rsyslog.conf</code> 中修改相关配置。例如，在服务端：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/rsyslog.conf
+<span class="token comment"># Provides UDP syslog reception</span>
+<span class="token comment">#$ModLoad imudp</span>
+<span class="token comment">#$UDPServerRun 514</span>
+
+<span class="token comment"># Provides TCP syslog reception</span>
+<span class="token variable">$ModLoad</span> imtcp
+<span class="token variable">$InputTCPServerRun</span> <span class="token number">514</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如上所示，开启了通过TCP传输日志，监听端口514。重启服务以使设置生效。</p>
+<p>对于客户端，只需在 <code>/etc/rsyslog.conf</code> 文件中设置一条记录，将日志文件发送到服务端。例如，如果服务端IP地址为192.168.2.234，则可以这样设置：<code>*.* @@192.168.2.234</code>。</p>
+<p>重启后生效，服务端接收的日志内容中的第二段会标明日志发送的来源主机。</p>
+<h1 id="日志轮替"><a class="markdownIt-Anchor" href="#日志轮替"></a> 日志轮替</h1>
+<p>执行日志轮替操作的程序 <code>logrotate</code> 会定期将旧有日志文件重命名，再建立一个空的新文件来写入新日志。</p>
+<p>由于是定期执行，所以可以到 <code>/etc/cron.daily</code> 中查看定时任务内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/cron.daily/logrotate 
+<span class="token comment">#!/bin/sh</span>
+
+/usr/sbin/logrotate <span class="token parameter variable">-s</span> /var/lib/logrotate/logrotate.status /etc/logrotate.conf
+<span class="token assign-left variable">EXITVALUE</span><span class="token operator">=</span><span class="token variable">$?</span>
+<span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token variable">$EXITVALUE</span> <span class="token operator">!=</span> <span class="token number">0</span> <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+    /usr/bin/logger <span class="token parameter variable">-t</span> <span class="token function">logrotate</span> <span class="token string">"ALERT exited abnormally with [<span class="token variable">$EXITVALUE</span>]"</span>
+<span class="token keyword">fi</span>
+<span class="token builtin class-name">exit</span> <span class="token number">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在执行脚本中调用了配置文件 <code>/etc/logrotate.conf</code>，它用来在没有指定参数的情况下作为默认值使用：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/logrotate.conf 
+<span class="token comment"># see "man logrotate" for details</span>
+<span class="token comment"># rotate log files weekly</span>
+weekly
+
+<span class="token comment"># keep 4 weeks worth of backlogs</span>
+rotate <span class="token number">4</span>
+
+<span class="token comment"># create new (empty) log files after rotating old ones</span>
+create
+
+<span class="token comment"># use date as a suffix of the rotated file</span>
+dateext
+
+<span class="token comment"># uncomment this if you want your log files compressed</span>
+<span class="token comment">#compress</span>
+
+<span class="token comment"># RPM packages drop log rotation information into this directory</span>
+include /etc/logrotate.d
+
+<span class="token comment"># no packages own wtmp and btmp -- we'll rotate them here</span>
+/var/log/wtmp <span class="token punctuation">&#123;</span>
+    monthly
+    create 0664 root utmp
+        minsize 1M
+    rotate <span class="token number">1</span>
+<span class="token punctuation">&#125;</span>
+
+/var/log/btmp <span class="token punctuation">&#123;</span>
+    missingok
+    monthly
+    create 0600 root utmp
+    rotate <span class="token number">1</span>
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>由配置文件注释可以得知目前的设置为：每周进行一次轮替工作，保留最多四个记录，轮替后创建新的空文件作日志记录，被轮替文件名上加日期，不压缩日志，读取 <code>/etc/logrotate.d</code> 目录内的配置文件。</p>
+<p>下面以 <code>&#123;&#125;</code> 括起来的段落是针对不同文件的单独配置，例如针对 <code>wtmp</code>，轮替周期为月而不是周，指定新建文件的权限与所属，文件大小超过1M才进行轮替（比时间条件优先），最后是只保留一个记录。</p>
+<p>再看看保存在 <code>/etc/logrotate.d</code> 中针对个别程序的独立设置：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/logrotate.d/syslog 
+/var/log/cron
+/var/log/maillog
+/var/log/messages
+/var/log/secure
+/var/log/spooler
+<span class="token punctuation">&#123;</span>
+    missingok
+    sharedscripts
+    postrotate
+        /bin/kill <span class="token parameter variable">-HUP</span> <span class="token variable"><span class="token variable">`</span><span class="token function">cat</span> /var/run/syslogd.pid <span class="token operator"><span class="token file-descriptor important">2</span>></span> /dev/null<span class="token variable">`</span></span> <span class="token operator"><span class="token file-descriptor important">2</span>></span> /dev/null <span class="token operator">||</span> <span class="token boolean">true</span>
+    endscript
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>logrotate 配置文件基本写法如下：</p>
+<ul>
+<li>文件名：以绝对路径写在最前面，可以每行一个表示处理多个日志文件。</li>
+<li>参数：用 <code>&#123;&#125;</code> 括起来。</li>
+<li>执行脚本：可调用外部命令，需要写入 <code>sharedscripts...endscript</code> 里面。可以用 <code>prerotate/postrotate</code> 表示执行命令的时机在启动 logrotate 之前/之后。这个特性可以用于处理加上特殊属性的文件。例如处理 messages 文件上的追加属性。</li>
+</ul>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/logrotate.d/syslog 
+/var/log/cron
+/var/log/maillog
+/var/log/messages
+/var/log/secure
+/var/log/spooler
+<span class="token punctuation">&#123;</span>
+    missingok
+    sharedscripts
+    prerotate
+        /usr/bin/chattr <span class="token parameter variable">-a</span> /var/log/messages
+    endscript
+    sharedscripts
+    postrotate
+        /bin/kill <span class="token parameter variable">-HUP</span> <span class="token variable"><span class="token variable">`</span><span class="token function">cat</span> /var/run/syslogd.pid <span class="token operator"><span class="token file-descriptor important">2</span>></span> /dev/null<span class="token variable">`</span></span> <span class="token operator"><span class="token file-descriptor important">2</span>></span> /dev/null <span class="token operator">||</span> <span class="token boolean">true</span>
+        /usr/bin/chattr +a /var/log/messages
+    endscript
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>配置修改完毕后可以使用 <code>systemctl reload</code> 来让配置生效，或者手动强制执行一次：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">logrotate</span> <span class="token parameter variable">-vf</span> /etc/logrotate.conf
+reading config <span class="token function">file</span> /etc/logrotate.conf
+including /etc/logrotate.d
+reading config <span class="token function">file</span> bootlog
+reading config <span class="token function">file</span> chrony<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="日志查询"><a class="markdownIt-Anchor" href="#日志查询"></a> 日志查询</h1>
+<p>systemd 使用 <code>systemd-journald.service</code> 服务来记录日志，会记录所有经由 systemd 所管理服务产生的日志。</p>
+<p>由于 <code>systemd-journald</code> 把日志存在内存中，因此重启后上次登录时产生的日志文件都不存在了。可以搭配 <code>rsyslogd</code> 来记录需要的日志。</p>
+<p><code>journalctl</code> 命令使用语法为：<code>journalctl [-nrpf] [--since TIME] [--until TIME] 选项</code></p>
+<p>主要参数和选项为：</p>
+<table>
+<thead>
+<tr>
+<th>参数或选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-n</code></td>
+<td>打印最近的 <code>n</code> 条日志</td>
+</tr>
+<tr>
+<td><code>-r</code></td>
+<td>反向输出，最新的记录在前</td>
+</tr>
+<tr>
+<td><code>-p</code></td>
+<td>只查询指定等级日志</td>
+</tr>
+<tr>
+<td><code>-f</code></td>
+<td>类似 <code>tail -f</code> 来持续输出</td>
+</tr>
+<tr>
+<td><code>--since</code> <code>--until</code></td>
+<td>设置开始与结束时间来筛选日志</td>
+</tr>
+<tr>
+<td><code>_SYSTEMD_UNIT=unit.service</code></td>
+<td>只输出 <code>unit.service</code> 的日志</td>
+</tr>
+<tr>
+<td><code>_COMM=bash</code></td>
+<td>只输出与 <code>bash</code> 有关的日志</td>
+</tr>
+<tr>
+<td><code>_PID=pid</code></td>
+<td>只输出指定 <code>pid</code> 进程的日志</td>
+</tr>
+<tr>
+<td><code>_UID=uid</code></td>
+<td>只输出指定 <code>uid</code> 用户的日志</td>
+</tr>
+<tr>
+<td><code>SYSLOG_FACILITY=[0-23]</code></td>
+<td>使用 <code>syslog.h</code> 规范的服务类型编号来调用数据</td>
+</tr>
+</tbody>
+</table>
+<p>如只查看 9.1 到 9.3 号之间的日志：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ journalctl <span class="token parameter variable">--since</span> <span class="token string">"2020-09-01 00:00:00"</span> <span class="token parameter variable">--until</span> <span class="token string">"2020-09-04 00:00:00"</span>
+-- Logs begin at Sat <span class="token number">2021</span>-09-18 <span class="token number">23</span>:12:47 EDT, end at Sun <span class="token number">2021</span>-09-19 06:01:01 EDT. --<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>查询搜索错误 <code>err</code> 等级日志：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ journalctl <span class="token parameter variable">-p</span> err
+-- Logs begin at Sat <span class="token number">2021</span>-09-18 <span class="token number">23</span>:12:47 EDT, end at Sun <span class="token number">2021</span>-09-19 06:01:01 EDT. --
+Sep <span class="token number">18</span> <span class="token number">23</span>:12:47 101c7 kernel: Detected CPU family 17h model <span class="token number">8</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>只查询和 <code>sshd</code> 服务有关的最近 3 条普通日志：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ journalctl <span class="token assign-left variable">_SYSTEMD_UNIT</span><span class="token operator">=</span>sshd.service <span class="token parameter variable">-n</span> <span class="token number">3</span> <span class="token parameter variable">-p</span> info
+-- Logs begin at Sat <span class="token number">2021</span>-09-18 <span class="token number">23</span>:12:47 EDT, end at Sun <span class="token number">2021</span>-09-19 06:01:01 EDT. --
+Sep <span class="token number">18</span> <span class="token number">23</span>:12:54 101c7 sshd<span class="token punctuation">[</span><span class="token number">2610</span><span class="token punctuation">]</span>: Accepted password <span class="token keyword">for</span> root from <span class="token number">192.168</span>.2.101 port <span class="token number">62528</span> ssh2
+Sep <span class="token number">18</span> <span class="token number">23</span>:12:55 101c7 sshd<span class="token punctuation">[</span><span class="token number">2923</span><span class="token punctuation">]</span>: Accepted password <span class="token keyword">for</span> root from <span class="token number">192.168</span>.2.101 port <span class="token number">59039</span> ssh2
+Sep <span class="token number">18</span> <span class="token number">23</span>:12:55 101c7 sshd<span class="token punctuation">[</span><span class="token number">2956</span><span class="token punctuation">]</span>: Accepted password <span class="token keyword">for</span> root from <span class="token number">192.168</span>.2.101 port <span class="token number">59040</span> ssh2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果想要保存 <code>journalctl</code> 的日志文件，不需要修改 <code>/etc/systemd/journald.conf</code> 文件，只需要在 <code>/var/log/</code> 下面新建一个 <code>journal</code> 的目录并处理一下权限就可以了：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> /var/log/journal
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chown</span> root:systemd-journal /var/log/journal
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> <span class="token number">2775</span> /var/log/journal
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ systemctl restart systemd-journald
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll /var/log/journal<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这样设置以后在 <code>/run/log</code> 下面就不会有相关 <code>journal</code> 日志存在了。</p>
+<h1 id="日志分析"><a class="markdownIt-Anchor" href="#日志分析"></a> 日志分析</h1>
+<p><code>logwatch</code>是 CentOS 7 默认提供的日志文件分析工具，功能为每天定时发送一份邮件给 root 报告昨天系统状态。</p>
+<p>安装完毕后可以直接运行一下计划任务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ /etc/cron.daily/0logwatch 
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ mail
+Heirloom Mail version <span class="token number">12.5</span> <span class="token number">7</span>/5/10.  Type ? <span class="token keyword">for</span> help.
+<span class="token string">"/var/spool/mail/root"</span><span class="token builtin class-name">:</span> <span class="token number">24</span> messages <span class="token number">15</span> unread
+ U <span class="token number">24</span> logwatch@101c7.local  Sun Sep <span class="token number">19</span> 06:46 <span class="token number">183</span>/10954 <span class="token string">"Logwatch for 101c7 (Linux)"</span>
+ <span class="token operator">&amp;</span> <span class="token number">24</span>
+Message <span class="token number">24</span>:
+From root@101c7.localdomain  Sun Sep <span class="token number">19</span> 06:46:51 <span class="token number">2021</span>
+Return-Path: <span class="token operator">&lt;</span>root@101c7.localdomain<span class="token operator">></span>
+X-Original-To: root
+Delivered-To: root@101c7.localdomain
+To: root@101c7.localdomain
+From: logwatch@101c7.localdomain
+Subject: Logwatch <span class="token keyword">for</span> 101c7 <span class="token punctuation">(</span>Linux<span class="token punctuation">)</span>
+Auto-Submitted: auto-generated
+Precedence: bulk
+Content-Type: text/plain<span class="token punctuation">;</span> <span class="token assign-left variable">charset</span><span class="token operator">=</span><span class="token string">"iso-8859-1"</span>
+Date: Sun, <span class="token number">19</span> Sep <span class="token number">2021</span> 06:46:50 <span class="token parameter variable">-0400</span> <span class="token punctuation">(</span>EDT<span class="token punctuation">)</span>
+Status: RO
+
+ 
+ <span class="token comment">################### Logwatch 7.4.0 (03/01/11) #################### </span>
+        Processing Initiated: Sun Sep <span class="token number">19</span> 06:46:50 <span class="token number">2021</span>
+        Date Range Processed: yesterday
+                              <span class="token punctuation">(</span> <span class="token number">2021</span>-Sep-18 <span class="token punctuation">)</span>
+                              Period is day.
+        Detail Level of Output: <span class="token number">0</span>
+        Type of Output/Format: mail / text
+        Logfiles <span class="token keyword">for</span> Host: 101c7<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到非常详细的系统报告。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/808925609/" title="Linux 日志管理">https://blog.x2b.net/808925609/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../741506456/" rel="prev" title="Linux 查询系统信息">
+                  <i class="fa fa-chevron-left"></i> Linux 查询系统信息
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../3511703514/" rel="next" title="Linux 系统设置">
+                  Linux 系统设置 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">66k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:41</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes 1.21
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@next-theme/pjax@0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://unpkg.com/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://unpkg.com/katex@0.16.4/dist/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/808925609/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://unpkg.com/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'blog.x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>
