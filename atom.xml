@@ -558,7 +558,7 @@ Connection successfully activated &lt;span class=&quot;token punctuation&quot;&g
     <link href="https://blog.x2b.net/1224880312/"/>
     <id>https://blog.x2b.net/1224880312/</id>
     <published>2021-09-18T15:12:15.000Z</published>
-    <updated>2023-05-01T09:58:13.623Z</updated>
+    <updated>2023-05-01T09:59:12.051Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;服务定义&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#服务定义&quot;&gt;&lt;/a&gt; 服务定义&lt;/h1&gt;
@@ -567,6 +567,46 @@ Connection successfully activated &lt;span class=&quot;token punctuation&quot;&g
 &lt;p&gt;一般来说，守护进程类型的程序会在文件名末尾加上“d”。&lt;/p&gt;
 &lt;h1 id=&quot;init-脚本管理&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#init-脚本管理&quot;&gt;&lt;/a&gt; Init 脚本管理&lt;/h1&gt;
 &lt;p&gt;SysV（System V）的 init 脚本程序处理方式为：将第一个启动的程序称为 init，然后由 init 去启动其他系统所需服务。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
+    
+    <category term="2.系统管理" scheme="https://blog.x2b.net/categories/Linux/2-%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>SELinux 安全访问控制</title>
+    <link href="https://blog.x2b.net/1359563972/"/>
+    <id>https://blog.x2b.net/1359563972/</id>
+    <published>2021-09-18T07:03:17.000Z</published>
+    <updated>2023-05-01T13:57:05.513Z</updated>
+    
+    
+    <summary type="html">&lt;hr&gt;
+&lt;h1 id=&quot;selinux-介绍&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#selinux-介绍&quot;&gt;&lt;/a&gt; SELinux 介绍&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;SELinux&lt;/code&gt;（Security Enhanced Linux）是在进行程序、文件等权限设置依据的一个内核模块。&lt;/p&gt;
+&lt;p&gt;传统的权限管理方式称为自主访问控制，&lt;code&gt;SELinux&lt;/code&gt;使用的是委托访问控制：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;自主访问控制:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;自主访问控制（&lt;code&gt;DAC&lt;/code&gt;，Discretionary Access Control）是依据进程的所有者与文件资源的&lt;code&gt;rwx&lt;/code&gt;权限来决定文件的访问能力。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;DAC&lt;/code&gt;访问控制的缺陷：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;root&lt;/code&gt;具有最高权限；&lt;/li&gt;
+&lt;li&gt;用户可以取得进程来更改文件资源的访问权限。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;强制访问控制:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;SELinux&lt;/code&gt;导入了强制访问控制（&lt;code&gt;MAC&lt;/code&gt;，Mandatory Access Control）的方法。&lt;code&gt;MAC&lt;/code&gt;可以针对特定的进程与特定的文件资源来进行权限控制，控制的主体变成了进程而不是用户。&lt;/p&gt;
+&lt;p&gt;此外这个主体进程也不能任意使用系统文件资源，因为每个文件资源也有针对该主体进程设置可取用的权限。&lt;/p&gt;
+&lt;p&gt;如此一来可以控制的项目和策略组合非常多，所以&lt;code&gt;SELinux&lt;/code&gt;也提供一些默认的策略，并在该策略内提供多个规则，让用户可以选择是否启用该控制规则。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&quot;selinux-名词&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#selinux-名词&quot;&gt;&lt;/a&gt; SELinux 名词&lt;/h1&gt;</summary>
     
     
     
@@ -713,55 +753,6 @@ F S   &lt;span class=&quot;token environment constant&quot;&gt;UID&lt;/span&gt; 
     <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
     
     <category term="0.基础概论" scheme="https://blog.x2b.net/categories/Linux/0-%E5%9F%BA%E7%A1%80%E6%A6%82%E8%AE%BA/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Linux 工作调度</title>
-    <link href="https://blog.x2b.net/3847284551/"/>
-    <id>https://blog.x2b.net/3847284551/</id>
-    <published>2021-09-18T04:50:00.000Z</published>
-    <updated>2023-04-26T15:47:17.672Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;系统例行性工作&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#系统例行性工作&quot;&gt;&lt;/a&gt; 系统例行性工作&lt;/h1&gt;
-&lt;p&gt;在 Linux 系统常见的例行性任务有：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;进行日志文件的轮替&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Linux 会主动将系统所发生的各种事件都记录到日志文件，日志轮替会不时检查，将旧日志与新日志分别存放。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;日志文件分析&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;CentOS 提供 &lt;code&gt;logwatch&lt;/code&gt; 来主动分析日志信息。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;更新 locate 数据库&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;默认每天都更新一次存放在 &lt;code&gt;/var/lib/mlocate&lt;/code&gt; 中的数据库。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;更新 RPM 软件数据库&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;由于系统中软件经常变更，需要系统帮我们将文件名做个排序记录，生成 RPM 数据库。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;删除临时文件&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;系统通过调用 &lt;code&gt;tmpwatch&lt;/code&gt; 命令来删除软件运行时所产生的不再需要的临时文件。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;与网络服务有关的分析行为&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;如果安装了 WWW 服务器，系统会主动分析软件的入口文件。&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h1 id=&quot;单次工作调度&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#单次工作调度&quot;&gt;&lt;/a&gt; 单次工作调度&lt;/h1&gt;
-&lt;p&gt;单次工作调度任务主要由 atd 服务提供，使用 &lt;code&gt;at&lt;/code&gt; 命令来生成所需要运行的工作，再将工作写入 &lt;code&gt;/var/spool/at&lt;/code&gt; 目录内。&lt;/p&gt;
-&lt;p&gt;可以运行 &lt;code&gt;at&lt;/code&gt; 的账号记录在 &lt;code&gt;/etc/at.allow&lt;/code&gt; 中，禁止运行 &lt;code&gt;at&lt;/code&gt; 的账号记录在 &lt;code&gt;/etc/at.deny&lt;/code&gt; 中。如果两个文件都不存在，则只有 root 可以使用 &lt;code&gt;at&lt;/code&gt; 命令。如果账号在两个文件中都有记录，以 &lt;code&gt;/etc/at.allow&lt;/code&gt; 优先。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
-    
-    <category term="1.基本操作" scheme="https://blog.x2b.net/categories/Linux/1-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/"/>
     
     
   </entry>
