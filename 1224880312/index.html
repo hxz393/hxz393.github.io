@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="服务定义 可以将守护进程（Daemon）和服务（Service）视为同一个东西的不同称呼。 服务是常驻内存中的进程，通常负责提供系统功能以服务用户的各项任务。 一般来说，守护进程类型的程序会在文件名末尾加上“d”。  Init 脚本管理 SysV（System V）的 init 脚本程序处理方式为：将第一个启动的程序称为 init，然后由 init 去启动其他系统所需服务。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 服务管理">
+<meta property="og:url" content="https://blog.x2b.net/1224880312/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="服务定义 可以将守护进程（Daemon）和服务（Service）视为同一个东西的不同称呼。 服务是常驻内存中的进程，通常负责提供系统功能以服务用户的各项任务。 一般来说，守护进程类型的程序会在文件名末尾加上“d”。  Init 脚本管理 SysV（System V）的 init 脚本程序处理方式为：将第一个启动的程序称为 init，然后由 init 去启动其他系统所需服务。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-09-18T15:12:15.000Z">
+<meta property="article:modified_time" content="2023-05-01T09:58:13.623Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/1224880312/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/1224880312/","path":"1224880312/","title":"Linux 服务管理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Linux 服务管理 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">4</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">34</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%AE%9A%E4%B9%89"><span class="nav-number">1.</span> <span class="nav-text"> 服务定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#init-%E8%84%9A%E6%9C%AC%E7%AE%A1%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text"> Init 脚本管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#init-%E7%9A%84%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6%E7%89%B9%E6%80%A7"><span class="nav-number">2.1.</span> <span class="nav-text"> init 的管理机制特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E8%84%9A%E6%9C%AC%E7%9B%AE%E5%BD%95%E9%85%8D%E7%BD%AE"><span class="nav-number">2.2.</span> <span class="nav-text"> 启动脚本目录配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#stand-alone-%E5%90%AF%E5%8A%A8%E6%96%B9%E5%BC%8F"><span class="nav-number">2.3.</span> <span class="nav-text"> Stand Alone 启动方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#super-daemon-%E5%90%AF%E5%8A%A8%E6%96%B9%E5%BC%8F"><span class="nav-number">2.4.</span> <span class="nav-text"> Super Daemon 启动方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E5%BC%80%E6%9C%BA%E5%90%AF%E5%8A%A8"><span class="nav-number">2.5.</span> <span class="nav-text"> 设置开机启动</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#systemd-%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text"> Systemd 服务管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#systemd-%E7%9A%84%E7%89%B9%E6%80%A7"><span class="nav-number">3.1.</span> <span class="nav-text"> Systemd 的特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#systemd-%E4%B8%8E-init-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">3.2.</span> <span class="nav-text"> Systemd 与 Init 的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#systemd-%E7%9A%84-unit-%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.3.</span> <span class="nav-text"> Systemd 的 Unit 类型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#systemctl-%E5%91%BD%E4%BB%A4"><span class="nav-number">4.</span> <span class="nav-text"> Systemctl 命令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2-unit"><span class="nav-number">4.1.</span> <span class="nav-text"> 查询 Unit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%A1%E7%90%86-service-unit"><span class="nav-number">4.2.</span> <span class="nav-text"> 管理 Service Unit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%A1%E7%90%86-target-unit"><span class="nav-number">4.3.</span> <span class="nav-text"> 管理 Target Unit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E6%9C%8D%E5%8A%A1%E4%BE%9D%E8%B5%96"><span class="nav-number">4.4.</span> <span class="nav-text"> 查询服务依赖</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#systemctl-%E9%85%8D%E7%BD%AE"><span class="nav-number">5.</span> <span class="nav-text"> Systemctl 配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#systemd-%E9%85%8D%E7%BD%AE%E7%9B%AE%E5%BD%95"><span class="nav-number">5.1.</span> <span class="nav-text"> Systemd 配置目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#systemctl-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">5.2.</span> <span class="nav-text"> Systemctl 配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E5%A4%8D%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F"><span class="nav-number">5.3.</span> <span class="nav-text"> 重复配置方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#timer-%E7%B1%BB%E5%9E%8B%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">5.4.</span> <span class="nav-text"> timer 类型配置文件</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.douban.com/people/Cyber.DraFonS" title="https:&#x2F;&#x2F;www.douban.com&#x2F;people&#x2F;Cyber.DraFonS" rel="noopener external nofollow noreferrer" target="_blank">豆瓣</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/1224880312/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Linux 服务管理 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux 服务管理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-09-18 23:12:15" itemprop="dateCreated datePublished" datetime="2021-09-18T23:12:15+08:00">2021-09-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-01 17:58:13" itemprop="dateModified" datetime="2023-05-01T17:58:13+08:00">2023-05-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/2-%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">2.系统管理</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>18 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="服务定义"><a class="markdownIt-Anchor" href="#服务定义"></a> 服务定义</h1>
+<p>可以将守护进程（Daemon）和服务（Service）视为同一个东西的不同称呼。</p>
+<p>服务是常驻内存中的进程，通常负责提供系统功能以服务用户的各项任务。</p>
+<p>一般来说，守护进程类型的程序会在文件名末尾加上“d”。</p>
+<h1 id="init-脚本管理"><a class="markdownIt-Anchor" href="#init-脚本管理"></a> Init 脚本管理</h1>
+<p>SysV（System V）的 init 脚本程序处理方式为：将第一个启动的程序称为 init，然后由 init 去启动其他系统所需服务。</p>
+<h2 id="init-的管理机制特性"><a class="markdownIt-Anchor" href="#init-的管理机制特性"></a> init 的管理机制特性</h2>
+<ul>
+<li>
+<p><strong>服务管理方式</strong></p>
+<p>所有服务启动的 bash 脚本均放在 <code>/etc/init.d/</code> 下面，用统一方式进行处理：</p>
+<ul>
+<li><strong>启动</strong>：<code>/etc/init.d/daemon start</code></li>
+<li><strong>关闭</strong>：<code>/etc/init.d/daemon stop</code></li>
+<li><strong>重新启动</strong>：<code>/etc/init.d/daemon restart</code></li>
+<li><strong>状态查询</strong>：<code>/etc/init.d/daemon status</code></li>
+</ul>
+</li>
+<li>
+<p><strong>服务启动分类</strong></p>
+<p>依据服务是独立启动还是被总管程序管理，可分为两大类：</p>
+<ul>
+<li><strong>独立启动模式</strong>（Stand Alone）：服务独立启动，常驻于内存中，反应速度快。</li>
+<li><strong>总管程序管理</strong>（Super Daemon）：由常驻于内存的 xinetd 或 inetd 程序来管理。当用户请求某些功能时，xinetd 才会去唤醒对应服务。当请求完毕服务也跟随停止。好处是统一管理，但启动服务有延时。</li>
+</ul>
+</li>
+<li>
+<p><strong>工作形态分类</strong></p>
+<p>以 daemon 提供服务的工作状态来分又可以分为两大类：</p>
+<ul>
+<li><strong>signal-control</strong>：通过信号来管理，只要有请求进来就会立即处理</li>
+<li><strong>interval-control</strong>：每隔一段时间主动去执行某项任务</li>
+</ul>
+</li>
+<li>
+<p><strong>服务依赖问题</strong></p>
+<p>如果服务之间启动互相依赖，则 init 无法解决依赖问题。</p>
+</li>
+<li>
+<p><strong>执行等级分类</strong></p>
+<p>init 可以根据设定的运行等级（run level）来启动不同的服务。总共有 7 个执行等级，各执行等级启动脚本通过 <code>/etc/rc.d/rc[0-6]/SXXdaemon</code> 链接到 <code>/etc/init.d/daemon</code>。</p>
+<p>链接文件名（SXXdaemon）的作用是指定启动顺序。通过 SXX 的设置，开机时可以按顺序启动服务，同时也解决了服务依赖问题。</p>
+</li>
+<li>
+<p><strong>设定执行等级</strong></p>
+<p>可以使用以下命令进行设置：</p>
+<ul>
+<li><strong>开机启动</strong>：<code>chkconfig daemon on</code></li>
+<li><strong>取消开机启动</strong>：<code>chkconfig daemon off</code></li>
+<li><strong>查询是否开机启动</strong>：<code>chkconfig --list daemon</code></li>
+</ul>
+</li>
+<li>
+<p><strong>执行等级切换</strong></p>
+<p>例如，要从命令行（run level 3）切换到图形界面（run level 5），只需使用 <code>init 5</code> 命令即可切换。init 会自动分析 <code>/etc/rc.d/rc[3|5].d/</code> 这两个目录内的脚本，并启动相应的服务。</p>
+</li>
+</ul>
+<h2 id="启动脚本目录配置"><a class="markdownIt-Anchor" href="#启动脚本目录配置"></a> 启动脚本目录配置</h2>
+<p>启动脚本基本上固定放在以下位置：</p>
+<ul>
+<li><code>/etc/init.d/*</code>：所有脚本存放处，因此有大量连接文件。</li>
+<li><code>/etc/sysconfig/*</code>：服务初始化环境配置文件，记录一些初始化的参数设置。</li>
+<li><code>/etc/xinetd.conf</code>，<code>/etc/xinetd.d/*</code>：super daemon 配置文件及其管理的服务配置文件存放处。</li>
+</ul>
+<h2 id="stand-alone-启动方式"><a class="markdownIt-Anchor" href="#stand-alone-启动方式"></a> Stand Alone 启动方式</h2>
+<p>可以查看一下 <code>netconsole</code> 这个命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ /etc/init.d/netconsole 
+Usage: /etc/init.d/netconsole <span class="token punctuation">&#123;</span>start<span class="token operator">|</span>stop<span class="token operator">|</span>status<span class="token operator">|</span>restart<span class="token operator">|</span>condrestart<span class="token punctuation">&#125;</span>
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ /etc/init.d/netconsole status
+netconsole module not loaded
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ /etc/init.d/netconsole start
+Starting netconsole <span class="token punctuation">(</span>via systemctl<span class="token punctuation">)</span>:  Job <span class="token keyword">for</span> netconsole.service failed because the control process exited with error code. See <span class="token string">"systemctl status netconsole.service"</span> and <span class="token string">"journalctl -xe"</span> <span class="token keyword">for</span> details.
+                                                           <span class="token punctuation">[</span>FAILED<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>也可以直接使用 <code>service</code> 命令来执行查询和操作：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">service</span> --status-all
+netconsole module not loaded
+Configured devices:
+lo ens33
+Currently active devices:
+lo ens33<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>例如查看 <code>crond</code> 服务的状态：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">service</span> crond status
+Redirecting to /bin/systemctl status crond.service
+● crond.service - Command Scheduler
+   Loaded: loaded <span class="token punctuation">(</span>/usr/lib/systemd/system/crond.service<span class="token punctuation">;</span> enabled<span class="token punctuation">;</span> vendor preset: enabled<span class="token punctuation">)</span>
+   Active: active <span class="token punctuation">(</span>running<span class="token punctuation">)</span> since Sun <span class="token number">2021</span>-09-19 02:32:00 EDT<span class="token punctuation">;</span> 7s ago<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="super-daemon-启动方式"><a class="markdownIt-Anchor" href="#super-daemon-启动方式"></a> Super Daemon 启动方式</h2>
+<p>编辑 <code>/etc/xinetd.d/</code> 下面的配置文件，如果 <code>disable=yes</code> 表示未启用，<code>disable=no</code> 才是开机启动。</p>
+<p>修改了配置文件后，重启 <code>xinetd</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">service</span> xinetd restart<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>用 <code>xinetd</code> 启动的服务，显示名称统一是 <code>xinetd</code>。</p>
+<p>位于 <code>/etc/xinetd.d</code> 下面的配置文件可设置的参数如下：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Disable</td>
+<td>设置是否启动，可设为 <code>yes</code> 或 <code>no</code>。</td>
+</tr>
+<tr>
+<td>id</td>
+<td>服务的名称。</td>
+</tr>
+<tr>
+<td>Server</td>
+<td>程序完整路径，例如 <code>server=/usr/bin/rsync</code>。</td>
+</tr>
+<tr>
+<td>server_args</td>
+<td>程序参数，例如 <code>server_args=--daemon</code>。</td>
+</tr>
+<tr>
+<td>User</td>
+<td>服务所属 UID。</td>
+</tr>
+<tr>
+<td>group</td>
+<td>服务所属 GID。</td>
+</tr>
+<tr>
+<td>socket_type</td>
+<td>数据包类型，<code>stream</code> 代表 TCP，<code>dgram</code> 代表 UDP，<code>raw</code> 代表直接交互。</td>
+</tr>
+<tr>
+<td>protocol</td>
+<td>数据包类型，与 <code>socket_type</code> 重复。</td>
+</tr>
+<tr>
+<td>Wait</td>
+<td>连接机制，可设为 <code>wait=no</code> 代表多线程。</td>
+</tr>
+<tr>
+<td>instances</td>
+<td>最大连接数，如果不限制，可设为 <code>instances=unlimited</code>。</td>
+</tr>
+<tr>
+<td>per_source</td>
+<td>单用户最大同时连接数。</td>
+</tr>
+<tr>
+<td>Cps</td>
+<td>建立新连接限制，如 <code>[两个数字]</code>。</td>
+</tr>
+<tr>
+<td>log_type</td>
+<td>日志文件等级，默认为 <code>info</code>。</td>
+</tr>
+<tr>
+<td>log_on_failure</td>
+<td>登录失败后记录的信息，可设置为 <code>PID</code>、<code>HOST</code>、<code>USERID</code>、<code>EXIT</code>、<code>DURATION</code>。</td>
+</tr>
+<tr>
+<td>env</td>
+<td>额外变量设置，如 <code>[变量名称=变量内容]</code>。</td>
+</tr>
+<tr>
+<td>Port</td>
+<td>非正规端口号，如 <code>[小于 65535 的数字]</code>。</td>
+</tr>
+<tr>
+<td>redirect</td>
+<td>服务跳转，如 <code>[IP 端口]</code>。</td>
+</tr>
+<tr>
+<td>includedir</td>
+<td>调用外部设置，可导入某个目录内的配置文件，如 <code>[目录名称]</code>。</td>
+</tr>
+<tr>
+<td>bind</td>
+<td>服务 IP 绑定，如 <code>[IP]</code>。</td>
+</tr>
+<tr>
+<td>interface</td>
+<td>与 <code>bind</code> 相同。</td>
+</tr>
+<tr>
+<td>only_from</td>
+<td>防火墙机制，规定可以登录的 IP 地址。</td>
+</tr>
+<tr>
+<td>no_access</td>
+<td>与 <code>only_from</code> 差不多，规定不可登录的 IP 地址。</td>
+</tr>
+<tr>
+<td>access_times</td>
+<td>时间控制，设置服务启动的时间。</td>
+</tr>
+<tr>
+<td>umask</td>
+<td>设置 umask，如 <code>[000，777，022]</code>。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="设置开机启动"><a class="markdownIt-Anchor" href="#设置开机启动"></a> 设置开机启动</h2>
+<p>使用 <code>chkconfig</code> 命令设置服务的启动等级。例如查看目前被 <code>chkconfig</code> 管理的服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chkconfig</span> <span class="token parameter variable">--list</span>
+
+netconsole      <span class="token number">0</span>:off   <span class="token number">1</span>:off   <span class="token number">2</span>:off   <span class="token number">3</span>:off   <span class="token number">4</span>:off   <span class="token number">5</span>:off   <span class="token number">6</span>:off
+network         <span class="token number">0</span>:off   <span class="token number">1</span>:off   <span class="token number">2</span>:on    <span class="token number">3</span>:on    <span class="token number">4</span>:on    <span class="token number">5</span>:on    <span class="token number">6</span>:off<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果有 super daemon 管理的服务会分别显示在不同的运行级别下：0~6 代表不同运行级别下的启动状态。其中，3 代表命令行界面，5 代表图形界面。</p>
+<p>例如要开启 <code>httpd</code> 在运行级别 3 下自动启动：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chkconfig</span> httpd on<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>如果要加入自定义的启动脚本（已经存在于 <code>/etc/init.d/</code> 目录下），可以使用 <code>--add</code> 参数。同样，使用 <code>--del</code> 参数可以删除服务的启动脚本：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chkconfig</span> <span class="token parameter variable">--add</span> myservice<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>此外，也可以使用 <code>ntsysv</code> 命令来设置管理服务的开机启动。</p>
+<h1 id="systemd-服务管理"><a class="markdownIt-Anchor" href="#systemd-服务管理"></a> Systemd 服务管理</h1>
+<p>自从 CentOS 7 之后，服务管理机制由 init 脚本管理改为 systemd 启动服务管理。</p>
+<h2 id="systemd-的特性"><a class="markdownIt-Anchor" href="#systemd-的特性"></a> Systemd 的特性</h2>
+<ul>
+<li>
+<p><strong>平行处理模式</strong></p>
+<p>旧的 init 启动脚本是线性模式，只能单任务处理。systemd 可以让所有服务同时启动，更好利用多核心架构。</p>
+</li>
+<li>
+<p><strong>单命令控制</strong></p>
+<p>只需要一个 <code>systemctl</code> 命令来处理事务。此外，由于 systemd 常驻内存，因此任何要求（On-Demand）都会立刻处理。</p>
+</li>
+<li>
+<p><strong>自动处理服务依赖</strong></p>
+<p>由于 systemd 可以设置服务依赖检查，因此启动服务时，能自动启用相依赖服务。</p>
+</li>
+<li>
+<p><strong>依服务功能分类</strong></p>
+<p>systemd 把服务定义为服务单元（Unit），并归类到不同的服务类型（Type）中。旧的 init 仅能分为 stand alone 和 super daemon 两种，而 systemd 可以分为 service、socket、target 等多种不同类型，方便记忆和管理。</p>
+</li>
+<li>
+<p><strong>可设置群组</strong></p>
+<p>systemd 可将许多功能合为一个 Target 项目，也就是集合有相同目标的服务到一个群组，通过群组统一执行。</p>
+</li>
+<li>
+<p><strong>向下兼容init服务脚本</strong></p>
+<p>systemd 可以兼容旧的 init 启动脚本，并通过 systemd 来管理。</p>
+</li>
+</ul>
+<h2 id="systemd-与-init-的区别"><a class="markdownIt-Anchor" href="#systemd-与-init-的区别"></a> Systemd 与 Init 的区别</h2>
+<p>Systemd 与 Init 的区别主要有下面这些：</p>
+<ul>
+<li>在 run level 对应上，只有 1、3、5 对应到 systemd 的某些 target 类型，没有全部对应；</li>
+<li><code>systemctl</code> 支持的语法有限，没有 init 纯脚本自由；</li>
+<li>没通过 <code>systemctl</code> 来启动的服务，systemd 管理不了；</li>
+<li>systemd 启动过程中不接受 stdin 传参。也就是不能与用户互动。</li>
+</ul>
+<h2 id="systemd-的-unit-类型"><a class="markdownIt-Anchor" href="#systemd-的-unit-类型"></a> Systemd 的 Unit 类型</h2>
+<p><code>/usr/lib/systemd/system/</code> 下的数据可根据扩展名来区分不同的 Unit 类型：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 home<span class="token punctuation">]</span>$ ll /usr/lib/systemd/system/ <span class="token operator">|</span> <span class="token function">grep</span> <span class="token parameter variable">-E</span> <span class="token string">'(vsftpd|multi|cron)'</span>
+-rw-r--r--. <span class="token number">1</span> root root  <span class="token number">318</span> Aug  <span class="token number">8</span>  <span class="token number">2019</span> crond.service
+-rw-r--r--. <span class="token number">1</span> root root  <span class="token number">492</span> Feb  <span class="token number">2</span>  <span class="token number">2021</span> multi-user.target
+drwxr-xr-x. <span class="token number">2</span> root root  <span class="token number">258</span> Sep  <span class="token number">7</span> 05:54 multi-user.target.wants
+lrwxrwxrwx. <span class="token number">1</span> root root   <span class="token number">17</span> Sep  <span class="token number">7</span> 05:53 runlevel2.target -<span class="token operator">></span> multi-user.target
+lrwxrwxrwx. <span class="token number">1</span> root root   <span class="token number">17</span> Sep  <span class="token number">7</span> 05:53 runlevel3.target -<span class="token operator">></span> multi-user.target
+lrwxrwxrwx. <span class="token number">1</span> root root   <span class="token number">17</span> Sep  <span class="token number">7</span> 05:53 runlevel4.target -<span class="token operator">></span> multi-user.target
+-rw-r--r--. <span class="token number">1</span> root root  <span class="token number">171</span> Jun  <span class="token number">9</span> <span class="token number">12</span>:15 vsftpd.service
+-rw-r--r--. <span class="token number">1</span> root root  <span class="token number">184</span> Jun  <span class="token number">9</span> <span class="token number">12</span>:15 vsftpd@.service
+-rw-r--r--. <span class="token number">1</span> root root   <span class="token number">89</span> Jun  <span class="token number">9</span> <span class="token number">12</span>:15 vsftpd.target<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如上例，其中 vsftpd 和 crond 是服务（service），而 multi-user 是 target 类型。</p>
+<p>常见的类型有下面这些：</p>
+<ul>
+<li>
+<p><strong>一般服务类型</strong>（.service）</p>
+<p>主要是系统服务及网络服务，最常见的类型。</p>
+</li>
+<li>
+<p><strong>套接字服务</strong>（.socket）</p>
+<p>主要是 IPC（Inter-process communication）的传输信息插槽档（socket file）功能。这种类型的服务通常用在监控信息传递，当有通过此 socket 请求时，将请求发送给对应服务。若服务未启动，则先启动后再传送请求。使用 socket 类型的服务一般不常用，因此开机时通常会稍微延迟启动。一般用于本机服务较多，例如图形界面很多软件都是通过 socket 来通信。</p>
+</li>
+<li>
+<p><strong>执行环境类型</strong>（.target）</p>
+<p>其实是一群 unit 的集合。例如图形模式、救援模式等。</p>
+</li>
+<li>
+<p><strong>文件系统挂载服务</strong>（.mount/.automount）</p>
+<p>例如网络 NFS 文件系统挂载等。</p>
+</li>
+<li>
+<p><strong>文件监控类型或目录类型</strong>（.path）</p>
+<p>某些服务需要监控特定目录来提供队列服务，例如最常见的打印服务。</p>
+</li>
+<li>
+<p><strong>循环执行的服务</strong>（.timer）</p>
+<p>有点类似 anacrontab，不过由 systemd 管理更具弹性。</p>
+</li>
+</ul>
+<h1 id="systemctl-命令"><a class="markdownIt-Anchor" href="#systemctl-命令"></a> Systemctl 命令</h1>
+<p>依据 Unit 类型的不同，systemctl 管理方式有点不同。</p>
+<h2 id="查询-unit"><a class="markdownIt-Anchor" href="#查询-unit"></a> 查询 Unit</h2>
+<p>可以使用 <code>systemctl list-units</code> 命令来查询 unit 或文件。</p>
+<p>查询运行中的 unit，默认使用 <code>list-units</code>。如果要查询所有 unit，可以使用 <code>--all</code> 参数：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 home<span class="token punctuation">]</span>$ systemctl <span class="token parameter variable">--all</span>
+  UNIT                                     LOAD   ACTIVE SUB       DESCRIPTION
+  ext333.mount                             loaded active mounted   /ext333
+  NetworkManager.service                   loaded active running   Network Manager
+  network.target                           loaded active active    Network
+LOAD   <span class="token operator">=</span> Reflects whether the unit definition was properly loaded.
+ACTIVE <span class="token operator">=</span> The high-level unit activation state, i.e. generalization of SUB.
+SUB    <span class="token operator">=</span> The low-level unit activation state, values depend on unit type.
+
+<span class="token number">135</span> loaded <span class="token function">units</span> listed. Pass <span class="token parameter variable">--all</span> to see loaded but inactive units, too.
+To show all installed unit files use <span class="token string">'systemctl list-unit-files'</span><span class="token builtin class-name">.</span>
+lines <span class="token number">118</span>-143/143 <span class="token punctuation">(</span>END<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中，UNIT 是项目名，LOAD 表示开机时是否会被载入，ACTIVE 和 SUB 是运行状态。</p>
+<p>例如，查询所有 socket 服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ systemctl list-sockets
+LISTEN                      UNIT                         ACTIVATES
+/dev/log                    systemd-journald.socket      systemd-journald.service
+/run/dbus/system_bus_socket dbus.socket                  dbus.service
+
+<span class="token number">13</span> sockets listed.
+Pass <span class="token parameter variable">--all</span> to see loaded but inactive sockets, too.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>列出所有已安装的 unit，使用 <code>list-unit-files</code> 查询：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 home<span class="token punctuation">]</span>$ systemctl list-unit-files
+UNIT FILE                                     STATE   
+proc-sys-fs-binfmt_misc.automount             static  
+dev-hugepages.mount                           static  
+dev-mqueue.mount                              static <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果要仅查询与 httpd 相关的启动服务，可以使用 <code>--type</code> 指定类型：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 home<span class="token punctuation">]</span>$ systemctl <span class="token parameter variable">--type</span><span class="token operator">=</span>service <span class="token parameter variable">--all</span> <span class="token operator">|</span> <span class="token function">grep</span> httpd
+  httpd.service                       loaded    active   running The Apache HTTP Server<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="管理-service-unit"><a class="markdownIt-Anchor" href="#管理-service-unit"></a> 管理 Service Unit</h2>
+<p>systemctl 管理 service 时主要命令有：</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>start</td>
+<td>立即启动服务</td>
+</tr>
+<tr>
+<td>stop</td>
+<td>立即关闭服务</td>
+</tr>
+<tr>
+<td>restart</td>
+<td>立即重启服务</td>
+</tr>
+<tr>
+<td>reload</td>
+<td>不关闭服务情况下，重新载入配置文件，让配置生效</td>
+</tr>
+<tr>
+<td>enable</td>
+<td>设置开机启动</td>
+</tr>
+<tr>
+<td>disable</td>
+<td>取消开机启动</td>
+</tr>
+<tr>
+<td>status</td>
+<td>查看服务运行状态</td>
+</tr>
+<tr>
+<td>is-active</td>
+<td>服务有没有处于活动状态</td>
+</tr>
+<tr>
+<td>is-enable</td>
+<td>服务有没有开机启动</td>
+</tr>
+<tr>
+<td>mask</td>
+<td>注销服务</td>
+</tr>
+<tr>
+<td>unmask</td>
+<td>取消注销</td>
+</tr>
+</tbody>
+</table>
+<p>例如查看 atd 服务的状态：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 home<span class="token punctuation">]</span><span class="token comment"># systemctl status atd.service</span>
+● atd.service - Job spooling tools
+   Loaded: loaded <span class="token punctuation">(</span>/usr/lib/systemd/system/atd.service<span class="token punctuation">;</span> enabled<span class="token punctuation">;</span> vendor preset: enabled<span class="token punctuation">)</span>
+   Active: active <span class="token punctuation">(</span>running<span class="token punctuation">)</span> since Tue <span class="token number">2023</span>-05-02 02:06:10 UTC<span class="token punctuation">;</span> 21min ago
+     Docs: man:atd<span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span>
+ Main PID: <span class="token number">1913</span> <span class="token punctuation">(</span>atd<span class="token punctuation">)</span>
+    Tasks: <span class="token number">1</span> <span class="token punctuation">(</span>limit: <span class="token number">32768</span><span class="token punctuation">)</span>
+   Memory: <span class="token number">824</span>.0K
+   CGroup: /system.slice/atd.service
+           └─1913 /usr/sbin/atd <span class="token parameter variable">-f</span>
+
+May 02 02:06:10 101c7 systemd<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>: Started Job spooling tools.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>关键信息有：</p>
+<ul>
+<li><strong>Loaded</strong>：<code>enabled</code> 代表开机启动，<code>disabled</code> 为不启动，<code>static</code> 为需要别的服务唤醒，<code>masked</code> 代表无法设置启动。</li>
+<li><strong>Active</strong>：unit 的状态，正在运行（<code>running</code>）或是没有运行（<code>dead</code>）。</li>
+<li><strong>日志</strong>：最下面是日志信息，格式为：<code>时间 信息发出的主机 信息发出的服务 信息内容</code>。</li>
+</ul>
+<p>使用 stop 正常关闭 atd 服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 home<span class="token punctuation">]</span>$ systemctl stop atd.service
+<span class="token punctuation">[</span>root@101c7 home<span class="token punctuation">]</span>$ systemctl status atd.service
+â— atd.service - Job spooling tools
+   Loaded: loaded <span class="token punctuation">(</span>/usr/lib/systemd/system/atd.service<span class="token punctuation">;</span> enabled<span class="token punctuation">;</span> vendor preset: enabled<span class="token punctuation">)</span>
+   Active: inactive <span class="token punctuation">(</span>dead<span class="token punctuation">)</span> since Sat <span class="token number">2021</span>-09-18 <span class="token number">13</span>:06:56 EDT<span class="token punctuation">;</span> 1s ago
+  Process: <span class="token number">27679</span> <span class="token assign-left variable">ExecStart</span><span class="token operator">=</span>/usr/sbin/atd <span class="token parameter variable">-f</span> <span class="token variable">$OPTS</span> <span class="token punctuation">(</span>code<span class="token operator">=</span>exited, <span class="token assign-left variable">status</span><span class="token operator">=</span><span class="token number">0</span>/SUCCESS<span class="token punctuation">)</span>
+ Main PID: <span class="token number">27679</span> <span class="token punctuation">(</span>code<span class="token operator">=</span>exited, <span class="token assign-left variable">status</span><span class="token operator">=</span><span class="token number">0</span>/SUCCESS<span class="token punctuation">)</span>
+
+Sep <span class="token number">18</span> <span class="token number">13</span>:06:56 101c7 systemd<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>: Stopping Job spooling tools<span class="token punctuation">..</span>.
+Sep <span class="token number">18</span> <span class="token number">13</span>:06:56 101c7 systemd<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>: Stopped Job spooling tools.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果使用 kill 来关闭服务，systemd 会无法继续监控服务。</p>
+<p>常见运行状态：</p>
+<ul>
+<li><strong>active (running)</strong>：此时服务有一或多个进程正在运行。</li>
+<li><strong>active (exited)</strong>：单次执行的服务，目前没有在运行。</li>
+<li><strong>active (waiting)</strong>：等待队列执行中。</li>
+<li><strong>inactive</strong>：服务没有运行。</li>
+</ul>
+<p>给 chronyd 设置开机启动：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 home<span class="token punctuation">]</span>$ systemctl <span class="token builtin class-name">enable</span> <span class="token parameter variable">--now</span> chronyd
+Created symlink from /etc/systemd/system/multi-user.target.wants/chronyd.service to /usr/lib/systemd/system/chronyd.service.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>从返回信息看，其实就是在 <code>/etc/systemd/system/multi-user.target.wants/</code> 下面新建了一个链接。</p>
+<h2 id="管理-target-unit"><a class="markdownIt-Anchor" href="#管理-target-unit"></a> 管理 Target Unit</h2>
+<p>systemctl 管理 target 时主要命令有：</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>get-default</td>
+<td>取得目前的 target</td>
+</tr>
+<tr>
+<td>set-default</td>
+<td>设置默认 target</td>
+</tr>
+<tr>
+<td>isolate</td>
+<td>切换模式</td>
+</tr>
+<tr>
+<td>poweroff/reboot</td>
+<td>关机/重启</td>
+</tr>
+<tr>
+<td>suspend/hibernate</td>
+<td>进入暂停/休眠模式</td>
+</tr>
+<tr>
+<td>rescue/emergency</td>
+<td>进入救援/紧急模式</td>
+</tr>
+</tbody>
+</table>
+<p>首先查询系统中的所有 target：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 home<span class="token punctuation">]</span>$ systemctl <span class="token parameter variable">--type</span><span class="token operator">=</span>target <span class="token parameter variable">--all</span>
+  UNIT                      LOAD      ACTIVE   SUB    DESCRIPTION
+  basic.target              loaded    active   active Basic System
+  bluetooth.target          loaded    active   active Bluetooth
+
+LOAD   <span class="token operator">=</span> Reflects whether the unit definition was properly loaded.
+ACTIVE <span class="token operator">=</span> The high-level unit activation state, i.e. generalization of SUB.
+SUB    <span class="token operator">=</span> The low-level unit activation state, values depend on unit type.
+
+<span class="token number">35</span> loaded <span class="token function">units</span> listed.
+To show all installed unit files use <span class="token string">'systemctl list-unit-files'</span><span class="token builtin class-name">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>结果显示有35个 target，常见的 target 有以下几个：</p>
+<ul>
+<li>graphical.target：文本加图形界面，包含了 multi-user.target。</li>
+<li>multi-user.target：纯文本模式。</li>
+<li>rescue.target：救援模式。</li>
+<li>emergency.target：无法使用救援模式时，可以进入紧急处理模式。</li>
+<li>shutdown.target：关机流程。</li>
+<li>getty.target：和 tty 有关。</li>
+</ul>
+<p>例如要切换到图形界面模式：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 home<span class="token punctuation">]</span>$ systemctl get-default
+multi-user.target
+<span class="token punctuation">[</span>root@101c7 home<span class="token punctuation">]</span>$ systemctl isolate graphical.target<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h2 id="查询服务依赖"><a class="markdownIt-Anchor" href="#查询服务依赖"></a> 查询服务依赖</h2>
+<p>可以使用命令 <code>list-dependencies</code> 来查询：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ systemctl list-dependencies
+default.target
+● ├─atd.service
+● ├─auditd.service
+● ├─chronyd.service<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>反向查询服务被依赖情况可以用 <code>--reverse</code> 参数。例如查询 <code>sshd</code> 服务被依赖目标：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ systemctl list-dependencies sshd.service <span class="token parameter variable">--reverse</span>
+sshd.service
+● └─multi-user.target
+●   └─graphical.target<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="systemctl-配置"><a class="markdownIt-Anchor" href="#systemctl-配置"></a> Systemctl 配置</h1>
+<p>系统服务的开机启动配置位于<code>/etc/systemd/system</code>目录下。如果要修改服务的实际脚本，则应该将其放置在<code>/usr/lib/systemd/system/</code>目录下。</p>
+<h2 id="systemd-配置目录"><a class="markdownIt-Anchor" href="#systemd-配置目录"></a> Systemd 配置目录</h2>
+<p>systemd 将每种服务依据功能放置在不同目录:</p>
+<ul>
+<li>
+<p><strong>/usr/lib/systemd/system/</strong>：包含每个服务的主要启动脚本设置，类似于<code>/etc/init.d</code>。</p>
+</li>
+<li>
+<p><strong>/run/systemd/system/</strong>：包含系统在运行过程中所生成的服务脚本，优先级高于<code>/usr/lib/systemd/system</code>。</p>
+</li>
+<li>
+<p><strong>/etc/systemd/system/</strong>：包含用户创建的服务执行脚本，类似于<code>/etc/rc.d/rc5.d/Sxx</code>，执行优先级最高。</p>
+</li>
+<li>
+<p><strong>/etc/sysconfig/</strong>：包含服务初始化时的一些参数配置。</p>
+</li>
+<li>
+<p><strong>/var/lib/</strong>：包含服务产生的数据默认存储目录。</p>
+</li>
+<li>
+<p><strong>/run/</strong>：用于放置临时文件，包括锁文件、PID文件等。</p>
+</li>
+</ul>
+<h2 id="systemctl-配置文件"><a class="markdownIt-Anchor" href="#systemctl-配置文件"></a> Systemctl 配置文件</h2>
+<p>以下是以 sshd 服务的配置文件为例：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /usr/lib/systemd/system/sshd.service 
+<span class="token punctuation">[</span>Unit<span class="token punctuation">]</span>
+<span class="token assign-left variable">Description</span><span class="token operator">=</span>OpenSSH server daemon
+<span class="token assign-left variable">Documentation</span><span class="token operator">=</span>man:sshd<span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span> man:sshd_config<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>
+<span class="token assign-left variable">After</span><span class="token operator">=</span>network.target sshd-keygen.service
+<span class="token assign-left variable">Wants</span><span class="token operator">=</span>sshd-keygen.service
+
+<span class="token punctuation">[</span>Service<span class="token punctuation">]</span>
+<span class="token assign-left variable">Type</span><span class="token operator">=</span>notify
+<span class="token assign-left variable">EnvironmentFile</span><span class="token operator">=</span>/etc/sysconfig/sshd
+<span class="token assign-left variable">ExecStart</span><span class="token operator">=</span>/usr/sbin/sshd <span class="token parameter variable">-D</span> <span class="token variable">$OPTIONS</span>
+<span class="token assign-left variable">ExecReload</span><span class="token operator">=</span>/bin/kill <span class="token parameter variable">-HUP</span> <span class="token variable">$MAINPID</span>
+<span class="token assign-left variable">KillMode</span><span class="token operator">=</span>process
+<span class="token assign-left variable">Restart</span><span class="token operator">=</span>on-failure
+<span class="token assign-left variable">RestartSec</span><span class="token operator">=</span>42s
+
+<span class="token punctuation">[</span>Install<span class="token punctuation">]</span>
+<span class="token assign-left variable">WantedBy</span><span class="token operator">=</span>multi-user.target<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>配置文件分为三段:</p>
+<ul>
+<li>
+<p><strong>[Unit]</strong>：Unit 定义描述文字，文档位置，服务依赖关系等设置。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Description</td>
+<td>使用 <code>systemctl status</code> 查询时显示在第一行的描述</td>
+</tr>
+<tr>
+<td>Documentation</td>
+<td>提供的服务配套文档配置</td>
+</tr>
+<tr>
+<td>After</td>
+<td>说明此 Unit 的前导启动服务，没有强制约束</td>
+</tr>
+<tr>
+<td>Before</td>
+<td>说明此 Unit 的被依赖服务，同样没有强制约束力</td>
+</tr>
+<tr>
+<td>Requires</td>
+<td>定义此 Unit 的依赖服务，如果依赖服务没启动，此 Unit 也无法启动</td>
+</tr>
+<tr>
+<td>Wants</td>
+<td>定义在此 Unit 后启动的服务，没有明确规范</td>
+</tr>
+<tr>
+<td>Conflicts</td>
+<td>冲突性检查，代表和此 Unit 有冲突的服务</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p><strong>[Service]</strong>：这段也有可能是 [Socket]、[Path]、[Timer] 等，根据 Unit 类型决定。规范了配置文件路径、启动参数等。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Type</td>
+<td>说明服务启动方式，有下面几种类型<br />simple：默认值，服务由 ExecStart 启动，启动后常驻内存<br />forking：通过 spawns 衍生出其他子程序作为主要服务，父程序随后终止<br />oneshot：只用跑一次的程序，不会常驻内存<br />dbus：服务必须取一个 D-Bus 名称<br />idle：在系统空闲时才运行</td>
+</tr>
+<tr>
+<td>EnvironmentFile</td>
+<td>指定启动脚本的环境配置文件</td>
+</tr>
+<tr>
+<td>ExecStart</td>
+<td>启动服务运行的命令或脚本</td>
+</tr>
+<tr>
+<td>ExecStop</td>
+<td>关闭服务运行的命令</td>
+</tr>
+<tr>
+<td>ExecReload</td>
+<td>重载服务运行的命令</td>
+</tr>
+<tr>
+<td>Restart</td>
+<td>设置服务自动重启参数，假如设为 1 则表示总会重启，只能用 <code>systemctl</code> 来停止</td>
+</tr>
+<tr>
+<td>RemainAfterExit</td>
+<td>设为 1 时，当服务所属的所有程序都停止后再次尝试启动</td>
+</tr>
+<tr>
+<td>TimeoutSec</td>
+<td>服务启动或关闭时等待的超时时间，时间一到会强制结束进程</td>
+</tr>
+<tr>
+<td>KillMode</td>
+<td>process 表示终止服务时只结束主程序，control-group 则是一同结束关联进程</td>
+</tr>
+<tr>
+<td>RestartSec</td>
+<td>重启服务前等待的时间</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p><strong>[Install]</strong>：指定此 unit 安装的 target</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>WantedBy</td>
+<td>后面大多接 target unit，就是说此 unit 属于哪个 target 环境</td>
+</tr>
+<tr>
+<td>Also</td>
+<td>此 Unit 被设为开机启动时，其他一同要设为开机启动的 Unit</td>
+</tr>
+<tr>
+<td>Alias</td>
+<td>设置一个链接别名</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<p>如果要将备份脚本 <code>backup.sh</code> 设置为 service 用 <code>systemctl</code> 来管理，可以新建一个简单的配置文件，例如：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/systemd/system/backup.service
+<span class="token punctuation">[</span>Unit<span class="token punctuation">]</span>
+<span class="token assign-left variable">Description</span><span class="token operator">=</span>backup my <span class="token function">dir</span>
+<span class="token assign-left variable">Requires</span><span class="token operator">=</span>atd.service
+
+<span class="token punctuation">[</span>Service<span class="token punctuation">]</span>
+<span class="token assign-left variable">Type</span><span class="token operator">=</span>simple
+<span class="token assign-left variable">ExecStart</span><span class="token operator">=</span>/bin/bash <span class="token parameter variable">-c</span> <span class="token string">"echo /root/backup.sh | at now"</span>
+
+<span class="token punctuation">[</span>Install<span class="token punctuation">]</span>
+<span class="token assign-left variable">WantedBy</span><span class="token operator">=</span>multi-user.target
+<span class="token string">"/etc/systemd/system/backup.service"</span> <span class="token punctuation">[</span>New<span class="token punctuation">]</span> 10L, 170C written
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ systemctl daemon-reload
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ systemctl start backup
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ systemctl status backup
+● backup.service - backup my <span class="token function">dir</span>
+   Loaded: loaded <span class="token punctuation">(</span>/etc/systemd/system/backup.service<span class="token punctuation">;</span> disabled<span class="token punctuation">;</span> vendor preset: disabled<span class="token punctuation">)</span>
+   Active: inactive <span class="token punctuation">(</span>dead<span class="token punctuation">)</span>
+
+Sep <span class="token number">19</span> 01:00:34 101c7 systemd<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>: Started backup my dir.
+Sep <span class="token number">19</span> 01:00:34 101c7 bash<span class="token punctuation">[</span><span class="token number">9147</span><span class="token punctuation">]</span>: job <span class="token number">10</span> at Sun Sep <span class="token number">19</span> 01:00:00 <span class="token number">2021</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="重复配置方式"><a class="markdownIt-Anchor" href="#重复配置方式"></a> 重复配置方式</h2>
+<p>有一些服务名带有@符号代表启动多重的重复设置，目的是简化多个执行的启动设置。例如 <code>getty@.service</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /usr/lib/systemd/system/getty@.service
+<span class="token punctuation">[</span>Unit<span class="token punctuation">]</span>
+<span class="token assign-left variable">Description</span><span class="token operator">=</span>Getty on %I
+<span class="token assign-left variable">Documentation</span><span class="token operator">=</span>man:agetty<span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span> man:systemd-getty-generator<span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span>
+<span class="token assign-left variable">Documentation</span><span class="token operator">=</span>http://0pointer.de/blog/projects/serial-console.html
+<span class="token assign-left variable">After</span><span class="token operator">=</span>systemd-user-sessions.service plymouth-quit-wait.service getty-pre.target
+<span class="token assign-left variable">After</span><span class="token operator">=</span>rc-local.service
+<span class="token assign-left variable">Before</span><span class="token operator">=</span>getty.target
+<span class="token assign-left variable">IgnoreOnIsolate</span><span class="token operator">=</span>yes
+<span class="token assign-left variable">ConditionPathExists</span><span class="token operator">=</span>/dev/tty0
+
+<span class="token punctuation">[</span>Service<span class="token punctuation">]</span>
+<span class="token assign-left variable">ExecStart</span><span class="token operator">=</span>-/sbin/agetty <span class="token parameter variable">--noclear</span> %I <span class="token environment constant">$TERM</span>
+<span class="token assign-left variable">Type</span><span class="token operator">=</span>idle
+<span class="token assign-left variable">Restart</span><span class="token operator">=</span>always
+<span class="token assign-left variable">RestartSec</span><span class="token operator">=</span><span class="token number">0</span>
+<span class="token assign-left variable">UtmpIdentifier</span><span class="token operator">=</span>%I
+<span class="token assign-left variable">TTYPath</span><span class="token operator">=</span>/dev/%I
+<span class="token assign-left variable">TTYReset</span><span class="token operator">=</span>yes
+<span class="token assign-left variable">TTYVHangup</span><span class="token operator">=</span>yes
+<span class="token assign-left variable">TTYVTDisallocate</span><span class="token operator">=</span>yes
+<span class="token assign-left variable">KillMode</span><span class="token operator">=</span>process
+<span class="token assign-left variable">IgnoreSIGPIPE</span><span class="token operator">=</span>no
+<span class="token assign-left variable">SendSIGHUP</span><span class="token operator">=</span>yes
+<span class="token assign-left variable">Environment</span><span class="token operator">=</span><span class="token environment constant">LANG</span><span class="token operator">=</span> <span class="token assign-left variable"><span class="token environment constant">LANGUAGE</span></span><span class="token operator">=</span> <span class="token assign-left variable">LC_CTYPE</span><span class="token operator">=</span> <span class="token assign-left variable"><span class="token environment constant">LC_NUMERIC</span></span><span class="token operator">=</span> <span class="token assign-left variable"><span class="token environment constant">LC_TIME</span></span><span class="token operator">=</span> <span class="token assign-left variable">LC_COLLATE</span><span class="token operator">=</span> <span class="token assign-left variable"><span class="token environment constant">LC_MONETARY</span></span><span class="token operator">=</span> <span class="token assign-left variable">LC_MESSAGES</span><span class="token operator">=</span> <span class="token assign-left variable"><span class="token environment constant">LC_PAPER</span></span><span class="token operator">=</span> <span class="token assign-left variable"><span class="token environment constant">LC_NAME</span></span><span class="token operator">=</span> <span class="token assign-left variable"><span class="token environment constant">LC_ADDRESS</span></span><span class="token operator">=</span> <span class="token assign-left variable"><span class="token environment constant">LC_TELEPHONE</span></span><span class="token operator">=</span> <span class="token assign-left variable"><span class="token environment constant">LC_MEASUREMENT</span></span><span class="token operator">=</span> <span class="token assign-left variable"><span class="token environment constant">LC_IDENTIFICATION</span></span><span class="token operator">=</span>
+
+<span class="token punctuation">[</span>Install<span class="token punctuation">]</span>
+<span class="token assign-left variable">WantedBy</span><span class="token operator">=</span>getty.target
+<span class="token assign-left variable">DefaultInstance</span><span class="token operator">=</span>tty1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>ExecStart</code> 指定的启动命令 <code>agetty --noclear %I</code> 中 <code>%I</code> 指代范例名称，这里等于 <code>tty1</code>。具体在 <code>getty.target</code> 里有定义：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ systemctl show getty.target
+<span class="token assign-left variable">Id</span><span class="token operator">=</span>getty.target
+<span class="token assign-left variable">Names</span><span class="token operator">=</span>getty.target
+<span class="token assign-left variable">Wants</span><span class="token operator">=</span>getty@tty1.service
+<span class="token assign-left variable">WantedBy</span><span class="token operator">=</span>multi-user.target
+<span class="token assign-left variable">Conflicts</span><span class="token operator">=</span>shutdown.target
+<span class="token assign-left variable">Before</span><span class="token operator">=</span>multi-user.target
+<span class="token assign-left variable">After</span><span class="token operator">=</span>getty@tty1.service<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>当执行完 <code>getty.target</code> 后，会持续要求 <code>getty@tty1.service</code> 服务启动，由于 <code>/usr/lib/systemd/system</code> 和 <code>/etc/systemd/system</code> 中没有 <code>getty@tty1.service</code> 存在，systemd 则找到 <code>getty@.service</code> 设置，将 @ 后面的数据带入成 <code>%I</code> 的变量。</p>
+<p>当然也可以手动指定 @ 后面的参数来启动服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ systemctl start getty@tty9.service<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="timer-类型配置文件"><a class="markdownIt-Anchor" href="#timer-类型配置文件"></a> timer 类型配置文件</h2>
+<p>我们可以利用 <code>systemd</code> 来设置定时任务，比起用 <code>crond</code> 设置来说，多了日志记录功能，并且可以和其他服务相结合。</p>
+<p>想要使用 <code>timer</code> 的功能必须：</p>
+<ul>
+<li>系统的 <code>timer.target</code> 一定要启动；</li>
+<li>要有个自定义 <code>.service</code> 服务存在；</li>
+<li>要有个自定义 <code>.timer</code> 的时间启动服务存在。</li>
+</ul>
+<p>一个 <code>timer</code> 类配置主要用到 <code>[Timer]</code> 段，可用的参数如下：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OnActiveSec</code></td>
+<td>当 <code>timers.target</code> 启动多久后执行此 <code>Unit</code></td>
+</tr>
+<tr>
+<td><code>OnBootSec</code></td>
+<td>当开机后多久执行</td>
+</tr>
+<tr>
+<td><code>OnStartupSec</code></td>
+<td>当 <code>systemd</code> 第一次启动后多久执行</td>
+</tr>
+<tr>
+<td><code>OnUnitActiveSec</code></td>
+<td><code>Unit</code> 服务最后一次启动后，隔多久再执行一次</td>
+</tr>
+<tr>
+<td><code>OnUnitInactiveSec</code></td>
+<td><code>Unit</code> 服务最后一次停止后，隔多久再执行一次</td>
+</tr>
+<tr>
+<td><code>OnCalendar</code></td>
+<td>使用实际时间的方式启动服务</td>
+</tr>
+<tr>
+<td><code>Unit</code></td>
+<td>一般不需要设置，只有在 <code>.timer</code> 文件和 <code>.service</code> 文件名不一致时用到</td>
+</tr>
+<tr>
+<td><code>Persistent</code></td>
+<td>当使用 <code>OnCalendar</code> 设置时，指定该功能要不要持续进行。通常为 <code>yes</code></td>
+</tr>
+</tbody>
+</table>
+<p>时间设置可以使用间隔时间，例如隔 3 小时（<code>3h</code>），隔 5 天又 300 分钟（<code>300m 5day</code>）。也可以使用实际时间格式：</p>
+<table>
+<thead>
+<tr>
+<th>英语口语</th>
+<th>实际时间格式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>now</code></td>
+<td><code>Wed 2020-09-09 15:43:05</code></td>
+</tr>
+<tr>
+<td><code>today</code></td>
+<td><code>Wed 2020-09-09 00:00:00</code></td>
+</tr>
+<tr>
+<td><code>tomorrow</code></td>
+<td><code>Thu 2020-09-10 00:00:00</code></td>
+</tr>
+<tr>
+<td><code>hourly</code></td>
+<td><code>--:00:00</code></td>
+</tr>
+<tr>
+<td><code>daily</code></td>
+<td><code>--* 00:00:00</code></td>
+</tr>
+<tr>
+<td><code>weekly</code></td>
+<td><code>Mon --* 00:00:00</code></td>
+</tr>
+<tr>
+<td><code>monthly</code></td>
+<td><code>--01 00:00:00</code></td>
+</tr>
+<tr>
+<td><code>+1h16m55s</code></td>
+<td><code>Thu 2020-09-09 17:00:00</code></td>
+</tr>
+<tr>
+<td><code>2020-09-11</code></td>
+<td><code>Fri 2020-09-11 17:00:00</code></td>
+</tr>
+</tbody>
+</table>
+<p>例如设置一个<code>backup.timer</code>作用为开机后1小时执行，每2天执行一次：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/systemd/system/backup.timer
+<span class="token punctuation">[</span>Unit<span class="token punctuation">]</span>
+<span class="token assign-left variable">Description</span><span class="token operator">=</span>backup my <span class="token function">dir</span> timer
+
+<span class="token punctuation">[</span>Timer<span class="token punctuation">]</span>
+<span class="token assign-left variable">OnBootSec</span><span class="token operator">=</span>1h
+<span class="token assign-left variable">OnUnitActivesec</span><span class="token operator">=</span>2d
+
+<span class="token punctuation">[</span>Install<span class="token punctuation">]</span>
+<span class="token assign-left variable">WantedBy</span><span class="token operator">=</span>multi-user.target
+
+<span class="token string">"/etc/systemd/system/backup.timer"</span> <span class="token punctuation">[</span>New<span class="token punctuation">]</span> 9L, 118C written<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>将<code>.timer</code>设置为开机启动，对应的<code>.service</code>可以不需要开机启动：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ systemctl daemon-reload
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ systemctl <span class="token builtin class-name">enable</span> <span class="token parameter variable">--now</span> backup.timer
+Created symlink from /etc/systemd/system/multi-user.target.wants/backup.timer to /etc/systemd/system/backup.timer.
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ systemctl restart backup.timer
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ systemctl list-unit-files <span class="token operator">|</span> <span class="token function">grep</span> backup
+backup.service                                disabled
+backup.timer                                  enabled <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>查看一下这个 timer unit 的启动时间、<code>backup.service</code>上次执行时间和下次执行间隔时间：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ systemctl show timers.target <span class="token operator">|</span> <span class="token function">grep</span> ConditionTimestamp
+<span class="token assign-left variable">ConditionTimestamp</span><span class="token operator">=</span>Sat <span class="token number">2021</span>-09-18 <span class="token number">23</span>:12:52 EDT
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ systemctl show backup.service <span class="token operator">|</span> <span class="token function">grep</span> ExecMainExitTimestamp
+<span class="token assign-left variable">ExecMainExitTimestamp</span><span class="token operator">=</span>Sun <span class="token number">2021</span>-09-19 01:34:00 EDT
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ systemctl show backup.timer <span class="token operator">|</span> <span class="token function">grep</span> Next
+<span class="token assign-left variable">NextElapseUSecRealtime</span><span class="token operator">=</span><span class="token number">0</span>
+<span class="token assign-left variable">NextElapseUSecMonotonic</span><span class="token operator">=</span><span class="token number">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用<code>OnCalendar</code>实际时间设置为每周日14:00执行一次可以这样：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/systemd/system/backup.timer
+<span class="token punctuation">[</span>Unit<span class="token punctuation">]</span>
+<span class="token assign-left variable">Description</span><span class="token operator">=</span>backup my <span class="token function">dir</span> timer
+
+<span class="token punctuation">[</span>Timer<span class="token punctuation">]</span>
+<span class="token assign-left variable">OnCalendar</span><span class="token operator">=</span>Sun *-*-* <span class="token number">14</span>:00:00
+<span class="token assign-left variable">Persistent</span><span class="token operator">=</span>true
+<span class="token assign-left variable">Unit</span><span class="token operator">=</span>backup.service
+
+<span class="token punctuation">[</span>Install<span class="token punctuation">]</span>
+<span class="token assign-left variable">WantedBy</span><span class="token operator">=</span>multi-user.target
+~
+<span class="token string">"/etc/systemd/system/backup.timer"</span> 10L, 152C written
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ systemctl daemon-reload
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ systemctl restart backup.timer
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ systemctl show backup.timer <span class="token operator">|</span> <span class="token function">grep</span> Next
+<span class="token assign-left variable">NextElapseUSecRealtime</span><span class="token operator">=</span>51y 8month 2w 4d 12h
+<span class="token assign-left variable">NextElapseUSecMonotonic</span><span class="token operator">=</span><span class="token number">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>注意，<code>NextElapseUSecRealtime</code>时间是以Unix标准时间显示。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/1224880312/" title="Linux 服务管理">https://blog.x2b.net/1224880312/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../741506456/" rel="prev" title="Linux 查询系统信息">
+                  <i class="fa fa-chevron-left"></i> Linux 查询系统信息
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../808925609/" rel="next" title="Linux 日志管理">
+                  Linux 日志管理 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">83k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">4:35</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@next-theme/pjax@0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://unpkg.com/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://unpkg.com/katex@0.16.4/dist/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/1224880312/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://unpkg.com/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'blog.x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>

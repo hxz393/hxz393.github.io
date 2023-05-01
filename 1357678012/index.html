@@ -30,7 +30,7 @@
 <meta property="og:description" content="编译安装 编译程序是将源代码编译成机器语言生成可执行二进制程序的过程。 在 Linux 中，可以使用 configure 命令对系统环境进行检测和收集，生成 Makefile 文件，make 命令根据 Makefile 文件的配置来对源文件进行编译，生成可执行二进制程序。 简单来说，通过源代码安装程序的步骤如下：  从网上下载包含源代码的压缩包； 解压压缩包； 使用 gcc 进行源代码编译，生成">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-03-20T01:01:17.000Z">
-<meta property="article:modified_time" content="2023-04-30T12:38:20.057Z">
+<meta property="article:modified_time" content="2023-05-01T09:00:05.088Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python">
 <meta name="twitter:card" content="summary">
@@ -94,7 +94,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">4</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">33</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">4</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">34</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -145,7 +145,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85"><span class="nav-number">1.</span> <span class="nav-text"> 编译安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E4%B8%80%E7%A8%8B%E5%BA%8F"><span class="nav-number">1.1.</span> <span class="nav-text"> 单一程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E5%89%AF%E7%A8%8B%E5%BA%8F%E9%93%BE%E6%8E%A5"><span class="nav-number">1.2.</span> <span class="nav-text"> 主副程序链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E5%A4%96%E9%83%A8%E5%87%BD%E6%95%B0%E5%BA%93"><span class="nav-number">1.3.</span> <span class="nav-text"> 调用外部函数库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAmakefile"><span class="nav-number">1.4.</span> <span class="nav-text"> 创建Makefile</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E6%BA%90%E4%BB%A3%E7%A0%81%E5%AE%89%E8%A3%85%E7%A8%8B%E5%BA%8F"><span class="nav-number">1.5.</span> <span class="nav-text"> 从源代码安装程序</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%BA%93%E7%AE%A1%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text"> 函数库管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86%E5%87%BD%E6%95%B0%E5%BA%93%E5%B8%B8%E9%A9%BB%E5%86%85%E5%AD%98"><span class="nav-number">2.1.</span> <span class="nav-text"> 将函数库常驻内存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%8A%A8%E6%80%81%E5%87%BD%E6%95%B0%E5%BA%93%E8%A7%A3%E6%9E%90"><span class="nav-number">2.2.</span> <span class="nav-text"> 程序的动态函数库解析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E7%AE%A1%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text"> 软件管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#rpm%E4%B8%8Esrpm"><span class="nav-number">3.0.1.</span> <span class="nav-text"> RPM与SRPM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rpm%E5%91%BD%E4%BB%A4"><span class="nav-number">3.0.2.</span> <span class="nav-text"> RPM命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yum%E5%91%BD%E4%BB%A4"><span class="nav-number">3.0.3.</span> <span class="nav-text"> YUM命令</span></a></li></ol></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85"><span class="nav-number">1.</span> <span class="nav-text"> 编译安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E4%B8%80%E7%A8%8B%E5%BA%8F"><span class="nav-number">1.1.</span> <span class="nav-text"> 单一程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E5%89%AF%E7%A8%8B%E5%BA%8F%E9%93%BE%E6%8E%A5"><span class="nav-number">1.2.</span> <span class="nav-text"> 主副程序链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E5%A4%96%E9%83%A8%E5%87%BD%E6%95%B0%E5%BA%93"><span class="nav-number">1.3.</span> <span class="nav-text"> 调用外部函数库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-makefile"><span class="nav-number">1.4.</span> <span class="nav-text"> 创建 Makefile</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E6%BA%90%E4%BB%A3%E7%A0%81%E5%AE%89%E8%A3%85%E7%A8%8B%E5%BA%8F"><span class="nav-number">1.5.</span> <span class="nav-text"> 从源代码安装程序</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%BA%93%E7%AE%A1%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text"> 函数库管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86%E5%87%BD%E6%95%B0%E5%BA%93%E5%B8%B8%E9%A9%BB%E5%86%85%E5%AD%98"><span class="nav-number">2.1.</span> <span class="nav-text"> 将函数库常驻内存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%8A%A8%E6%80%81%E5%87%BD%E6%95%B0%E5%BA%93%E8%A7%A3%E6%9E%90"><span class="nav-number">2.2.</span> <span class="nav-text"> 程序的动态函数库解析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E7%AE%A1%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text"> 软件管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#rpm-%E4%B8%8E-srpm"><span class="nav-number">3.1.</span> <span class="nav-text"> RPM 与 SRPM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rpm-%E5%91%BD%E4%BB%A4"><span class="nav-number">3.2.</span> <span class="nav-text"> RPM 命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#yum-%E5%91%BD%E4%BB%A4"><span class="nav-number">3.3.</span> <span class="nav-text"> YUM 命令</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -160,7 +160,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="../archives/">
-          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-count">34</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -258,7 +258,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-04-30 20:38:20" itemprop="dateModified" datetime="2023-04-30T20:38:20+08:00">2023-04-30</time>
+      <time title="修改时间：2023-05-01 17:00:05" itemprop="dateModified" datetime="2023-05-01T17:00:05+08:00">2023-05-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -388,7 +388,7 @@ int main <span class="token punctuation">(</span>void<span class="token punctuat
 <span class="token number">0.841471</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>如果要指定函数库位置可以使用<code>-L</code>参数。另外，<code>-</code>参数表示加入某函数库，<code>m</code>代表<code>libm.so</code>函数库：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@234c8 ~<span class="token punctuation">]</span>$ gcc sin.c <span class="token parameter variable">-lm</span> -L/lib -L/lib64<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="创建makefile"><a class="markdownIt-Anchor" href="#创建makefile"></a> 创建Makefile</h2>
+<h2 id="创建-makefile"><a class="markdownIt-Anchor" href="#创建-makefile"></a> 创建 Makefile</h2>
 <p><code>Makefile</code>文件作用为简化整个编译流程。可以手动创建一个<code>Makefile</code>来测试下：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@234c8 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> makefile
 main: hello.o world.o
@@ -410,7 +410,7 @@ total <span class="token number">40</span>
 make: `main' is up to date.
 <span class="token punctuation">[</span>root@234c8 ~<span class="token punctuation">]</span>$ ./main 
 hello world<span class="token operator">!</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>目标（<code>target</code>）与相关文件之间以分号<code>: </code>隔开，<code>gcc</code>行前必须使用 <code>[Tab]</code> 按键来缩进。</p>
+<p>目标（<code>target</code>）与相关文件之间以分号<code>:</code>隔开，<code>gcc</code>行前必须使用 <code>[Tab]</code> 按键来缩进。</p>
 <p>如果更新了源文件，只需要再次执行 <code>make</code> 命令就可以将生成的可执行文件更新。</p>
 <p>当有两个以上执行动作时，例如编译完成后删除生成的 <code>.o</code> 文件，可以直接在后面接自定义阶段名：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@234c8 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> makefile 
@@ -473,7 +473,7 @@ ntp-4.2.8p15/lib/isc/alpha/include/isc/atomic.h
 Submit patches, bug reports, and enhancement requests via
 
                         http://bugs.ntp.org<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>README文件解释了每个文件的作用。然后使用<code>./configure</code>创建makefile，并加入<code>--prefix</code>参数指定安装位置：</p>
+<p>README 文件解释了每个文件的作用。然后使用<code>./configure</code>创建 makefile，并加入<code>--prefix</code>参数指定安装位置：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@234c8 ntp-4.2.8p15<span class="token punctuation">]</span>$ ./configure <span class="token parameter variable">--help</span>
 <span class="token punctuation">[</span>root@234c8 ntp-4.2.8p15<span class="token punctuation">]</span>$ ./configure <span class="token parameter variable">--prefix</span><span class="token operator">=</span>/usr/local/ntp --enable-all-clocks --enable-parse-clocks
 config.status: creating Makefile
@@ -507,7 +507,7 @@ drwxr-xr-x. <span class="token number">2</span> root root   <span class="token n
 drwxr-xr-x. <span class="token number">5</span> root root  <span class="token number">39</span> Sep <span class="token number">21</span> <span class="token number">22</span>:26 share<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>使用<code>patch</code>命令来对源码进行更新后，还需要再次编译才能生效。</p>
 <h1 id="函数库管理"><a class="markdownIt-Anchor" href="#函数库管理"></a> 函数库管理</h1>
-<p>在Linux下依据函数库是否被编译到程序内部分为动态与静态函数库：</p>
+<p>在 Linux 下依据函数库是否被编译到程序内部分为动态与静态函数库：</p>
 <ul>
 <li>
 <p><strong>静态</strong>（Static）</p>
@@ -550,34 +550,34 @@ drwxr-xr-x. <span class="token number">5</span> root root  <span class="token nu
                 ld-linux-x86-64.so.2 <span class="token punctuation">(</span>GLIBC_PRIVATE<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> /lib64/ld-linux-x86-64.so.2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>这个命令可以用来检查程序安装时的依赖性。</p>
 <h1 id="软件管理"><a class="markdownIt-Anchor" href="#软件管理"></a> 软件管理</h1>
-<p>通常不同的分发商会将一些软件编译好成二进制,通过软件管理平台提供给用户.Fedora/CentOS系列使用RPM软甲管理机制与yum线上更新模式,Debian/Ubuntu使用dpkg软件管理机制与APT线上更新模式.</p>
-<h3 id="rpm与srpm"><a class="markdownIt-Anchor" href="#rpm与srpm"></a> RPM与SRPM</h3>
-<p>RPM全名RedHat Package Manager,其要求软件文件安装环境与打包时一致,并且需要满足软件依赖性需求.</p>
-<p>SRPM是Source RPM,也就是提供的RPM包的源文件,通常扩张名为*.src.rpm.与普通源代码安装不同的是,要将它以RPM管理的方式编译成RPM文件,再安装到系统中.</p>
-<p>RPM包文件名通常有固定格式,例如:cronolog-1.6.2-14.el7.x86_64.rpm:</p>
+<p>通常不同的分发商会将一些软件编译好成二进制，并通过软件管理平台提供给用户。Fedora/CentOS 系列使用 RPM 软件管理机制和 yum 线上更新模式，而 Debian/Ubuntu 使用 dpkg 软件管理机制和 APT 线上更新模式。</p>
+<h2 id="rpm-与-srpm"><a class="markdownIt-Anchor" href="#rpm-与-srpm"></a> RPM 与 SRPM</h2>
+<p>RPM 的全名是 RedHat Package Manager，它要求软件文件安装环境与打包时一致，并且需要满足软件依赖性需求。</p>
+<p>SRPM 是 Source RPM，也就是提供的 RPM 包的源文件，通常扩展名为 *.src.rpm。与普通源代码安装不同的是，要将它以 RPM 管理的方式编译成 RPM 文件，再安装到系统中。</p>
+<p>RPM 包文件名通常有固定格式，例如：<code>cronolog-1.6.2-14.el7.x86_64.rpm</code>：</p>
 <ul>
-<li>cronolog: 软件名</li>
-<li>1.6.2: 软件版本.主版本为1,在主版本构架下的功能更新变动次版本号6,小修补则用动用再次版本号2来表示.</li>
-<li>14: 释出版本次数,也就是编译次数.可能由于一些bug或安全原因,重新调整过编译参数.</li>
-<li>el7.x86_64: 适合的硬件平台.如果没有硬件等级限制用noarch表示.</li>
-<li>rpm: 固定扩展名</li>
+<li><code>cronolog</code>：软件名</li>
+<li><code>1.6.2</code>：软件版本。主版本为 1，在主版本架构下的功能更新变动次版本号 6，小修补则用动用再次版本号 2 来表示。</li>
+<li><code>14</code>：释出版本次数，也就是编译次数。可能由于一些 bug 或安全原因，重新调整过编译参数。</li>
+<li><code>el7.x86_64</code>：适合的硬件平台。如果没有硬件等级限制，用 <code>noarch</code> 表示。</li>
+<li><code>rpm</code>：固定扩展名</li>
 </ul>
-<p>RPM的特点:</p>
+<p>RPM 的特点：</p>
 <ul>
-<li>RPM内含已经编译过的程序与配置文件,不需要使用者重新编译;</li>
-<li>RPM在被安装之前,会检查系统版本,剩余容量等,可避免被错误安装;</li>
-<li>RPM文件本身提供软件版本信息,软件依赖信息,用途说明,文件内容等信息;</li>
-<li>RPM管理的方式使用数据库记录RPM文件相关参数,方便升级,卸载,查询等.</li>
+<li>RPM 内含已经编译过的程序与配置文件，不需要使用者重新编译。</li>
+<li>RPM 在被安装之前，会检查系统版本、剩余容量等，可避免被错误安装。</li>
+<li>RPM 文件本身提供软件版本信息、软件依赖信息、用途说明、文件内容等信息。</li>
+<li>RPM 管理的方式使用数据库记录 RPM 文件相关参数，方便升级、卸载、查询等。</li>
 </ul>
-<p>RPM使用YUM服务器提供下载,每次安装软件前,yum都会先在线更新本地软件数据库,得出需要安装的软件列表.再到yum服务器去获取软件,通过RPM的机制开始安装.使用rpm安装软件的信息会记录在/var/lib/rpm/目录下的数据库内.</p>
-<p>SRPM文件编译打包使用rpmbuild --rebuild命令.配置文件一般是SPECS目录下.spec文件,修改完成后可以用rpmbuild -bb spec文件来编译成RPM文件.</p>
-<h3 id="rpm命令"><a class="markdownIt-Anchor" href="#rpm命令"></a> RPM命令</h3>
-<p>安装使用-ivh参数,比如安装cronolog软件:</p>
+<p>RPM 使用 YUM 服务器提供下载，每次安装软件前，yum 都会先在线更新本地软件数据库，得出需要安装的软件列表。再到 YUM 服务器去获取软件，通过 RPM 的机制开始安装。使用 RPM 安装软件的信息会记录在 <code>/var/lib/rpm/</code> 目录下的数据库内。</p>
+<p>SRPM 文件编译打包使用 <code>rpmbuild --rebuild</code> 命令。配置文件一般是 SPECS 目录下的 <code>.spec</code> 文件，修改完成后可以用 <code>rpmbuild -bb spec</code> 文件来编译成 RPM 文件。</p>
+<h2 id="rpm-命令"><a class="markdownIt-Anchor" href="#rpm-命令"></a> RPM 命令</h2>
+<p>安装使用 <code>-ivh</code> 参数，比如安装 <code>cronolog</code> 软件:</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@234c8 ~<span class="token punctuation">]</span>$ <span class="token function">rpm</span> <span class="token parameter variable">-ivh</span> cronolog-1.6.2-14.el7.x86_64.rpm 
 Preparing<span class="token punctuation">..</span>.                          <span class="token comment">################################# [100%]</span>
 Updating / installing<span class="token punctuation">..</span>.
    <span class="token number">1</span>:cronolog-1.6.2-14.el7            <span class="token comment">################################# [100%]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>参数后面可以接多个rpm包来一次安装,也可以指定网络上的地址来安装.</p>
+<p>参数后面可以接多个 rpm 包来一次安装，也可以指定网络上的地址来安装。</p>
 <p>其他一些有用的参数如下:</p>
 <table>
 <thead>
@@ -588,48 +588,48 @@ Updating / installing<span class="token punctuation">..</span>.
 </thead>
 <tbody>
 <tr>
-<td>–nodeps</td>
+<td><code>--nodeps</code></td>
 <td>强制忽略软件依赖性来安装</td>
 </tr>
 <tr>
-<td>–replacefiles</td>
+<td><code>--replacefiles</code></td>
 <td>直接覆盖掉原先安装过的软件</td>
 </tr>
 <tr>
-<td>–replacepkgs</td>
-<td>直接重装rpm包</td>
+<td><code>--replacepkgs</code></td>
+<td>直接重装 rpm 包</td>
 </tr>
 <tr>
-<td>–force</td>
-<td>等于–replacefiles加–replacepkgs</td>
+<td><code>--force</code></td>
+<td>等于 <code>--replacefiles</code> 加 <code>--replacepkgs</code></td>
 </tr>
 <tr>
-<td>–test</td>
-<td>测试rpm包是否能正确安装</td>
+<td><code>--test</code></td>
+<td>测试 rpm 包是否能正确安装</td>
 </tr>
 <tr>
-<td>–justdb</td>
-<td>在数据库有错误时,更新此软件在数据库内的信息</td>
+<td><code>--justdb</code></td>
+<td>在数据库有错误时，更新此软件在数据库内的信息</td>
 </tr>
 <tr>
-<td>–nosignature</td>
+<td><code>--nosignature</code></td>
 <td>忽略数字签名检查</td>
 </tr>
 <tr>
-<td>–prefix 路径</td>
+<td><code>--prefix</code> 路径</td>
 <td>指定软件安装到自定义目录</td>
 </tr>
 <tr>
-<td>–noscripts</td>
+<td><code>--noscripts</code></td>
 <td>禁止软件在安装时执行的命令</td>
 </tr>
 </tbody>
 </table>
-<p>如果要升级软件使用-Uvh参数:</p>
+<p>如果要升级软件使用 <code>-Uvh</code> 参数:</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@234c8 ~<span class="token punctuation">]</span>$ <span class="token function">rpm</span> <span class="token parameter variable">-Uvh</span> cronolog-1.6.2-14.el7.x86_64.rpm 
 Preparing<span class="token punctuation">..</span>.                          <span class="token comment">################################# [100%]</span>
         package cronolog-1.6.2-14.el7.x86_64 is already installed<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>查询本机安装软件或RPM包可以使用下面参数:</p>
+<p>查询本机已安装的软件或 RPM 包可以使用以下命令及参数：</p>
 <table>
 <thead>
 <tr>
@@ -639,68 +639,68 @@ Preparing<span class="token punctuation">..</span>.                          <sp
 </thead>
 <tbody>
 <tr>
-<td>-q</td>
+<td><code>-q</code></td>
 <td>仅查询软件是否有安装</td>
 </tr>
 <tr>
-<td>-qa</td>
+<td><code>-qa</code></td>
 <td>列出所有已经安装的软件</td>
 </tr>
 <tr>
-<td>-qi</td>
+<td><code>-qi</code></td>
 <td>列出软件详细信息</td>
 </tr>
 <tr>
-<td>-ql</td>
+<td><code>-ql</code></td>
 <td>列出软件的所有文件与目录路径</td>
 </tr>
 <tr>
-<td>-qc</td>
+<td><code>-qc</code></td>
 <td>列出软件的所有配置文件</td>
 </tr>
 <tr>
-<td>-qd</td>
+<td><code>-qd</code></td>
 <td>列出软件的说明文档</td>
 </tr>
 <tr>
-<td>-qR</td>
+<td><code>-qR</code></td>
 <td>列出软件的依赖情况</td>
 </tr>
 <tr>
-<td>-qf</td>
+<td><code>-qf</code></td>
 <td>找出查询文件属于哪一个已经安装的软件</td>
 </tr>
 <tr>
-<td>-q --script</td>
+<td><code>-q --script</code></td>
 <td>列出是否含有安装后需要执行的脚本</td>
 </tr>
 <tr>
-<td>-qp[icdlR]</td>
-<td>查询RPM文件内的信息</td>
+<td><code>-qp[icdlR]</code></td>
+<td>查询 RPM 文件内的信息</td>
 </tr>
 </tbody>
 </table>
-<p>例如查询cronolog软件安装的文件:</p>
+<p>例如，查询 cronolog 软件安装的文件：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@234c8 ~<span class="token punctuation">]</span>$ <span class="token function">rpm</span> <span class="token parameter variable">-ql</span> cronolog
 /usr/bin/cronosplit
 /usr/sbin/cronolog
 /usr/share/doc/cronolog-1.6.2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>查询cronolog软件相关说明:</p>
+<p>查询 cronolog 软件相关说明：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@234c8 ~<span class="token punctuation">]</span>$ <span class="token function">rpm</span> <span class="token parameter variable">-qi</span> cronolog
 Name        <span class="token builtin class-name">:</span> cronolog
 Version     <span class="token builtin class-name">:</span> <span class="token number">1.6</span>.2
 Release     <span class="token builtin class-name">:</span> <span class="token number">14</span>.el7
 Architecture: x86_64<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>查询文件/bin/rpcgen属于哪个软件包.如果文件被误删了也可以查到:</p>
+<p>查询文件 <code>/bin/rpcgen</code> 属于哪个软件包。如果文件被误删了也可以查询：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@234c8 ~<span class="token punctuation">]</span>$ <span class="token function">rpm</span> <span class="token parameter variable">-qf</span> /bin/rpcgen 
 glibc-common-2.17-324.el7_9.x86_64<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>可以使用-V参数来验证某个软件是否缺失或更改了文件.例如查询rootfiles:</p>
+<p>可以使用 <code>-V</code> 参数来验证某个软件是否缺失或更改了文件，例如查询 rootfiles：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@234c8 ~<span class="token punctuation">]</span>$ <span class="token function">rpm</span> <span class="token parameter variable">-V</span> rootfiles<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>卸载软件使用-e参数,当软件没有依赖关系时才能卸载,如果强制移除软件造成数据库错误,用–rebuilddb来重建:</p>
+<p>卸载软件使用 <code>-e</code> 参数，当软件没有依赖关系时才能卸载。如果强制移除软件造成数据库错误，可以使用 <code>--rebuilddb</code> 来重建数据库：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@234c8 ~<span class="token punctuation">]</span>$ <span class="token function">rpm</span> <span class="token parameter variable">--rebuilddb</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h3 id="yum命令"><a class="markdownIt-Anchor" href="#yum命令"></a> YUM命令</h3>
-<p>yum(Yellowdog Updater Modified)是通过线上服务器来安装软件,主要用到的参数:一个是-y用来自动确认,另一个–installroot用来指定安装路径.</p>
-<p>查询软件列表使用list选项,线上搜索软件使用search选项.例如搜索和vim有关的软件:</p>
+<h2 id="yum-命令"><a class="markdownIt-Anchor" href="#yum-命令"></a> YUM 命令</h2>
+<p><code>yum</code> (Yellowdog Updater Modified) 是一种通过线上服务器安装软件的工具，常用参数包括 <code>-y</code> 用于自动确认，以及 <code>--installroot</code> 用于指定安装路径。</p>
+<p>使用 <code>list</code> 选项查询软件列表，使用 <code>search</code> 选项在线上搜索软件，例如搜索和 <code>vim</code> 有关的软件：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@234c8 ~<span class="token punctuation">]</span>$ yum search <span class="token function">vim</span>
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
@@ -713,7 +713,7 @@ beakerlib-vim-syntax.noarch <span class="token builtin class-name">:</span> File
 boxes-vim.noarch <span class="token builtin class-name">:</span> Vim plugin <span class="token keyword">for</span> boxes
 fluxbox-vim-syntax.noarch <span class="token builtin class-name">:</span> Fluxbox syntax scripts <span class="token keyword">for</span> <span class="token function">vim</span>
 geany-plugins-vimode.x86_64 <span class="token builtin class-name">:</span> Vim-mode plugin <span class="token keyword">for</span> Geany<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>搜索软件信息使用info选项,例如搜索gdisk软件信息:</p>
+<p>使用 <code>info</code> 选项搜索软件信息，例如搜索 <code>gdisk</code> 软件的信息：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@234c8 ~<span class="token punctuation">]</span>$ yum info gdisk
 Available Packages
 Name        <span class="token builtin class-name">:</span> gdisk
@@ -721,12 +721,12 @@ Arch        <span class="token builtin class-name">:</span> x86_64
 Version     <span class="token builtin class-name">:</span> <span class="token number">0.8</span>.10
 Release     <span class="token builtin class-name">:</span> <span class="token number">3</span>.el7
 Size        <span class="token builtin class-name">:</span> <span class="token number">190</span> k<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>列出可升级的软件使用list updates:</p>
+<p>列出可升级的软件使用 <code>list updates</code> 命令：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@234c8 ~<span class="token punctuation">]</span>$ yum list updates
 Updated Packages
 epel-release.noarch                     <span class="token number">7</span>-14                                   epel   
 kernel.x86_64                           <span class="token number">3.10</span>.0-1160.42.2.el7                   update<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>安装软件使用install命令,升级使用update命令,例如安装agrep软件:</p>
+<p>安装软件使用 <code>install</code> 命令，升级使用 <code>update</code> 命令，例如安装 <code>agrep</code> 软件：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@234c8 ~<span class="token punctuation">]</span>$ yum <span class="token function">install</span> <span class="token parameter variable">-y</span> agrep
 Installed:
   agrep.x86_64 <span class="token number">0</span>:0.8.0-18.20140228gitc2f5d13.el7                                                           
@@ -735,14 +735,14 @@ Dependency Installed:
   tre.x86_64 <span class="token number">0</span>:0.8.0-18.20140228gitc2f5d13.el7     tre-common.noarch <span class="token number">0</span>:0.8.0-18.20140228gitc2f5d13.el7    
 
 Complete<span class="token operator">!</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>也可以只下载RPM包但不安装(软件已安装的情况下使用reinstall代替install).例如下载agrep到/root/dl/目录:</p>
+<p>也可以只下载 RPM 包但不安装（软件已安装的情况下使用 <code>reinstall</code> 代替 <code>install</code>）。例如下载 <code>agrep</code> 到 <code>/root/dl/</code> 目录：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ yum <span class="token function">install</span> <span class="token parameter variable">-y</span> agrep <span class="token parameter variable">--downloadonly</span> <span class="token parameter variable">--downloaddir</span><span class="token operator">=</span>/root/dl/
 <span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ ll /root/dl/
 total <span class="token number">96</span>
 -rw-r--r--. <span class="token number">1</span> root root <span class="token number">19924</span> Nov  <span class="token number">4</span>  <span class="token number">2016</span> agrep-0.8.0-18.20140228gitc2f5d13.el7.x86_64.rpm
 -rw-r--r--. <span class="token number">1</span> root root <span class="token number">40868</span> Nov  <span class="token number">4</span>  <span class="token number">2016</span> tre-0.8.0-18.20140228gitc2f5d13.el7.x86_64.rpm
 -rw-r--r--. <span class="token number">1</span> root root <span class="token number">32920</span> Nov  <span class="token number">4</span>  <span class="token number">2016</span> tre-common-0.8.0-18.20140228gitc2f5d13.el7.noarch.rpm<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>软件删除使用remove命令,例如移除掉agrep:</p>
+<p>软件删除使用 <code>remove</code> 命令，例如移除掉 <code>agrep</code>：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@234c8 ~<span class="token punctuation">]</span>$ yum remove agrep
 Remove  <span class="token number">1</span> Package
 
@@ -760,7 +760,7 @@ Removed:
   agrep.x86_64 <span class="token number">0</span>:0.8.0-18.20140228gitc2f5d13.el7                                                           
 
 Complete<span class="token operator">!</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>如果想要加入自定义仓库地址,可以修改yum配置文件/etc/yum.repos.d/CentOS-Base.repo:</p>
+<p>如果想要加入自定义仓库地址，可以修改 yum 配置文件 <code>/etc/yum.repos.d/CentOS-Base.repo</code>：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@234c8 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/yum.repos.d/CentOS-Base.repo
 <span class="token punctuation">[</span>base<span class="token punctuation">]</span>
 <span class="token assign-left variable">name</span><span class="token operator">=</span>CentOS-<span class="token variable">$releasever</span> - Base
@@ -768,29 +768,29 @@ Complete<span class="token operator">!</span><span aria-hidden="true" class="lin
 <span class="token comment">#baseurl=http://mirror.centos.org/centos/$releasever/os/$basearch/</span>
 <span class="token assign-left variable">gpgcheck</span><span class="token operator">=</span><span class="token number">1</span>
 <span class="token assign-left variable">gpgkey</span><span class="token operator">=</span>file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>其中以中括号代表软件库名称,可以自己取名,其他设置如下:</p>
+<p>其中以中括号代表软件库名称，可以自己取名，其他设置如下：</p>
 <ul>
-<li>name: 自定义仓库名,不要重名即可;</li>
-<li>mirrorlist: 理出这个软件仓库可用的映射站点,可以不需要;</li>
-<li>baseurl: 后面接实际软件仓库网址;</li>
-<li>enable: 设置是否要启用此仓库;</li>
-<li>gpgcheck: 是否要检查数字签名;</li>
-<li>gpgkey: 数字签名文件位置.</li>
+<li>name：自定义仓库名，不要重名即可；</li>
+<li>mirrorlist：列出这个软件仓库可用的映射站点，可以不需要；</li>
+<li>baseurl：后面接实际软件仓库网址；</li>
+<li>enable：设置是否要启用此仓库；</li>
+<li>gpgcheck：是否要检查数字签名；</li>
+<li>gpgkey：数字签名文件位置。</li>
 </ul>
-<p>设置好以后可以使用repolist all来查询:</p>
+<p>设置好以后可以使用 <code>repolist all</code> 来查询：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@234c8 ~<span class="token punctuation">]</span>$ yum repolist all
 repo <span class="token function">id</span>                       repo name                                status
 C7.8.2003-updates/x86_64      CentOS-7.8.2003 - Updates                disabled
 base/7/x86_64                 CentOS-7 - Base                          enabled: <span class="token number">10,072</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>yum支持软件群组功能,可以使用下面选项来操作:</p>
+<p>yum 支持软件群组功能，可以使用下面选项来操作：</p>
 <ul>
-<li>grouplist: 列出所有可用的软件群组;</li>
-<li>groupinfo: 查询软件群组内容;</li>
-<li>groupinstall: 安装一组软件群组;</li>
-<li>groupremove: 删除某软件群组.</li>
+<li>grouplist：列出所有可用的软件群组；</li>
+<li>groupinfo：查询软件群组内容；</li>
+<li>groupinstall：安装一组软件群组；</li>
+<li>groupremove：删除某软件群组。</li>
 </ul>
-<p>软件群组内软件分主要和可选,使用groupinstall只会安装主要软件,可以修改/etc/yum.conf配置,在distroverpkg下面加入一行配置group_package_types=default, mandatory, optional来安装所有软件群组的软件.</p>
-<p>另外想要通过代理连接下载,可以在配置文件中新增一行proxy=代理服务器地址来启用.</p>
+<p>软件群组内软件分主要和可选，使用 <code>groupinstall</code> 只会安装主要软件，可以修改 <code>/etc/yum.conf</code> 配置，在 <code>distroverpkg</code> 下面加入一行配置 <code>group_package_types=default, mandatory, optional</code> 来安装所有软件群组的软件。</p>
+<p>另外，想要通过代理连接下载，可以在配置文件中新增一行 <code>proxy=代理服务器地址</code> 来启用。</p>
 
     </div>
 
@@ -892,13 +892,13 @@ base/7/x86_64                 CentOS-7 - Base                          enabled: 
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">77k</span>
+    <span title="站点总字数">83k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">4:17</span>
+    <span title="站点阅读时长">4:35</span>
   </span>
 </div>
 <div class="busuanzi-count">
