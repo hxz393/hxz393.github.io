@@ -30,7 +30,7 @@
 <meta property="og:description" content="备份基础 系统备份重要目录有：&#x2F;etc&#x2F;、&#x2F;home&#x2F;、&#x2F;root&#x2F;、&#x2F;var。不需要备份的目录有：&#x2F;dev、&#x2F;proc、&#x2F;sys、&#x2F;run、&#x2F;mnt、&#x2F;media、&#x2F;tmp。 常见备份类型有 3 种：  完全备份（full）：在备份定义的范围内备份所有数据。 差分备份（differential）：备份所有自上次备份之后发生过变化的数据。在恢复时需要用到完全备份和最近的差分备份。 增量备份（in">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-03-20T01:01:17.000Z">
-<meta property="article:modified_time" content="2023-04-30T08:35:24.126Z">
+<meta property="article:modified_time" content="2023-04-30T09:09:13.120Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python">
 <meta name="twitter:card" content="summary">
@@ -94,7 +94,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">4</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">32</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">4</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">33</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -160,7 +160,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="../archives/">
-          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-count">33</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -258,7 +258,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-04-30 16:35:24" itemprop="dateModified" datetime="2023-04-30T16:35:24+08:00">2023-04-30</time>
+      <time title="修改时间：2023-04-30 17:09:13" itemprop="dateModified" datetime="2023-04-30T17:09:13+08:00">2023-04-30</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -409,7 +409,7 @@ total size is <span class="token number">31,780</span>  speedup is <span class="
 /dev/sdb4                 91M  342K   86M   <span class="token number">1</span>% /root/sdb4m
 <span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ dump <span class="token parameter variable">-S</span> /dev/sdb4
 <span class="token number">39936</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>单位为B，所以需要容量为39KB。</p>
+<p>单位为 B，所以需要容量为 39KB。</p>
 <p>将 <code>/dev/sdb4</code> 备份到<code>/root/backup/sdb4.dump</code>中，同时更新记录文件:</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 backup<span class="token punctuation">]</span>$ dump <span class="token parameter variable">-0u</span> <span class="token parameter variable">-f</span> /root/backup/sdb4.dump /dev/sdb4
   DUMP: Date of this level <span class="token number">0</span> dump: Fri Sep <span class="token number">10</span> <span class="token number">14</span>:26:24 <span class="token number">2021</span>
@@ -546,14 +546,14 @@ total <span class="token number">3</span>
 -rw-------. <span class="token number">1</span> root root <span class="token number">1260</span> Sep <span class="token number">10</span> <span class="token number">15</span>:05 a.cfg<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>交互过程中分别会询问：</p>
 <ul>
-<li>需要的volume是什么：1</li>
+<li>需要的 volume 是什么：1</li>
 <li>是否需要修改权限：n</li>
 </ul>
-<p>完成后使用quit命令退出，就可以查看到需要的文件已经被解压出来了。</p>
+<p>完成后使用 quit 命令退出，就可以查看到需要的文件已经被解压出来了。</p>
 <h1 id="使用-xfsdump-备份"><a class="markdownIt-Anchor" href="#使用-xfsdump-备份"></a> 使用 XfsDump 备份</h1>
-<p>CentOS 7中常用<code>xfsdump</code>和<code>xfsrestore</code>工具来备份<code>XFS</code>格式文件系统。</p>
+<p>CentOS 7 中常用<code>xfsdump</code>和<code>xfsrestore</code>工具来备份<code>XFS</code>格式文件系统。</p>
 <h2 id="工具简介-2"><a class="markdownIt-Anchor" href="#工具简介-2"></a> 工具简介</h2>
-<p><code>xfsdump</code>和<code>dump</code>的备份原理相似，但<code>xfsdump</code>通过文件系统的UUID来区分各个备份文件，因此不能备份具有相同UUID的两个文件系统。此外，<code>xfsdump</code>不支持对特定目录进行备份。</p>
+<p><code>xfsdump</code>和<code>dump</code>的备份原理相似，但<code>xfsdump</code>通过文件系统的 UUID 来区分各个备份文件，因此不能备份具有相同 UUID 的两个文件系统。此外，<code>xfsdump</code>不支持对特定目录进行备份。</p>
 <p>命令用法：<code>xfsdump [-L 标签] [-M 说明] [-l 备份等级] [-f 输出备份文件] 待备份数据</code></p>
 <h2 id="完整备份-2"><a class="markdownIt-Anchor" href="#完整备份-2"></a> 完整备份</h2>
 <p>对分区<code>/xfs333</code>做完整备份并将结果保存在<code>/root/backup/sdd1.dump</code>中：</p>
@@ -739,7 +739,7 @@ total <span class="token number">10240</span>
 <p>将 <code>boot.cpio</code> 解压：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ cpio <span class="token parameter variable">-idvc</span> <span class="token operator">&lt;</span> boot.cpio<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h1 id="镜像制作"><a class="markdownIt-Anchor" href="#镜像制作"></a> 镜像制作</h1>
-<p>在Linux下制作镜像可以使用 <code>mkisofs</code> 命令，可用参数如下:</p>
+<p>在 Linux 下制作镜像可以使用 <code>mkisofs</code> 命令，可用参数如下:</p>
 <table>
 <thead>
 <tr>
@@ -787,7 +787,7 @@ Max brk space used <span class="token number">24000</span>
 <span class="token number">10557</span> extents written <span class="token punctuation">(</span><span class="token number">20</span> MB<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p><code>-graft-point</code> 后面接要备份的数据，等号左边代表镜像文件内的目录，右侧是实际路径。</p>
 <h1 id="光盘刻录"><a class="markdownIt-Anchor" href="#光盘刻录"></a> 光盘刻录</h1>
-<p>在Linux下，使用<code>cdrecord</code>命令进行CD/DVD刻录。</p>
+<p>在 Linux 下，使用<code>cdrecord</code>命令进行 CD/DVD 刻录。</p>
 <p>首先扫描系统中的光驱设备：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ cdrecord <span class="token parameter variable">--devices</span>
 wodim: Overview of accessible drives <span class="token punctuation">(</span><span class="token number">1</span> found<span class="token punctuation">)</span> <span class="token builtin class-name">:</span>
@@ -795,7 +795,7 @@ wodim: Overview of accessible drives <span class="token punctuation">(</span><sp
 <span class="token number">0</span>  <span class="token assign-left variable">dev</span><span class="token operator">=</span><span class="token string">'/dev/sg2'</span>      rwrw-- <span class="token builtin class-name">:</span> <span class="token string">'NECVMWar'</span> <span class="token string">'VMware IDE CDR10'</span>
 -------------------------------------------------------------------------
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>将<code>system.img</code>刻录成数据CD：</p>
+<p>将<code>system.img</code>刻录成数据 CD：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ cdrecord <span class="token parameter variable">-v</span> <span class="token assign-left variable">dev</span><span class="token operator">=</span><span class="token string">'/dev/sg2'</span> <span class="token assign-left variable">fs</span><span class="token operator">=</span>8m <span class="token parameter variable">-dummy</span> <span class="token parameter variable">-data</span> /tmp/system.img 
 wodim: No <span class="token function">write</span> mode specified.
 wodim: Assuming <span class="token parameter variable">-tao</span> mode.
@@ -877,8 +877,8 @@ scsidev: <span class="token string">'/dev/sr0'</span><span aria-hidden="true" cl
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="../2759544459/" rel="next" title="计算机软件基础">
-                  计算机软件基础 <i class="fa fa-chevron-right"></i>
+                <a href="../735422586/" rel="next" title="Linux 目录操作">
+                  Linux 目录操作 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -912,13 +912,13 @@ scsidev: <span class="token string">'/dev/sr0'</span><span aria-hidden="true" cl
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">73k</span>
+    <span title="站点总字数">77k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">4:03</span>
+    <span title="站点阅读时长">4:17</span>
   </span>
 </div>
 <div class="busuanzi-count">
@@ -939,7 +939,7 @@ scsidev: <span class="token string">'/dev/sr0'</span><span aria-hidden="true" cl
       </span>
     </span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes 1.21
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
   </div>
 
     </div>

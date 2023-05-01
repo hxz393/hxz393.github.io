@@ -30,7 +30,7 @@
 <meta property="og:description" content="磁盘配额简介 Linux 下磁盘配额功能叫 quota。  一般用途  限制服务使用空间容量； 限制某一用户组所能使用的最大磁盘配额； 限制某一用户的最大磁盘配额； 限制某一目录的最大磁盘配额。   使用限制  EXT 文件系统下仅能针对整个文件系统设置； 针对单一目录的设置（prjquota）和针对群组的设置（grpquota）不能共存； 内核必须支持； 只对一般身份用户有效。比如 root">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-09-18T03:57:47.000Z">
-<meta property="article:modified_time" content="2023-04-30T09:08:36.266Z">
+<meta property="article:modified_time" content="2023-04-30T09:11:12.136Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python">
 <meta name="twitter:card" content="summary">
@@ -94,7 +94,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">4</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">32</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">4</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">33</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -145,7 +145,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E9%85%8D%E9%A2%9D%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text"> 磁盘配额简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E8%88%AC%E7%94%A8%E9%80%94"><span class="nav-number">1.1.</span> <span class="nav-text"> 一般用途</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6"><span class="nav-number">1.2.</span> <span class="nav-text"> 使用限制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E9%80%89%E9%A1%B9"><span class="nav-number">1.3.</span> <span class="nav-text"> 设置选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%90%AFquota%E6%94%AF%E6%8C%81"><span class="nav-number">1.4.</span> <span class="nav-text"> 开启Quota支持</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ext-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%A3%81%E7%9B%98%E9%85%8D%E9%A2%9D"><span class="nav-number">2.</span> <span class="nav-text"> EXT 文件系统磁盘配额</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E5%BB%BAquota%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">2.1.</span> <span class="nav-text"> 新建Quota配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E4%B8%8E%E5%85%B3%E9%97%ADquota"><span class="nav-number">2.2.</span> <span class="nav-text"> 启动与关闭Quota</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%BE%91quota"><span class="nav-number">2.3.</span> <span class="nav-text"> 编辑Quota</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AEquota"><span class="nav-number">2.4.</span> <span class="nav-text"> 设置Quota</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#quota%E6%8A%A5%E8%A1%A8"><span class="nav-number">2.5.</span> <span class="nav-text"> Quota报表</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#xfs-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%A3%81%E7%9B%98%E9%85%8D%E9%A2%9D"><span class="nav-number">3.</span> <span class="nav-text"> XFS 文件系统磁盘配额</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E7%8A%B6%E6%80%81"><span class="nav-number">3.1.</span> <span class="nav-text"> 查询状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%92%88%E5%AF%B9%E7%94%A8%E6%88%B7%E5%92%8C%E7%BB%84%E8%AE%BE%E7%BD%AEquota"><span class="nav-number">3.2.</span> <span class="nav-text"> 针对用户和组设置Quota</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%92%88%E5%AF%B9%E7%9B%AE%E5%BD%95%E8%AE%BE%E7%BD%AEquota"><span class="nav-number">3.3.</span> <span class="nav-text"> 针对目录设置Quota</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%A1%E7%90%86quota%E5%8A%9F%E8%83%BD"><span class="nav-number">3.4.</span> <span class="nav-text"> 管理Quota功能</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E9%85%8D%E9%A2%9D%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text"> 磁盘配额简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E8%88%AC%E7%94%A8%E9%80%94"><span class="nav-number">1.1.</span> <span class="nav-text"> 一般用途</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6"><span class="nav-number">1.2.</span> <span class="nav-text"> 使用限制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E9%80%89%E9%A1%B9"><span class="nav-number">1.3.</span> <span class="nav-text"> 设置选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%90%AF-quota-%E6%94%AF%E6%8C%81"><span class="nav-number">1.4.</span> <span class="nav-text"> 开启 Quota 支持</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ext-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%A3%81%E7%9B%98%E9%85%8D%E9%A2%9D"><span class="nav-number">2.</span> <span class="nav-text"> EXT 文件系统磁盘配额</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E5%BB%BA-quota-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">2.1.</span> <span class="nav-text"> 新建 Quota 配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E4%B8%8E%E5%85%B3%E9%97%AD-quota"><span class="nav-number">2.2.</span> <span class="nav-text"> 启动与关闭 Quota</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%BE%91-quota"><span class="nav-number">2.3.</span> <span class="nav-text"> 编辑 Quota</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE-quota"><span class="nav-number">2.4.</span> <span class="nav-text"> 设置 Quota</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#quota-%E6%8A%A5%E8%A1%A8"><span class="nav-number">2.5.</span> <span class="nav-text"> Quota 报表</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#xfs-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%A3%81%E7%9B%98%E9%85%8D%E9%A2%9D"><span class="nav-number">3.</span> <span class="nav-text"> XFS 文件系统磁盘配额</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E7%8A%B6%E6%80%81"><span class="nav-number">3.1.</span> <span class="nav-text"> 查询状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%92%88%E5%AF%B9%E7%94%A8%E6%88%B7%E5%92%8C%E7%BB%84%E8%AE%BE%E7%BD%AE-quota"><span class="nav-number">3.2.</span> <span class="nav-text"> 针对用户和组设置 Quota</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%92%88%E5%AF%B9%E7%9B%AE%E5%BD%95%E8%AE%BE%E7%BD%AE-quota"><span class="nav-number">3.3.</span> <span class="nav-text"> 针对目录设置 Quota</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%A1%E7%90%86-quota-%E5%8A%9F%E8%83%BD"><span class="nav-number">3.4.</span> <span class="nav-text"> 管理 Quota 功能</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -160,7 +160,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="../archives/">
-          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-count">33</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -258,7 +258,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-04-30 17:08:36" itemprop="dateModified" datetime="2023-04-30T17:08:36+08:00">2023-04-30</time>
+      <time title="修改时间：2023-04-30 17:11:12" itemprop="dateModified" datetime="2023-04-30T17:11:12+08:00">2023-04-30</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -328,9 +328,9 @@
 <li>分别针对使用者，群组或个别目录（<code>user</code>，<code>group</code> &amp; <code>project</code>）；</li>
 <li>容量限制（<code>block</code>）或文件数量限制（<code>inode</code>）；</li>
 <li>警告（<code>soft</code>）与限制值（<code>hard</code>）；</li>
-<li>宽限时间（<code>grace time</code>），在用量介于 <code>soft</code> 与 <code>hard</code> 之间时给予警告，并给予宽限时间（默认7天）。如果在宽限期内没把用量降到 <code>soft</code> 值之下，<code>soft</code> 限制值会替代 <code>hard</code> 值作为 <code>quota</code> 的限制。</li>
+<li>宽限时间（<code>grace time</code>），在用量介于 <code>soft</code> 与 <code>hard</code> 之间时给予警告，并给予宽限时间（默认 7 天）。如果在宽限期内没把用量降到 <code>soft</code> 值之下，<code>soft</code> 限制值会替代 <code>hard</code> 值作为 <code>quota</code> 的限制。</li>
 </ul>
-<h2 id="开启quota支持"><a class="markdownIt-Anchor" href="#开启quota支持"></a> 开启Quota支持</h2>
+<h2 id="开启-quota-支持"><a class="markdownIt-Anchor" href="#开启-quota-支持"></a> 开启 Quota 支持</h2>
 <p><code>ext</code> 和 <code>xfs</code> 文件系统默认支持 <code>quota</code>，要手动加入 <code>quota</code> 支持可以使用 <code>mount -o remount,usrquota,grpquota /</code> 命令来重新挂载。<code>usrquota</code> 和 <code>grpquota</code> 参数分别代表用户与用户组支持参数。</p>
 <p>写入配置文件可以修改 <code>/etc/fstab</code> 文件，在挂载参数后面加入 <code>usrquota</code> 和 <code>grpquota</code> 或 <code>prjquota</code>：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/fstab
@@ -342,10 +342,10 @@ mount: /dev/sdb4 is already mounted or /root/sdb4m busy
 <span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mount</span> <span class="token operator">|</span> <span class="token function">grep</span> sdd
 /dev/sdd1 on /xfs333 <span class="token builtin class-name">type</span> xfs <span class="token punctuation">(</span>rw,relatime,seclabel,attr2,inode64,usrquota,grpquota<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h1 id="ext-文件系统磁盘配额"><a class="markdownIt-Anchor" href="#ext-文件系统磁盘配额"></a> EXT 文件系统磁盘配额</h1>
-<p>由于EXT文件系统中使用的工具和XFS文件系统不同，因此分别记录。</p>
-<h2 id="新建quota配置文件"><a class="markdownIt-Anchor" href="#新建quota配置文件"></a> 新建Quota配置文件</h2>
-<p>Quota是通过分析整个文件系统中每个用户(用户组)拥有的文件总数与总容量，将数据记录在该文件系统的最顶层目录，然后在该配置文件中再使用每个账号或组的限制值去规定磁盘使用量。</p>
-<p>可以使用<code>quotacheck</code>命令来新建Quota配置文件，用法如下：</p>
+<p>由于 EXT 文件系统中使用的工具和 XFS 文件系统不同，因此分别记录。</p>
+<h2 id="新建-quota-配置文件"><a class="markdownIt-Anchor" href="#新建-quota-配置文件"></a> 新建 Quota 配置文件</h2>
+<p>Quota 是通过分析整个文件系统中每个用户(用户组)拥有的文件总数与总容量，将数据记录在该文件系统的最顶层目录，然后在该配置文件中再使用每个账号或组的限制值去规定磁盘使用量。</p>
+<p>可以使用<code>quotacheck</code>命令来新建 Quota 配置文件，用法如下：</p>
 <p><code>quotacheck [-avugfM] [挂载点]</code></p>
 <p>主要参数:</p>
 <table>
@@ -358,7 +358,7 @@ mount: /dev/sdb4 is already mounted or /root/sdb4m busy
 <tbody>
 <tr>
 <td>-a</td>
-<td>扫描所有在<code>/etc/mtab</code>内Quota支持的文件系统，加入此参数后可不写挂载点</td>
+<td>扫描所有在<code>/etc/mtab</code>内 Quota 支持的文件系统，加入此参数后可不写挂载点</td>
 </tr>
 <tr>
 <td>-u</td>
@@ -374,7 +374,7 @@ mount: /dev/sdb4 is already mounted or /root/sdb4m busy
 </tr>
 <tr>
 <td>-f</td>
-<td>强制扫描文件系统，并写入新的Quota配置文件</td>
+<td>强制扫描文件系统，并写入新的 Quota 配置文件</td>
 </tr>
 <tr>
 <td>-M</td>
@@ -394,16 +394,16 @@ quotacheck: Old <span class="token function">file</span> not found.<span aria-hi
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll <span class="token parameter variable">-d</span> /root/sdb4m/aq*
 -rw-------. <span class="token number">1</span> root root <span class="token number">7168</span> Sep <span class="token number">13</span> <span class="token number">13</span>:26 /root/sdb4m/aquota.group
 -rw-------. <span class="token number">1</span> root root <span class="token number">7168</span> Sep <span class="token number">13</span> <span class="token number">13</span>:26 /root/sdb4m/aquota.user<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>配置文件不用手动去编辑，因为实际上是Quota的数据文件，内容会一直变动。</p>
-<h2 id="启动与关闭quota"><a class="markdownIt-Anchor" href="#启动与关闭quota"></a> 启动与关闭Quota</h2>
-<p>启动quota服务使用命令<code>quotaon</code>，加入<code>-auvg</code>参数来启动所有功能：</p>
+<p>配置文件不用手动去编辑，因为实际上是 Quota 的数据文件，内容会一直变动。</p>
+<h2 id="启动与关闭-quota"><a class="markdownIt-Anchor" href="#启动与关闭-quota"></a> 启动与关闭 Quota</h2>
+<p>启动 quota 服务使用命令<code>quotaon</code>，加入<code>-auvg</code>参数来启动所有功能：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ quotaon <span class="token parameter variable">-avug</span>
 /dev/sdb4 <span class="token punctuation">[</span>/root/sdb4m<span class="token punctuation">]</span>: group quotas turned on
 /dev/sdb4 <span class="token punctuation">[</span>/root/sdb4m<span class="token punctuation">]</span>: user quotas turned on<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>quota启动一次后，系统的<code>/etc/rc.d/rc.sysinit</code>初始化脚本都会自动执行该命令。</p>
-<p>关闭quota服务使用<code>quotaoff</code>命令，用<code>-a</code>参数关闭所有功能：</p>
+<p>quota 启动一次后，系统的<code>/etc/rc.d/rc.sysinit</code>初始化脚本都会自动执行该命令。</p>
+<p>关闭 quota 服务使用<code>quotaoff</code>命令，用<code>-a</code>参数关闭所有功能：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ quotaoff <span class="token parameter variable">-a</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="编辑quota"><a class="markdownIt-Anchor" href="#编辑quota"></a> 编辑Quota</h2>
+<h2 id="编辑-quota"><a class="markdownIt-Anchor" href="#编辑-quota"></a> 编辑 Quota</h2>
 <p>编辑配额使用<code>edquota</code>命令，语法如下：</p>
 <p><code>edquota [-u 用户名] [-g 组]</code></p>
 <p><code>edquota -t 宽限时间</code></p>
@@ -431,17 +431,17 @@ Disk quotas <span class="token keyword">for</span> user user1 <span class="token
 <tr>
 <td>2</td>
 <td>blocks</td>
-<td>磁盘容量，单位为KB</td>
+<td>磁盘容量，单位为 KB</td>
 </tr>
 <tr>
 <td>3</td>
 <td>soft</td>
-<td>磁盘容量的soft限制值，单位KB</td>
+<td>磁盘容量的 soft 限制值，单位 KB</td>
 </tr>
 <tr>
 <td>4</td>
 <td>hard</td>
-<td>磁盘容量的hard限制值，单位KB</td>
+<td>磁盘容量的 hard 限制值，单位 KB</td>
 </tr>
 <tr>
 <td>5</td>
@@ -451,28 +451,28 @@ Disk quotas <span class="token keyword">for</span> user user1 <span class="token
 <tr>
 <td>6</td>
 <td>soft</td>
-<td>文件数量的soft限制值</td>
+<td>文件数量的 soft 限制值</td>
 </tr>
 <tr>
 <td>7</td>
 <td>hard</td>
-<td>文件数量的hard限制值</td>
+<td>文件数量的 hard 限制值</td>
 </tr>
 </tbody>
 </table>
-<p>修改宽限时间为14天：</p>
+<p>修改宽限时间为 14 天：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ edquota <span class="token parameter variable">-t</span>
 Grace period before enforcing soft limits <span class="token keyword">for</span> users:
 Time <span class="token function">units</span> may be: days, hours, minutes, or seconds
   Filesystem             Block grace period     Inode grace period
   /dev/sdb4                    14days                  7days<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="设置quota"><a class="markdownIt-Anchor" href="#设置quota"></a> 设置Quota</h2>
-<p>除了修改配置文件，还可以通过<code>setquota</code>命令来设置Quota的值。命令语法如下：</p>
+<h2 id="设置-quota"><a class="markdownIt-Anchor" href="#设置-quota"></a> 设置 Quota</h2>
+<p>除了修改配置文件，还可以通过<code>setquota</code>命令来设置 Quota 的值。命令语法如下：</p>
 <p><code>setquota [-u|-g] 用户名|组名 容量限制(soft) 容量限制(hard) 文件数限制(soft) 文件数限制(hard)</code></p>
-<p>例如，将<code>user1</code>的文件数限制设置为1000/2000：</p>
+<p>例如，将<code>user1</code>的文件数限制设置为 1000/2000：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ setquota <span class="token parameter variable">-u</span> user1 <span class="token number">0</span> <span class="token number">0</span> <span class="token number">1000</span> <span class="token number">2000</span> /root/sdb4m<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="quota报表"><a class="markdownIt-Anchor" href="#quota报表"></a> Quota报表</h2>
-<p>针对用户或组查询限额报表使用quota命令，命令语法如下：</p>
+<h2 id="quota-报表"><a class="markdownIt-Anchor" href="#quota-报表"></a> Quota 报表</h2>
+<p>针对用户或组查询限额报表使用 <code>quota</code> 命令，命令语法如下：</p>
 <p><code>quota [-uvs] [用户名]</code></p>
 <p><code>quota [-gvs] [组名]</code></p>
 <p>例如查询用户<code>user1</code>的限额：</p>
@@ -494,7 +494,7 @@ Disk quotas <span class="token keyword">for</span> user user1 <span class="token
 <tbody>
 <tr>
 <td>-a</td>
-<td>直接到<code>/etc/mtab</code>查询具有quota标志的文件系统，并报告quota的结果</td>
+<td>直接到<code>/etc/mtab</code>查询具有 quota 标志的文件系统，并报告 quota 的结果</td>
 </tr>
 <tr>
 <td>-v</td>
@@ -502,19 +502,19 @@ Disk quotas <span class="token keyword">for</span> user user1 <span class="token
 </tr>
 <tr>
 <td>-u</td>
-<td>显示出用户的quota限值</td>
+<td>显示出用户的 quota 限值</td>
 </tr>
 <tr>
 <td>-g</td>
-<td>显示出个别用户组的quota限值</td>
+<td>显示出个别用户组的 quota 限值</td>
 </tr>
 <tr>
 <td>-s</td>
-<td>以M，G为单位显示结果</td>
+<td>以 M，G 为单位显示结果</td>
 </tr>
 </tbody>
 </table>
-<p>例如查询所有用户的quota限制情况：</p>
+<p>例如查询所有用户的 quota 限制情况：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ repquota <span class="token parameter variable">-auvs</span>
 *** Report <span class="token keyword">for</span> user quotas on device /dev/sdb4
 Block grace time: 14days<span class="token punctuation">;</span> Inode grace time: 7days
@@ -530,7 +530,7 @@ Data blocks: <span class="token number">1</span>
 Entries: <span class="token number">2</span>
 Used average: <span class="token number">2.000000</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h1 id="xfs-文件系统磁盘配额"><a class="markdownIt-Anchor" href="#xfs-文件系统磁盘配额"></a> XFS 文件系统磁盘配额</h1>
-<p>在xfs文件系统下，主要使用 <code>xfs_quota</code> 命令进行配额管理。</p>
+<p>在 xfs 文件系统下，主要使用 <code>xfs_quota</code> 命令进行配额管理。</p>
 <h2 id="查询状态"><a class="markdownIt-Anchor" href="#查询状态"></a> 查询状态</h2>
 <p>基本使用方法为:<code>xfs_quota -x -c &quot;指令&quot; [挂载点]</code>，其中 <code>-x</code> 表示使用专家模式，<code>-c</code> 后面加的指令有以下：</p>
 <table>
@@ -593,12 +593,12 @@ Project <span class="token function">quota</span> state on /xfs333 <span class="
 Blocks grace time: <span class="token punctuation">[</span><span class="token number">7</span> days<span class="token punctuation">]</span>
 Inodes grace time: <span class="token punctuation">[</span><span class="token number">7</span> days<span class="token punctuation">]</span>
 Realtime Blocks grace time: <span class="token punctuation">[</span><span class="token number">7</span> days<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="针对用户和组设置quota"><a class="markdownIt-Anchor" href="#针对用户和组设置quota"></a> 针对用户和组设置Quota</h2>
+<h2 id="针对用户和组设置-quota"><a class="markdownIt-Anchor" href="#针对用户和组设置-quota"></a> 针对用户和组设置 Quota</h2>
 <p>设置使用的命令格式为：</p>
 <p><code>xfs_quota -x -c &quot;limit [-ug] b[soft|hard]=限制值 i[soft|hard]=限制值 用户或组名&quot; 挂载点</code></p>
 <p><code>xfs_quota -x -c &quot;timer [-ug] [-bir] Ndays&quot;</code></p>
-<p>上面命令为限制block和inode，下面命令为设置grace时间。针对用户/组设置使用<code>-u</code>/<code>-g</code>参数。</p>
-<p>例如限制用户<code>user1</code>对<code>/xfs333</code>的<code>bsoft</code>为100MB，<code>bhard</code>为110MB：</p>
+<p>上面命令为限制 block 和 inode，下面命令为设置 grace 时间。针对用户/组设置使用<code>-u</code>/<code>-g</code>参数。</p>
+<p>例如限制用户<code>user1</code>对<code>/xfs333</code>的<code>bsoft</code>为 100MB，<code>bhard</code>为 110MB：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"limit -u bsoft=100M bhard=110M user1"</span> /xfs333/
 <span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"report -ubih"</span> /xfs333/
 User <span class="token function">quota</span> on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
@@ -607,7 +607,7 @@ User ID      Used   Soft   Hard Warn/Grace     Used   Soft   Hard Warn/Grace
 ---------- --------------------------------- --------------------------------- 
 root        <span class="token number">30</span>.0M      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>      <span class="token number">7</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>
 user1           <span class="token number">0</span>   100M   110M  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>      <span class="token number">0</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>限制用户组<code>users</code>对<code>/xfs333</code>的<code>bsoft</code>为50MB，<code>bhard</code>为60MB：</p>
+<p>限制用户组<code>users</code>对<code>/xfs333</code>的<code>bsoft</code>为 50MB，<code>bhard</code>为 60MB：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"limit -g bsoft=50M bhard=60M users"</span> /xfs333/
 <span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"report -gbih"</span> /xfs333/
 Group <span class="token function">quota</span> on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
@@ -616,7 +616,7 @@ Group ID     Used   Soft   Hard Warn/Grace     Used   Soft   Hard Warn/Grace
 ---------- --------------------------------- --------------------------------- 
 root        <span class="token number">30</span>.0M      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>      <span class="token number">7</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>
 <span class="token function">users</span>           <span class="token number">0</span>    50M    60M  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>      <span class="token number">0</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>设置<code>/xfs333</code>的grace time为14天：</p>
+<p>设置<code>/xfs333</code>的 grace time 为 14 天：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"timer -g -b 14days"</span> /xfs333/
 <span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"timer -u -b 14days"</span> /xfs333/
 <span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"state"</span> /xfs333/
@@ -642,8 +642,8 @@ User ID      Used   Soft   Hard Warn/Grace     Used   Soft   Hard Warn/Grace
 ---------- --------------------------------- --------------------------------- 
 root            <span class="token number">0</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span><span class="token number">0</span> days<span class="token punctuation">]</span>      <span class="token number">3</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>
 user1      <span class="token number">109</span>.1M   100M   110M  00 <span class="token punctuation">[</span><span class="token number">13</span> days<span class="token punctuation">]</span>      <span class="token number">3</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以看到针对 <code>user1</code> 的限制已经生效，grace time开始计时。</p>
-<p>再看看针对组的实际限制情况，使用gid为 <code>users</code> 的用户 <code>user4</code> 测试：</p>
+<p>可以看到针对 <code>user1</code> 的限制已经生效，grace time 开始计时。</p>
+<p>再看看针对组的实际限制情况，使用 gid 为 <code>users</code> 的用户 <code>user4</code> 测试：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user4@101c7 test<span class="token punctuation">]</span>$ <span class="token function">dd</span> <span class="token assign-left variable">if</span><span class="token operator">=</span>/dev/zero <span class="token assign-left variable">of</span><span class="token operator">=</span>200M <span class="token assign-left variable">bs</span><span class="token operator">=</span>1M <span class="token assign-left variable">count</span><span class="token operator">=</span><span class="token number">200</span>
 dd: error writing â€˜200Mâ€™: Disk <span class="token function">quota</span> exceeded
 <span class="token number">61</span>+0 records <span class="token keyword">in</span>
@@ -660,7 +660,7 @@ Group ID     Used   Soft   Hard Warn/Grace     Used   Soft   Hard Warn/Grace
 root            <span class="token number">0</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span><span class="token number">0</span> days<span class="token punctuation">]</span>      <span class="token number">3</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>
 <span class="token function">users</span>         60M    50M    60M  00 <span class="token punctuation">[</span><span class="token number">13</span> days<span class="token punctuation">]</span>      <span class="token number">2</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>同样已经生效。</p>
-<h2 id="针对目录设置quota"><a class="markdownIt-Anchor" href="#针对目录设置quota"></a> 针对目录设置Quota</h2>
+<h2 id="针对目录设置-quota"><a class="markdownIt-Anchor" href="#针对目录设置-quota"></a> 针对目录设置 Quota</h2>
 <p>先修改<code>/etc/fstab</code>内<code>grpquota</code>挂载参数为<code>prjquota</code>，再重新挂载目录。查看状态：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"state"</span>
 Project <span class="token function">quota</span> state on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
@@ -670,7 +670,7 @@ Project <span class="token function">quota</span> state on /xfs333 <span class="
 Blocks grace time: <span class="token punctuation">[</span><span class="token number">14</span> days<span class="token punctuation">]</span>
 Inodes grace time: <span class="token punctuation">[</span><span class="token number">7</span> days<span class="token punctuation">]</span>
 Realtime Blocks grace time: <span class="token punctuation">[</span><span class="token number">7</span> days<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>然后针对目录<code>/xfs333/test</code>设置Project名称和ID为<code>dirquo:23</code>到配置文件：</p>
+<p>然后针对目录<code>/xfs333/test</code>设置 Project 名称和 ID 为<code>dirquo:23</code>到配置文件：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token string">"23:/xfs333/test"</span> <span class="token operator">></span> /etc/projects
 <span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token string">"dirquo:23"</span>  <span class="token operator">>></span> /etc/projid<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>下面初始化方案：</p>
@@ -688,7 +688,7 @@ Project ID   Used   Soft   Hard Warn/Grace     Used   Soft   Hard Warn/Grace
 ---------- --------------------------------- --------------------------------- 
 <span class="token comment">#0              0      0      0  00 [------]      2      0      0  00 [------]</span>
 dirquo        60M      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>      <span class="token number">3</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>开始设置对目录的容量为20M/30M限制：</p>
+<p>开始设置对目录的容量为 20M/30M 限制：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 /<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"limit -p bsoft=20M bhard=30M dirquo"</span> /xfs333/
 <span class="token punctuation">[</span>root@101c7 /<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"report -pbin"</span> /xfs333/
 Project <span class="token function">quota</span> on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
@@ -713,16 +713,16 @@ Project ID       Used       Soft       Hard    Warn/Grace           Used       S
 ---------- -------------------------------------------------- -------------------------------------------------- 
 <span class="token comment">#0                   0          0          0     00 [--------]          2          0          0     00 [--------]</span>
 <span class="token comment">#23              30720      20480      30720     00 [14 days]          3          0          0     00 [--------]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>第一次<code>dd</code>直接拒绝说达到配额限制，将原文件删除后再试，跑到33MB提示没有空间，所以对目录限制是不挑用户的。</p>
-<h2 id="管理quota功能"><a class="markdownIt-Anchor" href="#管理quota功能"></a> 管理Quota功能</h2>
-<p>可以使用下面的指令来启停quota功能：</p>
+<p>第一次<code>dd</code>直接拒绝说达到配额限制，将原文件删除后再试，跑到 33MB 提示没有空间，所以对目录限制是不挑用户的。</p>
+<h2 id="管理-quota-功能"><a class="markdownIt-Anchor" href="#管理-quota-功能"></a> 管理 Quota 功能</h2>
+<p>可以使用下面的指令来启停 quota 功能：</p>
 <ul>
-<li><strong>disable</strong>: 暂停quota限制</li>
-<li><strong>enable</strong>: 恢复quota限制</li>
-<li><strong>off</strong>: 完全关闭quota限制，需要重新挂载文件系统才能再次启用</li>
-<li><strong>remove</strong>: 需要在off状态下执行，移除quota的限制设置。</li>
+<li><strong>disable</strong>: 暂停 quota 限制</li>
+<li><strong>enable</strong>: 恢复 quota 限制</li>
+<li><strong>off</strong>: 完全关闭 quota 限制，需要重新挂载文件系统才能再次启用</li>
+<li><strong>remove</strong>: 需要在 off 状态下执行，移除 quota 的限制设置。</li>
 </ul>
-<p>暂停后quota限制解除，但还是会继续计算用量：</p>
+<p>暂停后 quota 限制解除，但还是会继续计算用量：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 test<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"state"</span> /xfs333/
 User <span class="token function">quota</span> state on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
   Accounting: ON
@@ -739,9 +739,9 @@ Project <span class="token function">quota</span> state on /xfs333 <span class="
 Blocks grace time: <span class="token punctuation">[</span><span class="token number">14</span> days<span class="token punctuation">]</span>
 Inodes grace time: <span class="token punctuation">[</span><span class="token number">7</span> days<span class="token punctuation">]</span>
 Realtime Blocks grace time: <span class="token punctuation">[</span><span class="token number">7</span> days<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>重新启用quota：</p>
+<p>重新启用 quota：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 test<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"enable -up"</span> /xfs333/<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>完全关闭quota并取移除project限制：</p>
+<p>完全关闭 quota 并取移除 project 限制：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 test<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"off -up"</span> /xfs333/
 <span class="token punctuation">[</span>root@101c7 test<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"enable -up"</span> /xfs333/
 XFS_QUOTAON: Function not implemented
@@ -754,7 +754,7 @@ Project ID   Used   Soft   Hard Warn/Grace
 ---------- --------------------------------- 
 <span class="token comment">#0              0      0      0  00 [------]</span>
 dirquo        30M      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以看到dirquo的设置已经清零了，remove会清除所有project限制。</p>
+<p>可以看到 dirquo 的设置已经清零了，remove 会清除所有 project 限制。</p>
 
     </div>
 
@@ -816,9 +816,6 @@ dirquo        30M      <span class="token number">0</span>      <span class="tok
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="../635683850/" rel="prev" title="Linux 下压缩和解压文件">
-                  <i class="fa fa-chevron-left"></i> Linux 下压缩和解压文件
-                </a>
             </div>
             <div class="post-nav-item">
                 <a href="../2354164977/" rel="next" title="Linux 权限管理">
@@ -856,13 +853,13 @@ dirquo        30M      <span class="token number">0</span>      <span class="tok
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">73k</span>
+    <span title="站点总字数">77k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">4:03</span>
+    <span title="站点阅读时长">4:17</span>
   </span>
 </div>
 <div class="busuanzi-count">
@@ -883,7 +880,7 @@ dirquo        30M      <span class="token number">0</span>      <span class="tok
       </span>
     </span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes 1.21
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
   </div>
 
     </div>
