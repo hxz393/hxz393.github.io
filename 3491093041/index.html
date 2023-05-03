@@ -30,7 +30,7 @@
 <meta property="og:description" content="磁盘查询 主要是 df 这个命令，经常用来查询系统中磁盘剩余空间。比如发现根目录 &#x2F; 满了，说明系统危险了。  查询磁盘容量 使用 df 查看磁盘使用量，df 读取的是在 Superblock 内的信息。 例如查看系统内所有的文件系统： [root@101c7 &#x2F;]$ df -h Filesystem               Size  Used Avail Use% Mounted on">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-09-18T03:57:47.000Z">
-<meta property="article:modified_time" content="2023-05-03T14:41:31.706Z">
+<meta property="article:modified_time" content="2023-05-03T14:42:31.050Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python">
 <meta name="twitter:card" content="summary">
@@ -145,7 +145,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E6%9F%A5%E8%AF%A2"><span class="nav-number">1.</span> <span class="nav-text"> 磁盘查询</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E7%A3%81%E7%9B%98%E5%AE%B9%E9%87%8F"><span class="nav-number">1.1.</span> <span class="nav-text"> 查询磁盘容量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%97%E5%87%BA%E5%88%86%E5%8C%BA%E4%BF%A1%E6%81%AF"><span class="nav-number">1.2.</span> <span class="nav-text"> 列出分区信息</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E5%88%86%E5%8C%BA"><span class="nav-number">2.</span> <span class="nav-text"> 磁盘分区</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%88%86%E5%8C%BA"><span class="nav-number">2.1.</span> <span class="nav-text"> 查看分区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E5%88%86%E5%8C%BA"><span class="nav-number">2.2.</span> <span class="nav-text"> 删除分区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E5%A2%9E%E5%88%86%E5%8C%BA"><span class="nav-number">2.3.</span> <span class="nav-text"> 新增分区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%88%86%E5%8C%BA"><span class="nav-number">2.4.</span> <span class="nav-text"> 格式化分区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E5%BB%BA-swap-%E5%88%86%E5%8C%BA"><span class="nav-number">2.5.</span> <span class="nav-text"> 新建 swap 分区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E5%AE%B9%E9%87%8F%E7%A3%81%E7%9B%98%E5%88%86%E5%8C%BA"><span class="nav-number">2.6.</span> <span class="nav-text"> 大容量磁盘分区</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E5%B7%A5%E5%85%B7"><span class="nav-number">3.</span> <span class="nav-text"> 磁盘工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ext-%E7%A3%81%E7%9B%98%E6%89%AB%E6%8F%8F"><span class="nav-number">3.1.</span> <span class="nav-text"> Ext 磁盘扫描</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#xfs-%E7%A3%81%E7%9B%98%E6%89%AB%E6%8F%8F"><span class="nav-number">3.2.</span> <span class="nav-text"> Xfs 磁盘扫描</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9D%8F%E9%81%93%E6%89%AB%E6%8F%8F"><span class="nav-number">3.3.</span> <span class="nav-text"> 坏道扫描</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E8%AE%BE%E5%A4%87%E4%BB%A3%E7%A0%81"><span class="nav-number">3.4.</span> <span class="nav-text"> 修改设备代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E5%88%86%E5%8C%BA%E5%8D%B7%E6%A0%87"><span class="nav-number">3.5.</span> <span class="nav-text"> 修改分区卷标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9uuid"><span class="nav-number">3.6.</span> <span class="nav-text"> 修改UUID</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E9%98%B5%E5%88%97"><span class="nav-number">4.</span> <span class="nav-text"> 磁盘阵列</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%84%E5%BB%BA%E8%BD%AF%E7%A3%81%E7%9B%98%E9%98%B5%E5%88%97"><span class="nav-number">4.1.</span> <span class="nav-text"> 组建软磁盘阵列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%81%A2%E5%A4%8D%E7%A3%81%E7%9B%98%E9%98%B5%E5%88%97%E6%95%B0%E6%8D%AE"><span class="nav-number">4.2.</span> <span class="nav-text"> 恢复磁盘阵列数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E6%8C%82%E8%BD%BDraid"><span class="nav-number">4.3.</span> <span class="nav-text"> 自动挂载RAID</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E9%97%AD%E8%BD%AFraid"><span class="nav-number">4.4.</span> <span class="nav-text"> 关闭软RAID</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#lvm"><span class="nav-number">5.</span> <span class="nav-text"> LVM</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8Bpv"><span class="nav-number">5.1.</span> <span class="nav-text"> 建立PV</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8Bvg"><span class="nav-number">5.2.</span> <span class="nav-text"> 建立VG</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8Blv"><span class="nav-number">5.3.</span> <span class="nav-text"> 建立LV</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lvm%E6%89%A9%E5%AE%B9"><span class="nav-number">5.4.</span> <span class="nav-text"> LVM扩容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lvm%E7%BC%A9%E5%AE%B9"><span class="nav-number">5.5.</span> <span class="nav-text"> LVM缩容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lvm-thin-volume"><span class="nav-number">5.6.</span> <span class="nav-text"> LVM Thin Volume</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lvm%E5%BF%AB%E7%85%A7"><span class="nav-number">5.7.</span> <span class="nav-text"> LVM快照</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E6%9F%A5%E8%AF%A2"><span class="nav-number">1.</span> <span class="nav-text"> 磁盘查询</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E7%A3%81%E7%9B%98%E5%AE%B9%E9%87%8F"><span class="nav-number">1.1.</span> <span class="nav-text"> 查询磁盘容量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%97%E5%87%BA%E5%88%86%E5%8C%BA%E4%BF%A1%E6%81%AF"><span class="nav-number">1.2.</span> <span class="nav-text"> 列出分区信息</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E5%88%86%E5%8C%BA"><span class="nav-number">2.</span> <span class="nav-text"> 磁盘分区</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%88%86%E5%8C%BA"><span class="nav-number">2.1.</span> <span class="nav-text"> 查看分区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E5%88%86%E5%8C%BA"><span class="nav-number">2.2.</span> <span class="nav-text"> 删除分区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E5%A2%9E%E5%88%86%E5%8C%BA"><span class="nav-number">2.3.</span> <span class="nav-text"> 新增分区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%88%86%E5%8C%BA"><span class="nav-number">2.4.</span> <span class="nav-text"> 格式化分区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E5%BB%BA-swap-%E5%88%86%E5%8C%BA"><span class="nav-number">2.5.</span> <span class="nav-text"> 新建 swap 分区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E5%AE%B9%E9%87%8F%E7%A3%81%E7%9B%98%E5%88%86%E5%8C%BA"><span class="nav-number">2.6.</span> <span class="nav-text"> 大容量磁盘分区</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E5%B7%A5%E5%85%B7"><span class="nav-number">3.</span> <span class="nav-text"> 磁盘工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ext-%E7%A3%81%E7%9B%98%E6%89%AB%E6%8F%8F"><span class="nav-number">3.1.</span> <span class="nav-text"> Ext 磁盘扫描</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#xfs-%E7%A3%81%E7%9B%98%E6%89%AB%E6%8F%8F"><span class="nav-number">3.2.</span> <span class="nav-text"> Xfs 磁盘扫描</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9D%8F%E9%81%93%E6%89%AB%E6%8F%8F"><span class="nav-number">3.3.</span> <span class="nav-text"> 坏道扫描</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E8%AE%BE%E5%A4%87%E4%BB%A3%E7%A0%81"><span class="nav-number">3.4.</span> <span class="nav-text"> 修改设备代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E5%88%86%E5%8C%BA%E5%8D%B7%E6%A0%87"><span class="nav-number">3.5.</span> <span class="nav-text"> 修改分区卷标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9-uuid"><span class="nav-number">3.6.</span> <span class="nav-text"> 修改 UUID</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E9%98%B5%E5%88%97"><span class="nav-number">4.</span> <span class="nav-text"> 磁盘阵列</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%84%E5%BB%BA%E8%BD%AF%E7%A3%81%E7%9B%98%E9%98%B5%E5%88%97"><span class="nav-number">4.1.</span> <span class="nav-text"> 组建软磁盘阵列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%81%A2%E5%A4%8D%E7%A3%81%E7%9B%98%E9%98%B5%E5%88%97%E6%95%B0%E6%8D%AE"><span class="nav-number">4.2.</span> <span class="nav-text"> 恢复磁盘阵列数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E6%8C%82%E8%BD%BD-raid"><span class="nav-number">4.3.</span> <span class="nav-text"> 自动挂载 RAID</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E9%97%AD%E8%BD%AF-raid"><span class="nav-number">4.4.</span> <span class="nav-text"> 关闭软 RAID</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#lvm"><span class="nav-number">5.</span> <span class="nav-text"> LVM</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B-pv"><span class="nav-number">5.1.</span> <span class="nav-text"> 建立 PV</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B-vg"><span class="nav-number">5.2.</span> <span class="nav-text"> 建立 VG</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B-lv"><span class="nav-number">5.3.</span> <span class="nav-text"> 建立 LV</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lvm-%E6%89%A9%E5%AE%B9"><span class="nav-number">5.4.</span> <span class="nav-text"> LVM 扩容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lvm-%E7%BC%A9%E5%AE%B9"><span class="nav-number">5.5.</span> <span class="nav-text"> LVM 缩容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lvm-thin-volume"><span class="nav-number">5.6.</span> <span class="nav-text"> LVM Thin Volume</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lvm-%E5%BF%AB%E7%85%A7"><span class="nav-number">5.7.</span> <span class="nav-text"> LVM 快照</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -258,7 +258,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-03 22:41:31" itemprop="dateModified" datetime="2023-05-03T22:41:31+08:00">2023-05-03</time>
+      <time title="修改时间：2023-05-03 22:42:31" itemprop="dateModified" datetime="2023-05-03T22:42:31+08:00">2023-05-03</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -774,7 +774,7 @@ dumpe2fs <span class="token number">1.42</span>.9 <span class="token punctuation
 Filesystem volume name:   P1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>也可使用 <code>tune2fs</code> 命令来修改：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ tune2fs <span class="token parameter variable">-L</span> P2 /dev/sdb4<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="修改uuid"><a class="markdownIt-Anchor" href="#修改uuid"></a> 修改UUID</h2>
+<h2 id="修改-uuid"><a class="markdownIt-Anchor" href="#修改-uuid"></a> 修改 UUID</h2>
 <p>XFS 文件系统使用 UUID 作为标识符，可以使用 <code>xfs_admin</code> 命令修改 UUID 和 Label。</p>
 <p>例如修改 sdd1 的 Label name 为 xfs1：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ xfs_admin <span class="token parameter variable">-L</span> xfs1 /dev/sdd1
@@ -900,7 +900,7 @@ unused devices: <span class="token operator">&lt;</span>none<span class="token o
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 mnt<span class="token punctuation">]</span>$ <span class="token function">mdadm</span> <span class="token parameter variable">--manage</span> /dev/md0 <span class="token parameter variable">--add</span> /dev/sdb11 <span class="token parameter variable">--remove</span> /dev/sdb6
 mdadm: added /dev/sdb11
 mdadm: hot removed /dev/sdb6 from /dev/md0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h2 id="自动挂载raid"><a class="markdownIt-Anchor" href="#自动挂载raid"></a> 自动挂载RAID</h2>
+<h2 id="自动挂载-raid"><a class="markdownIt-Anchor" href="#自动挂载-raid"></a> 自动挂载 RAID</h2>
 <p>设置 <code>/etc/mdadm.conf</code> 文件来将 RAID 设备自动挂载：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 mnt<span class="token punctuation">]</span>$ <span class="token function">mdadm</span> <span class="token parameter variable">--detail</span> /dev/md0 <span class="token operator">|</span> <span class="token function">grep</span> <span class="token parameter variable">-i</span> uuid
               UUID <span class="token builtin class-name">:</span> f64354f8:cf945331:eee97c66:84776736
@@ -912,7 +912,7 @@ ARRAY /dev/md0 <span class="token assign-left variable">UUID</span><span class="
 <span class="token punctuation">[</span>root@101c7 mnt<span class="token punctuation">]</span>$ <span class="token function">df</span> /mnt/raid
 Filesystem     1K-blocks  Used Available Use% Mounted on
 /dev/md0           <span class="token number">22773</span>   <span class="token number">212</span>     <span class="token number">21333</span>   <span class="token number">1</span>% /mnt/raid<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="关闭软raid"><a class="markdownIt-Anchor" href="#关闭软raid"></a> 关闭软RAID</h2>
+<h2 id="关闭软-raid"><a class="markdownIt-Anchor" href="#关闭软-raid"></a> 关闭软 RAID</h2>
 <p>先删除配置文件 <code>/etc/fstab</code> 中 <code>/dev/md0</code> 的挂载行：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 mnt<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/fstab
 <span class="token comment"># /dev/md0      /mnt/raid       ext3    defaults        1       2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
@@ -926,7 +926,7 @@ mdadm: stopped /dev/md0<span aria-hidden="true" class="line-numbers-rows"><span>
 <span class="token comment"># ARRAY /dev/md0 UUID=f64354f8:cf945331:eee97c66:84776736</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <h1 id="lvm"><a class="markdownIt-Anchor" href="#lvm"></a> LVM</h1>
 <p>如果安装系统分区使用默认配置，系统会自动建立 LVM 格式。</p>
-<h2 id="建立pv"><a class="markdownIt-Anchor" href="#建立pv"></a> 建立PV</h2>
+<h2 id="建立-pv"><a class="markdownIt-Anchor" href="#建立-pv"></a> 建立 PV</h2>
 <p>首先用 <code>fdisk</code> 建立分区，假设四个分区为 <code>sdb1-4</code>，然后用 <code>fdisk</code> 依次更改 <code>system ID</code> 为 <code>8e</code>：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">fdisk</span> /dev/sdb
 Welcome to <span class="token function">fdisk</span> <span class="token punctuation">(</span>util-linux <span class="token number">2.23</span>.2<span class="token punctuation">)</span>.
@@ -1022,7 +1022,7 @@ WARNING: swap signature detected on /dev/sdb4 at offset <span class="token numbe
   Free PE               <span class="token number">0</span>
   Allocated PE          <span class="token number">0</span>
   PV UUID               0pMJ0Q-1h7w-1fMb-OTKS-Xqa5-sjQj-XSUdSi<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="建立vg"><a class="markdownIt-Anchor" href="#建立vg"></a> 建立VG</h2>
+<h2 id="建立-vg"><a class="markdownIt-Anchor" href="#建立-vg"></a> 建立 VG</h2>
 <p>与 VG 相关的命令有下面这些：</p>
 <table>
 <thead>
@@ -1104,7 +1104,7 @@ WARNING: swap signature detected on /dev/sdb4 at offset <span class="token numbe
 <p>要给 VG 扩容，将剩下的 <code>sdb4</code> 加入到 <code>VG400</code> 中可以使用 <code>vgextend</code> 命令：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ vgextend VG400 /dev/sdb4
   Volume group <span class="token string">"VG400"</span> successfully extended<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h2 id="建立lv"><a class="markdownIt-Anchor" href="#建立lv"></a> 建立LV</h2>
+<h2 id="建立-lv"><a class="markdownIt-Anchor" href="#建立-lv"></a> 建立 LV</h2>
 <p>和 LV 有关的命令如下：</p>
 <table>
 <thead>
@@ -1180,7 +1180,7 @@ tmpfs                     <span class="token number">1930640</span>       <span 
 /dev/sda1                 <span class="token number">1038336</span>  <span class="token number">190536</span>    <span class="token number">847800</span>  <span class="token number">19</span>% /boot
 tmpfs                      <span class="token number">386128</span>       <span class="token number">0</span>    <span class="token number">386128</span>   <span class="token number">0</span>% /run/user/0
 /dev/mapper/VG400-LV400    <span class="token number">372615</span>    <span class="token number">2095</span>    <span class="token number">350860</span>   <span class="token number">1</span>% /ext333<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="lvm扩容"><a class="markdownIt-Anchor" href="#lvm扩容"></a> LVM扩容</h2>
+<h2 id="lvm-扩容"><a class="markdownIt-Anchor" href="#lvm-扩容"></a> LVM 扩容</h2>
 <p>扩容分为以下步骤:</p>
 <ol>
 <li>用 <code>fdisk</code> 设置新分区 system ID 为 8e；</li>
@@ -1214,7 +1214,7 @@ old_desc_blocks <span class="token operator">=</span> <span class="token number"
 The filesystem on /dev/VG400/LV400 is now <span class="token number">1437696</span> blocks long.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p><code>xfs</code> 文件系统使用的是 <code>xfs_growfs</code> 命令：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_growfs /dev/VG400/LV400<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="lvm缩容"><a class="markdownIt-Anchor" href="#lvm缩容"></a> LVM缩容</h2>
+<h2 id="lvm-缩容"><a class="markdownIt-Anchor" href="#lvm-缩容"></a> LVM 缩容</h2>
 <p>XFS 文件系统不支持缩容。如果要进行缩容，需要将 <code>/dev/sdc1</code> 抽出来，首先需要 <code>umount</code> 挂载点：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">umount</span> /ext333/<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>然后对 <code>LV400</code> 运行磁盘检查：</p>
@@ -1288,7 +1288,7 @@ The filesystem on /dev/VG400/LV400 is now <span class="token number">1437696</sp
   vpool  VG400  twi-aotz-- <span class="token number">100</span>.00m              <span class="token number">10.69</span>  <span class="token number">10.94</span>                           
   vthin1 VG400  Vwi-aotz--   <span class="token number">1</span>.00g vpool        <span class="token number">1.04</span>         <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>使用储存池一定要注意容量问题，否则超容量使用会造成数据损毁，并且没有系统提示。</p>
-<h2 id="lvm快照"><a class="markdownIt-Anchor" href="#lvm快照"></a> LVM快照</h2>
+<h2 id="lvm-快照"><a class="markdownIt-Anchor" href="#lvm-快照"></a> LVM 快照</h2>
 <p>LVM 可以使用系统快照（snapshot）功能来备份需要的原始数据。快照区与被快照区为不同 LV 中，但要在同一个 VG 上面。</p>
 <p>这里使用 <code>sdc1</code> 作为快照区使用。使用 <code>lvcreate -s</code> 来新建系统快照区 <code>VG400m</code>，并给予一个 PV 占用的 PE 数量 24：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ lvcreate <span class="token parameter variable">-l</span> <span class="token number">24</span> <span class="token parameter variable">-s</span> <span class="token parameter variable">-n</span> VG400m /dev/VG400/LV400 
@@ -1382,10 +1382,13 @@ The filesystem on /dev/VG400/LV400 is now <span class="token number">1437696</sp
 
           <div class="post-nav">
             <div class="post-nav-item">
+                <a href="../3427262780/" rel="prev" title="Linux 磁盘配额管理">
+                  <i class="fa fa-chevron-left"></i> Linux 磁盘配额管理
+                </a>
             </div>
             <div class="post-nav-item">
-                <a href="../3427262780/" rel="next" title="Linux 磁盘配额管理">
-                  Linux 磁盘配额管理 <i class="fa fa-chevron-right"></i>
+                <a href="../2354164977/" rel="next" title="Linux 权限管理">
+                  Linux 权限管理 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
