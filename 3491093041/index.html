@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="磁盘查询 主要是 df 这个命令，经常用来查询系统中磁盘剩余空间。比如发现根目录 &#x2F; 满了，说明系统危险了。  查询磁盘容量 使用 df 查看磁盘使用量，df 读取的是在 Superblock 内的信息。 例如查看系统内所有的文件系统： [root@101c7 &#x2F;]$ df -h Filesystem               Size  Used Avail Use% Mounted on">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 磁盘管理">
+<meta property="og:url" content="https://blog.x2b.net/3491093041/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="磁盘查询 主要是 df 这个命令，经常用来查询系统中磁盘剩余空间。比如发现根目录 &#x2F; 满了，说明系统危险了。  查询磁盘容量 使用 df 查看磁盘使用量，df 读取的是在 Superblock 内的信息。 例如查看系统内所有的文件系统： [root@101c7 &#x2F;]$ df -h Filesystem               Size  Used Avail Use% Mounted on">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-09-18T03:57:47.000Z">
+<meta property="article:modified_time" content="2023-05-03T14:41:31.706Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/3491093041/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/3491093041/","path":"3491093041/","title":"Linux 磁盘管理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Linux 磁盘管理 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">4</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">36</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E6%9F%A5%E8%AF%A2"><span class="nav-number">1.</span> <span class="nav-text"> 磁盘查询</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E7%A3%81%E7%9B%98%E5%AE%B9%E9%87%8F"><span class="nav-number">1.1.</span> <span class="nav-text"> 查询磁盘容量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%97%E5%87%BA%E5%88%86%E5%8C%BA%E4%BF%A1%E6%81%AF"><span class="nav-number">1.2.</span> <span class="nav-text"> 列出分区信息</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E5%88%86%E5%8C%BA"><span class="nav-number">2.</span> <span class="nav-text"> 磁盘分区</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%88%86%E5%8C%BA"><span class="nav-number">2.1.</span> <span class="nav-text"> 查看分区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E5%88%86%E5%8C%BA"><span class="nav-number">2.2.</span> <span class="nav-text"> 删除分区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E5%A2%9E%E5%88%86%E5%8C%BA"><span class="nav-number">2.3.</span> <span class="nav-text"> 新增分区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%88%86%E5%8C%BA"><span class="nav-number">2.4.</span> <span class="nav-text"> 格式化分区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E5%BB%BA-swap-%E5%88%86%E5%8C%BA"><span class="nav-number">2.5.</span> <span class="nav-text"> 新建 swap 分区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E5%AE%B9%E9%87%8F%E7%A3%81%E7%9B%98%E5%88%86%E5%8C%BA"><span class="nav-number">2.6.</span> <span class="nav-text"> 大容量磁盘分区</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E5%B7%A5%E5%85%B7"><span class="nav-number">3.</span> <span class="nav-text"> 磁盘工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ext-%E7%A3%81%E7%9B%98%E6%89%AB%E6%8F%8F"><span class="nav-number">3.1.</span> <span class="nav-text"> Ext 磁盘扫描</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#xfs-%E7%A3%81%E7%9B%98%E6%89%AB%E6%8F%8F"><span class="nav-number">3.2.</span> <span class="nav-text"> Xfs 磁盘扫描</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9D%8F%E9%81%93%E6%89%AB%E6%8F%8F"><span class="nav-number">3.3.</span> <span class="nav-text"> 坏道扫描</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E8%AE%BE%E5%A4%87%E4%BB%A3%E7%A0%81"><span class="nav-number">3.4.</span> <span class="nav-text"> 修改设备代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E5%88%86%E5%8C%BA%E5%8D%B7%E6%A0%87"><span class="nav-number">3.5.</span> <span class="nav-text"> 修改分区卷标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9uuid"><span class="nav-number">3.6.</span> <span class="nav-text"> 修改UUID</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E9%98%B5%E5%88%97"><span class="nav-number">4.</span> <span class="nav-text"> 磁盘阵列</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%84%E5%BB%BA%E8%BD%AF%E7%A3%81%E7%9B%98%E9%98%B5%E5%88%97"><span class="nav-number">4.1.</span> <span class="nav-text"> 组建软磁盘阵列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%81%A2%E5%A4%8D%E7%A3%81%E7%9B%98%E9%98%B5%E5%88%97%E6%95%B0%E6%8D%AE"><span class="nav-number">4.2.</span> <span class="nav-text"> 恢复磁盘阵列数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E6%8C%82%E8%BD%BDraid"><span class="nav-number">4.3.</span> <span class="nav-text"> 自动挂载RAID</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E9%97%AD%E8%BD%AFraid"><span class="nav-number">4.4.</span> <span class="nav-text"> 关闭软RAID</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#lvm"><span class="nav-number">5.</span> <span class="nav-text"> LVM</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8Bpv"><span class="nav-number">5.1.</span> <span class="nav-text"> 建立PV</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8Bvg"><span class="nav-number">5.2.</span> <span class="nav-text"> 建立VG</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8Blv"><span class="nav-number">5.3.</span> <span class="nav-text"> 建立LV</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lvm%E6%89%A9%E5%AE%B9"><span class="nav-number">5.4.</span> <span class="nav-text"> LVM扩容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lvm%E7%BC%A9%E5%AE%B9"><span class="nav-number">5.5.</span> <span class="nav-text"> LVM缩容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lvm-thin-volume"><span class="nav-number">5.6.</span> <span class="nav-text"> LVM Thin Volume</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lvm%E5%BF%AB%E7%85%A7"><span class="nav-number">5.7.</span> <span class="nav-text"> LVM快照</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.douban.com/people/Cyber.DraFonS" title="https:&#x2F;&#x2F;www.douban.com&#x2F;people&#x2F;Cyber.DraFonS" rel="noopener external nofollow noreferrer" target="_blank">豆瓣</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/3491093041/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Linux 磁盘管理 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux 磁盘管理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-09-18 11:57:47" itemprop="dateCreated datePublished" datetime="2021-09-18T11:57:47+08:00">2021-09-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-03 22:41:31" itemprop="dateModified" datetime="2023-05-03T22:41:31+08:00">2023-05-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/2-%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">2.系统管理</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>7.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>24 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="磁盘查询"><a class="markdownIt-Anchor" href="#磁盘查询"></a> 磁盘查询</h1>
+<p>主要是 <code>df</code> 这个命令，经常用来查询系统中磁盘剩余空间。比如发现根目录 <code>/</code> 满了，说明系统危险了。</p>
+<h2 id="查询磁盘容量"><a class="markdownIt-Anchor" href="#查询磁盘容量"></a> 查询磁盘容量</h2>
+<p>使用 <code>df</code> 查看磁盘使用量，<code>df</code> 读取的是在 Superblock 内的信息。</p>
+<p>例如查看系统内所有的文件系统：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 /<span class="token punctuation">]</span>$ <span class="token function">df</span> <span class="token parameter variable">-h</span>
+Filesystem               Size  Used Avail Use% Mounted on
+devtmpfs                 <span class="token number">1</span>.9G     <span class="token number">0</span>  <span class="token number">1</span>.9G   <span class="token number">0</span>% /dev
+tmpfs                    <span class="token number">1</span>.9G     <span class="token number">0</span>  <span class="token number">1</span>.9G   <span class="token number">0</span>% /dev/shm
+tmpfs                    <span class="token number">1</span>.9G   12M  <span class="token number">1</span>.9G   <span class="token number">1</span>% /run
+tmpfs                    <span class="token number">1</span>.9G     <span class="token number">0</span>  <span class="token number">1</span>.9G   <span class="token number">0</span>% /sys/fs/cgroup
+/dev/mapper/centos-root   17G  <span class="token number">2</span>.1G   15G  <span class="token number">13</span>% /
+/dev/sda1               1014M  187M  828M  <span class="token number">19</span>% /boot
+tmpfs                    378M     <span class="token number">0</span>  378M   <span class="token number">0</span>% /run/user/0
+/dev/sdb1                991M  <span class="token number">1</span>.3M  939M   <span class="token number">1</span>% /ext333<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>当查询目标是目录或文件时，<code>df</code> 会自动分析该目录所在分区，实际看到的是分区容量信息。</p>
+<p>将所有特殊文件格式和名称（例如内存挂载点 <code>/proc</code>）都列出来，可以使用 <code>-aT</code> 参数：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ <span class="token function">df</span> <span class="token parameter variable">-aT</span>
+Filesystem              Type        1K-blocks    Used Available Use% Mounted on
+sysfs                   sysfs               <span class="token number">0</span>       <span class="token number">0</span>         <span class="token number">0</span>    - /sys
+proc                    proc                <span class="token number">0</span>       <span class="token number">0</span>         <span class="token number">0</span>    - /proc
+/dev/mapper/centos-root xfs          <span class="token number">17811456</span> <span class="token number">2724256</span>  <span class="token number">15087200</span>  <span class="token number">16</span>% /
+/dev/sda1               xfs           <span class="token number">1038336</span>  <span class="token number">190536</span>    <span class="token number">847800</span>  <span class="token number">19</span>% /boot
+/dev/mapper/VG400-LV400 ext3           <span class="token number">190145</span>   <span class="token number">63472</span>    <span class="token number">117934</span>  <span class="token number">35</span>% /ext333<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>查询各分区中可用 inode 数量：</p>
+ <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 /<span class="token punctuation">]</span>$ <span class="token function">df</span> <span class="token parameter variable">-ih</span>
+Filesystem              Inodes IUsed IFree IUse% Mounted on
+/dev/mapper/centos-root   <span class="token number">8</span>.5M   46K  <span class="token number">8</span>.5M    <span class="token number">1</span>% /
+/dev/sda1                 512K   <span class="token number">335</span>  512K    <span class="token number">1</span>% /boot
+tmpfs                     472K     <span class="token number">1</span>  472K    <span class="token number">1</span>% /run/user/0
+/dev/sdb1                  64K    <span class="token number">13</span>   64K    <span class="token number">1</span>% /ext333<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="列出分区信息"><a class="markdownIt-Anchor" href="#列出分区信息"></a> 列出分区信息</h2>
+<p>可以使用命令 <code>lsblk</code> 来查询所有储存设备。</p>
+<p>例如查看当前系统下所有磁盘与分区情况：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ lsblk <span class="token parameter variable">-i</span>
+NAME                 MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                    <span class="token number">8</span>:0    <span class="token number">0</span>   20G  <span class="token number">0</span> disk 
+<span class="token operator">|</span>-sda1                 <span class="token number">8</span>:1    <span class="token number">0</span>    1G  <span class="token number">0</span> part /boot
+<span class="token variable"><span class="token variable">`</span><span class="token parameter variable">-sda2</span>                 <span class="token number">8</span>:2    <span class="token number">0</span>   19G  <span class="token number">0</span> part 
+  <span class="token operator">|</span>-centos-root      <span class="token number">253</span>:0    <span class="token number">0</span>   17G  <span class="token number">0</span> lvm  /
+  <span class="token variable">`</span></span>-centos-swap      <span class="token number">253</span>:1    <span class="token number">0</span>    2G  <span class="token number">0</span> lvm  <span class="token punctuation">[</span>SWAP<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中 MAJ:MIN 代表主要 : 次要设备代码，RM 标记是否为可移动（removable）设备，RO 为是否以只读挂载。</p>
+<p>也可以只单独查询某个磁盘，用 <code>-p</code> 参数显示分区全名：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ lsblk <span class="token parameter variable">-ip</span> /dev/sda
+NAME                        MAJ:MIN RM SIZE RO TYPE MOUNTPOINT
+/dev/sda                      <span class="token number">8</span>:0    <span class="token number">0</span>  20G  <span class="token number">0</span> disk 
+<span class="token operator">|</span>-/dev/sda1                   <span class="token number">8</span>:1    <span class="token number">0</span>   1G  <span class="token number">0</span> part /boot
+<span class="token variable"><span class="token variable">`</span>-/dev/sda2                   <span class="token number">8</span>:2    <span class="token number">0</span>  19G  <span class="token number">0</span> part 
+  <span class="token operator">|</span>-/dev/mapper/centos-root <span class="token number">253</span>:0    <span class="token number">0</span>  17G  <span class="token number">0</span> lvm  /
+  <span class="token variable">`</span></span>-/dev/mapper/centos-swap <span class="token number">253</span>:1    <span class="token number">0</span>   2G  <span class="token number">0</span> lvm  <span class="token punctuation">[</span>SWAP<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>UUID（Universally Unique Identifier）是全域单一识别码，也可以用 UUID 来挂载设备。使用 <code>blkid</code> 命令来查询：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ blkid
+/dev/mapper/centos-root: <span class="token assign-left variable">UUID</span><span class="token operator">=</span><span class="token string">"bb5b6906-0dff-46c4-832e-1701522802e6"</span> <span class="token assign-left variable">TYPE</span><span class="token operator">=</span><span class="token string">"xfs"</span> 
+/dev/sda2: <span class="token assign-left variable">UUID</span><span class="token operator">=</span><span class="token string">"0lYfzD-6Mqj-AtC4-Jgf1-LGpk-ODIk-xbJIa7"</span> <span class="token assign-left variable">TYPE</span><span class="token operator">=</span><span class="token string">"LVM2_member"</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h1 id="磁盘分区"><a class="markdownIt-Anchor" href="#磁盘分区"></a> 磁盘分区</h1>
+<p>如果是 MBR 分区表，使用 <code>fdisk</code> 分区；GPT 分区使用 <code>gdisk</code> 分区。两种工具在使用方法上没有区别。这里使用 <code>fdisk</code> 演示。</p>
+<h2 id="查看分区"><a class="markdownIt-Anchor" href="#查看分区"></a> 查看分区</h2>
+<p>例如，查看系统内的所有分区：</p>
+ <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ <span class="token function">fdisk</span> <span class="token parameter variable">-l</span>
+Disk /dev/sda: <span class="token number">21.5</span> GB, <span class="token number">21474836480</span> bytes, <span class="token number">41943040</span> sectors
+Units <span class="token operator">=</span> sectors of <span class="token number">1</span> * <span class="token number">512</span> <span class="token operator">=</span> <span class="token number">512</span> bytes
+Sector size <span class="token punctuation">(</span>logical/physical<span class="token punctuation">)</span>: <span class="token number">512</span> bytes / <span class="token number">512</span> bytes
+I/O size <span class="token punctuation">(</span>minimum/optimal<span class="token punctuation">)</span>: <span class="token number">512</span> bytes / <span class="token number">512</span> bytes
+Disk label type: dos
+Disk identifier: 0x000a3a75
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *        <span class="token number">2048</span>     <span class="token number">2099199</span>     <span class="token number">1048576</span>   <span class="token number">83</span>  Linux
+/dev/sda2         <span class="token number">2099200</span>    <span class="token number">41943039</span>    <span class="token number">19921920</span>   8e  Linux LVM
+
+Disk /dev/mapper/centos-root: <span class="token number">18.2</span> GB, <span class="token number">18249416704</span> bytes, <span class="token number">35643392</span> sectors
+Units <span class="token operator">=</span> sectors of <span class="token number">1</span> * <span class="token number">512</span> <span class="token operator">=</span> <span class="token number">512</span> bytes
+Sector size <span class="token punctuation">(</span>logical/physical<span class="token punctuation">)</span>: <span class="token number">512</span> bytes / <span class="token number">512</span> bytes
+I/O size <span class="token punctuation">(</span>minimum/optimal<span class="token punctuation">)</span>: <span class="token number">512</span> bytes / <span class="token number">512</span> bytes
+
+
+Disk /dev/mapper/centos-swap: <span class="token number">2147</span> MB, <span class="token number">2147483648</span> bytes, <span class="token number">4194304</span> sectors
+Units <span class="token operator">=</span> sectors of <span class="token number">1</span> * <span class="token number">512</span> <span class="token operator">=</span> <span class="token number">512</span> bytes
+Sector size <span class="token punctuation">(</span>logical/physical<span class="token punctuation">)</span>: <span class="token number">512</span> bytes / <span class="token number">512</span> bytes
+I/O size <span class="token punctuation">(</span>minimum/optimal<span class="token punctuation">)</span>: <span class="token number">512</span> bytes / <span class="token number">512</span> bytes<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>由上述信息可见，sda 分了两个区，其中 sda 可做启动引导。</p>
+<p>对新增的磁盘 sdb 进行操作：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ <span class="token function">fdisk</span> /dev/sdb
+Welcome to <span class="token function">fdisk</span> <span class="token punctuation">(</span>util-linux <span class="token number">2.23</span>.2<span class="token punctuation">)</span>.
+
+Changes will remain <span class="token keyword">in</span> memory only, <span class="token keyword">until</span> you decide to <span class="token function">write</span> them.
+Be careful before using the <span class="token function">write</span> command.
+
+
+Command <span class="token punctuation">(</span>m <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>进入 <code>fdisk</code> 后输入 <code>m</code> 可以查看帮助。常用命令有：<code>d</code> 删除分区，<code>n</code> 新增分区，<code>p</code> 显示分区表，<code>w</code> 写入分区信息并退出。</p>
+<p>先看看分区状态：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">Command <span class="token punctuation">(</span>m <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: p
+
+Disk /dev/sdb: <span class="token number">1073</span> MB, <span class="token number">1073741824</span> bytes, <span class="token number">2097152</span> sectors
+Units <span class="token operator">=</span> sectors of <span class="token number">1</span> * <span class="token number">512</span> <span class="token operator">=</span> <span class="token number">512</span> bytes
+Sector size <span class="token punctuation">(</span>logical/physical<span class="token punctuation">)</span>: <span class="token number">512</span> bytes / <span class="token number">512</span> bytes
+I/O size <span class="token punctuation">(</span>minimum/optimal<span class="token punctuation">)</span>: <span class="token number">512</span> bytes / <span class="token number">512</span> bytes
+Disk label type: dos
+Disk identifier: 0x2de15e6d
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1            <span class="token number">2048</span>     <span class="token number">2097151</span>     <span class="token number">1047552</span>   <span class="token number">83</span>  Linux<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>由上表中可以看到：磁盘大小 1073 MB，扇区数 2097152，每个扇区大小 512 Bytes，分区开始扇区号 2048，截止扇区号 2097151，block 数（1KB 为单位）1047552。</p>
+<h2 id="删除分区"><a class="markdownIt-Anchor" href="#删除分区"></a> 删除分区</h2>
+<p>假设要删除 sdb1 分区，在等待命令页面输入 <code>d</code> 会提示要删除的分区编号（sdb 后面带的数字）：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">Command <span class="token punctuation">(</span>m <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: d
+Selected partition <span class="token number">1</span>
+Partition <span class="token number">1</span> is deleted<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>再次查看分区已经被删除了，保存退出：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">Command <span class="token punctuation">(</span>m <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: w
+The partition table has been altered<span class="token operator">!</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="新增分区"><a class="markdownIt-Anchor" href="#新增分区"></a> 新增分区</h2>
+<p>输入 <code>n</code> 以后会进入新建分区交互界面：</p>
+<ol>
+<li>选择新增的分区类型是主分区 <code>p</code>；</li>
+<li>设置为 4 号；</li>
+<li>起始扇区号采用默认 2048；</li>
+<li>结束扇区号可以输入扇区号，也可以输入大小，这里输入 <code>+100M</code> 大小：</li>
+</ol>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">Command <span class="token punctuation">(</span>m <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: n
+Partition type:
+   p   primary <span class="token punctuation">(</span><span class="token number">0</span> primary, <span class="token number">0</span> extended, <span class="token number">4</span> <span class="token function">free</span><span class="token punctuation">)</span>
+   e   extended
+Select <span class="token punctuation">(</span>default p<span class="token punctuation">)</span>: p
+Using default response p
+Partition number <span class="token punctuation">(</span><span class="token number">1</span>-4, default <span class="token number">1</span><span class="token punctuation">)</span>: <span class="token number">4</span>
+First sector <span class="token punctuation">(</span><span class="token number">2048</span>-2097151, default <span class="token number">2048</span><span class="token punctuation">)</span>: 
+Using default value <span class="token number">2048</span>
+Last sector, +sectors or +size<span class="token punctuation">&#123;</span>K,M,G<span class="token punctuation">&#125;</span> <span class="token punctuation">(</span><span class="token number">2048</span>-2097151, default <span class="token number">2097151</span><span class="token punctuation">)</span>: +100M
+Partition <span class="token number">4</span> of <span class="token builtin class-name">type</span> Linux and of size <span class="token number">100</span> MiB is <span class="token builtin class-name">set</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>再新增一个 200M 大小的扩展分区：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">Command <span class="token punctuation">(</span>m <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: n
+Partition type:
+   p   primary <span class="token punctuation">(</span><span class="token number">1</span> primary, <span class="token number">0</span> extended, <span class="token number">3</span> <span class="token function">free</span><span class="token punctuation">)</span>
+   e   extended
+Select <span class="token punctuation">(</span>default p<span class="token punctuation">)</span>: e
+Partition number <span class="token punctuation">(</span><span class="token number">1</span>-3, default <span class="token number">1</span><span class="token punctuation">)</span>: <span class="token number">1</span>
+First sector <span class="token punctuation">(</span><span class="token number">206848</span>-2097151, default <span class="token number">206848</span><span class="token punctuation">)</span>: 
+Using default value <span class="token number">206848</span>
+Last sector, +sectors or +size<span class="token punctuation">&#123;</span>K,M,G<span class="token punctuation">&#125;</span> <span class="token punctuation">(</span><span class="token number">206848</span>-2097151, default <span class="token number">2097151</span><span class="token punctuation">)</span>: +200M
+Partition <span class="token number">1</span> of <span class="token builtin class-name">type</span> Extended and of size <span class="token number">200</span> MiB is <span class="token builtin class-name">set</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>完成后输入 <code>p</code> 查看状态：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">Command <span class="token punctuation">(</span>m <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: p
+
+Disk /dev/sdb: <span class="token number">1073</span> MB, <span class="token number">1073741824</span> bytes, <span class="token number">2097152</span> sectors
+Units <span class="token operator">=</span> sectors of <span class="token number">1</span> * <span class="token number">512</span> <span class="token operator">=</span> <span class="token number">512</span> bytes
+Sector size <span class="token punctuation">(</span>logical/physical<span class="token punctuation">)</span>: <span class="token number">512</span> bytes / <span class="token number">512</span> bytes
+I/O size <span class="token punctuation">(</span>minimum/optimal<span class="token punctuation">)</span>: <span class="token number">512</span> bytes / <span class="token number">512</span> bytes
+Disk label type: dos
+Disk identifier: 0x951d99c8
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1          <span class="token number">206848</span>      <span class="token number">616447</span>      <span class="token number">204800</span>    <span class="token number">5</span>  Extended
+/dev/sdb4            <span class="token number">2048</span>      <span class="token number">206847</span>      <span class="token number">102400</span>   <span class="token number">83</span>  Linux
+
+Partition table entries are not <span class="token keyword">in</span> disk order<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到有个主分区名字为 sdb4，扩展分区名为 sdb1，是我们手动设定的样子。</p>
+<p>在扩展分区上建立个 80M 大小的逻辑分区，选择类型时输入 <code>l</code>，系统会自动分配分区号：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">Command <span class="token punctuation">(</span>m <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: n
+Partition type:
+   p   primary <span class="token punctuation">(</span><span class="token number">1</span> primary, <span class="token number">1</span> extended, <span class="token number">2</span> <span class="token function">free</span><span class="token punctuation">)</span>
+   l   logical <span class="token punctuation">(</span>numbered from <span class="token number">5</span><span class="token punctuation">)</span>
+Select <span class="token punctuation">(</span>default p<span class="token punctuation">)</span>: l
+Adding logical partition <span class="token number">5</span>
+First sector <span class="token punctuation">(</span><span class="token number">208896</span>-616447, default <span class="token number">208896</span><span class="token punctuation">)</span>: 
+Using default value <span class="token number">208896</span>
+Last sector, +sectors or +size<span class="token punctuation">&#123;</span>K,M,G<span class="token punctuation">&#125;</span> <span class="token punctuation">(</span><span class="token number">208896</span>-616447, default <span class="token number">616447</span><span class="token punctuation">)</span>: +80M
+Partition <span class="token number">5</span> of <span class="token builtin class-name">type</span> Linux and of size <span class="token number">80</span> MiB is <span class="token builtin class-name">set</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>完成后输入 <code>w</code> 保存更改并退出：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">Command <span class="token punctuation">(</span>m <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: w<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>提示说要重启让改动生效，可以使用 <code>partprobe</code> 命令让内核重新扫描分区表：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ partprobe <span class="token parameter variable">-s</span>
+/dev/sda: msdos partitions <span class="token number">1</span> <span class="token number">2</span>
+/dev/sdb: msdos partitions <span class="token number">1</span> <span class="token number">2</span> <span class="token number">3</span> <span class="token number">4</span>
+/dev/sdc: msdos partitions <span class="token number">1</span>
+/dev/sr0: msdos partitions <span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>下面展示使用 <code>gdisk</code> 制作一个 500MB 大小 GPT 分区的过程：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ gdisk /dev/sdd
+GPT <span class="token function">fdisk</span> <span class="token punctuation">(</span>gdisk<span class="token punctuation">)</span> version <span class="token number">0.8</span>.10
+
+Command <span class="token punctuation">(</span>? <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: n
+Partition number <span class="token punctuation">(</span><span class="token number">1</span>-128, default <span class="token number">1</span><span class="token punctuation">)</span>: <span class="token number">1</span>
+First sector <span class="token punctuation">(</span><span class="token number">34</span>-2097118, default <span class="token operator">=</span> <span class="token number">2048</span><span class="token punctuation">)</span> or <span class="token punctuation">&#123;</span>+-<span class="token punctuation">&#125;</span>size<span class="token punctuation">&#123;</span>KMGTP<span class="token punctuation">&#125;</span>: 
+Last sector <span class="token punctuation">(</span><span class="token number">2048</span>-2097118, default <span class="token operator">=</span> <span class="token number">2097118</span><span class="token punctuation">)</span> or <span class="token punctuation">&#123;</span>+-<span class="token punctuation">&#125;</span>size<span class="token punctuation">&#123;</span>KMGTP<span class="token punctuation">&#125;</span>: +500MB
+Current <span class="token builtin class-name">type</span> is <span class="token string">'Linux filesystem'</span>
+Hex code or GUID <span class="token punctuation">(</span>L to show codes, Enter <span class="token operator">=</span> <span class="token number">8300</span><span class="token punctuation">)</span>: 
+Changed <span class="token builtin class-name">type</span> of partition to <span class="token string">'Linux filesystem'</span>
+
+Command <span class="token punctuation">(</span>? <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: w
+
+Final checks complete. About to <span class="token function">write</span> GPT data. THIS WILL OVERWRITE EXISTING
+PARTITIONS<span class="token operator">!</span><span class="token operator">!</span>
+
+Do you want to proceed? <span class="token punctuation">(</span>Y/N<span class="token punctuation">)</span>: y
+OK<span class="token punctuation">;</span> writing new GUID partition table <span class="token punctuation">(</span>GPT<span class="token punctuation">)</span> to /dev/sdd.
+The operation has completed successfully.
+<span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ partprobe <span class="token parameter variable">-s</span>
+/dev/sda: msdos partitions <span class="token number">1</span> <span class="token number">2</span>
+/dev/sdb: msdos partitions <span class="token number">1</span> <span class="token number">2</span> <span class="token number">3</span> <span class="token number">4</span>
+/dev/sdc: msdos partitions <span class="token number">1</span>
+/dev/sdd: gpt partitions <span class="token number">1</span>
+/dev/sr0: msdos partitions <span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="格式化分区"><a class="markdownIt-Anchor" href="#格式化分区"></a> 格式化分区</h2>
+<p>建立分区后要格式化分区才可使用，格式化通过 <code>mkfs</code> 类命令操作。</p>
+<p>将 sdb4 格式化成 ext3 文件系统：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mkfs</span> <span class="token parameter variable">-t</span> ext3 /dev/sdb4 
+<span class="token function">mke2fs</span> <span class="token number">1.42</span>.9 <span class="token punctuation">(</span><span class="token number">28</span>-Dec-2013<span class="token punctuation">)</span>
+Filesystem <span class="token assign-left variable">label</span><span class="token operator">=</span>
+OS type: Linux
+Block <span class="token assign-left variable">size</span><span class="token operator">=</span><span class="token number">1024</span> <span class="token punctuation">(</span>log<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">)</span>
+Fragment <span class="token assign-left variable">size</span><span class="token operator">=</span><span class="token number">1024</span> <span class="token punctuation">(</span>log<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">)</span>
+<span class="token assign-left variable">Stride</span><span class="token operator">=</span><span class="token number">0</span> blocks, Stripe <span class="token assign-left variable">width</span><span class="token operator">=</span><span class="token number">0</span> blocks
+<span class="token number">25688</span> inodes, <span class="token number">102400</span> blocks
+<span class="token number">5120</span> blocks <span class="token punctuation">(</span><span class="token number">5.00</span>%<span class="token punctuation">)</span> reserved <span class="token keyword">for</span> the super user
+First data <span class="token assign-left variable">block</span><span class="token operator">=</span><span class="token number">1</span>
+Maximum filesystem <span class="token assign-left variable">blocks</span><span class="token operator">=</span><span class="token number">67371008</span>
+<span class="token number">13</span> block <span class="token function">groups</span>
+<span class="token number">8192</span> blocks per group, <span class="token number">8192</span> fragments per group
+<span class="token number">1976</span> inodes per group
+Superblock backups stored on blocks: 
+        <span class="token number">8193</span>, <span class="token number">24577</span>, <span class="token number">40961</span>, <span class="token number">57345</span>, <span class="token number">73729</span>
+
+Allocating group tables: <span class="token keyword">done</span>                            
+Writing inode tables: <span class="token keyword">done</span>                            
+Creating journal <span class="token punctuation">(</span><span class="token number">4096</span> blocks<span class="token punctuation">)</span>: <span class="token keyword">done</span>
+Writing superblocks and filesystem accounting information: <span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果要指定 label，block 大小，inode 数量等参数，需要使用 <code>mke2fs</code> 命令。</p>
+<p>例如将 sdb4 设定卷标 boss，block 大小 2048，每 8192 bytes 分配一个 inode 后格式化成 ext3 文件系统：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mke2fs</span> <span class="token parameter variable">-j</span> <span class="token parameter variable">-L</span> <span class="token string">"boss"</span> <span class="token parameter variable">-b</span> <span class="token number">2048</span> <span class="token parameter variable">-i</span> <span class="token number">8192</span> /dev/sdb4<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>设置文件系统不区分大小写：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ mkfs.xfs <span class="token parameter variable">-L</span> datavolume <span class="token parameter variable">-f</span> <span class="token parameter variable">-n</span> <span class="token assign-left variable">version</span><span class="token operator">=</span>ci /dev/md0<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>用 <code>mkfs.xfs</code> 格式化 xfs 文件系统，要设定具体分区数值可用 <code>-d</code> 参数。指定储存区群组数量为 16 并强制格式化 sdd1：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ mkfs.xfs <span class="token parameter variable">-f</span> <span class="token parameter variable">-d</span> <span class="token assign-left variable">agcount</span><span class="token operator">=</span><span class="token number">16</span> /dev/sdd1
+meta-data<span class="token operator">=</span>/dev/sdd1              <span class="token assign-left variable">isize</span><span class="token operator">=</span><span class="token number">512</span>    <span class="token assign-left variable">agcount</span><span class="token operator">=</span><span class="token number">16</span>, <span class="token assign-left variable">agsize</span><span class="token operator">=</span><span class="token number">8000</span> blks
+         <span class="token operator">=</span>                       <span class="token assign-left variable">sectsz</span><span class="token operator">=</span><span class="token number">512</span>   <span class="token assign-left variable">attr</span><span class="token operator">=</span><span class="token number">2</span>, <span class="token assign-left variable">projid32bit</span><span class="token operator">=</span><span class="token number">1</span>
+         <span class="token operator">=</span>                       <span class="token assign-left variable">crc</span><span class="token operator">=</span><span class="token number">1</span>        <span class="token assign-left variable">finobt</span><span class="token operator">=</span><span class="token number">0</span>, <span class="token assign-left variable">sparse</span><span class="token operator">=</span><span class="token number">0</span>
+data     <span class="token operator">=</span>                       <span class="token assign-left variable">bsize</span><span class="token operator">=</span><span class="token number">4096</span>   <span class="token assign-left variable">blocks</span><span class="token operator">=</span><span class="token number">128000</span>, <span class="token assign-left variable">imaxpct</span><span class="token operator">=</span><span class="token number">25</span>
+         <span class="token operator">=</span>                       <span class="token assign-left variable">sunit</span><span class="token operator">=</span><span class="token number">0</span>      <span class="token assign-left variable">swidth</span><span class="token operator">=</span><span class="token number">0</span> blks
+naming   <span class="token operator">=</span>version <span class="token number">2</span>              <span class="token assign-left variable">bsize</span><span class="token operator">=</span><span class="token number">4096</span>   ascii-ci<span class="token operator">=</span><span class="token number">0</span> <span class="token assign-left variable">ftype</span><span class="token operator">=</span><span class="token number">1</span>
+log      <span class="token operator">=</span>internal log           <span class="token assign-left variable">bsize</span><span class="token operator">=</span><span class="token number">4096</span>   <span class="token assign-left variable">blocks</span><span class="token operator">=</span><span class="token number">855</span>, <span class="token assign-left variable">version</span><span class="token operator">=</span><span class="token number">2</span>
+         <span class="token operator">=</span>                       <span class="token assign-left variable">sectsz</span><span class="token operator">=</span><span class="token number">512</span>   <span class="token assign-left variable">sunit</span><span class="token operator">=</span><span class="token number">0</span> blks, lazy-count<span class="token operator">=</span><span class="token number">1</span>
+realtime <span class="token operator">=</span>none                   <span class="token assign-left variable">extsz</span><span class="token operator">=</span><span class="token number">4096</span>   <span class="token assign-left variable">blocks</span><span class="token operator">=</span><span class="token number">0</span>, <span class="token assign-left variable">rtextents</span><span class="token operator">=</span><span class="token number">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="新建-swap-分区"><a class="markdownIt-Anchor" href="#新建-swap-分区"></a> 新建 swap 分区</h2>
+<p>swap 内存交换空间用来在系统内存不足时，替代内存使用的硬盘空间。虽然内存不足的情况已经很少发生，但有些旧程序会要求使用 swap 分区，或者作为出现内存溢出等异常状态时缓冲一下，还是有必要建一个的。</p>
+<p>下面将在 sdb 上使用空闲容量新建一个 256MB 大小的 swap 分区（代码 82）：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">Command <span class="token punctuation">(</span>m <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: n
+Partition type:
+   p   primary <span class="token punctuation">(</span><span class="token number">1</span> primary, <span class="token number">1</span> extended, <span class="token number">2</span> <span class="token function">free</span><span class="token punctuation">)</span>
+   l   logical <span class="token punctuation">(</span>numbered from <span class="token number">5</span><span class="token punctuation">)</span>
+Select <span class="token punctuation">(</span>default p<span class="token punctuation">)</span>: p
+Partition number <span class="token punctuation">(</span><span class="token number">2,3</span>, default <span class="token number">2</span><span class="token punctuation">)</span>: 
+First sector <span class="token punctuation">(</span><span class="token number">616448</span>-2097151, default <span class="token number">616448</span><span class="token punctuation">)</span>: 
+Using default value <span class="token number">616448</span>
+Last sector, +sectors or +size<span class="token punctuation">&#123;</span>K,M,G<span class="token punctuation">&#125;</span> <span class="token punctuation">(</span><span class="token number">616448</span>-2097151, default <span class="token number">2097151</span><span class="token punctuation">)</span>: +256M
+Partition <span class="token number">2</span> of <span class="token builtin class-name">type</span> Linux and of size <span class="token number">256</span> MiB is <span class="token builtin class-name">set</span>
+
+Command <span class="token punctuation">(</span>m <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: t
+Partition number <span class="token punctuation">(</span><span class="token number">1,2</span>,4,5, default <span class="token number">5</span><span class="token punctuation">)</span>: <span class="token number">2</span>
+Hex code <span class="token punctuation">(</span>type L to list all codes<span class="token punctuation">)</span>: <span class="token number">82</span>
+Changed <span class="token builtin class-name">type</span> of partition <span class="token string">'Linux'</span> to <span class="token string">'Linux swap / Solaris'</span>
+
+Command <span class="token punctuation">(</span>m <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: w
+The partition table has been altered<span class="token operator">!</span>
+
+<span class="token punctuation">[</span>root@101c7 tinycore_iso<span class="token punctuation">]</span>$ partprobe<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>也可以使用 <code>dd</code> 命令来创建一个空文件，当作 swap 分区使用。</p>
+<p>使用 <code>mkswap</code> 格式化：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 tinycore_iso<span class="token punctuation">]</span>$ <span class="token function">mkswap</span> /dev/sdb2
+Setting up swapspace version <span class="token number">1</span>, size <span class="token operator">=</span> <span class="token number">262140</span> KiB
+no label, <span class="token assign-left variable">UUID</span><span class="token operator">=</span>2cfd898c-2b54-467b-94a4-96c29567cb7d<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>接着用 <code>swapon</code> 命令加载 swap：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 tinycore_iso<span class="token punctuation">]</span>$ <span class="token function">free</span>
+              total        used        <span class="token function">free</span>      shared  buff/cache   available
+Mem:        <span class="token number">3861280</span>      <span class="token number">248320</span>     <span class="token number">3108468</span>       <span class="token number">11880</span>      <span class="token number">504492</span>     <span class="token number">3329556</span>
+Swap:       <span class="token number">2097148</span>           <span class="token number">0</span>     <span class="token number">2097148</span>
+<span class="token punctuation">[</span>root@101c7 tinycore_iso<span class="token punctuation">]</span>$ <span class="token function">swapon</span> /dev/sdb2
+<span class="token punctuation">[</span>root@101c7 tinycore_iso<span class="token punctuation">]</span>$ <span class="token function">free</span>
+              total        used        <span class="token function">free</span>      shared  buff/cache   available
+Mem:        <span class="token number">3861280</span>      <span class="token number">248636</span>     <span class="token number">3108120</span>       <span class="token number">11880</span>      <span class="token number">504524</span>     <span class="token number">3329304</span>
+Swap:       <span class="token number">2359288</span>           <span class="token number">0</span>     <span class="token number">2359288</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以查看到已经在使用的 swap 设备有哪些：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 tinycore_iso<span class="token punctuation">]</span>$ <span class="token function">swapon</span> <span class="token parameter variable">-s</span>
+Filename                                Type            Size    Used    Priority
+/dev/dm-1                               partition       <span class="token number">2097148</span> <span class="token number">0</span>       <span class="token parameter variable">-2</span>
+/dev/sdb2                               partition       <span class="token number">262140</span>  <span class="token number">0</span>       <span class="token parameter variable">-3</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果要开机启动记得修改 <code>/etc/fstab</code> 文件来开机挂载。</p>
+<p>使用 <code>swapoff</code> 来关掉 swap file：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ swapoff /dev/sdb2<span class="token punctuation">;</span> <span class="token function">swapon</span> <span class="token parameter variable">-s</span>
+Filename                                Type            Size    Used    Priority
+/dev/dm-1                               partition       <span class="token number">2097148</span> <span class="token number">0</span>       <span class="token parameter variable">-2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h2 id="大容量磁盘分区"><a class="markdownIt-Anchor" href="#大容量磁盘分区"></a> 大容量磁盘分区</h2>
+<p>由于 fdisk 无法支持 2TB 以上的分区，可以使用 <code>parted</code> 程序来分区，它同时支持 MBR 和 GPT 两种分区表格式。</p>
+<p>查看当前的分区表资料：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">2</span><span class="token punctuation">]</span>$ <span class="token function">parted</span> /dev/sdb print
+Model: VMware, VMware Virtual S <span class="token punctuation">(</span>scsi<span class="token punctuation">)</span>
+Disk /dev/sdb: 1074MB
+Sector size <span class="token punctuation">(</span>logical/physical<span class="token punctuation">)</span>: 512B/512B
+Partition Table: msdos
+Disk Flags: 
+
+Number  Start   End    Size    Type      File system     Flags
+<span class="token number">4</span>      1049kB  106MB  105MB   primary   ext3
+<span class="token number">1</span>      106MB   316MB  210MB   extended
+<span class="token number">5</span>      107MB   191MB  <span class="token number">83</span>.9MB  logical
+<span class="token number">2</span>      316MB   584MB  268MB   primary   linux-swap<span class="token punctuation">(</span>v1<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>新建一个 ext3 格式 110M 大小的逻辑分区：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">2</span><span class="token punctuation">]</span>$ <span class="token function">parted</span> /dev/sdb mkpart logical ext3 191MB 301MB
+Warning: The resulting partition is not properly aligned <span class="token keyword">for</span> best performance.
+Ignore/Cancel? Ignore                                                     
+Information: You may need to update /etc/fstab.
+
+<span class="token punctuation">[</span>root@101c7 <span class="token number">2</span><span class="token punctuation">]</span>$ <span class="token function">parted</span> /dev/sdb print
+Model: VMware, VMware Virtual S <span class="token punctuation">(</span>scsi<span class="token punctuation">)</span>
+Disk /dev/sdb: 1074MB
+Sector size <span class="token punctuation">(</span>logical/physical<span class="token punctuation">)</span>: 512B/512B
+Partition Table: msdos
+Disk Flags: 
+
+Number  Start   End    Size    Type      File system     Flags
+<span class="token number">4</span>      1049kB  106MB  105MB   primary   ext3
+<span class="token number">1</span>      106MB   316MB  210MB   extended
+<span class="token number">5</span>      107MB   191MB  <span class="token number">83</span>.9MB  logical
+<span class="token number">6</span>      191MB   301MB  110MB   logical
+<span class="token number">2</span>      316MB   584MB  268MB   primary   linux-swap<span class="token punctuation">(</span>v1<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>删除刚刚新建的 sdb6 分区：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">2</span><span class="token punctuation">]</span>$ <span class="token function">parted</span> /dev/sdb <span class="token function">rm</span> <span class="token number">6</span>
+Information: You may need to update /etc/fstab.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h1 id="磁盘工具"><a class="markdownIt-Anchor" href="#磁盘工具"></a> 磁盘工具</h1>
+<p>主要包括一些读写性能测试，文件系统修复等工具。</p>
+<h2 id="ext-磁盘扫描"><a class="markdownIt-Anchor" href="#ext-磁盘扫描"></a> Ext 磁盘扫描</h2>
+<p>Ext 文件系统可使用 <code>fsck</code> 来对磁盘进行扫描，检查文件系统错误。通常情况下只有出现问题才使用这个命令。</p>
+<p>例如进入到单用户模式下，被检查的分区务必不可挂载到系统上，否则可能造成部分文件系统损坏。</p>
+<p>可用参数：</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-C</td>
+<td>检验过程中显示进度</td>
+</tr>
+<tr>
+<td>-f</td>
+<td>强制检查，将所有状态为 clean 的扇区也纳入检查范围</td>
+</tr>
+<tr>
+<td>-D</td>
+<td>针对文件系统下的目录进行优化配置</td>
+</tr>
+<tr>
+<td>-p</td>
+<td>自动修复文件系统存在的问题</td>
+</tr>
+<tr>
+<td>-b</td>
+<td>接 superblock 位置，用来恢复主 superblock。一般备份在 1K=8193 / 2K=16384 / 4k=32768 位置</td>
+</tr>
+<tr>
+<td>-c</td>
+<td>对文件系统进行坏块检查，并添加到坏块列表中。</td>
+</tr>
+</tbody>
+</table>
+<p>检查 sdb4 分区：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">fsck</span> <span class="token parameter variable">-C</span> <span class="token parameter variable">-f</span> /dev/sdb4
+<span class="token function">fsck</span> from util-linux <span class="token number">2.23</span>.2
+e2fsck <span class="token number">1.42</span>.9 <span class="token punctuation">(</span><span class="token number">28</span>-Dec-2013<span class="token punctuation">)</span>
+Pass <span class="token number">1</span>: Checking inodes, blocks, and sizes
+Pass <span class="token number">2</span>: Checking directory structure                                           
+Pass <span class="token number">3</span>: Checking directory connectivity
+Pass <span class="token number">4</span>: Checking reference counts
+Pass <span class="token number">5</span>: Checking group summary information
+boss: <span class="token number">11</span>/12800 files <span class="token punctuation">(</span><span class="token number">0.0</span>% non-contiguous<span class="token punctuation">)</span>, <span class="token number">5076</span>/51200 blocks<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用备份恢复 sdb4 损坏的 superblock：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ fsck.ext3 <span class="token parameter variable">-b</span> <span class="token number">32768</span> /dev/sdb4<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="xfs-磁盘扫描"><a class="markdownIt-Anchor" href="#xfs-磁盘扫描"></a> Xfs 磁盘扫描</h2>
+<p>xfs 文件系统扫描使用 <code>xfs_repair</code> 工具。可用选项：</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-f</td>
+<td>后面接文件文件而不是磁盘</td>
+</tr>
+<tr>
+<td>-n</td>
+<td>单纯检查并不修改文件系统的任何数据</td>
+</tr>
+<tr>
+<td>-d</td>
+<td>通常用在救援模式下面对根目录进行检查与修复的动作</td>
+</tr>
+</tbody>
+</table>
+<p>修复时同样要求先卸载目标分区，例如检查 <code>/dev/sdd1</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ xfs_repair /dev/sdd1
+Phase <span class="token number">1</span> - <span class="token function">find</span> and verify superblock<span class="token punctuation">..</span>.
+Phase <span class="token number">2</span> - using internal log
+Phase <span class="token number">3</span> - <span class="token keyword">for</span> each AG<span class="token punctuation">..</span>.
+Phase <span class="token number">4</span> - check <span class="token keyword">for</span> duplicate blocks<span class="token punctuation">..</span>.
+Phase <span class="token number">5</span> - rebuild AG headers and trees<span class="token punctuation">..</span>.
+Phase <span class="token number">6</span> - check inode connectivity<span class="token punctuation">..</span>.
+Phase <span class="token number">7</span> - verify and correct <span class="token function">link</span> counts<span class="token punctuation">..</span>.
+<span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="坏道扫描"><a class="markdownIt-Anchor" href="#坏道扫描"></a> 坏道扫描</h2>
+<p><code>badblocks</code> 命令用来检测硬盘扇区有没有坏道。其实等于 <code>mke2fs -c</code> 在进行格式化时处理磁盘表面的读取测试。</p>
+<p>例如检查 sdb4 分区：</p>
+ <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ badblocks <span class="token parameter variable">-sv</span> /dev/sdb4
+Checking blocks <span class="token number">0</span> to <span class="token number">102399</span>
+Checking <span class="token keyword">for</span> bad blocks <span class="token punctuation">(</span>read-only <span class="token builtin class-name">test</span><span class="token punctuation">)</span>: <span class="token keyword">done</span>                                                 
+Pass completed, <span class="token number">0</span> bad blocks found. <span class="token punctuation">(</span><span class="token number">0</span>/0/0 errors<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="修改设备代码"><a class="markdownIt-Anchor" href="#修改设备代码"></a> 修改设备代码</h2>
+<p>有时需要手动处理设备文件，可以使用 <code>mknod</code> 命令来修改设备代码。</p>
+<p>可修改的设备种类有 b（外部储存，移动硬盘），c（外部输入，鼠标），p（FIFO 文件）。</p>
+<p>常见磁盘设备代码如下：</p>
+<table>
+<thead>
+<tr>
+<th>磁盘文件名</th>
+<th>Major</th>
+<th>Minor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/dev/sda</td>
+<td>8</td>
+<td>0-15</td>
+</tr>
+<tr>
+<td>/dev/sdb</td>
+<td>8</td>
+<td>16-31</td>
+</tr>
+<tr>
+<td>/dev/loop0</td>
+<td>7</td>
+<td>0</td>
+</tr>
+<tr>
+<td>/dev/loop1</td>
+<td>7</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>例如创建 sdb5 的设备代码 Maj:Min 为 8,21：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mknod</span> /dev/sdb5 b <span class="token number">8</span> <span class="token number">21</span><span class="token punctuation">;</span> ll /dev/sdb5
+brw-rw----. <span class="token number">1</span> root disk <span class="token number">8</span>, <span class="token number">21</span> Sep <span class="token number">10</span> 04:08 /dev/sdb5<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="修改分区卷标"><a class="markdownIt-Anchor" href="#修改分区卷标"></a> 修改分区卷标</h2>
+<p>可以使用 <code>e2label</code> 来修改 ext 文件系统卷标（Label），卷标类似与 Win 中的“本地磁盘”。</p>
+<p>例如修改 sdb4 的卷标为“P1”：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ e2label /dev/sdb4 <span class="token string">"P1"</span>
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ dumpe2fs <span class="token parameter variable">-h</span> /dev/sdb4 <span class="token operator">|</span> <span class="token function">grep</span> name
+dumpe2fs <span class="token number">1.42</span>.9 <span class="token punctuation">(</span><span class="token number">28</span>-Dec-2013<span class="token punctuation">)</span>
+Filesystem volume name:   P1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>也可使用 <code>tune2fs</code> 命令来修改：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ tune2fs <span class="token parameter variable">-L</span> P2 /dev/sdb4<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="修改uuid"><a class="markdownIt-Anchor" href="#修改uuid"></a> 修改UUID</h2>
+<p>XFS 文件系统使用 UUID 作为标识符，可以使用 <code>xfs_admin</code> 命令修改 UUID 和 Label。</p>
+<p>例如修改 sdd1 的 Label name 为 xfs1：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ xfs_admin <span class="token parameter variable">-L</span> xfs1 /dev/sdd1
+writing all SBs
+new label <span class="token operator">=</span> <span class="token string">"xfs1"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>修改 UUID 需要先生成 UUID 号码，可以使用 <code>uuidgen</code> 命令生成，然后再设置到 sdd1 上：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ xfs_admin <span class="token parameter variable">-U</span> <span class="token variable"><span class="token variable">$(</span>uuidgen<span class="token variable">)</span></span> /dev/sdd1
+Clearing log and setting UUID
+writing all SBs
+new UUID <span class="token operator">=</span> c96b6650-756a-4496-bf26-6e7286c55891<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="磁盘阵列"><a class="markdownIt-Anchor" href="#磁盘阵列"></a> 磁盘阵列</h1>
+<p>使用 mdadm 软件模拟磁盘整列 RAID。如果需要监控 mdadm 建立的软磁盘阵列，可以使用 mdmonitor 服务。</p>
+<h2 id="组建软磁盘阵列"><a class="markdownIt-Anchor" href="#组建软磁盘阵列"></a> 组建软磁盘阵列</h2>
+<p>使用 <code>mdadm</code> 命令来设置软磁盘阵列，语法如下：</p>
+<p><code>mdadm --detail /dev/md0</code></p>
+<p><code>mdadm --create --auto=yes /dev/md[0-9] --raid-devices=N --level=[015] --chuck=NK --spare-devices=N /dev/sdx /dev/hdx...</code></p>
+<p>主要参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>–create</td>
+<td>新建 RAID 的参数</td>
+</tr>
+<tr>
+<td>–auto=yes</td>
+<td>决定新建后面接的软磁盘阵列设备，如 /dev/md0</td>
+</tr>
+<tr>
+<td>–chunk=Nk</td>
+<td>决定这个设备的 chunk 大小，一般是 64K 或 512K</td>
+</tr>
+<tr>
+<td>–raid-devices=N</td>
+<td>使用 N 个磁盘组件阵列</td>
+</tr>
+<tr>
+<td>–spare-devices=N</td>
+<td>使用 N 个磁盘作为备用设备</td>
+</tr>
+<tr>
+<td>–level=[015]</td>
+<td>设置磁盘阵列的等级</td>
+</tr>
+<tr>
+<td>–detail</td>
+<td>查询磁盘阵列设备的信息</td>
+</tr>
+</tbody>
+</table>
+<p>例如用组建 RAID 5 环境，每个分区为 10MB 大小（sdb6-9），有一块热备盘（sdb10），一块闲置盘（sdb11）：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mdadm</span> <span class="token parameter variable">--create</span> <span class="token parameter variable">--auto</span><span class="token operator">=</span>yes /dev/md0 <span class="token parameter variable">--level</span><span class="token operator">=</span><span class="token number">5</span> <span class="token parameter variable">--chunk</span><span class="token operator">=</span>512K --raid-devices<span class="token operator">=</span><span class="token number">4</span> --spare-devices<span class="token operator">=</span><span class="token number">1</span> /dev/sdb<span class="token punctuation">&#123;</span><span class="token number">6,7</span>,8,9,10<span class="token punctuation">&#125;</span>
+mdadm: Defaulting to version <span class="token number">1.2</span> metadata
+mdadm: array /dev/md0 started.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>如果设置错误，可以使用 <code>mdadm --zero-superblock DEVICE</code> 命令来清空每个组成磁盘的超级块区。</p>
+<p>查看组建好的软 RAID 5 设备 <code>/dev/md0</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mdadm</span> <span class="token parameter variable">--detail</span> /dev/md0
+/dev/md0:
+           Version <span class="token builtin class-name">:</span> <span class="token number">1.2</span>
+     Creation Time <span class="token builtin class-name">:</span> Mon Sep <span class="token number">13</span> <span class="token number">15</span>:24:49 <span class="token number">2021</span>
+        Raid Level <span class="token builtin class-name">:</span> raid5
+        Array Size <span class="token builtin class-name">:</span> <span class="token number">24576</span> <span class="token punctuation">(</span><span class="token number">24.00</span> MiB <span class="token number">25.17</span> MB<span class="token punctuation">)</span>
+     Used Dev Size <span class="token builtin class-name">:</span> <span class="token number">8192</span> <span class="token punctuation">(</span><span class="token number">8.00</span> MiB <span class="token number">8.39</span> MB<span class="token punctuation">)</span>
+      Raid Devices <span class="token builtin class-name">:</span> <span class="token number">4</span>
+     Total Devices <span class="token builtin class-name">:</span> <span class="token number">5</span>
+       Persistence <span class="token builtin class-name">:</span> Superblock is persistent
+
+       Update Time <span class="token builtin class-name">:</span> Mon Sep <span class="token number">13</span> <span class="token number">15</span>:24:50 <span class="token number">2021</span>
+             State <span class="token builtin class-name">:</span> clean 
+    Active Devices <span class="token builtin class-name">:</span> <span class="token number">4</span>
+   Working Devices <span class="token builtin class-name">:</span> <span class="token number">5</span>
+    Failed Devices <span class="token builtin class-name">:</span> <span class="token number">0</span>
+     Spare Devices <span class="token builtin class-name">:</span> <span class="token number">1</span>
+
+            Layout <span class="token builtin class-name">:</span> left-symmetric
+        Chunk Size <span class="token builtin class-name">:</span> 512K
+
+Consistency Policy <span class="token builtin class-name">:</span> resync
+
+              Name <span class="token builtin class-name">:</span> 101c7:0  <span class="token punctuation">(</span>local to <span class="token function">host</span> 101c7<span class="token punctuation">)</span>
+              UUID <span class="token builtin class-name">:</span> f64354f8:cf945331:eee97c66:84776736
+            Events <span class="token builtin class-name">:</span> <span class="token number">18</span>
+
+    Number   Major   Minor   RaidDevice State
+       <span class="token number">0</span>       <span class="token number">8</span>       <span class="token number">22</span>        <span class="token number">0</span>      active <span class="token function">sync</span>   /dev/sdb6
+       <span class="token number">1</span>       <span class="token number">8</span>       <span class="token number">23</span>        <span class="token number">1</span>      active <span class="token function">sync</span>   /dev/sdb7
+       <span class="token number">2</span>       <span class="token number">8</span>       <span class="token number">24</span>        <span class="token number">2</span>      active <span class="token function">sync</span>   /dev/sdb8
+       <span class="token number">5</span>       <span class="token number">8</span>       <span class="token number">25</span>        <span class="token number">3</span>      active <span class="token function">sync</span>   /dev/sdb9
+
+       <span class="token number">4</span>       <span class="token number">8</span>       <span class="token number">26</span>        -      spare   /dev/sdb10<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>也可以通过 <code>/proc/mdstat</code> 文件查看磁盘阵列情况：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /proc/mdstat 
+Personalities <span class="token builtin class-name">:</span> <span class="token punctuation">[</span>raid6<span class="token punctuation">]</span> <span class="token punctuation">[</span>raid5<span class="token punctuation">]</span> <span class="token punctuation">[</span>raid4<span class="token punctuation">]</span> 
+md0 <span class="token builtin class-name">:</span> active raid5 sdb9<span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">]</span> sdb10<span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">(</span>S<span class="token punctuation">)</span> sdb8<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> sdb7<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> sdb6<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+      <span class="token number">24576</span> blocks super <span class="token number">1.2</span> level <span class="token number">5</span>, 512k chunk, algorithm <span class="token number">2</span> <span class="token punctuation">[</span><span class="token number">4</span>/4<span class="token punctuation">]</span> <span class="token punctuation">[</span>UUUU<span class="token punctuation">]</span>
+      
+unused devices: <span class="token operator">&lt;</span>none<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>格式化并挂载 RAID 到 <code>/mnt/raid</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mkfs</span> <span class="token parameter variable">-t</span> ext3 /dev/md0
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> /mnt/raid <span class="token punctuation">;</span> <span class="token function">mount</span> /dev/md0 /mnt/raid <span class="token punctuation">;</span> <span class="token function">df</span> <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">'md0'</span>
+/dev/md0                    <span class="token number">22773</span>     <span class="token number">209</span>     <span class="token number">21336</span>   <span class="token number">1</span>% /mnt/raid<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>如果格式化成 xfs 格式，可以手动设置 su 和 sw 值：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ mkfs.xfs <span class="token parameter variable">-f</span> <span class="token parameter variable">-d</span> <span class="token assign-left variable">su</span><span class="token operator">=</span>512k, <span class="token assign-left variable">sw</span><span class="token operator">=</span><span class="token number">3</span> <span class="token parameter variable">-r</span> <span class="token assign-left variable">extsize</span><span class="token operator">=</span>1536k /dev/md0<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="恢复磁盘阵列数据"><a class="markdownIt-Anchor" href="#恢复磁盘阵列数据"></a> 恢复磁盘阵列数据</h2>
+<p><code>mdadm</code> 命令救援模式语法为：</p>
+<p><code>mdadm --manage /dev/md[0-9] [--add 设备] [--remove 设备] [--fail 设备]</code></p>
+<p>模拟磁盘出错可以使用 <code>--fail</code> 参数，模拟 sdb6 出错：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 mnt<span class="token punctuation">]</span>$ <span class="token function">mdadm</span> <span class="token parameter variable">--manage</span> /dev/md0 <span class="token parameter variable">--fail</span> /dev/sdb6
+mdadm: <span class="token builtin class-name">set</span> /dev/sdb6 faulty <span class="token keyword">in</span> /dev/md0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>再次查看 RAID 状态：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 mnt<span class="token punctuation">]</span>$ <span class="token function">cat</span> /proc/mdstat
+Personalities <span class="token builtin class-name">:</span> <span class="token punctuation">[</span>raid6<span class="token punctuation">]</span> <span class="token punctuation">[</span>raid5<span class="token punctuation">]</span> <span class="token punctuation">[</span>raid4<span class="token punctuation">]</span> 
+md0 <span class="token builtin class-name">:</span> active raid5 sdb9<span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">]</span> sdb10<span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">]</span> sdb8<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> sdb7<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> sdb6<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">(</span>F<span class="token punctuation">)</span>
+      <span class="token number">24576</span> blocks super <span class="token number">1.2</span> level <span class="token number">5</span>, 512k chunk, algorithm <span class="token number">2</span> <span class="token punctuation">[</span><span class="token number">4</span>/4<span class="token punctuation">]</span> <span class="token punctuation">[</span>UUUU<span class="token punctuation">]</span>
+      
+unused devices: <span class="token operator">&lt;</span>none<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>磁盘阵列已经自动恢复好了。将闲置磁盘 sdb11 替换掉损坏的 sdb6：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 mnt<span class="token punctuation">]</span>$ <span class="token function">mdadm</span> <span class="token parameter variable">--manage</span> /dev/md0 <span class="token parameter variable">--add</span> /dev/sdb11 <span class="token parameter variable">--remove</span> /dev/sdb6
+mdadm: added /dev/sdb11
+mdadm: hot removed /dev/sdb6 from /dev/md0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h2 id="自动挂载raid"><a class="markdownIt-Anchor" href="#自动挂载raid"></a> 自动挂载RAID</h2>
+<p>设置 <code>/etc/mdadm.conf</code> 文件来将 RAID 设备自动挂载：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 mnt<span class="token punctuation">]</span>$ <span class="token function">mdadm</span> <span class="token parameter variable">--detail</span> /dev/md0 <span class="token operator">|</span> <span class="token function">grep</span> <span class="token parameter variable">-i</span> uuid
+              UUID <span class="token builtin class-name">:</span> f64354f8:cf945331:eee97c66:84776736
+<span class="token punctuation">[</span>root@101c7 mnt<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/mdadm.conf
+ARRAY /dev/md0 <span class="token assign-left variable">UUID</span><span class="token operator">=</span>f64354f8:cf945331:eee97c66:84776736
+<span class="token punctuation">[</span>root@101c7 mnt<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/fstab
+/dev/md0        /mnt/raid       ext3    defaults        <span class="token number">1</span>       <span class="token number">2</span>
+<span class="token punctuation">[</span>root@101c7 mnt<span class="token punctuation">]</span>$ <span class="token function">umount</span> /dev/md0<span class="token punctuation">;</span> <span class="token function">mount</span> <span class="token parameter variable">-a</span>
+<span class="token punctuation">[</span>root@101c7 mnt<span class="token punctuation">]</span>$ <span class="token function">df</span> /mnt/raid
+Filesystem     1K-blocks  Used Available Use% Mounted on
+/dev/md0           <span class="token number">22773</span>   <span class="token number">212</span>     <span class="token number">21333</span>   <span class="token number">1</span>% /mnt/raid<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="关闭软raid"><a class="markdownIt-Anchor" href="#关闭软raid"></a> 关闭软RAID</h2>
+<p>先删除配置文件 <code>/etc/fstab</code> 中 <code>/dev/md0</code> 的挂载行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 mnt<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/fstab
+<span class="token comment"># /dev/md0      /mnt/raid       ext3    defaults        1       2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>卸载 <code>/dev/md0</code> 并关闭：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 mnt<span class="token punctuation">]</span>$ <span class="token function">umount</span> /dev/md0
+<span class="token punctuation">[</span>root@101c7 mnt<span class="token punctuation">]</span>$ <span class="token function">mdadm</span> <span class="token parameter variable">--stop</span> /dev/md0
+mdadm: stopped /dev/md0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>如果要重新启用使用 <code>mdadm --assemble --scan /dev/md0</code> 命令。</p>
+<p>最后删除 <code>/etc/mdadm.conf</code> 中与 md0 有关的内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 mnt<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/mdadm.conf 
+<span class="token comment"># ARRAY /dev/md0 UUID=f64354f8:cf945331:eee97c66:84776736</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h1 id="lvm"><a class="markdownIt-Anchor" href="#lvm"></a> LVM</h1>
+<p>如果安装系统分区使用默认配置，系统会自动建立 LVM 格式。</p>
+<h2 id="建立pv"><a class="markdownIt-Anchor" href="#建立pv"></a> 建立PV</h2>
+<p>首先用 <code>fdisk</code> 建立分区，假设四个分区为 <code>sdb1-4</code>，然后用 <code>fdisk</code> 依次更改 <code>system ID</code> 为 <code>8e</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">fdisk</span> /dev/sdb
+Welcome to <span class="token function">fdisk</span> <span class="token punctuation">(</span>util-linux <span class="token number">2.23</span>.2<span class="token punctuation">)</span>.
+
+Changes will remain <span class="token keyword">in</span> memory only, <span class="token keyword">until</span> you decide to <span class="token function">write</span> them.
+Be careful before using the <span class="token function">write</span> command.
+
+
+Command <span class="token punctuation">(</span>m <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: p
+
+Disk /dev/sdb: <span class="token number">1073</span> MB, <span class="token number">1073741824</span> bytes, <span class="token number">2097152</span> sectors
+Units <span class="token operator">=</span> sectors of <span class="token number">1</span> * <span class="token number">512</span> <span class="token operator">=</span> <span class="token number">512</span> bytes
+Sector size <span class="token punctuation">(</span>logical/physical<span class="token punctuation">)</span>: <span class="token number">512</span> bytes / <span class="token number">512</span> bytes
+I/O size <span class="token punctuation">(</span>minimum/optimal<span class="token punctuation">)</span>: <span class="token number">512</span> bytes / <span class="token number">512</span> bytes
+Disk label type: dos
+Disk identifier: 0x0006fb94
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1            <span class="token number">2048</span>      <span class="token number">206847</span>      <span class="token number">102400</span>   8e  Linux LVM
+/dev/sdb2          <span class="token number">206848</span>      <span class="token number">411647</span>      <span class="token number">102400</span>   8e  Linux LVM
+/dev/sdb3          <span class="token number">411648</span>      <span class="token number">616447</span>      <span class="token number">102400</span>   8e  Linux LVM
+/dev/sdb4          <span class="token number">616448</span>      <span class="token number">821247</span>      <span class="token number">102400</span>   8e  Linux LVM
+
+Command <span class="token punctuation">(</span>m <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: t
+Partition number <span class="token punctuation">(</span><span class="token number">1</span>-4, default <span class="token number">4</span><span class="token punctuation">)</span>: <span class="token number">1</span>
+Hex code <span class="token punctuation">(</span>type L to list all codes<span class="token punctuation">)</span>: 8e
+Changed <span class="token builtin class-name">type</span> of partition <span class="token string">'Linux LVM'</span> to <span class="token string">'Linux LVM'</span>
+
+Command <span class="token punctuation">(</span>m <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: w
+The partition table has been altered<span class="token operator">!</span>
+
+Calling ioctl<span class="token punctuation">(</span><span class="token punctuation">)</span> to re-read partition table.
+Syncing disks.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>配置好后更新系统：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ partprobe<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>PV 有关的命令有下面这些：</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pvcreate</td>
+<td>将物理分区新建成 PV</td>
+</tr>
+<tr>
+<td>pvscan</td>
+<td>查询目前系统里的 PV</td>
+</tr>
+<tr>
+<td>pvdisplay</td>
+<td>显示出目前系统上面的 PV 状态</td>
+</tr>
+<tr>
+<td>pvremove</td>
+<td>将 PV 属性删除</td>
+</tr>
+</tbody>
+</table>
+<p>先使用 <code>pvcreate</code> 命令将 <code>sdb1-4</code> 转换成 PV：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ pvcreate /dev/sdb<span class="token punctuation">&#123;</span><span class="token number">1,2</span>,3,4<span class="token punctuation">&#125;</span>
+WARNING: ext3 signature detected on /dev/sdb1 at offset <span class="token number">1080</span>. Wipe it? <span class="token punctuation">[</span>y/n<span class="token punctuation">]</span>: y
+  Wiping ext3 signature on /dev/sdb1.
+WARNING: dos signature detected on /dev/sdb2 at offset <span class="token number">510</span>. Wipe it? <span class="token punctuation">[</span>y/n<span class="token punctuation">]</span>: y
+  Wiping dos signature on /dev/sdb2.
+WARNING: swap signature detected on /dev/sdb4 at offset <span class="token number">4086</span>. Wipe it? <span class="token punctuation">[</span>y/n<span class="token punctuation">]</span>: y
+  Wiping swap signature on /dev/sdb4.
+  Physical volume <span class="token string">"/dev/sdb1"</span> successfully created.
+  Physical volume <span class="token string">"/dev/sdb2"</span> successfully created.
+  Physical volume <span class="token string">"/dev/sdb3"</span> successfully created.
+  Physical volume <span class="token string">"/dev/sdb4"</span> successfully created.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>然后使用 <code>pvscan</code> 查询已存在的 PV：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ pvscan
+  PV /dev/sda2   VG centos          lvm2 <span class="token punctuation">[</span><span class="token operator">&lt;</span><span class="token number">19.00</span> GiB / <span class="token number">0</span>    free<span class="token punctuation">]</span>
+  PV /dev/sdb2                      lvm2 <span class="token punctuation">[</span><span class="token number">100.00</span> MiB<span class="token punctuation">]</span>
+  PV /dev/sdb1                      lvm2 <span class="token punctuation">[</span><span class="token number">100.00</span> MiB<span class="token punctuation">]</span>
+  PV /dev/sdb3                      lvm2 <span class="token punctuation">[</span><span class="token number">100.00</span> MiB<span class="token punctuation">]</span>
+  PV /dev/sdb4                      lvm2 <span class="token punctuation">[</span><span class="token number">100.00</span> MiB<span class="token punctuation">]</span>
+  Total: <span class="token number">5</span> <span class="token punctuation">[</span><span class="token operator">&lt;</span><span class="token number">19.39</span> GiB<span class="token punctuation">]</span> / <span class="token keyword">in</span> use: <span class="token number">1</span> <span class="token punctuation">[</span><span class="token operator">&lt;</span><span class="token number">19.00</span> GiB<span class="token punctuation">]</span> / <span class="token keyword">in</span> no VG: <span class="token number">4</span> <span class="token punctuation">[</span><span class="token number">400.00</span> MiB<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最后 <code>pvdisplay</code> 查看每个 PV 的详细信息，确认准确无误：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ pvdisplay
+<span class="token string">"/dev/sdb2"</span> is a new physical volume of <span class="token string">"100.00 MiB"</span>
+  --- NEW Physical volume ---
+  PV Name               /dev/sdb2
+  VG Name               
+  PV Size               <span class="token number">100.00</span> MiB
+  Allocatable           NO
+  PE Size               <span class="token number">0</span>   
+  Total PE              <span class="token number">0</span>
+  Free PE               <span class="token number">0</span>
+  Allocated PE          <span class="token number">0</span>
+  PV UUID               0pMJ0Q-1h7w-1fMb-OTKS-Xqa5-sjQj-XSUdSi<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="建立vg"><a class="markdownIt-Anchor" href="#建立vg"></a> 建立VG</h2>
+<p>与 VG 相关的命令有下面这些：</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>vgcreate</td>
+<td>新建 VG 的命令</td>
+</tr>
+<tr>
+<td>vgscan</td>
+<td>查找系统上的 VG</td>
+</tr>
+<tr>
+<td>vgdisplay</td>
+<td>显示系统上的 VG 状态</td>
+</tr>
+<tr>
+<td>vgextend</td>
+<td>在 VG 内增加额外 PV</td>
+</tr>
+<tr>
+<td>vgreduce</td>
+<td>在 VG 内删除 PV</td>
+</tr>
+<tr>
+<td>vgchange</td>
+<td>设置 VG 是否启动 (active)</td>
+</tr>
+<tr>
+<td>vgremove</td>
+<td>删除一个 VG</td>
+</tr>
+</tbody>
+</table>
+<p>新建 VG 使用 <code>vgcreate</code> 命令的语法如下：</p>
+<p><code>vgcreate [-s PE大小[MGT]] VG名称 PV名称</code></p>
+<p>将 <code>/dev/sdb1-3</code> 新建成一个 VG 名为 VG400，并指定 PE 为 4MB：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ vgcreate <span class="token parameter variable">-s</span> 4M VG400 /dev/sdb<span class="token punctuation">&#123;</span><span class="token number">1,2</span>,3<span class="token punctuation">&#125;</span>
+  Volume group <span class="token string">"VG400"</span> successfully created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>查看 VG 和 PV 的信息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ vgscan
+  Reading volume <span class="token function">groups</span> from cache.
+  Found volume group <span class="token string">"centos"</span> using metadata <span class="token builtin class-name">type</span> lvm2
+  Found volume group <span class="token string">"VG400"</span> using metadata <span class="token builtin class-name">type</span> lvm2
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ pvscan
+  PV /dev/sda2   VG centos          lvm2 <span class="token punctuation">[</span><span class="token operator">&lt;</span><span class="token number">19.00</span> GiB / <span class="token number">0</span>    free<span class="token punctuation">]</span>
+  PV /dev/sdb1   VG VG400           lvm2 <span class="token punctuation">[</span><span class="token number">96.00</span> MiB / <span class="token number">96.00</span> MiB free<span class="token punctuation">]</span>
+  PV /dev/sdb2   VG VG400           lvm2 <span class="token punctuation">[</span><span class="token number">96.00</span> MiB / <span class="token number">96.00</span> MiB free<span class="token punctuation">]</span>
+  PV /dev/sdb3   VG VG400           lvm2 <span class="token punctuation">[</span><span class="token number">96.00</span> MiB / <span class="token number">96.00</span> MiB free<span class="token punctuation">]</span>
+  PV /dev/sdb4                      lvm2 <span class="token punctuation">[</span><span class="token number">100.00</span> MiB<span class="token punctuation">]</span>
+  Total: <span class="token number">5</span> <span class="token punctuation">[</span><span class="token operator">&lt;</span><span class="token number">19.38</span> GiB<span class="token punctuation">]</span> / <span class="token keyword">in</span> use: <span class="token number">4</span> <span class="token punctuation">[</span><span class="token operator">&lt;</span><span class="token number">19.28</span> GiB<span class="token punctuation">]</span> / <span class="token keyword">in</span> no VG: <span class="token number">1</span> <span class="token punctuation">[</span><span class="token number">100.00</span> MiB<span class="token punctuation">]</span>
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ vgdisplay
+--- Volume group ---
+  VG Name               VG400
+  System ID             
+  Format                lvm2
+  Metadata Areas        <span class="token number">3</span>
+  Metadata Sequence No  <span class="token number">1</span>
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                <span class="token number">0</span>
+  Cur LV                <span class="token number">0</span>
+  Open LV               <span class="token number">0</span>
+  Max PV                <span class="token number">0</span>
+  Cur PV                <span class="token number">3</span>
+  Act PV                <span class="token number">3</span>
+  VG Size               <span class="token number">288.00</span> MiB
+  PE Size               <span class="token number">4.00</span> MiB
+  Total PE              <span class="token number">72</span>
+  Alloc PE / Size       <span class="token number">0</span> / <span class="token number">0</span>   
+  Free  PE / Size       <span class="token number">72</span> / <span class="token number">288.00</span> MiB
+  VG UUID               mWWhO0-wuDl-z62s-BPZZ-L1Ck-0Pbs-DNTCIf<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到 3 个 PV 已经加入到 VG400 当中了，VG 容量 288MB，PE 大小 4MB，总共有 72 个 PV。</p>
+<p>要给 VG 扩容，将剩下的 <code>sdb4</code> 加入到 <code>VG400</code> 中可以使用 <code>vgextend</code> 命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ vgextend VG400 /dev/sdb4
+  Volume group <span class="token string">"VG400"</span> successfully extended<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="建立lv"><a class="markdownIt-Anchor" href="#建立lv"></a> 建立LV</h2>
+<p>和 LV 有关的命令如下：</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>lvcreate</td>
+<td>新建 LV</td>
+</tr>
+<tr>
+<td>lvscan</td>
+<td>查询系统上的 LV</td>
+</tr>
+<tr>
+<td>lvdisplay</td>
+<td>显示系统上的 LV 状态</td>
+</tr>
+<tr>
+<td>lvextend</td>
+<td>在 LV 里面增加容量</td>
+</tr>
+<tr>
+<td>lvreduce</td>
+<td>在 LV 里面减少容量</td>
+</tr>
+<tr>
+<td>lvremove</td>
+<td>删除一个 LV</td>
+</tr>
+<tr>
+<td>lvresize</td>
+<td>对 LV 进行容量大小调整</td>
+</tr>
+</tbody>
+</table>
+<p>建立 LV 使用命令 <code>lvcreate</code> 基本语法如下：</p>
+<p><code>lvcreate [-L 容量[MGT]] [-n LV名称] VG名称</code></p>
+<p><code>lvcreate [-l PE个数] [-n LV名称] VG名称</code></p>
+<p>将整个 <code>VG400</code> 分配给 <code>LV400</code>（不带 <code>-l</code> 参数默认会分配全部容量）：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ lvcreate <span class="token parameter variable">-l</span> <span class="token number">96</span> <span class="token parameter variable">-n</span> LV400 VG400
+  Logical volume <span class="token string">"LV400"</span> created.
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ lvdisplay
+  --- Logical volume ---
+  LV Path                /dev/VG400/LV400
+  LV Name                LV400
+  VG Name                VG400
+  LV UUID                21Hgtc-LzS0-2XvL-XiXD-3DPd-94Cu-zQfcvU
+  LV Write Access        read/write
+  LV Creation host, <span class="token function">time</span> 101c7, <span class="token number">2021</span>-09-13 <span class="token number">17</span>:26:08 <span class="token parameter variable">-0400</span>
+  LV Status              available
+  <span class="token comment"># open                 0</span>
+  LV Size                <span class="token number">384.00</span> MiB
+  Current LE             <span class="token number">96</span>
+  Segments               <span class="token number">4</span>
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently <span class="token builtin class-name">set</span> to     <span class="token number">8192</span>
+  Block device           <span class="token number">253</span>:2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>将 <code>LV400</code> 格式化成 <code>ext3</code> 并挂载到 <code>/ext333</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ mkfs.ext3 /dev/VG400/LV400 
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mount</span> /dev/VG400/LV400 /ext333/
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">df</span>
+Filesystem              1K-blocks    Used Available Use% Mounted on
+devtmpfs                  <span class="token number">1918780</span>       <span class="token number">0</span>   <span class="token number">1918780</span>   <span class="token number">0</span>% /dev
+tmpfs                     <span class="token number">1930640</span>       <span class="token number">0</span>   <span class="token number">1930640</span>   <span class="token number">0</span>% /dev/shm
+tmpfs                     <span class="token number">1930640</span>   <span class="token number">11924</span>   <span class="token number">1918716</span>   <span class="token number">1</span>% /run
+tmpfs                     <span class="token number">1930640</span>       <span class="token number">0</span>   <span class="token number">1930640</span>   <span class="token number">0</span>% /sys/fs/cgroup
+/dev/mapper/centos-root  <span class="token number">17811456</span> <span class="token number">2598096</span>  <span class="token number">15213360</span>  <span class="token number">15</span>% /
+/dev/sda1                 <span class="token number">1038336</span>  <span class="token number">190536</span>    <span class="token number">847800</span>  <span class="token number">19</span>% /boot
+tmpfs                      <span class="token number">386128</span>       <span class="token number">0</span>    <span class="token number">386128</span>   <span class="token number">0</span>% /run/user/0
+/dev/mapper/VG400-LV400    <span class="token number">372615</span>    <span class="token number">2095</span>    <span class="token number">350860</span>   <span class="token number">1</span>% /ext333<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="lvm扩容"><a class="markdownIt-Anchor" href="#lvm扩容"></a> LVM扩容</h2>
+<p>扩容分为以下步骤:</p>
+<ol>
+<li>用 <code>fdisk</code> 设置新分区 system ID 为 8e；</li>
+<li>利用 <code>pvcreate</code> 构建 PV；</li>
+<li>利用 <code>vgextend</code> 将 PV 加入 VG；</li>
+<li>利用 <code>lvresize</code> 将新加入 VG 内的 PE 加入到 LV 中；</li>
+<li>利用 <code>resize2fs</code> 将文件系统容量增加。</li>
+</ol>
+<p>先扫描新增加的 SCSI 接口硬盘：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token string">"- - -"</span> <span class="token operator">></span> /sys/class/scsi_host/host0/scan<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>对新扫描到的硬盘 <code>/dev/sdc</code> 进行分区，并设置 8e 标志：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">fdisk</span> /dev/sdc
+Command <span class="token punctuation">(</span>m <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: n
+Command <span class="token punctuation">(</span>m <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: t
+Hex code <span class="token punctuation">(</span>type L to list all codes<span class="token punctuation">)</span>: 8e
+Command <span class="token punctuation">(</span>m <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: w
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ partprobe<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>通过 <code>sdc1</code> 建立 PV：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ pvcreate /dev/sdc1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>将 <code>sdc1</code> 加入到 <code>VG400</code> 中：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ vgextend VG400 /dev/sdc1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>使用 <code>lvresize</code> 命令对 <code>LV400</code> 进行扩容。如果要使用所有空闲容量可以使用 <code>+100%FREE</code> 参数：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ lvresize <span class="token parameter variable">-l</span> +255 /dev/VG400/LV400 
+  Size of logical volume VG400/LV400 changed from <span class="token number">384.00</span> MiB <span class="token punctuation">(</span><span class="token number">96</span> extents<span class="token punctuation">)</span> to <span class="token number">1.37</span> GiB <span class="token punctuation">(</span><span class="token number">351</span> extents<span class="token punctuation">)</span>.
+  Logical volume VG400/LV400 successfully resized.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>最后使用 <code>resize2fs</code> 扩容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ resize2fs /dev/VG400/LV400 
+resize2fs <span class="token number">1.42</span>.9 <span class="token punctuation">(</span><span class="token number">28</span>-Dec-2013<span class="token punctuation">)</span>
+Filesystem at /dev/VG400/LV400 is mounted on /ext333<span class="token punctuation">;</span> on-line resizing required
+old_desc_blocks <span class="token operator">=</span> <span class="token number">2</span>, new_desc_blocks <span class="token operator">=</span> <span class="token number">6</span>
+The filesystem on /dev/VG400/LV400 is now <span class="token number">1437696</span> blocks long.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>xfs</code> 文件系统使用的是 <code>xfs_growfs</code> 命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_growfs /dev/VG400/LV400<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="lvm缩容"><a class="markdownIt-Anchor" href="#lvm缩容"></a> LVM缩容</h2>
+<p>XFS 文件系统不支持缩容。如果要进行缩容，需要将 <code>/dev/sdc1</code> 抽出来，首先需要 <code>umount</code> 挂载点：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">umount</span> /ext333/<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>然后对 <code>LV400</code> 运行磁盘检查：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ e2fsck <span class="token parameter variable">-f</span> /dev/VG400/LV400<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>用 <code>resize2fs</code> 命令对 <code>LV400</code> 的容量进行缩减 <code>sdc1</code> 的大小：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ resize2fs /dev/VG400/LV400 200M<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>重新挂载 <code>LV400</code> 到 <code>/ext333</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mount</span> /dev/VG400/LV400 /ext333/<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>去除 <code>sdc1</code> 上的 PE 数 <code>255</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ lvresize <span class="token parameter variable">-l</span> <span class="token parameter variable">-255</span> /dev/VG400/LV400<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>转移 <code>sdc1</code> 上 PE 的数据到 <code>sdb2</code>。<code>pvmove</code> 同样可以用来在想要更换物理磁盘时使用：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ pvmove /dev/sdc1 /dev/sdb2<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>将 <code>sdc1</code> 移出 <code>VG400</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ vgreduce VG400 /dev/sdc1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>最后删除 <code>sdc1</code> 上的 <code>pv</code> 标记：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ pvremove /dev/sdc1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="lvm-thin-volume"><a class="markdownIt-Anchor" href="#lvm-thin-volume"></a> LVM Thin Volume</h2>
+<p>LVM Thin Volume 先创建一个磁盘容量储存池（Thin Pool），再由这个储存池去产生一个指定要固定容量大小的 LV 设备，它可以设定任意大小，但在需要用到时才从储存池划取所需容量。只要实际用量不超过储存池总容量就行。</p>
+<p>先从 <code>VG400</code> 的剩余容量中取出 100 MB 来创建储存池 <code>vpool</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ lvcreate <span class="token parameter variable">-L</span> 100M <span class="token parameter variable">-T</span> /dev/VG400/vpool
+  Thin pool volume with chunk size <span class="token number">64.00</span> KiB can address at <span class="token function">most</span> <span class="token number">15.81</span> TiB of data.
+  Logical volume <span class="token string">"vpool"</span> created.
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ lvdisplay /dev/VG400/vpool
+  --- Logical volume ---
+  LV Name                vpool
+  VG Name                VG400
+  LV UUID                Zl8N7t-SiIF-edLi-COKJ-PrVx-Ma7H-vA1e2U
+  LV Write Access        read/write
+  LV Creation host, <span class="token function">time</span> 101c7, <span class="token number">2021</span>-09-17 <span class="token number">16</span>:43:00 <span class="token parameter variable">-0400</span>
+  LV Pool metadata       vpool_tmeta
+  LV Pool data           vpool_tdata
+  LV Status              available
+  <span class="token comment"># open                 0</span>
+  LV Size                <span class="token number">100.00</span> MiB
+  Allocated pool data    <span class="token number">0.00</span>%
+  Allocated metadata     <span class="token number">10.84</span>%
+  Current LE             <span class="token number">25</span>
+  Segments               <span class="token number">1</span>
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently <span class="token builtin class-name">set</span> to     <span class="token number">8192</span>
+  Block device           <span class="token number">253</span>:8
+  <span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ lvs VG400
+  LV     VG    Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  LV400  VG400 owi-aos--- <span class="token number">384</span>.00m                                                    
+  VG400m VG400 swi-I-s---  <span class="token number">96</span>.00m      LV400  <span class="token number">100.00</span>                                 
+  vpool  VG400 twi-a-tz-- <span class="token number">100</span>.00m             <span class="token number">0.00</span>   <span class="token number">10.84</span>  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>创建 <code>vthin1</code> 设备，大小定为 1 GB：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ lvcreate <span class="token parameter variable">-V</span> 1G <span class="token parameter variable">-T</span> /dev/VG400/vpool <span class="token parameter variable">-n</span> vthin1
+  WARNING: Sum of all thin volume sizes <span class="token punctuation">(</span><span class="token number">34.00</span> GiB<span class="token punctuation">)</span> exceeds the size of thin pool VG400/vpool and the size of whole volume group <span class="token punctuation">(</span><span class="token number">1.37</span> GiB<span class="token punctuation">)</span>.
+  WARNING: You have not turned on protection against thin pools running out of space.
+  WARNING: Set activation/thin_pool_autoextend_threshold below <span class="token number">100</span> to trigger automatic extension of thin pools before they get full.
+  Logical volume <span class="token string">"vthin1"</span> created.
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ lvs VG400
+  LV     VG    Attr       LSize   Pool  Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  LV400  VG400 owi-aos--- <span class="token number">384</span>.00m                                                     
+  VG400m VG400 swi-I-s---  <span class="token number">96</span>.00m       LV400  <span class="token number">100.00</span>                                 
+  vpool  VG400 twi-aotzD- <span class="token number">100</span>.00m              <span class="token number">100.00</span> <span class="token number">12.11</span>                           
+  vthin1 VG400 Vwi-a-tz--  <span class="token number">34</span>.00g vpool        <span class="token number">0.29</span>   <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>格式化成 xfs 文件系统并挂载到 <code>/root/thin1</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ mkfs.xfs /dev/VG400/vthin1
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mount</span> /dev/VG400/vthin1 /root/thin1/
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">df</span> <span class="token parameter variable">-hT</span>
+/dev/mapper/VG400-LV400  ext3      186M   62M  116M  <span class="token number">35</span>% /ext333
+/dev/sdd1                xfs       497M   56M  441M  <span class="token number">12</span>% /xfs333
+/dev/mapper/VG400-vthin1 xfs      1014M   33M  982M   <span class="token number">4</span>% /root/thin1
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ lvs
+  LV     VG     Attr       LSize   Pool  Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  LV400  VG400  owi-aos--- <span class="token number">384</span>.00m                                                     
+  VG400m VG400  swi-I-s---  <span class="token number">96</span>.00m       LV400  <span class="token number">100.00</span>                                 
+  vpool  VG400  twi-aotz-- <span class="token number">100</span>.00m              <span class="token number">10.69</span>  <span class="token number">10.94</span>                           
+  vthin1 VG400  Vwi-aotz--   <span class="token number">1</span>.00g vpool        <span class="token number">1.04</span>         <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用储存池一定要注意容量问题，否则超容量使用会造成数据损毁，并且没有系统提示。</p>
+<h2 id="lvm快照"><a class="markdownIt-Anchor" href="#lvm快照"></a> LVM快照</h2>
+<p>LVM 可以使用系统快照（snapshot）功能来备份需要的原始数据。快照区与被快照区为不同 LV 中，但要在同一个 VG 上面。</p>
+<p>这里使用 <code>sdc1</code> 作为快照区使用。使用 <code>lvcreate -s</code> 来新建系统快照区 <code>VG400m</code>，并给予一个 PV 占用的 PE 数量 24：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ lvcreate <span class="token parameter variable">-l</span> <span class="token number">24</span> <span class="token parameter variable">-s</span> <span class="token parameter variable">-n</span> VG400m /dev/VG400/LV400 
+  Logical volume <span class="token string">"VG400m"</span> created.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>使用 <code>lvdisplay</code> 查看一下新建的快照区 <code>snap_lv400</code> 信息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ lvdisplay
+  --- Logical volume ---
+  LV Path                /dev/VG400/VG400m
+  LV Name                VG400m
+  VG Name                VG400
+  LV UUID                cNZB7T-8D2u-IlRt-05sP-e8We-R4ox-WDNqW1
+  LV Write Access        read/write
+  LV Creation host, <span class="token function">time</span> 101c7, <span class="token number">2021</span>-09-13 <span class="token number">18</span>:22:45 <span class="token parameter variable">-0400</span>
+  LV snapshot status     active destination <span class="token keyword">for</span> LV400
+  LV Status              available
+  <span class="token comment"># open                 0</span>
+  LV Size                <span class="token number">384.00</span> MiB
+  Current LE             <span class="token number">96</span>
+  COW-table size         <span class="token number">96.00</span> MiB
+  COW-table LE           <span class="token number">24</span>
+  Allocated to snapshot  <span class="token number">0.01</span>%
+  Snapshot chunk size    <span class="token number">4.00</span> KiB
+  Segments               <span class="token number">1</span>
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently <span class="token builtin class-name">set</span> to     <span class="token number">8192</span>
+  Block device           <span class="token number">253</span>:5<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中 COW-table size 是快照区的实际容量。可以将快照区挂载后查看内容，取出里面数据。</p>
+<p>如果是 xfs 文件系统挂载时得使用 <code>nouuid</code> 参数。</p>
+<p>要想建立快照区，必须注意快照区剩余容量要能装得下原始数据，如果快照区容纳不了，快照功能会失效。</p>
+<p>也可以将快照挂载后卸载原先 LV，使用快照区作为测试环境在上面测试，测试完毕后直接将快照区删除。</p>
+<p>要删除快照，先 <code>umount</code> 再使用 <code>lvremove</code> 命令即可。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/3491093041/" title="Linux 磁盘管理">https://blog.x2b.net/3491093041/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="../3427262780/" rel="next" title="Linux 磁盘配额管理">
+                  Linux 磁盘配额管理 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">94k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:15</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@next-theme/pjax@0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://unpkg.com/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://unpkg.com/katex@0.16.4/dist/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/3491093041/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://unpkg.com/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'blog.x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>
