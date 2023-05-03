@@ -22,28 +22,28 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
 
-    <meta name="description" content="终端类型 只使用文本的终端被称为字符终端（Character Terminal）或基于文本的终端（Text-Based Terminal），统称命令行界面（CLI，Command Line Interface）。其硬件设备标准代表是 DEC 公司 1978 年生产的 VT100。 图形终端（Graphics Terminal）不仅可以处理文本，还可以显示任何能使用小点在屏幕上进行绘制的内容，也就">
+    <meta name="description" content="命令语法 awk 用于处理每一行的字段内的数据，默认字段的分隔符为空格或 [Tab]。 awk 的命令语法如下： awk &#39;条件类型1&amp;#123;动作1&amp;#125; 条件类型2&amp;#123;动作2&amp;#125; ...&#39; 文件名 awk 后面接两个单引号 ‘’ 并加上大括号 {} 来设置想要对数据进行的处理操作。 $0 代表整个输入行，$n 表示第 n 个字段。在应用脚本之前，awk 会先拆分输入记">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux 命令行使用">
-<meta property="og:url" content="https://blog.x2b.net/1784829336/index.html">
+<meta property="og:title" content="Awk 工具">
+<meta property="og:url" content="https://blog.x2b.net/1712308461/index.html">
 <meta property="og:site_name" content="X to Bytes">
-<meta property="og:description" content="终端类型 只使用文本的终端被称为字符终端（Character Terminal）或基于文本的终端（Text-Based Terminal），统称命令行界面（CLI，Command Line Interface）。其硬件设备标准代表是 DEC 公司 1978 年生产的 VT100。 图形终端（Graphics Terminal）不仅可以处理文本，还可以显示任何能使用小点在屏幕上进行绘制的内容，也就">
+<meta property="og:description" content="命令语法 awk 用于处理每一行的字段内的数据，默认字段的分隔符为空格或 [Tab]。 awk 的命令语法如下： awk &#39;条件类型1&amp;#123;动作1&amp;#125; 条件类型2&amp;#123;动作2&amp;#125; ...&#39; 文件名 awk 后面接两个单引号 ‘’ 并加上大括号 {} 来设置想要对数据进行的处理操作。 $0 代表整个输入行，$n 表示第 n 个字段。在应用脚本之前，awk 会先拆分输入记">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-09-18T03:57:47.000Z">
-<meta property="article:modified_time" content="2023-04-26T09:04:39.530Z">
+<meta property="article:modified_time" content="2023-05-03T15:18:01.177Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://blog.x2b.net/1784829336/">
+<link rel="canonical" href="https://blog.x2b.net/1712308461/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/1784829336/","path":"1784829336/","title":"Linux 命令行使用"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/1712308461/","path":"1712308461/","title":"Awk 工具"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Linux 命令行使用 | X to Bytes</title>
+<title>Awk 工具 | X to Bytes</title>
   
 
   <script src="../js/third-party/analytics/baidu-analytics.js"></script>
@@ -145,7 +145,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%88%E7%AB%AF%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text"> 终端类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%BB%84%E5%90%88%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="nav-number">2.</span> <span class="nav-text"> 常用组合快捷键</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E6%8F%90%E7%A4%BA%E7%AC%A6"><span class="nav-number">3.</span> <span class="nav-text"> 命令提示符</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E6%A0%BC%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text"> 命令格式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E5%90%8D%E7%A7%B0"><span class="nav-number">4.1.</span> <span class="nav-text"> 命令名称</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%89%E9%A1%B9"><span class="nav-number">4.2.</span> <span class="nav-text"> 选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E6%95%B0"><span class="nav-number">4.3.</span> <span class="nav-text"> 参数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4"><span class="nav-number">5.</span> <span class="nav-text"> 执行命令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="nav-number">5.1.</span> <span class="nav-text"> 命令执行顺序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E5%A4%9A%E6%9D%A1%E5%91%BD%E4%BB%A4"><span class="nav-number">5.2.</span> <span class="nav-text"> 执行多条命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E4%BF%A1%E6%81%AF"><span class="nav-number">5.3.</span> <span class="nav-text"> 报错信息</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E5%88%AB%E5%90%8D"><span class="nav-number">6.</span> <span class="nav-text"> 命令别名</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8E%86%E5%8F%B2%E5%91%BD%E4%BB%A4"><span class="nav-number">7.</span> <span class="nav-text"> 历史命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B8%85%E5%B1%8F"><span class="nav-number">8.</span> <span class="nav-text"> 清屏</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%AF%AD%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text"> 命令语法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#awk-%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text"> awk 处理流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#awk-%E5%86%85%E7%BD%AE%E5%8F%98%E9%87%8F"><span class="nav-number">3.</span> <span class="nav-text"> awk 内置变量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%89%93%E5%8D%B0"><span class="nav-number">4.</span> <span class="nav-text"> 格式化打印</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E5%89%B2%E6%95%B0%E6%8D%AE"><span class="nav-number">5.</span> <span class="nav-text"> 分割数据</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -222,7 +222,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/1784829336/">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/1712308461/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="../images/avatar.jpg">
@@ -235,12 +235,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Linux 命令行使用 | X to Bytes">
+      <meta itemprop="name" content="Awk 工具 | X to Bytes">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Linux 命令行使用
+          Awk 工具
         </h1>
 
         <div class="post-meta-container">
@@ -258,7 +258,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-04-26 17:04:39" itemprop="dateModified" datetime="2023-04-26T17:04:39+08:00">2023-04-26</time>
+      <time title="修改时间：2023-05-03 23:18:01" itemprop="dateModified" datetime="2023-05-03T23:18:01+08:00">2023-05-03</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -270,7 +270,7 @@
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../categories/Linux/0-%E5%9F%BA%E7%A1%80%E6%A6%82%E8%AE%BA/" itemprop="url" rel="index"><span itemprop="name">0.基础概论</span></a>
+          <a href="../categories/Linux/3-%E8%84%9A%E6%9C%AC%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">3.脚本编程</span></a>
         </span>
     </span>
 
@@ -288,14 +288,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.7k</span>
+      <span>923</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>6 分钟</span>
+      <span>3 分钟</span>
     </span>
 </div>
 
@@ -306,193 +306,162 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="终端类型"><a class="markdownIt-Anchor" href="#终端类型"></a> 终端类型</h1>
-<p>只使用文本的终端被称为字符终端（Character Terminal）或基于文本的终端（Text-Based Terminal），统称命令行界面（CLI，Command Line Interface）。其硬件设备标准代表是 DEC 公司 1978 年生产的 VT100。</p>
-<p>图形终端（Graphics Terminal）不仅可以处理文本，还可以显示任何能使用小点在屏幕上进行绘制的内容，也就是可以通过图形用户界面（GUI，Graphical User Interface）和服务端交互。Unix 的 GUI 都基于 X Window System。在图形终端中，用户可以通过鼠标、键盘和触摸屏等设备进行交互操作，相比于命令行界面，图形终端更加直观和易用。</p>
-<p>在现代计算机系统中，通常都同时支持命令行界面和图形界面。命令行界面通常用于系统维护、编程和高级用户操作等任务，而图形界面则主要用于日常应用程序的操作和交互。</p>
-<p>可以通过查看 <code>$TERM</code> 变量来了解当前使用的终端配置文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token environment constant">$TERM</span>
-vt100<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h1 id="常用组合快捷键"><a class="markdownIt-Anchor" href="#常用组合快捷键"></a> 常用组合快捷键</h1>
-<p>在终端中常用的快捷键如下：</p>
-<table>
-<thead>
-<tr>
-<th>快捷键</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>【Tab】</td>
-<td>命令补全/文件名补齐。</td>
-</tr>
-<tr>
-<td>【Ctrl】+C</td>
-<td>中断操作，停止程序运行。</td>
-</tr>
-<tr>
-<td>【Ctrl】+D</td>
-<td>键盘输入结束/退出终端/删除光标后字符。</td>
-</tr>
-<tr>
-<td>【Ctrl】+Z</td>
-<td>暂停当前进程并丢入后台。</td>
-</tr>
-<tr>
-<td>【Ctrl】+S</td>
-<td>暂停当前程序，暂停后按下任意键恢复运行。</td>
-</tr>
-<tr>
-<td>【Ctrl】+A</td>
-<td>将光标移动到命令行首。</td>
-</tr>
-<tr>
-<td>【Ctrl】+E</td>
-<td>将光标移动到命令行尾。</td>
-</tr>
-<tr>
-<td>【Ctrl】+L</td>
-<td>清屏。</td>
-</tr>
-<tr>
-<td>【Ctrl】+【Shift】+N</td>
-<td>新建终端窗口。</td>
-</tr>
-</tbody>
-</table>
-<h1 id="命令提示符"><a class="markdownIt-Anchor" href="#命令提示符"></a> 命令提示符</h1>
-<p>成功登录系统后，终端会显示如下命令提示符：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>各字段的含义如下：</p>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>root</td>
-<td>标识当前登录的用户身份</td>
-</tr>
-<tr>
-<td>101c7</td>
-<td>表示当前主机的名称</td>
-</tr>
-<tr>
-<td>~</td>
-<td>表示当前所在的目录。其中，~表示当前用户的主目录，是一个变量。</td>
-</tr>
-<tr>
-<td>#</td>
-<td>如果当前用户为 root，命令提示符为 #；如果为普通用户，则为 $。</td>
-</tr>
-</tbody>
-</table>
-<h1 id="命令格式"><a class="markdownIt-Anchor" href="#命令格式"></a> 命令格式</h1>
-<p>一般命令格式如下，中括号 [] 表示非必须输入：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">命令名称 <span class="token punctuation">[</span>-选项<span class="token punctuation">]</span> <span class="token punctuation">[</span>参数1<span class="token punctuation">]</span> <span class="token punctuation">[</span>参数2<span class="token punctuation">]</span><span class="token punctuation">..</span>.<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="命令名称"><a class="markdownIt-Anchor" href="#命令名称"></a> 命令名称</h2>
-<p>一行命令第一个输入的部分绝对是命令（command）或可执行文件。</p>
-<p>当命令太长时，可以使用反斜杠 \ 来转义回车（必须立刻接特殊字符才能转义），使命令输入连续到下一行。</p>
-<p>命令严格区分大小写，通常由小写字母构成。</p>
-<h2 id="选项"><a class="markdownIt-Anchor" href="#选项"></a> 选项</h2>
-<p>选项（options）前通常会加 - 号，例如 -h。</p>
-<p>有时表示输入选项完整全名，则使用 – 符号，例如 <code>--help</code>。</p>
-<p>多个选项可以用一个 - 连接起来，例如 -abc，表示同时使用 a、b、c 三个选项。</p>
-<h2 id="参数"><a class="markdownIt-Anchor" href="#参数"></a> 参数</h2>
-<p>参数（parameter）用于向希望运行的程序传递信息，通常是一些文件名，告诉命令从哪里可以得到输入，以及把输出送到什么地方。</p>
-<p>参数之间用空格隔开，多个空格会被视为一个空格。如果参数中含有空格，应该使用双引号或单引号将其括起来，例如：<code>&quot;file name&quot;</code>。</p>
-<h1 id="执行命令"><a class="markdownIt-Anchor" href="#执行命令"></a> 执行命令</h1>
-<p>在命令行执行命令时，通常有以下两种情况：</p>
-<ul>
-<li>按下回车键后，命令立即运行并显示结果，等待下一条命令输入。</li>
-<li>进入到该命令的环境中，直到结束该命令才回到命令提示符的环境。</li>
-</ul>
-<p>在命令正常执行完毕后，会返回一个值。如果命令执行成功，则返回值为 0。如果命令执行过程中出错没有完成全部工作，则返回一个非零值（可以通过变量$?查看）。</p>
-<h2 id="命令执行顺序"><a class="markdownIt-Anchor" href="#命令执行顺序"></a> 命令执行顺序</h2>
-<p>命令的执行顺序按照以下优先级排列：</p>
+        <h1 id="命令语法"><a class="markdownIt-Anchor" href="#命令语法"></a> 命令语法</h1>
+<p>awk 用于处理每一行的字段内的数据，默认字段的分隔符为空格或 <code>[Tab]</code>。</p>
+<p>awk 的命令语法如下：</p>
+<p><code>awk '条件类型1&#123;动作1&#125; 条件类型2&#123;动作2&#125; ...' 文件名</code></p>
+<p>awk 后面接两个单引号 ‘’ 并加上大括号 {} 来设置想要对数据进行的处理操作。</p>
+<p><code>$0</code> 代表整个输入行，<code>$n</code> 表示第 n 个字段。在应用脚本之前，awk 会先拆分输入记录。</p>
+<p>每次从一个或多个文件中读入一行或从标准输入中读入一行，指令包含在小括号对中。</p>
+<p>awk 将每个输入行解释为一条记录，行中的每个单词由空格或制表符分割解释为一个字段。</p>
+<h1 id="awk-处理流程"><a class="markdownIt-Anchor" href="#awk-处理流程"></a> awk 处理流程</h1>
+<p>整个 <code>awk</code> 的处理流程是：</p>
 <ol>
-<li>以相对/绝对路径执行命令，例如 <code>/bin/ls</code> 或 <code>ls</code>。</li>
-<li>由别名（alias）找到该命令来执行。</li>
-<li>由 bash 内置的（builtin）命令来执行。</li>
-<li>通过$PATH 变量的顺序找到的第一个命令来执行。</li>
+<li>读入第一行，并将第一行的数据填入 <code>$0</code>, <code>$1</code>, <code>$2</code> 等变量中；</li>
+<li>依据条件类型的限制，判断是否需要进行后面的动作；</li>
+<li>完成所有动作与条件类型；</li>
+<li>重复以上流程步骤，直到所有数据读完为止。</li>
 </ol>
-<h2 id="执行多条命令"><a class="markdownIt-Anchor" href="#执行多条命令"></a> 执行多条命令</h2>
-<p>可以用分号将多条命令写在同一行，这些命令将会依次执行。</p>
-<p>例如：查看 root.txt 文件属性；修改其权限为 6755；再次查看 root.txt 的属性：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll root.txt <span class="token punctuation">;</span> <span class="token function">chmod</span> <span class="token number">6775</span> root.txt <span class="token punctuation">;</span> ll root.txt 
--rw-r--r--. <span class="token number">1</span> root root <span class="token number">7549</span> Sep <span class="token number">11</span> <span class="token number">11</span>:59 root.txt
--rwsrwsr-x. <span class="token number">1</span> root root <span class="token number">7549</span> Sep <span class="token number">11</span> <span class="token number">11</span>:59 root.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h2 id="报错信息"><a class="markdownIt-Anchor" href="#报错信息"></a> 报错信息</h2>
-<p>以下是两条报错信息:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">cat</span> nohup.out <span class="token punctuation">;</span> catt
-cat: nohup.out: Permission denied
-bash: catt: <span class="token builtin class-name">command</span> not found<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>上面的报错信息使用冒号 : 分隔成了三段，分别表示：命令、参数和报错原因。</p>
-<h1 id="命令别名"><a class="markdownIt-Anchor" href="#命令别名"></a> 命令别名</h1>
-<p>使用<code>alias</code>命令可以为命令或一组命令指定自定义名称。例如，将命令<code>ll -a | more</code>设置为<code>lm</code>：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">alias</span> <span class="token assign-left variable">lm</span><span class="token operator">=</span><span class="token string">'ll -a | more'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>要查询已定义的别名，可以使用<code>-p</code>参数：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">alias</span> <span class="token parameter variable">-p</span>
-<span class="token builtin class-name">alias</span> <span class="token assign-left variable">cp</span><span class="token operator">=</span><span class="token string">'cp -i'</span>
-<span class="token builtin class-name">alias</span> <span class="token assign-left variable">egrep</span><span class="token operator">=</span><span class="token string">'egrep --color=auto'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>如果要取消别名，使用<code>unalias</code>命令：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">unalias</span> lm<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>如果要临时挂起别名，例如想要使用原始的<code>ls</code>命令而不是带有<code>--color=auto</code>参数的别名<code>ls</code>，可以在命令前面加上反斜杠\字符：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span>$ <span class="token punctuation">\</span>ls <span class="token parameter variable">-la</span>
-total <span class="token number">64</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h1 id="历史命令"><a class="markdownIt-Anchor" href="#历史命令"></a> 历史命令</h1>
-<p>使用快捷键 [Ctrl]+r 可以搜索历史命令记录。搜索结果继续按 [Ctrl]+r 显示上一个找到的命令：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">(</span>reverse-i-search<span class="token punctuation">)</span>`history': <span class="token function">history</span> <span class="token operator">|</span> <span class="token function">grep</span> dump<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>可以使用 <code>history</code> 命令查询输入过的历史命令列表。默认情况下，历史命令保存在 <code>~/.bash_history</code> 中。只有在注销登录后，此次会话所执行的命令才会写入文件中。</p>
-<p>可用参数:</p>
+<h1 id="awk-内置变量"><a class="markdownIt-Anchor" href="#awk-内置变量"></a> awk 内置变量</h1>
+<p><code>awk</code> 常用的内置变量如下表：</p>
+<table>
+<thead>
+<tr>
+<th><strong>变量名</strong></th>
+<th><strong>代表意义</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NF</td>
+<td>每一行(<code>$0</code>)拥有的字段总数(列数)</td>
+</tr>
+<tr>
+<td>NR</td>
+<td>目前 <code>awk</code> 所正在处理数据的行号</td>
+</tr>
+<tr>
+<td>FS</td>
+<td>输入字段分隔字符</td>
+</tr>
+<tr>
+<td>OFS</td>
+<td>输出字段分隔符</td>
+</tr>
+<tr>
+<td>RS</td>
+<td>输入记录分隔符</td>
+</tr>
+<tr>
+<td>ORS</td>
+<td>输出记录分隔符</td>
+</tr>
+<tr>
+<td>FIELDWIDTHS</td>
+<td>定义分割数据字段依据的宽度</td>
+</tr>
+</tbody>
+</table>
+<h1 id="格式化打印"><a class="markdownIt-Anchor" href="#格式化打印"></a> 格式化打印</h1>
+<p><code>printf</code> 可以帮我们将数据输出的结果格式化，并且支持一些特殊字符。</p>
+<p>命令格式：</p>
+<p><code>printf '打印样式' 实际内容</code></p>
+<p>特殊样式：</p>
 <table>
 <thead>
 <tr>
 <th>参数</th>
-<th>说明</th>
+<th>样式</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>-c</td>
-<td>清除所有记录。</td>
+<td>\a</td>
+<td>警告声音；</td>
 </tr>
 <tr>
-<td>-d</td>
-<td>删除指定编号的命令记录。</td>
+<td>\b</td>
+<td>退格键；</td>
 </tr>
 <tr>
-<td>-a</td>
-<td>插入当前历史记录到指定文件末尾，默认会将此次会话的历史记录写入到 .bash_history 文件中。</td>
+<td>\f</td>
+<td>清除屏幕；</td>
 </tr>
 <tr>
-<td>-w</td>
-<td>写入当前的历史记录到指定文件中。</td>
+<td>\n</td>
+<td>输出到新一行；</td>
+</tr>
+<tr>
+<td>\r</td>
+<td>回车键；</td>
+</tr>
+<tr>
+<td>\t</td>
+<td>水平 [tab] 按键；</td>
+</tr>
+<tr>
+<td>\v</td>
+<td>垂直 [tab] 按键；</td>
+</tr>
+<tr>
+<td>\xNN</td>
+<td>NN为两位数的数字，可以转为字符；</td>
+</tr>
+<tr>
+<td>%ns</td>
+<td>n为数字，s表示字符串数量；</td>
+</tr>
+<tr>
+<td>%ni</td>
+<td>n为数字，i表示整数位数；</td>
+</tr>
+<tr>
+<td>%<a target="_blank" rel="noopener external nofollow noreferrer" href="http://N.nf">N.nf</a></td>
+<td>n与N为数字，f代表多少位小数；</td>
 </tr>
 </tbody>
 </table>
-<p>例如，要显示最近的 5 条历史记录：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">history</span> <span class="token number">5</span>
-  <span class="token number">888</span>  <span class="token function">date</span>
-  <span class="token number">889</span>  <span class="token function">time</span>
-  <span class="token number">890</span>  w <span class="token parameter variable">-i</span>
-  <span class="token number">891</span>  <span class="token function">cat</span> .bash_history 
-  <span class="token number">892</span>  <span class="token function">history</span> <span class="token operator">|</span> <span class="token function">tail</span> <span class="token parameter variable">-n5</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以通过<code>!记录编号</code>直接执行对应的命令。例如，要重新运行第 890 条记录，可以输入：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token operator">!</span><span class="token number">890</span>
-w <span class="token parameter variable">-i</span>
-<span class="token number">23</span>:41:23 up <span class="token number">1</span> day,  <span class="token number">8</span>:32,  <span class="token number">2</span> users,  load average: <span class="token number">0.00</span>, <span class="token number">0.01</span>, <span class="token number">0.05</span>
-<span class="token environment constant">USER</span>     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
-root     pts/0    <span class="token number">192.168</span>.2.101    04:01    <span class="token number">3</span>.00s  <span class="token number">0</span>.84s  <span class="token number">0</span>.00s w <span class="token parameter variable">-i</span>
-root     pts/1    <span class="token number">192.168</span>.2.101    <span class="token number">15</span>:12    <span class="token number">8</span>:28m  <span class="token number">0</span>.01s  <span class="token number">0</span>.01s <span class="token parameter variable">-bash</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>如果使用<code>!!</code>，则会执行上一个命令。</p>
-<h1 id="清屏"><a class="markdownIt-Anchor" href="#清屏"></a> 清屏</h1>
-<p>直接输入 <code>clear</code> 命令能清屏：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">clear</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="分割数据"><a class="markdownIt-Anchor" href="#分割数据"></a> 分割数据</h1>
+<p>例如取出 <code>last</code> 命令结果中用户名（第一列）与登录 IP（第三列）地址：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ last <span class="token parameter variable">-n</span> <span class="token number">5</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'&#123;print $1 "--" $3&#125;'</span>
+root--Sat
+root--192.168.2.101
+root--192.168.2.101
+root--192.168.2.101
+root--192.168.2.101<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 <code>print</code> 将结果打印出来是 <code>awk</code> 最常用功能。</p>
+<p>将内置变量打印出来：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ last <span class="token parameter variable">-n</span> <span class="token number">5</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'&#123;print $1 "  lines:" NR "   columes:" NF&#125;'</span>
+root  lines:1   columes:9
+root  lines:2   columes:10
+root  lines:3   columes:10
+root  lines:4   columes:10
+root  lines:5   columes:10<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>awk</code> 可以使用逻辑运算符来写判断条件。例如查找 UID 小于 10 的用户：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">cat</span> b.cfg <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'BEGIN &#123;FS=":"&#125; $3&lt;10&#123;print $1 "\t" $3&#125;'</span>
+root    <span class="token number">0</span>
+bin     <span class="token number">1</span>
+daemon  <span class="token number">2</span>
+adm     <span class="token number">3</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>命令由两个组成，前面一个命令定义了分隔符 <code>FS</code> 的值为：（也可以使用 <code>-F</code> 参数），同时使用 <code>BEGIN</code> 这个关键字，预先设置 <code>awk</code> 的变量。第二部分做逻辑判断 <code>$3</code> 小于 10 的才运行后面 <code>print</code> 命令。</p>
+<p>同时使用 <code>FS</code> 和 <code>OFS</code> 格式化输出：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ <span class="token function">awk</span> <span class="token string">'BEGIN&#123;FS=","; OFS="--"&#125; &#123;print $1,$2&#125;'</span> user.csv 
+user6--user6
+user7--user7<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>自定义按字符数来分割：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ <span class="token function">awk</span> <span class="token string">'BEGIN&#123;FIELDWIDTHS="5 1"&#125; &#123;print $1,$2,$0&#125;'</span> user.csv 
+user6 , user6,user6
+user7 , user7,user7<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>如果数据是多行形式，可以指定分隔符为 <code>\n</code>，以空行为界定新记录的分隔符：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ <span class="token function">awk</span> <span class="token string">'BEGIN&#123;FS="\n"; RS=""&#125; &#123;print $0 $2&#125;'</span> user.csv 
+user6,user6
+<span class="token number">403403</span>
+user7,user7
+<span class="token number">404404</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>awk</code> 还可以使用正则表达式来进行模式匹配。例如只显示 <code>$1</code> 含有 <code>root</code> 字符串的用户：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">cat</span> b.cfg <span class="token operator">|</span> <span class="token function">awk</span> -F: <span class="token string">'/root/&#123;print $1 "\t" $3&#125;'</span>
+root    <span class="token number">0</span>
+operator        <span class="token number">11</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
     </div>
 
@@ -524,7 +493,7 @@ root     pts/1    <span class="token number">192.168</span>.2.101    <span class
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://blog.x2b.net/1784829336/" title="Linux 命令行使用">https://blog.x2b.net/1784829336/</a>
+      <a href="https://blog.x2b.net/1712308461/" title="Awk 工具">https://blog.x2b.net/1712308461/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
@@ -554,13 +523,13 @@ root     pts/1    <span class="token number">192.168</span>.2.101    <span class
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="../1872252014/" rel="prev" title="Linux 文件属性解释">
-                  <i class="fa fa-chevron-left"></i> Linux 文件属性解释
+                <a href="../2354164977/" rel="prev" title="Linux 权限管理">
+                  <i class="fa fa-chevron-left"></i> Linux 权限管理
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="../3847284551/" rel="next" title="Linux 工作调度">
-                  Linux 工作调度 <i class="fa fa-chevron-right"></i>
+                <a href="../1849958032/" rel="next" title="Linux 环境配置">
+                  Linux 环境配置 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -670,7 +639,7 @@ root     pts/1    <span class="token number">192.168</span>.2.101    <span class
 
 
   <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
-  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/1784829336/"}</script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/1712308461/"}</script>
   <script src="../js/third-party/quicklink.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
