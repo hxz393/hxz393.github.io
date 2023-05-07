@@ -1,6 +1,215 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Linux 目录结构</title>
+    <url>/4087499240/</url>
+    <content><![CDATA[<h1 id="目录配置标准"><a class="markdownIt-Anchor" href="#目录配置标准"></a> 目录配置标准</h1>
+<p>Linux 采用将文件储存在单个目录结构中，这种目录被称为虚拟目录（Virtual Directory）。虚拟目录将安装在主机上的所有储存设备的文件路径纳入单个目录结构中。</p>
+<p>各种发行版遵循同一套文件系统层次结构标准（FHS，Filesystem Hierarchy Standard），目的在于规范每个特定目录应该放什么数据。FHS 依据文件系统使用的频繁与否，以及是否允许使用者随意变更，将目录定义为四种交互形态：</p>
+<ul>
+<li>
+<p><strong>可分享的</strong>（Shareable）</p>
+<p>可以分享给其他系统挂载使用的目录，包括可执行文件与使用者的邮件等数据。</p>
+</li>
+<li>
+<p><strong>不可分享的</strong>（Unshareable）</p>
+<p>自己机器上面运行的设备文件或者是与程序有关的 socket 文件等，仅能自己使用，所以不适合分享。</p>
+</li>
+<li>
+<p><strong>不变的</strong>（Static）</p>
+<p>有些数据是不会经常变动的，例如函数库、文件说明文档、系统管理员所管理的主机服务配置文件等。</p>
+</li>
+<li>
+<p><strong>可变动的</strong>（Variable）</p>
+<p>经常改变的数据，例如日志文件等。</p>
+</li>
+</ul>
+<h1 id="顶级目录"><a class="markdownIt-Anchor" href="#顶级目录"></a> 顶级目录</h1>
+<p>所有目录都由根目录/衍生而来，因此 FHS 标准建议根目录所在分区应该越小越好，最好不要将应用程序所安装的软件与根目录放在同一个分区。这样可以提高性能，根目录所在的文件系统也较不容易发生问题。</p>
+<p>开机过程中仅有根目录会被挂载，其他分区则是在开机完成后陆续进行挂载。</p>
+<p>必须存在的顶级目录：</p>
+<table>
+<thead>
+<tr>
+<th><strong>目录</strong></th>
+<th><strong>目录说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/bin</code></td>
+<td>二进制目录，存放可以被 root 和一般账户所用的命令，以及在单用户维护模式下仍能被操作的常用命令，如 <code>cat</code>、<code>mv</code>、<code>chown</code> 等。</td>
+</tr>
+<tr>
+<td><code>/boot</code></td>
+<td>启动目录，存放开机会使用到的文件，包括内核文件及开机所需配置文件。</td>
+</tr>
+<tr>
+<td><code>/dev</code></td>
+<td>设备目录，Linux 上任何设备与接口设备都是以文件的形式存在于这个目录下，访问目录下的某个文件就等于访问某个设备。主要分为三类硬件，例如硬盘（sda）和打印机（lp0），终端如控制台（tty），伪设备如 <code>/dev/null</code> 和 <code>/dev/zero</code>。</td>
+</tr>
+<tr>
+<td><code>/etc</code></td>
+<td>系统配置文件目录，系统配置文件几乎都放在这里，如账号密码，服务起始文件等。一般不要放可执行文件到这个目录下。<br /><code>/etc/X11</code>：与 X Window 有关的配置文件放在这里，尤其是 xorg.conf 这个 XServer 的配置文件。<br /><code>/etc/opt</code>：放置第三方软件配置文件。<br /><code>/etc/sgml</code>：与 SGML 格式有关的各项配置文件。<br /><code>/etc/xml</code>：与 XML 格式有关的配置文件。</td>
+</tr>
+<tr>
+<td><code>/home</code></td>
+<td>主目录，系统默认用户主文件夹，一般子文件夹以用户账号命名。</td>
+</tr>
+<tr>
+<td><code>/lib</code>、<code>/lib64</code></td>
+<td>库目录，存放开机时会用到的函数库，以及在 <code>/bin</code> 或 <code>/sbin</code> 中命令会调用的函数库。<br /><code>/lib/modules/</code>：存放内核相关的模块（驱动程序）。</td>
+</tr>
+<tr>
+<td><code>/media</code></td>
+<td>媒体目录，存放可删除设备，包括 CD、DVD、U 盘等设备都暂时挂载于此。</td>
+</tr>
+<tr>
+<td><code>/mnt</code></td>
+<td>挂载目录，如果想要暂时挂载某些额外的设备，一般放置到这个目录中。</td>
+</tr>
+<tr>
+<td><code>/opt</code></td>
+<td>可选目录，给第三方软件放置的目录，包括发行版附加的一些软件包。</td>
+</tr>
+<tr>
+<td><code>/root</code></td>
+<td>系统管理员的主文件夹。</td>
+</tr>
+<tr>
+<td><code>/sbin</code></td>
+<td>系统二进制目录，只有 root 可用，包括开机，修复，还原系统所需要的系统命令，如 <code>fdisk</code>、<code>ifconfig</code>、<code>init</code> 等。</td>
+</tr>
+<tr>
+<td><code>/srv</code></td>
+<td>服务目录，一些网络服务启动后，这些服务所需要取用的数据目录，如将 www 服务需要的网页文件放置到 <code>/srv/www</code> 里。</td>
+</tr>
+<tr>
+<td><code>/tmp</code></td>
+<td>临时目录，重要数据不可放置到此目录，会被一些系统进程定期清空。</td>
+</tr>
+<tr>
+<td><code>/run</code></td>
+<td>运行目录，存放系统运作时的运行时数据。</td>
+</tr>
+</tbody>
+</table>
+<p>其他重要目录：</p>
+<table>
+<thead>
+<tr>
+<th><strong>目录</strong></th>
+<th><strong>目录说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/lost+found</code></td>
+<td>只有 ext 文件系统格式才会产生的目录，用来放置丢失的文件片段。</td>
+</tr>
+<tr>
+<td><code>/proc</code></td>
+<td>进程目录。这个目录本身是一个虚拟文件系统（Virtual Filesystem），它放置的数据都在内存中，如系统内核、进程、外部设备的状态及网络状态等，所以实际不占任何硬盘空间。</td>
+</tr>
+<tr>
+<td><code>/sys</code></td>
+<td>系统目录。和 <code>/proc</code> 类似的虚拟文件系统，记录与内核相关信息，包括目前已加载的内核模块与硬件设备信息。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="usr-目录"><a class="markdownIt-Anchor" href="#usr-目录"></a> /usr 目录</h1>
+<p><code>/usr</code> 目录存放静态数据,即不会随时间改变的文件,原则上放置独立安装的软件数据。系统默认软件也放在 <code>/usr</code> 目录下。</p>
+<p><code>/usr</code> 目录下的子目录说明：</p>
+<table>
+<thead>
+<tr>
+<th><strong>目录</strong></th>
+<th><strong>目录说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/usr/bin/</code></td>
+<td>存放所有的用户命令。</td>
+</tr>
+<tr>
+<td><code>/usr/include/</code></td>
+<td>存放 C/C++ 等编程语言的头文件（header）和包含文件（include）。</td>
+</tr>
+<tr>
+<td><code>/usr/lib/</code></td>
+<td>存放各种应用软件的函数库、目标文件，以及一般用户不使用的执行文件或脚本。</td>
+</tr>
+<tr>
+<td><code>/usr/local/</code></td>
+<td>推荐系统管理员自行下载安装的软件存放目录。</td>
+</tr>
+<tr>
+<td><code>/usr/sbin/</code></td>
+<td>存放非正常运行所需的系统命令，例如网络服务器软件的服务命令。</td>
+</tr>
+<tr>
+<td><code>/usr/share/</code></td>
+<td>存放共享文件，如 man 手册和 doc 帮助文档。</td>
+</tr>
+<tr>
+<td><code>/usr/src/</code></td>
+<td>一般建议将源码放在该目录下。内核源码建议放在 <code>/usr/src/linux/</code> 下。</td>
+</tr>
+<tr>
+<td><code>/usr/libexec/</code></td>
+<td>存放某些不被一般使用者惯用的可执行文件或脚本。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="var-目录"><a class="markdownIt-Anchor" href="#var-目录"></a> /var 目录</h1>
+<p><code>/var</code> 目录是用来存放会经常变动的文件的，包括缓存（cache）、日志文件（log file）以及某些软件运行时所产生的文件（lock file、run file）或 MySQL 数据库的文件等等。最好可以将它独立出来挂在单独的一个分区中。</p>
+<p><code>/var</code> 目录下的子目录说明：</p>
+<table>
+<thead>
+<tr>
+<th>目录</th>
+<th>目录说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/var/cache/</code></td>
+<td>应用程序本身运行过程中会产生一些暂存文件。</td>
+</tr>
+<tr>
+<td><code>/var/lib/</code></td>
+<td>程序执行的过程中需要使用到的数据文件的放置目录。在此目录下各自的软件应该要有自己的目录，例如 MySQL 数据库放置到 <code>/var/lib/mysql/</code> 下。</td>
+</tr>
+<tr>
+<td><code>/var/lock/</code></td>
+<td>某些设备或文件资源一次只能被一个应用程序所使用，为了避免使用冲突就得给该设备上锁。例如刻录机设备在刻录中时会被锁上。目前此目录已被挪到 <code>/run/lock/</code> 中。</td>
+</tr>
+<tr>
+<td><code>/var/log/</code></td>
+<td>日志文件放置的目录，例如记录登录者信息的文件 <code>/var/log/messages</code>、<code>/var/log/wtmp</code>。</td>
+</tr>
+<tr>
+<td><code>/var/mail/</code></td>
+<td>放置个人电子邮件信箱的目录，等同于 <code>/var/spool/mail/</code>。</td>
+</tr>
+<tr>
+<td><code>/var/run/</code></td>
+<td>某些程序或服务启动后，会将它们的 PID 放置在这个目录下。</td>
+</tr>
+<tr>
+<td><code>/var/spool/</code></td>
+<td>放置一些队列数据，通常在使用后会被删除。</td>
+</tr>
+</tbody>
+</table>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>0.基础概论</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Linux 用户与组</title>
     <url>/2592592171/</url>
     <content><![CDATA[<h1 id="用户标识符"><a class="markdownIt-Anchor" href="#用户标识符"></a> 用户标识符</h1>
@@ -515,215 +724,6 @@ File size limit exceeded
 <span class="token comment">#&lt;domain>      &lt;type>  &lt;item>         &lt;value></span>
 @group1          hard    maxlogins       <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>登录相关日志文件存放目录有 <code>/var/log/secure</code> 和 <code>/var/log/messages</code>。如果发生任何无法登录或是产生意外错误，由 PAM 模块将数据记录在 <code>/var/log/secure</code> 中。</p>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>0.基础概论</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>Linux 目录结构</title>
-    <url>/4087499240/</url>
-    <content><![CDATA[<h1 id="目录配置标准"><a class="markdownIt-Anchor" href="#目录配置标准"></a> 目录配置标准</h1>
-<p>Linux 采用将文件储存在单个目录结构中，这种目录被称为虚拟目录（Virtual Directory）。虚拟目录将安装在主机上的所有储存设备的文件路径纳入单个目录结构中。</p>
-<p>各种发行版遵循同一套文件系统层次结构标准（FHS，Filesystem Hierarchy Standard），目的在于规范每个特定目录应该放什么数据。FHS 依据文件系统使用的频繁与否，以及是否允许使用者随意变更，将目录定义为四种交互形态：</p>
-<ul>
-<li>
-<p><strong>可分享的</strong>（Shareable）</p>
-<p>可以分享给其他系统挂载使用的目录，包括可执行文件与使用者的邮件等数据。</p>
-</li>
-<li>
-<p><strong>不可分享的</strong>（Unshareable）</p>
-<p>自己机器上面运行的设备文件或者是与程序有关的 socket 文件等，仅能自己使用，所以不适合分享。</p>
-</li>
-<li>
-<p><strong>不变的</strong>（Static）</p>
-<p>有些数据是不会经常变动的，例如函数库、文件说明文档、系统管理员所管理的主机服务配置文件等。</p>
-</li>
-<li>
-<p><strong>可变动的</strong>（Variable）</p>
-<p>经常改变的数据，例如日志文件等。</p>
-</li>
-</ul>
-<h1 id="顶级目录"><a class="markdownIt-Anchor" href="#顶级目录"></a> 顶级目录</h1>
-<p>所有目录都由根目录/衍生而来，因此 FHS 标准建议根目录所在分区应该越小越好，最好不要将应用程序所安装的软件与根目录放在同一个分区。这样可以提高性能，根目录所在的文件系统也较不容易发生问题。</p>
-<p>开机过程中仅有根目录会被挂载，其他分区则是在开机完成后陆续进行挂载。</p>
-<p>必须存在的顶级目录：</p>
-<table>
-<thead>
-<tr>
-<th><strong>目录</strong></th>
-<th><strong>目录说明</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>/bin</code></td>
-<td>二进制目录，存放可以被 root 和一般账户所用的命令，以及在单用户维护模式下仍能被操作的常用命令，如 <code>cat</code>、<code>mv</code>、<code>chown</code> 等。</td>
-</tr>
-<tr>
-<td><code>/boot</code></td>
-<td>启动目录，存放开机会使用到的文件，包括内核文件及开机所需配置文件。</td>
-</tr>
-<tr>
-<td><code>/dev</code></td>
-<td>设备目录，Linux 上任何设备与接口设备都是以文件的形式存在于这个目录下，访问目录下的某个文件就等于访问某个设备。主要分为三类硬件，例如硬盘（sda）和打印机（lp0），终端如控制台（tty），伪设备如 <code>/dev/null</code> 和 <code>/dev/zero</code>。</td>
-</tr>
-<tr>
-<td><code>/etc</code></td>
-<td>系统配置文件目录，系统配置文件几乎都放在这里，如账号密码，服务起始文件等。一般不要放可执行文件到这个目录下。<br /><code>/etc/X11</code>：与 X Window 有关的配置文件放在这里，尤其是 xorg.conf 这个 XServer 的配置文件。<br /><code>/etc/opt</code>：放置第三方软件配置文件。<br /><code>/etc/sgml</code>：与 SGML 格式有关的各项配置文件。<br /><code>/etc/xml</code>：与 XML 格式有关的配置文件。</td>
-</tr>
-<tr>
-<td><code>/home</code></td>
-<td>主目录，系统默认用户主文件夹，一般子文件夹以用户账号命名。</td>
-</tr>
-<tr>
-<td><code>/lib</code>、<code>/lib64</code></td>
-<td>库目录，存放开机时会用到的函数库，以及在 <code>/bin</code> 或 <code>/sbin</code> 中命令会调用的函数库。<br /><code>/lib/modules/</code>：存放内核相关的模块（驱动程序）。</td>
-</tr>
-<tr>
-<td><code>/media</code></td>
-<td>媒体目录，存放可删除设备，包括 CD、DVD、U 盘等设备都暂时挂载于此。</td>
-</tr>
-<tr>
-<td><code>/mnt</code></td>
-<td>挂载目录，如果想要暂时挂载某些额外的设备，一般放置到这个目录中。</td>
-</tr>
-<tr>
-<td><code>/opt</code></td>
-<td>可选目录，给第三方软件放置的目录，包括发行版附加的一些软件包。</td>
-</tr>
-<tr>
-<td><code>/root</code></td>
-<td>系统管理员的主文件夹。</td>
-</tr>
-<tr>
-<td><code>/sbin</code></td>
-<td>系统二进制目录，只有 root 可用，包括开机，修复，还原系统所需要的系统命令，如 <code>fdisk</code>、<code>ifconfig</code>、<code>init</code> 等。</td>
-</tr>
-<tr>
-<td><code>/srv</code></td>
-<td>服务目录，一些网络服务启动后，这些服务所需要取用的数据目录，如将 www 服务需要的网页文件放置到 <code>/srv/www</code> 里。</td>
-</tr>
-<tr>
-<td><code>/tmp</code></td>
-<td>临时目录，重要数据不可放置到此目录，会被一些系统进程定期清空。</td>
-</tr>
-<tr>
-<td><code>/run</code></td>
-<td>运行目录，存放系统运作时的运行时数据。</td>
-</tr>
-</tbody>
-</table>
-<p>其他重要目录：</p>
-<table>
-<thead>
-<tr>
-<th><strong>目录</strong></th>
-<th><strong>目录说明</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>/lost+found</code></td>
-<td>只有 ext 文件系统格式才会产生的目录，用来放置丢失的文件片段。</td>
-</tr>
-<tr>
-<td><code>/proc</code></td>
-<td>进程目录。这个目录本身是一个虚拟文件系统（Virtual Filesystem），它放置的数据都在内存中，如系统内核、进程、外部设备的状态及网络状态等，所以实际不占任何硬盘空间。</td>
-</tr>
-<tr>
-<td><code>/sys</code></td>
-<td>系统目录。和 <code>/proc</code> 类似的虚拟文件系统，记录与内核相关信息，包括目前已加载的内核模块与硬件设备信息。</td>
-</tr>
-</tbody>
-</table>
-<h1 id="usr-目录"><a class="markdownIt-Anchor" href="#usr-目录"></a> /usr 目录</h1>
-<p><code>/usr</code> 目录存放静态数据,即不会随时间改变的文件,原则上放置独立安装的软件数据。系统默认软件也放在 <code>/usr</code> 目录下。</p>
-<p><code>/usr</code> 目录下的子目录说明：</p>
-<table>
-<thead>
-<tr>
-<th><strong>目录</strong></th>
-<th><strong>目录说明</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>/usr/bin/</code></td>
-<td>存放所有的用户命令。</td>
-</tr>
-<tr>
-<td><code>/usr/include/</code></td>
-<td>存放 C/C++ 等编程语言的头文件（header）和包含文件（include）。</td>
-</tr>
-<tr>
-<td><code>/usr/lib/</code></td>
-<td>存放各种应用软件的函数库、目标文件，以及一般用户不使用的执行文件或脚本。</td>
-</tr>
-<tr>
-<td><code>/usr/local/</code></td>
-<td>推荐系统管理员自行下载安装的软件存放目录。</td>
-</tr>
-<tr>
-<td><code>/usr/sbin/</code></td>
-<td>存放非正常运行所需的系统命令，例如网络服务器软件的服务命令。</td>
-</tr>
-<tr>
-<td><code>/usr/share/</code></td>
-<td>存放共享文件，如 man 手册和 doc 帮助文档。</td>
-</tr>
-<tr>
-<td><code>/usr/src/</code></td>
-<td>一般建议将源码放在该目录下。内核源码建议放在 <code>/usr/src/linux/</code> 下。</td>
-</tr>
-<tr>
-<td><code>/usr/libexec/</code></td>
-<td>存放某些不被一般使用者惯用的可执行文件或脚本。</td>
-</tr>
-</tbody>
-</table>
-<h1 id="var-目录"><a class="markdownIt-Anchor" href="#var-目录"></a> /var 目录</h1>
-<p><code>/var</code> 目录是用来存放会经常变动的文件的，包括缓存（cache）、日志文件（log file）以及某些软件运行时所产生的文件（lock file、run file）或 MySQL 数据库的文件等等。最好可以将它独立出来挂在单独的一个分区中。</p>
-<p><code>/var</code> 目录下的子目录说明：</p>
-<table>
-<thead>
-<tr>
-<th>目录</th>
-<th>目录说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>/var/cache/</code></td>
-<td>应用程序本身运行过程中会产生一些暂存文件。</td>
-</tr>
-<tr>
-<td><code>/var/lib/</code></td>
-<td>程序执行的过程中需要使用到的数据文件的放置目录。在此目录下各自的软件应该要有自己的目录，例如 MySQL 数据库放置到 <code>/var/lib/mysql/</code> 下。</td>
-</tr>
-<tr>
-<td><code>/var/lock/</code></td>
-<td>某些设备或文件资源一次只能被一个应用程序所使用，为了避免使用冲突就得给该设备上锁。例如刻录机设备在刻录中时会被锁上。目前此目录已被挪到 <code>/run/lock/</code> 中。</td>
-</tr>
-<tr>
-<td><code>/var/log/</code></td>
-<td>日志文件放置的目录，例如记录登录者信息的文件 <code>/var/log/messages</code>、<code>/var/log/wtmp</code>。</td>
-</tr>
-<tr>
-<td><code>/var/mail/</code></td>
-<td>放置个人电子邮件信箱的目录，等同于 <code>/var/spool/mail/</code>。</td>
-</tr>
-<tr>
-<td><code>/var/run/</code></td>
-<td>某些程序或服务启动后，会将它们的 PID 放置在这个目录下。</td>
-</tr>
-<tr>
-<td><code>/var/spool/</code></td>
-<td>放置一些队列数据，通常在使用后会被删除。</td>
-</tr>
-</tbody>
-</table>
 ]]></content>
       <categories>
         <category>Linux</category>
@@ -1399,6 +1399,182 @@ operator:x:11:0:operator:/root:/sbin/nologin<span aria-hidden="true" class="line
       </categories>
   </entry>
   <entry>
+    <title>Linux 文件查看</title>
+    <url>/1251081056/</url>
+    <content><![CDATA[<h1 id="一次性输出"><a class="markdownIt-Anchor" href="#一次性输出"></a> 一次性输出</h1>
+<p>在 Linux 中，可以使用 <code>cat</code> 和 <code>tac</code> 命令一次性将文本内容打印出来，即将标准输入的数据复制到标准输出。</p>
+<p><code>cat</code> 是 Catenate 的缩写，从第一行开始显示文件内容。另外一个重要的应用是组合多个文件。如果没有指定文件或文件为 <code>-</code>，则从标准输入读取。</p>
+<p>例如，要查看 <code>c.log</code> 文件的内容，并使用 <code>-b</code> 参数来显示行号（不计空行，计空行使用 <code>-n</code>）：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">cat</span> <span class="token parameter variable">-b</span> c.log 
+     <span class="token number">1</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061.322</span>:415<span class="token punctuation">)</span>
+     <span class="token number">2</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_END <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061</span>
+     <span class="token number">3</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_START <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">163</span>
+     <span class="token number">4</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audi<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 <code>-A</code> 参数可以将特殊字符打印出来，例如 <code>[Tab]</code> 显示为 <code>^I</code>，<code>[Enter]</code> 换行显示为 <code>$</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">cat</span> <span class="token parameter variable">-nA</span> c.log 
+     <span class="token number">1</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061.322</span>:415<span class="token punctuation">)</span>
+     <span class="token number">2</span> ^Itype<span class="token operator">=</span>USER_END <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061</span>$
+     <span class="token number">3</span>   <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_START <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">163</span>$
+     <span class="token number">4</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audi$
+     <span class="token number">5</span> $<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>cat</code> 命令的一个常见用途是将多个文件内容组合到一个文件中：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> ftp.sh ca.srl <span class="token operator">>></span> newfile<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>使用 <code>tac</code> 命令可以倒序输出文件内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">tac</span> c.log 
+<span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audi
+  <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_START <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">163</span>
+       <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_END <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061</span>
+<span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061.322</span>:415<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果要将每行的内容反转输出，可以使用 <code>rev</code> 命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span>$ <span class="token function">rev</span> ftp.sh 
+gro.miv.ptf nepo
+bup <span class="token function">dc</span>
+txt.tahWdniFoTerehW teg
+eyb<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 <code>nl</code> 命令可以自定义行号位置打印文件内容，例如给行号加零填充：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">nl</span> <span class="token parameter variable">-n</span> rz c.log 
+000001 <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061.322</span>:415<span class="token punctuation">)</span>
+000002  <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_END <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061</span>
+000003   <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_START <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">163</span>
+000004 <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audi<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="阅读文件"><a class="markdownIt-Anchor" href="#阅读文件"></a> 阅读文件</h1>
+<p>使用 <code>more</code> 命令可以查看文件内容并逐页翻阅：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">more</span> nohup.out
+Vim: Warning: Output is not to a terminal
+Vim: Warning: Input is not from a terminal
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+--More--<span class="token punctuation">(</span><span class="token number">23</span>%<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>当文件内容超过一页时，会提示 <code>--More--</code>，此时可以使用以下按键进行操作：</p>
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th><strong>功能</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>空格(space)</td>
+<td>向下翻一页</td>
+</tr>
+<tr>
+<td>回车(enter)</td>
+<td>向下滚动一行</td>
+</tr>
+<tr>
+<td>/字符串</td>
+<td>向下搜索关键字,定位到那一页</td>
+</tr>
+<tr>
+<td>:f</td>
+<td>显示文件名以及当前行数</td>
+</tr>
+<tr>
+<td>q</td>
+<td>退出</td>
+</tr>
+<tr>
+<td>b</td>
+<td>往回翻页,对管道无用</td>
+</tr>
+<tr>
+<td>v</td>
+<td>调用 vi 编辑器</td>
+</tr>
+</tbody>
+</table>
+<p>使用<code>less</code>命令查看文件时，可以使用方向键进行导航：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">less</span> nohup.out
+Vim: Warning: Output is not to a terminal
+Vim: Warning: Output is not to a terminal
+<span class="token builtin class-name">:</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>进入查看页面后，可以使用以下键盘按键：</p>
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th><strong>功能</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PageUp/PageDown</td>
+<td>向上/向下翻页。</td>
+</tr>
+<tr>
+<td>方向键上/方向键下</td>
+<td>向上/向下滚动一行。</td>
+</tr>
+<tr>
+<td>/字符串&amp;?字符串</td>
+<td>向下&amp;向上查询字符串。</td>
+</tr>
+<tr>
+<td>n/N</td>
+<td>向下/向上重复查询。</td>
+</tr>
+<tr>
+<td>v</td>
+<td>启动 vi 编辑器编辑当前文件。</td>
+</tr>
+<tr>
+<td>q</td>
+<td>离开。</td>
+</tr>
+<tr>
+<td>h</td>
+<td>帮助文件。</td>
+</tr>
+</tbody>
+</table>
+<p>可以通过设置环境变量 PAGER 来指定希望使用的分页程序。</p>
+<h1 id="数据选取"><a class="markdownIt-Anchor" href="#数据选取"></a> 数据选取</h1>
+<p><code>head</code> 命令可以设定从文件开头开始选取多少行的内容。例如，要查看 nohup.out 文件的前 2 行内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">head</span> <span class="token parameter variable">-2</span> nohup.out
+Vim: Warning: Output is not to a terminal
+Vim: Warning: Input is not from a terminal<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><code>tail</code> 命令则从文件后面开始取多少行的内容并显示出来。例如，要选取查看 list.txt 文件最后 1 行的内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">tail</span> <span class="token parameter variable">-1</span> list.txt
+/tmp/etc/skel/.bashrc<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>可以加上 <code>-f</code> 参数来持续打印文件内容，这在查看日志文件时非常有用：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">tail</span> <span class="token parameter variable">-f</span> nohup.out 
+Vim: Error reading input, exiting<span class="token punctuation">..</span>.sers package to sandbox the tcsd daemon:/devv
+Vim: Finished.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>这将持续打印 nohup.out 文件的内容，直到手动停止命令。</p>
+<h1 id="二进制文件查看"><a class="markdownIt-Anchor" href="#二进制文件查看"></a> 二进制文件查看</h1>
+<p>使用普通的文本查看命令查看二进制文件会显示乱码，可以使用 <code>od</code> 命令来查阅二进制文件。</p>
+<p>例如，以默认八进制方式查看 <code>passwd</code> 文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ od /bin/passwd <span class="token operator">|</span> <span class="token function">head</span> <span class="token parameter variable">-n</span> <span class="token number">10</span>
+0000000 042577 043114 000402 000001 000000 000000 000000 000000
+0000020 000003 000076 000001 000000 031110 000000 000000 000000
+0000040 000100 000000 000000 000000 062620 000000 000000 000000
+0000060 000000 000000 000100 000070 000011 000100 000035 000034
+0000100 000006 000000 000005 000000 000100 000000 000000 000000<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>用 <code>-t</code> 参数指定显示格式，例如将十六位进制与 ASCII 字符同时显示：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ od <span class="token parameter variable">-t</span> xCc c.log
+0000000  <span class="token number">74</span>  <span class="token number">79</span>  <span class="token number">70</span>  <span class="token number">65</span>  3d  <span class="token number">43</span>  <span class="token number">52</span>  <span class="token number">45</span>  <span class="token number">44</span>  5f  <span class="token number">44</span>  <span class="token number">49</span>  <span class="token number">53</span>  <span class="token number">50</span>  <span class="token number">20</span>  6d
+          t   y   p   e   <span class="token operator">=</span>   C   R   E   D   _   D   I   S   P       m
+0000020  <span class="token number">73</span>  <span class="token number">67</span>  3d  <span class="token number">61</span>  <span class="token number">75</span>  <span class="token number">64</span>  <span class="token number">69</span>  <span class="token number">74</span>  <span class="token number">28</span>  <span class="token number">31</span>  <span class="token number">36</span>  <span class="token number">33</span>  <span class="token number">31</span>  <span class="token number">31</span>  <span class="token number">37</span>  <span class="token number">38</span>
+          s   g   <span class="token operator">=</span>   a   u   d   i   t   <span class="token punctuation">(</span>   <span class="token number">1</span>   <span class="token number">6</span>   <span class="token number">3</span>   <span class="token number">1</span>   <span class="token number">1</span>   <span class="token number">7</span>   <span class="token number">8</span>
+0000040  <span class="token number">30</span>  <span class="token number">36</span>  <span class="token number">31</span>  2e  <span class="token number">33</span>  <span class="token number">32</span>  <span class="token number">32</span>  3a  <span class="token number">34</span>  <span class="token number">31</span>  <span class="token number">35</span>  <span class="token number">29</span>  3a  <span class="token number">20</span>  <span class="token number">70</span>  <span class="token number">69</span>
+          <span class="token number">0</span>   <span class="token number">6</span>   <span class="token number">1</span>   <span class="token builtin class-name">.</span>   <span class="token number">3</span>   <span class="token number">2</span>   <span class="token number">2</span>   <span class="token builtin class-name">:</span>   <span class="token number">4</span>   <span class="token number">1</span>   <span class="token number">5</span>   <span class="token punctuation">)</span>   <span class="token builtin class-name">:</span>       p   i<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>也可以使用 <code>hexdump</code> 命令来查看二进制文件，唯一区别是 <code>hexdump</code> 默认情况下以十六进制显示数据：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span>$ hexdump <span class="token parameter variable">-C</span> /usr/bin/scsi_temperature
+00000000  <span class="token number">23</span> <span class="token number">21</span> 2f <span class="token number">62</span> <span class="token number">69</span> 6e 2f <span class="token number">62</span>  <span class="token number">61</span> <span class="token number">73</span> <span class="token number">68</span> 0a 0a <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span>  <span class="token operator">|</span><span class="token comment">#!/bin/bash..###|</span>
+00000010  <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span>  <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span>  <span class="token operator">|</span><span class="token comment">################|</span>
+*
+00000050  0a <span class="token number">23</span> 0a <span class="token number">23</span> <span class="token number">20</span> <span class="token number">20</span> <span class="token number">43</span> <span class="token number">68</span>  <span class="token number">65</span> <span class="token number">63</span> 6b <span class="token number">20</span> <span class="token number">74</span> <span class="token number">68</span> <span class="token number">65</span> <span class="token number">20</span>  <span class="token operator">|</span><span class="token builtin class-name">.</span><span class="token comment">#.#  Check the |</span>
+00000060  <span class="token number">74</span> <span class="token number">65</span> 6d <span class="token number">70</span> <span class="token number">65</span> <span class="token number">72</span> <span class="token number">61</span> <span class="token number">74</span>  <span class="token number">75</span> <span class="token number">72</span> <span class="token number">65</span> <span class="token number">20</span> 6f <span class="token number">66</span> <span class="token number">20</span> <span class="token number">74</span>  <span class="token operator">|</span>temperature of t<span class="token operator">|</span>
+00000070  <span class="token number">68</span> <span class="token number">65</span> <span class="token number">20</span> <span class="token number">67</span> <span class="token number">69</span> <span class="token number">76</span> <span class="token number">65</span> 6e  <span class="token number">20</span> <span class="token number">53</span> <span class="token number">43</span> <span class="token number">53</span> <span class="token number">49</span> <span class="token number">20</span> <span class="token number">64</span> <span class="token number">65</span>  <span class="token operator">|</span>he given SCSI de<span class="token operator">|</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上面二进制数据显示方式叫规范格式（Canonical Format）。每行最左边是十六进制表示的偏移，中间 16 个字节是实际数据，右边为相应 ASCII 字符。</p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>1.基本操作</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Linux 文件操作</title>
     <url>/3891118029/</url>
     <content><![CDATA[<h1 id="文件和目录查询"><a class="markdownIt-Anchor" href="#文件和目录查询"></a> 文件和目录查询</h1>
@@ -1702,182 +1878,6 @@ rm: cannot remove <span class="token string">'1'</span><span class="token builti
 --S--adA-------- ./3/3
 
 --S-ia-A-------- ./1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>1.基本操作</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>Linux 文件查看</title>
-    <url>/1251081056/</url>
-    <content><![CDATA[<h1 id="一次性输出"><a class="markdownIt-Anchor" href="#一次性输出"></a> 一次性输出</h1>
-<p>在 Linux 中，可以使用 <code>cat</code> 和 <code>tac</code> 命令一次性将文本内容打印出来，即将标准输入的数据复制到标准输出。</p>
-<p><code>cat</code> 是 Catenate 的缩写，从第一行开始显示文件内容。另外一个重要的应用是组合多个文件。如果没有指定文件或文件为 <code>-</code>，则从标准输入读取。</p>
-<p>例如，要查看 <code>c.log</code> 文件的内容，并使用 <code>-b</code> 参数来显示行号（不计空行，计空行使用 <code>-n</code>）：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">cat</span> <span class="token parameter variable">-b</span> c.log 
-     <span class="token number">1</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061.322</span>:415<span class="token punctuation">)</span>
-     <span class="token number">2</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_END <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061</span>
-     <span class="token number">3</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_START <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">163</span>
-     <span class="token number">4</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audi<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>使用 <code>-A</code> 参数可以将特殊字符打印出来，例如 <code>[Tab]</code> 显示为 <code>^I</code>，<code>[Enter]</code> 换行显示为 <code>$</code>：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">cat</span> <span class="token parameter variable">-nA</span> c.log 
-     <span class="token number">1</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061.322</span>:415<span class="token punctuation">)</span>
-     <span class="token number">2</span> ^Itype<span class="token operator">=</span>USER_END <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061</span>$
-     <span class="token number">3</span>   <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_START <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">163</span>$
-     <span class="token number">4</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audi$
-     <span class="token number">5</span> $<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><code>cat</code> 命令的一个常见用途是将多个文件内容组合到一个文件中：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> ftp.sh ca.srl <span class="token operator">>></span> newfile<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>使用 <code>tac</code> 命令可以倒序输出文件内容：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">tac</span> c.log 
-<span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audi
-  <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_START <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">163</span>
-       <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_END <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061</span>
-<span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061.322</span>:415<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>如果要将每行的内容反转输出，可以使用 <code>rev</code> 命令：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span>$ <span class="token function">rev</span> ftp.sh 
-gro.miv.ptf nepo
-bup <span class="token function">dc</span>
-txt.tahWdniFoTerehW teg
-eyb<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>使用 <code>nl</code> 命令可以自定义行号位置打印文件内容，例如给行号加零填充：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">nl</span> <span class="token parameter variable">-n</span> rz c.log 
-000001 <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061.322</span>:415<span class="token punctuation">)</span>
-000002  <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_END <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061</span>
-000003   <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_START <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">163</span>
-000004 <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audi<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="阅读文件"><a class="markdownIt-Anchor" href="#阅读文件"></a> 阅读文件</h1>
-<p>使用 <code>more</code> 命令可以查看文件内容并逐页翻阅：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">more</span> nohup.out
-Vim: Warning: Output is not to a terminal
-Vim: Warning: Input is not from a terminal
-root:x:0:0:root:/root:/bin/bash
-bin:x:1:1:bin:/bin:/sbin/nologin
---More--<span class="token punctuation">(</span><span class="token number">23</span>%<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>当文件内容超过一页时，会提示 <code>--More--</code>，此时可以使用以下按键进行操作：</p>
-<table>
-<thead>
-<tr>
-<th>按键</th>
-<th><strong>功能</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>空格(space)</td>
-<td>向下翻一页</td>
-</tr>
-<tr>
-<td>回车(enter)</td>
-<td>向下滚动一行</td>
-</tr>
-<tr>
-<td>/字符串</td>
-<td>向下搜索关键字,定位到那一页</td>
-</tr>
-<tr>
-<td>:f</td>
-<td>显示文件名以及当前行数</td>
-</tr>
-<tr>
-<td>q</td>
-<td>退出</td>
-</tr>
-<tr>
-<td>b</td>
-<td>往回翻页,对管道无用</td>
-</tr>
-<tr>
-<td>v</td>
-<td>调用 vi 编辑器</td>
-</tr>
-</tbody>
-</table>
-<p>使用<code>less</code>命令查看文件时，可以使用方向键进行导航：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">less</span> nohup.out
-Vim: Warning: Output is not to a terminal
-Vim: Warning: Output is not to a terminal
-<span class="token builtin class-name">:</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>进入查看页面后，可以使用以下键盘按键：</p>
-<table>
-<thead>
-<tr>
-<th>按键</th>
-<th><strong>功能</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>PageUp/PageDown</td>
-<td>向上/向下翻页。</td>
-</tr>
-<tr>
-<td>方向键上/方向键下</td>
-<td>向上/向下滚动一行。</td>
-</tr>
-<tr>
-<td>/字符串&amp;?字符串</td>
-<td>向下&amp;向上查询字符串。</td>
-</tr>
-<tr>
-<td>n/N</td>
-<td>向下/向上重复查询。</td>
-</tr>
-<tr>
-<td>v</td>
-<td>启动 vi 编辑器编辑当前文件。</td>
-</tr>
-<tr>
-<td>q</td>
-<td>离开。</td>
-</tr>
-<tr>
-<td>h</td>
-<td>帮助文件。</td>
-</tr>
-</tbody>
-</table>
-<p>可以通过设置环境变量 PAGER 来指定希望使用的分页程序。</p>
-<h1 id="数据选取"><a class="markdownIt-Anchor" href="#数据选取"></a> 数据选取</h1>
-<p><code>head</code> 命令可以设定从文件开头开始选取多少行的内容。例如，要查看 nohup.out 文件的前 2 行内容：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">head</span> <span class="token parameter variable">-2</span> nohup.out
-Vim: Warning: Output is not to a terminal
-Vim: Warning: Input is not from a terminal<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p><code>tail</code> 命令则从文件后面开始取多少行的内容并显示出来。例如，要选取查看 list.txt 文件最后 1 行的内容：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">tail</span> <span class="token parameter variable">-1</span> list.txt
-/tmp/etc/skel/.bashrc<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>可以加上 <code>-f</code> 参数来持续打印文件内容，这在查看日志文件时非常有用：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">tail</span> <span class="token parameter variable">-f</span> nohup.out 
-Vim: Error reading input, exiting<span class="token punctuation">..</span>.sers package to sandbox the tcsd daemon:/devv
-Vim: Finished.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>这将持续打印 nohup.out 文件的内容，直到手动停止命令。</p>
-<h1 id="二进制文件查看"><a class="markdownIt-Anchor" href="#二进制文件查看"></a> 二进制文件查看</h1>
-<p>使用普通的文本查看命令查看二进制文件会显示乱码，可以使用 <code>od</code> 命令来查阅二进制文件。</p>
-<p>例如，以默认八进制方式查看 <code>passwd</code> 文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ od /bin/passwd <span class="token operator">|</span> <span class="token function">head</span> <span class="token parameter variable">-n</span> <span class="token number">10</span>
-0000000 042577 043114 000402 000001 000000 000000 000000 000000
-0000020 000003 000076 000001 000000 031110 000000 000000 000000
-0000040 000100 000000 000000 000000 062620 000000 000000 000000
-0000060 000000 000000 000100 000070 000011 000100 000035 000034
-0000100 000006 000000 000005 000000 000100 000000 000000 000000<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>用 <code>-t</code> 参数指定显示格式，例如将十六位进制与 ASCII 字符同时显示：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ od <span class="token parameter variable">-t</span> xCc c.log
-0000000  <span class="token number">74</span>  <span class="token number">79</span>  <span class="token number">70</span>  <span class="token number">65</span>  3d  <span class="token number">43</span>  <span class="token number">52</span>  <span class="token number">45</span>  <span class="token number">44</span>  5f  <span class="token number">44</span>  <span class="token number">49</span>  <span class="token number">53</span>  <span class="token number">50</span>  <span class="token number">20</span>  6d
-          t   y   p   e   <span class="token operator">=</span>   C   R   E   D   _   D   I   S   P       m
-0000020  <span class="token number">73</span>  <span class="token number">67</span>  3d  <span class="token number">61</span>  <span class="token number">75</span>  <span class="token number">64</span>  <span class="token number">69</span>  <span class="token number">74</span>  <span class="token number">28</span>  <span class="token number">31</span>  <span class="token number">36</span>  <span class="token number">33</span>  <span class="token number">31</span>  <span class="token number">31</span>  <span class="token number">37</span>  <span class="token number">38</span>
-          s   g   <span class="token operator">=</span>   a   u   d   i   t   <span class="token punctuation">(</span>   <span class="token number">1</span>   <span class="token number">6</span>   <span class="token number">3</span>   <span class="token number">1</span>   <span class="token number">1</span>   <span class="token number">7</span>   <span class="token number">8</span>
-0000040  <span class="token number">30</span>  <span class="token number">36</span>  <span class="token number">31</span>  2e  <span class="token number">33</span>  <span class="token number">32</span>  <span class="token number">32</span>  3a  <span class="token number">34</span>  <span class="token number">31</span>  <span class="token number">35</span>  <span class="token number">29</span>  3a  <span class="token number">20</span>  <span class="token number">70</span>  <span class="token number">69</span>
-          <span class="token number">0</span>   <span class="token number">6</span>   <span class="token number">1</span>   <span class="token builtin class-name">.</span>   <span class="token number">3</span>   <span class="token number">2</span>   <span class="token number">2</span>   <span class="token builtin class-name">:</span>   <span class="token number">4</span>   <span class="token number">1</span>   <span class="token number">5</span>   <span class="token punctuation">)</span>   <span class="token builtin class-name">:</span>       p   i<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>也可以使用 <code>hexdump</code> 命令来查看二进制文件，唯一区别是 <code>hexdump</code> 默认情况下以十六进制显示数据：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span>$ hexdump <span class="token parameter variable">-C</span> /usr/bin/scsi_temperature
-00000000  <span class="token number">23</span> <span class="token number">21</span> 2f <span class="token number">62</span> <span class="token number">69</span> 6e 2f <span class="token number">62</span>  <span class="token number">61</span> <span class="token number">73</span> <span class="token number">68</span> 0a 0a <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span>  <span class="token operator">|</span><span class="token comment">#!/bin/bash..###|</span>
-00000010  <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span>  <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span>  <span class="token operator">|</span><span class="token comment">################|</span>
-*
-00000050  0a <span class="token number">23</span> 0a <span class="token number">23</span> <span class="token number">20</span> <span class="token number">20</span> <span class="token number">43</span> <span class="token number">68</span>  <span class="token number">65</span> <span class="token number">63</span> 6b <span class="token number">20</span> <span class="token number">74</span> <span class="token number">68</span> <span class="token number">65</span> <span class="token number">20</span>  <span class="token operator">|</span><span class="token builtin class-name">.</span><span class="token comment">#.#  Check the |</span>
-00000060  <span class="token number">74</span> <span class="token number">65</span> 6d <span class="token number">70</span> <span class="token number">65</span> <span class="token number">72</span> <span class="token number">61</span> <span class="token number">74</span>  <span class="token number">75</span> <span class="token number">72</span> <span class="token number">65</span> <span class="token number">20</span> 6f <span class="token number">66</span> <span class="token number">20</span> <span class="token number">74</span>  <span class="token operator">|</span>temperature of t<span class="token operator">|</span>
-00000070  <span class="token number">68</span> <span class="token number">65</span> <span class="token number">20</span> <span class="token number">67</span> <span class="token number">69</span> <span class="token number">76</span> <span class="token number">65</span> 6e  <span class="token number">20</span> <span class="token number">53</span> <span class="token number">43</span> <span class="token number">53</span> <span class="token number">49</span> <span class="token number">20</span> <span class="token number">64</span> <span class="token number">65</span>  <span class="token operator">|</span>he given SCSI de<span class="token operator">|</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>上面二进制数据显示方式叫规范格式（Canonical Format）。每行最左边是十六进制表示的偏移，中间 16 个字节是实际数据，右边为相应 ASCII 字符。</p>
 ]]></content>
       <categories>
         <category>Linux</category>
@@ -7641,6 +7641,135 @@ drwxr-----.  <span class="token number">3</span> root root   <span class="token 
       </categories>
   </entry>
   <entry>
+    <title>Linux 文件权限</title>
+    <url>/46662635/</url>
+    <content><![CDATA[<h1 id="基本权限"><a class="markdownIt-Anchor" href="#基本权限"></a> 基本权限</h1>
+<p>基础权限有三种，分别是：读（r，Read）、写（w，Write）、执行（x，eXecute）。</p>
+<p>同样的权限标记对于文件和目录代表不同的意义。</p>
+<h2 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h2>
+<p>文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。</p>
+<table>
+<thead>
+<tr>
+<th>数字</th>
+<th>字符</th>
+<th>权限</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td>r</td>
+<td><strong>读取文件内容</strong>。例如使用 <code>cat</code> 命令查看，使用 <code>vim</code> 以<strong>只读</strong>方式打开。</td>
+</tr>
+<tr>
+<td>2</td>
+<td>w</td>
+<td><strong>编辑修改</strong>文件内容，但<strong>不包括删除</strong>文件。例如使用 <code>vim</code>、<code>sed</code> 等对文件内容进行修改并保存。</td>
+</tr>
+<tr>
+<td>1</td>
+<td>x</td>
+<td>文件具有可以被系统<strong>执行</strong>的权限。例如命令和脚本必须拥有此权限才能直接执行。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="目录权限"><a class="markdownIt-Anchor" href="#目录权限"></a> 目录权限</h2>
+<p>目录主要的内容是记录文件名清单，所以目录权限实际关联的是目录下文件属性查看与更改。</p>
+<table>
+<thead>
+<tr>
+<th>数字</th>
+<th>字符</th>
+<th>权限</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td>r</td>
+<td><strong>仅查询</strong>目录下的文件或目录<strong>名称</strong>，无法看到属性，相当于执行不加参数的 <code>ls</code> 命令。</td>
+</tr>
+<tr>
+<td>2</td>
+<td>w</td>
+<td>改变目录结构清单权限，也就是在目录下<strong>新建、删除、重命名</strong>文件或目录。</td>
+</tr>
+<tr>
+<td>1</td>
+<td>x</td>
+<td><strong>进入目录</strong>的权限，<strong>查询</strong>目录下的文件<strong>属性</strong>。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="权限参考"><a class="markdownIt-Anchor" href="#权限参考"></a> 权限参考</h1>
+<p>根据使用场景来配置权限。</p>
+<p><strong>用户进入目录所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限，来运行 <code>cd</code> 切换目录。</li>
+<li>目录需要 r 权限，来使用 <code>ls</code> 命令查看目录中文件列表。</li>
+</ul>
+<p><strong>用户读取目录内文件所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 r 权限来运行 <code>cat</code>、<code>more</code> 等读取文件命令。</li>
+</ul>
+<p><strong>用户修改目录内文件所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 r 和 w 权限来使用 <code>vi</code> 等工具进行文件读写。</li>
+</ul>
+<p><strong>用户创建一个文件所需权限</strong>：</p>
+<ul>
+<li>目录需要 w 和 x 权限来创建文件。</li>
+</ul>
+<p><strong>用户执行目录下的命令所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 x 权限来运行命令。</li>
+</ul>
+<h1 id="特殊权限"><a class="markdownIt-Anchor" href="#特殊权限"></a> 特殊权限</h1>
+<p>在 Linux 系统中，还有一些特殊权限。</p>
+<h2 id="suid"><a class="markdownIt-Anchor" href="#suid"></a> SUID</h2>
+<p>当 s 标志出现在文件所有者的 x 权限上时，被称为 Set UID，其含义为：</p>
+<ul>
+<li>SUID 权限<strong>仅对二进制程序有效</strong>，不能用在脚本上；</li>
+<li>执行者对该程序需要具有 x 的可执行权限；</li>
+<li>本权限仅在执行该程序的过程中（run-time）有效；</li>
+<li><strong>执行者将具有该程序所有者的权限</strong>。</li>
+</ul>
+<p>例如一般用户运行 <code>passwd</code> 命令修改密码，需要修改 <code>/etc/shadow</code> 文件。但是该文件的权限只有 root 可读写，而用户运行 passwd 程序时，会暂时获得 passwd 程序的 root 权限，从而可以通过 <code>passwd</code> 命令修改 <code>/etc/shadow</code> 文件。</p>
+<p>这是因为运行 <code>passwd</code> 后会启动一个新的进程，该进程会产生一个新的 PID。在该 PID 产生时，SUID 会给予该 PID 特殊的权限设置，使得执行者在该进程中具有该程序所有者的权限。</p>
+<h2 id="sgid"><a class="markdownIt-Anchor" href="#sgid"></a> SGID</h2>
+<p>当 s 标志出现在文件所属组的 x 权限上时，被称为 Set GID。SGID 可以针对文件或目录来设置。</p>
+<p><strong>针对文件</strong>，SGID 有以下功能：</p>
+<ul>
+<li>SGID 对二进制程序有效；</li>
+<li>程序执行者对该程序来说，需要具备 x 的权限；</li>
+<li><strong>执行者在执行的过程中将会获得该程序所属组的权限</strong>。</li>
+</ul>
+<p>例如，一般用户使用 <code>locate</code> 这个程序可以查询 <code>/var/lib/mlocate/mlocate.db</code> 文件的内容，会暂时获得 slocate 用户组的权限。</p>
+<p><strong>针对目录</strong>，SGID 有以下功能：</p>
+<ul>
+<li>用户若对此目录具有 r 和 x 的权限时，该用户能够进入此目录；</li>
+<li>用户在此目录下的有效用户组将会变成该目录的用户组；</li>
+<li><strong>若用户在此目录下具有 w 的权限，则用户所创建的新文件的所属组与此目录的所属组相同。</strong></li>
+</ul>
+<h2 id="sbit"><a class="markdownIt-Anchor" href="#sbit"></a> SBIT</h2>
+<p>当 t 出现在文件所有者的其他用户 x 权限上时，被称为 Sticky Bit。其含义为：</p>
+<ul>
+<li>SBIT 权限<strong>仅对目录有效</strong>；</li>
+<li>当用户对该目录具有 w 和 x 权限时，即具有写入权限时；</li>
+<li><strong>当用户在该目录下创建文件或目录时，仅有自己与 root 才有权力删除该文件。</strong></li>
+</ul>
+<p>例如，用户 1 对目录 A 具有 w 的权限，里面还有其他用户的文件。此时，目录 A 加上了 SBIT 权限时，用户 1 只能修改自己创建的文件，无法删除他人文件。</p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>0.基础概论</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Linux 文件系统</title>
     <url>/2794564793/</url>
     <content><![CDATA[<h1 id="查看文件系统支持"><a class="markdownIt-Anchor" href="#查看文件系统支持"></a> 查看文件系统支持</h1>
@@ -8120,135 +8249,6 @@ drwx------. <span class="token number">2</span> root root  16K Sep  <span class=
 <p>Btrfs 文件系统也被称为 B 树文件系统，它稳定易用，能够动态调整已挂载文件系统的大小。目前 OpenSUSE Linux 把 Btrfs 作为其默认文件系统。</p>
 </li>
 </ul>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>0.基础概论</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>Linux 文件权限</title>
-    <url>/46662635/</url>
-    <content><![CDATA[<h1 id="基本权限"><a class="markdownIt-Anchor" href="#基本权限"></a> 基本权限</h1>
-<p>基础权限有三种，分别是：读（r，Read）、写（w，Write）、执行（x，eXecute）。</p>
-<p>同样的权限标记对于文件和目录代表不同的意义。</p>
-<h2 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h2>
-<p>文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。</p>
-<table>
-<thead>
-<tr>
-<th>数字</th>
-<th>字符</th>
-<th>权限</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>4</td>
-<td>r</td>
-<td><strong>读取文件内容</strong>。例如使用 <code>cat</code> 命令查看，使用 <code>vim</code> 以<strong>只读</strong>方式打开。</td>
-</tr>
-<tr>
-<td>2</td>
-<td>w</td>
-<td><strong>编辑修改</strong>文件内容，但<strong>不包括删除</strong>文件。例如使用 <code>vim</code>、<code>sed</code> 等对文件内容进行修改并保存。</td>
-</tr>
-<tr>
-<td>1</td>
-<td>x</td>
-<td>文件具有可以被系统<strong>执行</strong>的权限。例如命令和脚本必须拥有此权限才能直接执行。</td>
-</tr>
-</tbody>
-</table>
-<h2 id="目录权限"><a class="markdownIt-Anchor" href="#目录权限"></a> 目录权限</h2>
-<p>目录主要的内容是记录文件名清单，所以目录权限实际关联的是目录下文件属性查看与更改。</p>
-<table>
-<thead>
-<tr>
-<th>数字</th>
-<th>字符</th>
-<th>权限</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>4</td>
-<td>r</td>
-<td><strong>仅查询</strong>目录下的文件或目录<strong>名称</strong>，无法看到属性，相当于执行不加参数的 <code>ls</code> 命令。</td>
-</tr>
-<tr>
-<td>2</td>
-<td>w</td>
-<td>改变目录结构清单权限，也就是在目录下<strong>新建、删除、重命名</strong>文件或目录。</td>
-</tr>
-<tr>
-<td>1</td>
-<td>x</td>
-<td><strong>进入目录</strong>的权限，<strong>查询</strong>目录下的文件<strong>属性</strong>。</td>
-</tr>
-</tbody>
-</table>
-<h1 id="权限参考"><a class="markdownIt-Anchor" href="#权限参考"></a> 权限参考</h1>
-<p>根据使用场景来配置权限。</p>
-<p><strong>用户进入目录所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限，来运行 <code>cd</code> 切换目录。</li>
-<li>目录需要 r 权限，来使用 <code>ls</code> 命令查看目录中文件列表。</li>
-</ul>
-<p><strong>用户读取目录内文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 r 权限来运行 <code>cat</code>、<code>more</code> 等读取文件命令。</li>
-</ul>
-<p><strong>用户修改目录内文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 r 和 w 权限来使用 <code>vi</code> 等工具进行文件读写。</li>
-</ul>
-<p><strong>用户创建一个文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 w 和 x 权限来创建文件。</li>
-</ul>
-<p><strong>用户执行目录下的命令所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 x 权限来运行命令。</li>
-</ul>
-<h1 id="特殊权限"><a class="markdownIt-Anchor" href="#特殊权限"></a> 特殊权限</h1>
-<p>在 Linux 系统中，还有一些特殊权限。</p>
-<h2 id="suid"><a class="markdownIt-Anchor" href="#suid"></a> SUID</h2>
-<p>当 s 标志出现在文件所有者的 x 权限上时，被称为 Set UID，其含义为：</p>
-<ul>
-<li>SUID 权限<strong>仅对二进制程序有效</strong>，不能用在脚本上；</li>
-<li>执行者对该程序需要具有 x 的可执行权限；</li>
-<li>本权限仅在执行该程序的过程中（run-time）有效；</li>
-<li><strong>执行者将具有该程序所有者的权限</strong>。</li>
-</ul>
-<p>例如一般用户运行 <code>passwd</code> 命令修改密码，需要修改 <code>/etc/shadow</code> 文件。但是该文件的权限只有 root 可读写，而用户运行 passwd 程序时，会暂时获得 passwd 程序的 root 权限，从而可以通过 <code>passwd</code> 命令修改 <code>/etc/shadow</code> 文件。</p>
-<p>这是因为运行 <code>passwd</code> 后会启动一个新的进程，该进程会产生一个新的 PID。在该 PID 产生时，SUID 会给予该 PID 特殊的权限设置，使得执行者在该进程中具有该程序所有者的权限。</p>
-<h2 id="sgid"><a class="markdownIt-Anchor" href="#sgid"></a> SGID</h2>
-<p>当 s 标志出现在文件所属组的 x 权限上时，被称为 Set GID。SGID 可以针对文件或目录来设置。</p>
-<p><strong>针对文件</strong>，SGID 有以下功能：</p>
-<ul>
-<li>SGID 对二进制程序有效；</li>
-<li>程序执行者对该程序来说，需要具备 x 的权限；</li>
-<li><strong>执行者在执行的过程中将会获得该程序所属组的权限</strong>。</li>
-</ul>
-<p>例如，一般用户使用 <code>locate</code> 这个程序可以查询 <code>/var/lib/mlocate/mlocate.db</code> 文件的内容，会暂时获得 slocate 用户组的权限。</p>
-<p><strong>针对目录</strong>，SGID 有以下功能：</p>
-<ul>
-<li>用户若对此目录具有 r 和 x 的权限时，该用户能够进入此目录；</li>
-<li>用户在此目录下的有效用户组将会变成该目录的用户组；</li>
-<li><strong>若用户在此目录下具有 w 的权限，则用户所创建的新文件的所属组与此目录的所属组相同。</strong></li>
-</ul>
-<h2 id="sbit"><a class="markdownIt-Anchor" href="#sbit"></a> SBIT</h2>
-<p>当 t 出现在文件所有者的其他用户 x 权限上时，被称为 Sticky Bit。其含义为：</p>
-<ul>
-<li>SBIT 权限<strong>仅对目录有效</strong>；</li>
-<li>当用户对该目录具有 w 和 x 权限时，即具有写入权限时；</li>
-<li><strong>当用户在该目录下创建文件或目录时，仅有自己与 root 才有权力删除该文件。</strong></li>
-</ul>
-<p>例如，用户 1 对目录 A 具有 w 的权限，里面还有其他用户的文件。此时，目录 A 加上了 SBIT 权限时，用户 1 只能修改自己创建的文件，无法删除他人文件。</p>
 ]]></content>
       <categories>
         <category>Linux</category>
@@ -10366,171 +10366,6 @@ emacs           on<span aria-hidden="true" class="line-numbers-rows"><span></spa
       </categories>
   </entry>
   <entry>
-    <title>Awk 工具</title>
-    <url>/1712308461/</url>
-    <content><![CDATA[<h1 id="命令语法"><a class="markdownIt-Anchor" href="#命令语法"></a> 命令语法</h1>
-<p>awk 用于处理每一行的字段内的数据，默认字段的分隔符为空格或 <code>[Tab]</code>。</p>
-<p>awk 的命令语法如下：</p>
-<p><code>awk '条件类型1&#123;动作1&#125; 条件类型2&#123;动作2&#125; ...' 文件名</code></p>
-<p>awk 后面接两个单引号 ‘’ 并加上大括号 {} 来设置想要对数据进行的处理操作。</p>
-<p><code>$0</code> 代表整个输入行，<code>$n</code> 表示第 n 个字段。在应用脚本之前，awk 会先拆分输入记录。</p>
-<p>每次从一个或多个文件中读入一行或从标准输入中读入一行，指令包含在小括号对中。</p>
-<p>awk 将每个输入行解释为一条记录，行中的每个单词由空格或制表符分割解释为一个字段。</p>
-<h1 id="awk-处理流程"><a class="markdownIt-Anchor" href="#awk-处理流程"></a> awk 处理流程</h1>
-<p>整个 <code>awk</code> 的处理流程是：</p>
-<ol>
-<li>读入第一行，并将第一行的数据填入 <code>$0</code>, <code>$1</code>, <code>$2</code> 等变量中；</li>
-<li>依据条件类型的限制，判断是否需要进行后面的动作；</li>
-<li>完成所有动作与条件类型；</li>
-<li>重复以上流程步骤，直到所有数据读完为止。</li>
-</ol>
-<h1 id="awk-内置变量"><a class="markdownIt-Anchor" href="#awk-内置变量"></a> awk 内置变量</h1>
-<p><code>awk</code> 常用的内置变量如下表：</p>
-<table>
-<thead>
-<tr>
-<th><strong>变量名</strong></th>
-<th><strong>代表意义</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>NF</td>
-<td>每一行(<code>$0</code>)拥有的字段总数(列数)</td>
-</tr>
-<tr>
-<td>NR</td>
-<td>目前 <code>awk</code> 所正在处理数据的行号</td>
-</tr>
-<tr>
-<td>FS</td>
-<td>输入字段分隔字符</td>
-</tr>
-<tr>
-<td>OFS</td>
-<td>输出字段分隔符</td>
-</tr>
-<tr>
-<td>RS</td>
-<td>输入记录分隔符</td>
-</tr>
-<tr>
-<td>ORS</td>
-<td>输出记录分隔符</td>
-</tr>
-<tr>
-<td>FIELDWIDTHS</td>
-<td>定义分割数据字段依据的宽度</td>
-</tr>
-</tbody>
-</table>
-<h1 id="格式化打印"><a class="markdownIt-Anchor" href="#格式化打印"></a> 格式化打印</h1>
-<p><code>printf</code> 可以帮我们将数据输出的结果格式化，并且支持一些特殊字符。</p>
-<p>命令格式：</p>
-<p><code>printf '打印样式' 实际内容</code></p>
-<p>特殊样式：</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>样式</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>\a</td>
-<td>警告声音；</td>
-</tr>
-<tr>
-<td>\b</td>
-<td>退格键；</td>
-</tr>
-<tr>
-<td>\f</td>
-<td>清除屏幕；</td>
-</tr>
-<tr>
-<td>\n</td>
-<td>输出到新一行；</td>
-</tr>
-<tr>
-<td>\r</td>
-<td>回车键；</td>
-</tr>
-<tr>
-<td>\t</td>
-<td>水平 [tab] 按键；</td>
-</tr>
-<tr>
-<td>\v</td>
-<td>垂直 [tab] 按键；</td>
-</tr>
-<tr>
-<td>\xNN</td>
-<td>NN为两位数的数字，可以转为字符；</td>
-</tr>
-<tr>
-<td>%ns</td>
-<td>n为数字，s表示字符串数量；</td>
-</tr>
-<tr>
-<td>%ni</td>
-<td>n为数字，i表示整数位数；</td>
-</tr>
-<tr>
-<td>%<a href="http://N.nf">N.nf</a></td>
-<td>n与N为数字，f代表多少位小数；</td>
-</tr>
-</tbody>
-</table>
-<h1 id="分割数据"><a class="markdownIt-Anchor" href="#分割数据"></a> 分割数据</h1>
-<p>例如取出 <code>last</code> 命令结果中用户名（第一列）与登录 IP（第三列）地址：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ last <span class="token parameter variable">-n</span> <span class="token number">5</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'&#123;print $1 "--" $3&#125;'</span>
-root--Sat
-root--192.168.2.101
-root--192.168.2.101
-root--192.168.2.101
-root--192.168.2.101<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>使用 <code>print</code> 将结果打印出来是 <code>awk</code> 最常用功能。</p>
-<p>将内置变量打印出来：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ last <span class="token parameter variable">-n</span> <span class="token number">5</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'&#123;print $1 "  lines:" NR "   columes:" NF&#125;'</span>
-root  lines:1   columes:9
-root  lines:2   columes:10
-root  lines:3   columes:10
-root  lines:4   columes:10
-root  lines:5   columes:10<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><code>awk</code> 可以使用逻辑运算符来写判断条件。例如查找 UID 小于 10 的用户：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">cat</span> b.cfg <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'BEGIN &#123;FS=":"&#125; $3&lt;10&#123;print $1 "\t" $3&#125;'</span>
-root    <span class="token number">0</span>
-bin     <span class="token number">1</span>
-daemon  <span class="token number">2</span>
-adm     <span class="token number">3</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>命令由两个组成，前面一个命令定义了分隔符 <code>FS</code> 的值为：（也可以使用 <code>-F</code> 参数），同时使用 <code>BEGIN</code> 这个关键字，预先设置 <code>awk</code> 的变量。第二部分做逻辑判断 <code>$3</code> 小于 10 的才运行后面 <code>print</code> 命令。</p>
-<p>同时使用 <code>FS</code> 和 <code>OFS</code> 格式化输出：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ <span class="token function">awk</span> <span class="token string">'BEGIN&#123;FS=","; OFS="--"&#125; &#123;print $1,$2&#125;'</span> user.csv 
-user6--user6
-user7--user7<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>自定义按字符数来分割：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ <span class="token function">awk</span> <span class="token string">'BEGIN&#123;FIELDWIDTHS="5 1"&#125; &#123;print $1,$2,$0&#125;'</span> user.csv 
-user6 , user6,user6
-user7 , user7,user7<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>如果数据是多行形式，可以指定分隔符为 <code>\n</code>，以空行为界定新记录的分隔符：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ <span class="token function">awk</span> <span class="token string">'BEGIN&#123;FS="\n"; RS=""&#125; &#123;print $0 $2&#125;'</span> user.csv 
-user6,user6
-<span class="token number">403403</span>
-user7,user7
-<span class="token number">404404</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><code>awk</code> 还可以使用正则表达式来进行模式匹配。例如只显示 <code>$1</code> 含有 <code>root</code> 字符串的用户：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">cat</span> b.cfg <span class="token operator">|</span> <span class="token function">awk</span> -F: <span class="token string">'/root/&#123;print $1 "\t" $3&#125;'</span>
-root    <span class="token number">0</span>
-operator        <span class="token number">11</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>3.脚本编程</category>
-      </categories>
-  </entry>
-  <entry>
     <title>Linux 权限管理</title>
     <url>/2354164977/</url>
     <content><![CDATA[<h1 id="修改文件所属用户组"><a class="markdownIt-Anchor" href="#修改文件所属用户组"></a> 修改文件所属用户组</h1>
@@ -12231,6 +12066,171 @@ dirquo        30M      <span class="token number">0</span>      <span class="tok
       <categories>
         <category>Linux</category>
         <category>2.系统管理</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Awk 工具简单使用</title>
+    <url>/1712308461/</url>
+    <content><![CDATA[<h1 id="命令语法"><a class="markdownIt-Anchor" href="#命令语法"></a> 命令语法</h1>
+<p>awk 用于处理每一行的字段内的数据，默认字段的分隔符为空格或 <code>[Tab]</code>。</p>
+<p>awk 的命令语法如下：</p>
+<p><code>awk '条件类型1&#123;动作1&#125; 条件类型2&#123;动作2&#125; ...' 文件名</code></p>
+<p>awk 后面接两个单引号 ‘’ 并加上大括号 {} 来设置想要对数据进行的处理操作。</p>
+<p><code>$0</code> 代表整个输入行，<code>$n</code> 表示第 n 个字段。在应用脚本之前，awk 会先拆分输入记录。</p>
+<p>每次从一个或多个文件中读入一行或从标准输入中读入一行，指令包含在小括号对中。</p>
+<p>awk 将每个输入行解释为一条记录，行中的每个单词由空格或制表符分割解释为一个字段。</p>
+<h1 id="awk-处理流程"><a class="markdownIt-Anchor" href="#awk-处理流程"></a> awk 处理流程</h1>
+<p>整个 <code>awk</code> 的处理流程是：</p>
+<ol>
+<li>读入第一行，并将第一行的数据填入 <code>$0</code>, <code>$1</code>, <code>$2</code> 等变量中；</li>
+<li>依据条件类型的限制，判断是否需要进行后面的动作；</li>
+<li>完成所有动作与条件类型；</li>
+<li>重复以上流程步骤，直到所有数据读完为止。</li>
+</ol>
+<h1 id="awk-内置变量"><a class="markdownIt-Anchor" href="#awk-内置变量"></a> awk 内置变量</h1>
+<p><code>awk</code> 常用的内置变量如下表：</p>
+<table>
+<thead>
+<tr>
+<th><strong>变量名</strong></th>
+<th><strong>代表意义</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NF</td>
+<td>每一行(<code>$0</code>)拥有的字段总数(列数)</td>
+</tr>
+<tr>
+<td>NR</td>
+<td>目前 <code>awk</code> 所正在处理数据的行号</td>
+</tr>
+<tr>
+<td>FS</td>
+<td>输入字段分隔字符</td>
+</tr>
+<tr>
+<td>OFS</td>
+<td>输出字段分隔符</td>
+</tr>
+<tr>
+<td>RS</td>
+<td>输入记录分隔符</td>
+</tr>
+<tr>
+<td>ORS</td>
+<td>输出记录分隔符</td>
+</tr>
+<tr>
+<td>FIELDWIDTHS</td>
+<td>定义分割数据字段依据的宽度</td>
+</tr>
+</tbody>
+</table>
+<h1 id="格式化打印"><a class="markdownIt-Anchor" href="#格式化打印"></a> 格式化打印</h1>
+<p><code>printf</code> 可以帮我们将数据输出的结果格式化，并且支持一些特殊字符。</p>
+<p>命令格式：</p>
+<p><code>printf '打印样式' 实际内容</code></p>
+<p>特殊样式：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>样式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\a</td>
+<td>警告声音；</td>
+</tr>
+<tr>
+<td>\b</td>
+<td>退格键；</td>
+</tr>
+<tr>
+<td>\f</td>
+<td>清除屏幕；</td>
+</tr>
+<tr>
+<td>\n</td>
+<td>输出到新一行；</td>
+</tr>
+<tr>
+<td>\r</td>
+<td>回车键；</td>
+</tr>
+<tr>
+<td>\t</td>
+<td>水平 [tab] 按键；</td>
+</tr>
+<tr>
+<td>\v</td>
+<td>垂直 [tab] 按键；</td>
+</tr>
+<tr>
+<td>\xNN</td>
+<td>NN 为两位数的数字，可以转为字符；</td>
+</tr>
+<tr>
+<td>%ns</td>
+<td>n 为数字，s 表示字符串数量；</td>
+</tr>
+<tr>
+<td>%ni</td>
+<td>n 为数字，i 表示整数位数；</td>
+</tr>
+<tr>
+<td>%<a href="http://N.nf">N.nf</a></td>
+<td>n 与 N 为数字，f 代表多少位小数；</td>
+</tr>
+</tbody>
+</table>
+<h1 id="分割数据"><a class="markdownIt-Anchor" href="#分割数据"></a> 分割数据</h1>
+<p>例如取出 <code>last</code> 命令结果中用户名（第一列）与登录 IP（第三列）地址：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ last <span class="token parameter variable">-n</span> <span class="token number">5</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'&#123;print $1 "--" $3&#125;'</span>
+root--Sat
+root--192.168.2.101
+root--192.168.2.101
+root--192.168.2.101
+root--192.168.2.101<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 <code>print</code> 将结果打印出来是 <code>awk</code> 最常用功能。</p>
+<p>将内置变量打印出来：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ last <span class="token parameter variable">-n</span> <span class="token number">5</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'&#123;print $1 "  lines:" NR "   columes:" NF&#125;'</span>
+root  lines:1   columes:9
+root  lines:2   columes:10
+root  lines:3   columes:10
+root  lines:4   columes:10
+root  lines:5   columes:10<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>awk</code> 可以使用逻辑运算符来写判断条件。例如查找 UID 小于 10 的用户：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">cat</span> b.cfg <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'BEGIN &#123;FS=":"&#125; $3&lt;10&#123;print $1 "\t" $3&#125;'</span>
+root    <span class="token number">0</span>
+bin     <span class="token number">1</span>
+daemon  <span class="token number">2</span>
+adm     <span class="token number">3</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>命令由两个组成，前面一个命令定义了分隔符 <code>FS</code> 的值为：（也可以使用 <code>-F</code> 参数），同时使用 <code>BEGIN</code> 这个关键字，预先设置 <code>awk</code> 的变量。第二部分做逻辑判断 <code>$3</code> 小于 10 的才运行后面 <code>print</code> 命令。</p>
+<p>同时使用 <code>FS</code> 和 <code>OFS</code> 格式化输出：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ <span class="token function">awk</span> <span class="token string">'BEGIN&#123;FS=","; OFS="--"&#125; &#123;print $1,$2&#125;'</span> user.csv 
+user6--user6
+user7--user7<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>自定义按字符数来分割：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ <span class="token function">awk</span> <span class="token string">'BEGIN&#123;FIELDWIDTHS="5 1"&#125; &#123;print $1,$2,$0&#125;'</span> user.csv 
+user6 , user6,user6
+user7 , user7,user7<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>如果数据是多行形式，可以指定分隔符为 <code>\n</code>，以空行为界定新记录的分隔符：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ <span class="token function">awk</span> <span class="token string">'BEGIN&#123;FS="\n"; RS=""&#125; &#123;print $0 $2&#125;'</span> user.csv 
+user6,user6
+<span class="token number">403403</span>
+user7,user7
+<span class="token number">404404</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>awk</code> 还可以使用正则表达式来进行模式匹配。例如只显示 <code>$1</code> 含有 <code>root</code> 字符串的用户：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">cat</span> b.cfg <span class="token operator">|</span> <span class="token function">awk</span> -F: <span class="token string">'/root/&#123;print $1 "\t" $3&#125;'</span>
+root    <span class="token number">0</span>
+operator        <span class="token number">11</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>3.脚本编程</category>
       </categories>
   </entry>
 </search>
