@@ -218,7 +218,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/3491093041/">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/3847284551/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="../../images/avatar.jpg">
@@ -236,7 +236,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="../../3491093041/" class="post-title-link" itemprop="url">Linux 磁盘管理</a>
+          <a href="../../3847284551/" class="post-title-link" itemprop="url">Linux 文件内容处理</a>
         </h2>
 
         <div class="post-meta-container">
@@ -254,7 +254,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-03 22:42:31" itemprop="dateModified" datetime="2023-05-03T22:42:31+08:00">2023-05-03</time>
+      <time title="修改时间：2023-05-07 18:20:52" itemprop="dateModified" datetime="2023-05-07T18:20:52+08:00">2023-05-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -266,7 +266,7 @@
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Linux/2-%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">2.系统管理</span></a>
+          <a href="../../categories/Linux/1-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">1.基本操作</span></a>
         </span>
     </span>
 
@@ -277,14 +277,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>7.2k</span>
+      <span>3.2k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>24 分钟</span>
+      <span>11 分钟</span>
     </span>
 </div>
 
@@ -295,24 +295,36 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="磁盘查询"><a class="markdownIt-Anchor" href="#磁盘查询"></a> 磁盘查询</h1>
-<p>主要是 <code>df</code> 这个命令，经常用来查询系统中磁盘剩余空间。比如发现根目录 <code>/</code> 满了，说明系统危险了。</p>
-<h2 id="查询磁盘容量"><a class="markdownIt-Anchor" href="#查询磁盘容量"></a> 查询磁盘容量</h2>
-<p>使用 <code>df</code> 查看磁盘使用量，<code>df</code> 读取的是在 Superblock 内的信息。</p>
-<p>例如查看系统内所有的文件系统：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 /<span class="token punctuation">]</span>$ <span class="token function">df</span> <span class="token parameter variable">-h</span>
-Filesystem               Size  Used Avail Use% Mounted on
-devtmpfs                 <span class="token number">1</span>.9G     <span class="token number">0</span>  <span class="token number">1</span>.9G   <span class="token number">0</span>% /dev
-tmpfs                    <span class="token number">1</span>.9G     <span class="token number">0</span>  <span class="token number">1</span>.9G   <span class="token number">0</span>% /dev/shm
-tmpfs                    <span class="token number">1</span>.9G   12M  <span class="token number">1</span>.9G   <span class="token number">1</span>% /run
-tmpfs                    <span class="token number">1</span>.9G     <span class="token number">0</span>  <span class="token number">1</span>.9G   <span class="token number">0</span>% /sys/fs/cgroup
-/dev/mapper/centos-root   17G  <span class="token number">2</span>.1G   15G  <span class="token number">13</span>% /
-/dev/sda1               1014M  187M  828M  <span class="token number">19</span>% /boot
-tmpfs                    378M     <span class="token number">0</span>  378M   <span class="token number">0</span>% /run/user/0
-/dev/sdb1                991M  <span class="token number">1</span>.3M  939M   <span class="token number">1</span>% /ext333<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+          <h1 id="提取数据列"><a class="markdownIt-Anchor" href="#提取数据列"></a> 提取数据列</h1>
+<p>可以使用 <code>cut</code> 命令按行提取数据并删除所需部分，命令格式如下：</p>
+<p><code>cut -d '分隔字符' -f 编号</code></p>
+<p><code>cut -c 字符范围</code></p>
+<p>可用参数如下：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-d</td>
+<td>后面接分隔字符，与 -f 一起使用。</td>
+</tr>
+<tr>
+<td>-f</td>
+<td>选取被切割后的第几段数据。</td>
+</tr>
+<tr>
+<td>-c</td>
+<td>以字符为单位取出固定字符区间。</td>
+</tr>
+</tbody>
+</table>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="../../3491093041/#more" rel="contents">
+              <a class="btn" href="../../3847284551/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -343,7 +355,7 @@ tmpfs                    378M     <span class="token number">0</span>  378M   <s
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/3427262780/">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/1849958032/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="../../images/avatar.jpg">
@@ -361,7 +373,7 @@ tmpfs                    378M     <span class="token number">0</span>  378M   <s
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="../../3427262780/" class="post-title-link" itemprop="url">Linux 磁盘配额管理</a>
+          <a href="../../1849958032/" class="post-title-link" itemprop="url">Linux 用户配置与环境变量</a>
         </h2>
 
         <div class="post-meta-container">
@@ -379,7 +391,7 @@ tmpfs                    378M     <span class="token number">0</span>  378M   <s
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-04-30 17:11:12" itemprop="dateModified" datetime="2023-04-30T17:11:12+08:00">2023-04-30</time>
+      <time title="修改时间：2023-05-07 18:28:29" itemprop="dateModified" datetime="2023-05-07T18:28:29+08:00">2023-05-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -391,7 +403,7 @@ tmpfs                    378M     <span class="token number">0</span>  378M   <s
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Linux/2-%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">2.系统管理</span></a>
+          <a href="../../categories/Linux/1-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">1.基本操作</span></a>
         </span>
     </span>
 
@@ -402,14 +414,14 @@ tmpfs                    378M     <span class="token number">0</span>  378M   <s
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>3.3k</span>
+      <span>1.2k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>11 分钟</span>
+      <span>4 分钟</span>
     </span>
 </div>
 
@@ -420,26 +432,17 @@ tmpfs                    378M     <span class="token number">0</span>  378M   <s
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="磁盘配额简介"><a class="markdownIt-Anchor" href="#磁盘配额简介"></a> 磁盘配额简介</h1>
-<p>Linux 下磁盘配额功能叫 <code>quota</code>。</p>
-<h2 id="一般用途"><a class="markdownIt-Anchor" href="#一般用途"></a> 一般用途</h2>
-<ul>
-<li>限制服务使用空间容量；</li>
-<li>限制某一用户组所能使用的最大磁盘配额；</li>
-<li>限制某一用户的最大磁盘配额；</li>
-<li>限制某一目录的最大磁盘配额。</li>
-</ul>
-<h2 id="使用限制"><a class="markdownIt-Anchor" href="#使用限制"></a> 使用限制</h2>
-<ul>
-<li><code>EXT</code> 文件系统下仅能针对整个文件系统设置；</li>
-<li>针对单一目录的设置（<code>prjquota</code>）和针对群组的设置（<code>grpquota</code>）不能共存；</li>
-<li>内核必须支持；</li>
-<li>只对一般身份用户有效。比如 <code>root</code> 就不能设置配额。也不能针对目录来设置（<code>ext</code> 文件系统）；</li>
-<li>若启用 <code>SELinux</code>，非所有目录都可设置 <code>quota</code>。</li>
-</ul>
+          <h1 id="配置登录与欢迎信息"><a class="markdownIt-Anchor" href="#配置登录与欢迎信息"></a> 配置登录与欢迎信息</h1>
+<p>通过终端 tty（teletypewriter）登录后的显示信息在 <code>/etc/issue</code> 配置，telnet 的在 <code>/etc/issue.net</code>，通告在 <code>/etc/motd</code> 目录：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/issue
+<span class="token punctuation">\</span>S
+Kernel <span class="token punctuation">\</span>r on an <span class="token punctuation">\</span>m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>可以使用反斜杠调用变量，自定义显示登录后显示信息。</p>
+<h1 id="bash-环境变量配置文件"><a class="markdownIt-Anchor" href="#bash-环境变量配置文件"></a> Bash 环境变量配置文件</h1>
+<p>为了让自定义变量和别名在登录时便已准备好，可以将它们写入到配置文件。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="../../3427262780/#more" rel="contents">
+              <a class="btn" href="../../1849958032/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
