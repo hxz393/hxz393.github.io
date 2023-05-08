@@ -1155,250 +1155,6 @@ File size limit exceeded
       </categories>
   </entry>
   <entry>
-    <title>Linux 下搜索文件</title>
-    <url>/3570307132/</url>
-    <content><![CDATA[<h1 id="通配符"><a class="markdownIt-Anchor" href="#通配符"></a> 通配符</h1>
-<p>通配符（wildcard）是 Bash 操作接口的一个功能。常用的通配符如下表：</p>
-<table>
-<thead>
-<tr>
-<th>符号</th>
-<th>意义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>*</td>
-<td>代表 0 到无穷多个任意字符。</td>
-</tr>
-<tr>
-<td>?</td>
-<td>代表一定有一个任意字符。</td>
-</tr>
-<tr>
-<td>[]</td>
-<td>代表一定有一个括号内的字符，例如 [xgw] 代表可能是 xgw 其中一个。</td>
-</tr>
-<tr>
-<td>[-]</td>
-<td>代表在编码顺序内的所有字符，例如 [0-9] 代表 0 到 9 之间的所有数字。</td>
-</tr>
-<tr>
-<td>[^]</td>
-<td>第一个字符为 ^ 代表反向选择，例如 [^xpw]代表任意一个非 xpw 的字符。</td>
-</tr>
-</tbody>
-</table>
-<h1 id="快速搜索"><a class="markdownIt-Anchor" href="#快速搜索"></a> 快速搜索</h1>
-<p>在 Linux 中，可以使用不同的命令进行快速搜索，以下是一些常用命令。</p>
-<p>使用 <code>which</code> 命令来查找命令所在路径。这个命令根据的是$PATH 环境变量所指定的路径去查询：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">which</span> <span class="token function">ls</span>
-<span class="token builtin class-name">alias</span> <span class="token assign-left variable">ls</span><span class="token operator">=</span><span class="token string">'ls --color=auto'</span>
-        /usr/bin/ls<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p><code>whereis</code> 命令会在指定的几个常用目录中搜索文件，使用 <code>-l</code> 参数可以查看可搜索的目录。</p>
-<p><code>whereis</code> 命令可以搜索以下类型的文件：二进制文件（<code>-b</code>）、说明文件（<code>-m</code>）、源代码（<code>-s</code>）和其他特殊文件（<code>-u</code>）。</p>
-<p>例如搜索和 <code>ifconfig</code> 有关的说明文档：</p>
- <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">whereis</span> <span class="token parameter variable">-m</span> <span class="token function">ifconfig</span>
-ifconfig: /usr/share/man/man8/ifconfig.8.gz<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p><code>locate</code> 命令使用数据库来查找文件。数据库存放在 <code>/var/lib/mlocate/</code> 目录下，每天会更新一次。若需要手动更新数据库，可以使用 <code>updatedb</code> 命令。</p>
-<p>例如忽略大小写搜索与 <code>passwd</code> 有关的文件，并列出前四个结果：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">locate</span> <span class="token parameter variable">-i</span> <span class="token parameter variable">-l</span> <span class="token number">4</span> <span class="token function">passwd</span>
-/etc/passwd
-/etc/passwd-
-/etc/pam.d/passwd
-/etc/security/opasswd<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="精确搜索"><a class="markdownIt-Anchor" href="#精确搜索"></a> 精确搜索</h1>
-<p>精确搜索指使用<code>find</code>命令执行的搜索。</p>
-<h2 id="按时间搜索文件"><a class="markdownIt-Anchor" href="#按时间搜索文件"></a> 按时间搜索文件</h2>
-<p>与时间有关的参数有<code>-atime</code>，<code>-ctime</code>和<code>-mtime</code>：</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>-mtime n</code></td>
-<td>表示在 n 天之前那天内被更改过的文件；</td>
-</tr>
-<tr>
-<td><code>-mtime +n</code></td>
-<td>列出在 n 天之前（不含 n）被更改过的文件，文件修改日期大于等于 n+1 天；</td>
-</tr>
-<tr>
-<td><code>-mtime -n</code></td>
-<td>列出在 n 天之内（包含 n）被更改过的文件，文件修改日期小于等于 n 天；</td>
-</tr>
-<tr>
-<td><code>-newer file</code></td>
-<td>列出比<code>file</code>还要新的文件名。</td>
-</tr>
-</tbody>
-</table>
-<p>例如，搜索过去系统上 24 小时内有更改过的文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> / <span class="token parameter variable">-mtime</span> <span class="token number">0</span>
-/dev/char
-/dev/char/189:132<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>查找当前目录下修改时间在 5 分钟到 24 小时之间的文件：</p>
- <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token parameter variable">-mtime</span> <span class="token number">0</span> <span class="token parameter variable">-mmin</span> +5
-<span class="token builtin class-name">.</span>
-./.bash_history
-./audit<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>寻找<code>/etc</code>目录下比<code>/etc/passwd</code>文件日期新的文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> /etc <span class="token parameter variable">-newer</span> /etc/passwd <span class="token operator">|</span> <span class="token function">tail</span> 
-/etc/audit/audit.rules
-/etc/postfix
-/etc/kernel<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>查找<code>/root</code>目录下更改时间在 5 天前的文件并删除：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">find</span> /root <span class="token parameter variable">-type</span> f <span class="token parameter variable">-mtime</span> +5 <span class="token parameter variable">-ok</span> rm<span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>删除当前目录中访问时间在 7 天以前，含有数字后缀的<code>admin.log</code>文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-name</span> <span class="token string">"admin.log[0-9][0-9][0-9]"</span> <span class="token parameter variable">-atime</span> <span class="token parameter variable">-7</span> <span class="token parameter variable">-exec</span> <span class="token function">rm</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="按用户名及组名搜索"><a class="markdownIt-Anchor" href="#按用户名及组名搜索"></a> 按用户名及组名搜索</h2>
-<p>可以使用 <code>find</code> 命令按照文件的所有者和用户组来搜索文件，常用参数如下：</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>-uid n</code></td>
-<td>按照用户 UID 来搜索</td>
-</tr>
-<tr>
-<td><code>-gid n</code></td>
-<td>按用户组 GID 来搜索</td>
-</tr>
-<tr>
-<td><code>-user name</code></td>
-<td>按用户名来搜索</td>
-</tr>
-<tr>
-<td><code>-group name</code></td>
-<td>按用户组名来搜索</td>
-</tr>
-<tr>
-<td><code>-nouser</code></td>
-<td>搜索文件的所有者不存在 <code>/etc/passwd</code> 的人</td>
-</tr>
-<tr>
-<td><code>-nogroup</code></td>
-<td>搜索所有用户组不存在 <code>/etc/group</code> 中的文件</td>
-</tr>
-</tbody>
-</table>
-<p>例如查找 <code>/home</code> 目录下属于用户 abc 的文件:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> /home <span class="token parameter variable">-user</span> abc<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>查找系统中不属于任何人的文件:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> / <span class="token parameter variable">-nouser</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="按文件名及属性搜索"><a class="markdownIt-Anchor" href="#按文件名及属性搜索"></a> 按文件名及属性搜索</h2>
-<p>主要参数:</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>-name filename</td>
-<td>搜索文件名为 filename 的文件</td>
-</tr>
-<tr>
-<td>-iname filename</td>
-<td>忽略大小写，搜索文件名为 filename 的文件</td>
-</tr>
-<tr>
-<td>-size [±]SIZE</td>
-<td>搜索大小比 SIZE 大（+）或小（-）的文件，大小单位有 c、k、m、g 等</td>
-</tr>
-<tr>
-<td>-type TYPE</td>
-<td>搜索文件类型为 TYPE 的文件，如一般文件（f）、设备文件（b、c）、目录（d）、连接（l）、socket（s）等</td>
-</tr>
-<tr>
-<td>-perm mode</td>
-<td>搜索权限刚好等于 mode 的文件，如 mode 为 4775</td>
-</tr>
-<tr>
-<td>-perm -mode</td>
-<td>搜索权限必须全部包括 mode 的权限，如 mode 为 0744，会找到权限为 4775 的文件</td>
-</tr>
-<tr>
-<td>-perm +mode</td>
-<td>搜索权限包含任一 mode 的权限，如 mode 为 755 时，会找到权限为 101 的文件</td>
-</tr>
-</tbody>
-</table>
-<p>例如，在当前目录中查找文件 redis-3.2.6.tar.gz 并删除：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token parameter variable">-name</span> redis-3.2.6.tar.gz <span class="token parameter variable">-delete</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>忽略大小写，在 <code>/etc</code> 目录下搜索 ssh 文件或目录：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">find</span> /etc <span class="token parameter variable">-iname</span> <span class="token function">ssh</span>
-/etc/ssh
-/etc/selinux/targeted/active/modules/100/ssh<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>在 <code>/etc</code> 目录中查找以 rc 开头的文件，并以列表形式显示：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">find</span> /etc <span class="token parameter variable">-name</span> rc* <span class="token parameter variable">-ls</span>
-<span class="token number">50332831</span>    <span class="token number">0</span> drwxr-xr-x  <span class="token number">10</span> root     root          <span class="token number">127</span> Sep  <span class="token number">7</span> 05:53 /etc/rc.d
-<span class="token number">16781412</span>    <span class="token number">0</span> drwxr-xr-x   <span class="token number">2</span> root     root           <span class="token number">45</span> Oct <span class="token number">13</span>  <span class="token number">2020</span> /etc/rc.d/rc0.d
-<span class="token number">33644238</span>    <span class="token number">0</span> drwxr-xr-x   <span class="token number">2</span> root     root           <span class="token number">45</span> Oct <span class="token number">13</span>  <span class="token number">2020</span> /etc/rc.d/rc1.d
-<span class="token number">50332832</span>    <span class="token number">0</span> drwxr-xr-x   <span class="token number">2</span> root     root           <span class="token number">45</span> Oct <span class="token number">13</span>  <span class="token number">2020</span> /etc/rc.d/rc2.d<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>在 <code>/root</code> 目录下搜索所有小于 1MB 的文件，用 <code>-size -1M</code> 参数等同于 <code>-size 0M</code>，需要注意。这是个 ChatGPT 都会答错的问题：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">find</span> /root <span class="token parameter variable">-size</span> <span class="token parameter variable">-1M</span>
-/root/audit/a.log
-/root/3/3<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>查找 <code>/root</code> 目录下大于 10KB 并且（<code>-a</code> 表示“与”）小于 2M 的普通文件，并以列表形式显示：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> /root <span class="token parameter variable">-type</span> f <span class="token parameter variable">-size</span> +10k <span class="token parameter variable">-a</span> <span class="token parameter variable">-size</span> <span class="token parameter variable">-2M</span> <span class="token parameter variable">-exec</span> <span class="token function">ls</span> <span class="token parameter variable">-lh</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span>
--rw-------. <span class="token number">1</span> root root 17K Sep <span class="token number">16</span> 03:15 /root/.bash_history
--rw-------. <span class="token number">1</span> root root 178K Sep  <span class="token number">9</span> 05:48 /root/audit/b.log
--rw-r--r--. <span class="token number">1</span> root root 30K Sep <span class="token number">10</span> <span class="token number">15</span>:05 /root/backup/sdb4.dump
--rw-r--r--. <span class="token number">1</span> root root 11K Sep <span class="token number">10</span> <span class="token number">14</span>:39 /root/backup/lost.dump.bz2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>查找当前目录中的所有目录并排序：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-type</span> d <span class="token operator">|</span> <span class="token function">sort</span>
-<span class="token builtin class-name">.</span>
-./3
-./audit<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>在当前目录下查找除普通文件以外的所有类型的文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token operator">!</span> <span class="token parameter variable">-type</span> f <span class="token parameter variable">-print</span>
-<span class="token builtin class-name">.</span>
-./.pki
-./.pki/nssdb<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>查找 <code>/bin</code> 和 <code>/sbin</code> 目录下中含有 SGID, SUID 或 SBIT 属性的文件:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> /bin /sbin <span class="token parameter variable">-perm</span> +7000<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="处理搜索结果"><a class="markdownIt-Anchor" href="#处理搜索结果"></a> 处理搜索结果</h2>
-<p><code>find</code> 命令可以接受表达式，表达式可能由下列成份组成：操作符、选项、测试表达式以及动作。</p>
-<p>常见动作有 <code>-print</code>（打印输出，默认动作）、<code>-ls</code>（显示长目录列表）、<code>-delete</code>（删除文件）。</p>
-<p><code>-exec</code> 选项后面跟命令（不支持别名）或脚本，然后是大括号 <code>&#123;&#125;</code> 表示由 <code>find</code> 找到的路径名，一个空格，接 <code>\</code> 用来转义分号；表示命令结束。相应命令的形式为 <code>command &#123;&#125; \</code>；</p>
-<p><code>-ok</code> 和 <code>-exec</code> 的作用相同，只不过在执行每一个命令之前都会给出提示，让用户来确定是否执行。</p>
-<p>例如在 <code>/etc</code> 目录中搜索 <code>passwd</code> 文件并从中找 <code>root</code> 相关信息：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">find</span> /etc <span class="token parameter variable">-name</span> <span class="token string">"passwd*"</span> <span class="token parameter variable">-exec</span> <span class="token function">grep</span> <span class="token string">"root"</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span>
-root:x:0:0:root:/root:/bin/bash
-operator:x:11:0:operator:/root:/sbin/nologin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>在 <code>/usr/sam</code> 目录下查找不在 <code>dir1</code> 子目录之内的所有文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> /usr/sam <span class="token parameter variable">-path</span> <span class="token string">"/usr/sam/dir1"</span> <span class="token parameter variable">-prune</span> <span class="token parameter variable">-o</span> <span class="token parameter variable">-print</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>复制搜索到的文件到 <code>backup</code> 目录下：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-type</span> f <span class="token parameter variable">-exec</span> <span class="token function">cp</span> <span class="token parameter variable">--parents</span>  <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> ./backup/ <span class="token punctuation">\</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p><code>-exec</code> 为每个文件生成一条单独的命令，例如搜索到 57 个文件，那么将生成 57 条单独命令。如果想要提高效率，可以使用 <code>xargs</code> 运行任何使用参数指定的命令，参数通过标准输入传递给程序。</p>
-<p>例如配合 <code>grep</code> 在 <code>find</code> 找到的文件中搜寻特定内容：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> /var <span class="token parameter variable">-name</span> *.log <span class="token operator">|</span> <span class="token function">xargs</span> <span class="token function">grep</span> <span class="token string">"notice"</span>
-/var/log/anaconda/X.log:        <span class="token punctuation">(</span>++<span class="token punctuation">)</span> from <span class="token builtin class-name">command</span> line, <span class="token punctuation">(</span><span class="token operator">!</span><span class="token operator">!</span><span class="token punctuation">)</span> notice, <span class="token punctuation">(</span>II<span class="token punctuation">)</span> informational,
-/var/log/anaconda/journal.log:Sep <span class="token number">22</span> <span class="token number">13</span>:09:41 localhost kernel: <span class="token assign-left variable">type</span><span class="token operator">=</span><span class="token number">1107</span> audit<span class="token punctuation">(</span><span class="token number">1632316181.830</span>:44<span class="token punctuation">)</span>: <span class="token assign-left variable">pid</span><span class="token operator">=</span><span class="token number">1577</span> <span class="token assign-left variable">uid</span><span class="token operator">=</span><span class="token number">0</span> <span class="token assign-left variable">auid</span><span class="token operator">=</span><span class="token number">4294967295</span> <span class="token assign-left variable">ses</span><span class="token operator">=</span><span class="token number">4294967295</span> <span class="token assign-left variable">subj</span><span class="token operator">=</span>system_u:system_r:system_dbusd_t:s0-s0:c0.c1023 <span class="token assign-left variable">msg</span><span class="token operator">=</span>'avc:  received policyload notice <span class="token punctuation">(</span>seqno<span class="token operator">=</span><span class="token number">2</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>将搜索到的文件重命名，可以在 <code>xargs</code> 中使用 <code>&#123;&#125;</code> 占位符来代表搜索结果：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-name</span> <span class="token string">"back.sh*"</span> <span class="token operator">|</span> <span class="token function">xargs</span> <span class="token parameter variable">-i</span> <span class="token function">mv</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>.dele
-<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ ll back*
--rwxr--r--. <span class="token number">1</span> root root <span class="token number">52</span> Oct  <span class="token number">7</span> 06:15 back.sh1.dele
--rwxr--r--. <span class="token number">2</span> root root <span class="token number">52</span> Sep <span class="token number">23</span> <span class="token number">19</span>:18 back.sh.dele<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>1.基本操作</category>
-      </categories>
-  </entry>
-  <entry>
     <title>Linux 基本文件操作</title>
     <url>/3891118029/</url>
     <content><![CDATA[<h1 id="文件和目录查询"><a class="markdownIt-Anchor" href="#文件和目录查询"></a> 文件和目录查询</h1>
@@ -1702,6 +1458,250 @@ rm: cannot remove <span class="token string">'1'</span><span class="token builti
 --S--adA-------- ./3/3
 
 --S-ia-A-------- ./1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>1.基本操作</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Linux 下搜索文件</title>
+    <url>/3570307132/</url>
+    <content><![CDATA[<h1 id="通配符"><a class="markdownIt-Anchor" href="#通配符"></a> 通配符</h1>
+<p>通配符（wildcard）是 Bash 操作接口的一个功能。常用的通配符如下表：</p>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>*</td>
+<td>代表 0 到无穷多个任意字符。</td>
+</tr>
+<tr>
+<td>?</td>
+<td>代表一定有一个任意字符。</td>
+</tr>
+<tr>
+<td>[]</td>
+<td>代表一定有一个括号内的字符，例如 [xgw] 代表可能是 xgw 其中一个。</td>
+</tr>
+<tr>
+<td>[-]</td>
+<td>代表在编码顺序内的所有字符，例如 [0-9] 代表 0 到 9 之间的所有数字。</td>
+</tr>
+<tr>
+<td>[^]</td>
+<td>第一个字符为 ^ 代表反向选择，例如 [^xpw]代表任意一个非 xpw 的字符。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="快速搜索"><a class="markdownIt-Anchor" href="#快速搜索"></a> 快速搜索</h1>
+<p>在 Linux 中，可以使用不同的命令进行快速搜索，以下是一些常用命令。</p>
+<p>使用 <code>which</code> 命令来查找命令所在路径。这个命令根据的是$PATH 环境变量所指定的路径去查询：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">which</span> <span class="token function">ls</span>
+<span class="token builtin class-name">alias</span> <span class="token assign-left variable">ls</span><span class="token operator">=</span><span class="token string">'ls --color=auto'</span>
+        /usr/bin/ls<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><code>whereis</code> 命令会在指定的几个常用目录中搜索文件，使用 <code>-l</code> 参数可以查看可搜索的目录。</p>
+<p><code>whereis</code> 命令可以搜索以下类型的文件：二进制文件（<code>-b</code>）、说明文件（<code>-m</code>）、源代码（<code>-s</code>）和其他特殊文件（<code>-u</code>）。</p>
+<p>例如搜索和 <code>ifconfig</code> 有关的说明文档：</p>
+ <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">whereis</span> <span class="token parameter variable">-m</span> <span class="token function">ifconfig</span>
+ifconfig: /usr/share/man/man8/ifconfig.8.gz<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p><code>locate</code> 命令使用数据库来查找文件。数据库存放在 <code>/var/lib/mlocate/</code> 目录下，每天会更新一次。若需要手动更新数据库，可以使用 <code>updatedb</code> 命令。</p>
+<p>例如忽略大小写搜索与 <code>passwd</code> 有关的文件，并列出前四个结果：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">locate</span> <span class="token parameter variable">-i</span> <span class="token parameter variable">-l</span> <span class="token number">4</span> <span class="token function">passwd</span>
+/etc/passwd
+/etc/passwd-
+/etc/pam.d/passwd
+/etc/security/opasswd<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="精确搜索"><a class="markdownIt-Anchor" href="#精确搜索"></a> 精确搜索</h1>
+<p>精确搜索指使用<code>find</code>命令执行的搜索。</p>
+<h2 id="按时间搜索文件"><a class="markdownIt-Anchor" href="#按时间搜索文件"></a> 按时间搜索文件</h2>
+<p>与时间有关的参数有<code>-atime</code>，<code>-ctime</code>和<code>-mtime</code>：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-mtime n</code></td>
+<td>表示在 n 天之前那天内被更改过的文件；</td>
+</tr>
+<tr>
+<td><code>-mtime +n</code></td>
+<td>列出在 n 天之前（不含 n）被更改过的文件，文件修改日期大于等于 n+1 天；</td>
+</tr>
+<tr>
+<td><code>-mtime -n</code></td>
+<td>列出在 n 天之内（包含 n）被更改过的文件，文件修改日期小于等于 n 天；</td>
+</tr>
+<tr>
+<td><code>-newer file</code></td>
+<td>列出比<code>file</code>还要新的文件名。</td>
+</tr>
+</tbody>
+</table>
+<p>例如，搜索过去系统上 24 小时内有更改过的文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> / <span class="token parameter variable">-mtime</span> <span class="token number">0</span>
+/dev/char
+/dev/char/189:132<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>查找当前目录下修改时间在 5 分钟到 24 小时之间的文件：</p>
+ <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token parameter variable">-mtime</span> <span class="token number">0</span> <span class="token parameter variable">-mmin</span> +5
+<span class="token builtin class-name">.</span>
+./.bash_history
+./audit<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>寻找<code>/etc</code>目录下比<code>/etc/passwd</code>文件日期新的文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> /etc <span class="token parameter variable">-newer</span> /etc/passwd <span class="token operator">|</span> <span class="token function">tail</span> 
+/etc/audit/audit.rules
+/etc/postfix
+/etc/kernel<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>查找<code>/root</code>目录下更改时间在 5 天前的文件并删除：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">find</span> /root <span class="token parameter variable">-type</span> f <span class="token parameter variable">-mtime</span> +5 <span class="token parameter variable">-ok</span> rm<span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>删除当前目录中访问时间在 7 天以前，含有数字后缀的<code>admin.log</code>文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-name</span> <span class="token string">"admin.log[0-9][0-9][0-9]"</span> <span class="token parameter variable">-atime</span> <span class="token parameter variable">-7</span> <span class="token parameter variable">-exec</span> <span class="token function">rm</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="按用户名及组名搜索"><a class="markdownIt-Anchor" href="#按用户名及组名搜索"></a> 按用户名及组名搜索</h2>
+<p>可以使用 <code>find</code> 命令按照文件的所有者和用户组来搜索文件，常用参数如下：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-uid n</code></td>
+<td>按照用户 UID 来搜索</td>
+</tr>
+<tr>
+<td><code>-gid n</code></td>
+<td>按用户组 GID 来搜索</td>
+</tr>
+<tr>
+<td><code>-user name</code></td>
+<td>按用户名来搜索</td>
+</tr>
+<tr>
+<td><code>-group name</code></td>
+<td>按用户组名来搜索</td>
+</tr>
+<tr>
+<td><code>-nouser</code></td>
+<td>搜索文件的所有者不存在 <code>/etc/passwd</code> 的人</td>
+</tr>
+<tr>
+<td><code>-nogroup</code></td>
+<td>搜索所有用户组不存在 <code>/etc/group</code> 中的文件</td>
+</tr>
+</tbody>
+</table>
+<p>例如查找 <code>/home</code> 目录下属于用户 abc 的文件:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> /home <span class="token parameter variable">-user</span> abc<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>查找系统中不属于任何人的文件:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> / <span class="token parameter variable">-nouser</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="按文件名及属性搜索"><a class="markdownIt-Anchor" href="#按文件名及属性搜索"></a> 按文件名及属性搜索</h2>
+<p>主要参数:</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-name filename</td>
+<td>搜索文件名为 filename 的文件</td>
+</tr>
+<tr>
+<td>-iname filename</td>
+<td>忽略大小写，搜索文件名为 filename 的文件</td>
+</tr>
+<tr>
+<td>-size [±]SIZE</td>
+<td>搜索大小比 SIZE 大（+）或小（-）的文件，大小单位有 c、k、m、g 等</td>
+</tr>
+<tr>
+<td>-type TYPE</td>
+<td>搜索文件类型为 TYPE 的文件，如一般文件（f）、设备文件（b、c）、目录（d）、连接（l）、socket（s）等</td>
+</tr>
+<tr>
+<td>-perm mode</td>
+<td>搜索权限刚好等于 mode 的文件，如 mode 为 4775</td>
+</tr>
+<tr>
+<td>-perm -mode</td>
+<td>搜索权限必须全部包括 mode 的权限，如 mode 为 0744，会找到权限为 4775 的文件</td>
+</tr>
+<tr>
+<td>-perm +mode</td>
+<td>搜索权限包含任一 mode 的权限，如 mode 为 755 时，会找到权限为 101 的文件</td>
+</tr>
+</tbody>
+</table>
+<p>例如，在当前目录中查找文件 redis-3.2.6.tar.gz 并删除：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token parameter variable">-name</span> redis-3.2.6.tar.gz <span class="token parameter variable">-delete</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>忽略大小写，在 <code>/etc</code> 目录下搜索 ssh 文件或目录：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">find</span> /etc <span class="token parameter variable">-iname</span> <span class="token function">ssh</span>
+/etc/ssh
+/etc/selinux/targeted/active/modules/100/ssh<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>在 <code>/etc</code> 目录中查找以 rc 开头的文件，并以列表形式显示：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">find</span> /etc <span class="token parameter variable">-name</span> rc* <span class="token parameter variable">-ls</span>
+<span class="token number">50332831</span>    <span class="token number">0</span> drwxr-xr-x  <span class="token number">10</span> root     root          <span class="token number">127</span> Sep  <span class="token number">7</span> 05:53 /etc/rc.d
+<span class="token number">16781412</span>    <span class="token number">0</span> drwxr-xr-x   <span class="token number">2</span> root     root           <span class="token number">45</span> Oct <span class="token number">13</span>  <span class="token number">2020</span> /etc/rc.d/rc0.d
+<span class="token number">33644238</span>    <span class="token number">0</span> drwxr-xr-x   <span class="token number">2</span> root     root           <span class="token number">45</span> Oct <span class="token number">13</span>  <span class="token number">2020</span> /etc/rc.d/rc1.d
+<span class="token number">50332832</span>    <span class="token number">0</span> drwxr-xr-x   <span class="token number">2</span> root     root           <span class="token number">45</span> Oct <span class="token number">13</span>  <span class="token number">2020</span> /etc/rc.d/rc2.d<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在 <code>/root</code> 目录下搜索所有小于 1MB 的文件，用 <code>-size -1M</code> 参数等同于 <code>-size 0M</code>，需要注意。这是个 ChatGPT 都会答错的问题：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">find</span> /root <span class="token parameter variable">-size</span> <span class="token parameter variable">-1M</span>
+/root/audit/a.log
+/root/3/3<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>查找 <code>/root</code> 目录下大于 10KB 并且（<code>-a</code> 表示“与”）小于 2M 的普通文件，并以列表形式显示：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> /root <span class="token parameter variable">-type</span> f <span class="token parameter variable">-size</span> +10k <span class="token parameter variable">-a</span> <span class="token parameter variable">-size</span> <span class="token parameter variable">-2M</span> <span class="token parameter variable">-exec</span> <span class="token function">ls</span> <span class="token parameter variable">-lh</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span>
+-rw-------. <span class="token number">1</span> root root 17K Sep <span class="token number">16</span> 03:15 /root/.bash_history
+-rw-------. <span class="token number">1</span> root root 178K Sep  <span class="token number">9</span> 05:48 /root/audit/b.log
+-rw-r--r--. <span class="token number">1</span> root root 30K Sep <span class="token number">10</span> <span class="token number">15</span>:05 /root/backup/sdb4.dump
+-rw-r--r--. <span class="token number">1</span> root root 11K Sep <span class="token number">10</span> <span class="token number">14</span>:39 /root/backup/lost.dump.bz2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>查找当前目录中的所有目录并排序：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-type</span> d <span class="token operator">|</span> <span class="token function">sort</span>
+<span class="token builtin class-name">.</span>
+./3
+./audit<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在当前目录下查找除普通文件以外的所有类型的文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token operator">!</span> <span class="token parameter variable">-type</span> f <span class="token parameter variable">-print</span>
+<span class="token builtin class-name">.</span>
+./.pki
+./.pki/nssdb<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>查找 <code>/bin</code> 和 <code>/sbin</code> 目录下中含有 SGID, SUID 或 SBIT 属性的文件:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> /bin /sbin <span class="token parameter variable">-perm</span> +7000<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="处理搜索结果"><a class="markdownIt-Anchor" href="#处理搜索结果"></a> 处理搜索结果</h2>
+<p><code>find</code> 命令可以接受表达式，表达式可能由下列成份组成：操作符、选项、测试表达式以及动作。</p>
+<p>常见动作有 <code>-print</code>（打印输出，默认动作）、<code>-ls</code>（显示长目录列表）、<code>-delete</code>（删除文件）。</p>
+<p><code>-exec</code> 选项后面跟命令（不支持别名）或脚本，然后是大括号 <code>&#123;&#125;</code> 表示由 <code>find</code> 找到的路径名，一个空格，接 <code>\</code> 用来转义分号；表示命令结束。相应命令的形式为 <code>command &#123;&#125; \</code>；</p>
+<p><code>-ok</code> 和 <code>-exec</code> 的作用相同，只不过在执行每一个命令之前都会给出提示，让用户来确定是否执行。</p>
+<p>例如在 <code>/etc</code> 目录中搜索 <code>passwd</code> 文件并从中找 <code>root</code> 相关信息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">find</span> /etc <span class="token parameter variable">-name</span> <span class="token string">"passwd*"</span> <span class="token parameter variable">-exec</span> <span class="token function">grep</span> <span class="token string">"root"</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span>
+root:x:0:0:root:/root:/bin/bash
+operator:x:11:0:operator:/root:/sbin/nologin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>在 <code>/usr/sam</code> 目录下查找不在 <code>dir1</code> 子目录之内的所有文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> /usr/sam <span class="token parameter variable">-path</span> <span class="token string">"/usr/sam/dir1"</span> <span class="token parameter variable">-prune</span> <span class="token parameter variable">-o</span> <span class="token parameter variable">-print</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>复制搜索到的文件到 <code>backup</code> 目录下：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-type</span> f <span class="token parameter variable">-exec</span> <span class="token function">cp</span> <span class="token parameter variable">--parents</span>  <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> ./backup/ <span class="token punctuation">\</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><code>-exec</code> 为每个文件生成一条单独的命令，例如搜索到 57 个文件，那么将生成 57 条单独命令。如果想要提高效率，可以使用 <code>xargs</code> 运行任何使用参数指定的命令，参数通过标准输入传递给程序。</p>
+<p>例如配合 <code>grep</code> 在 <code>find</code> 找到的文件中搜寻特定内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> /var <span class="token parameter variable">-name</span> *.log <span class="token operator">|</span> <span class="token function">xargs</span> <span class="token function">grep</span> <span class="token string">"notice"</span>
+/var/log/anaconda/X.log:        <span class="token punctuation">(</span>++<span class="token punctuation">)</span> from <span class="token builtin class-name">command</span> line, <span class="token punctuation">(</span><span class="token operator">!</span><span class="token operator">!</span><span class="token punctuation">)</span> notice, <span class="token punctuation">(</span>II<span class="token punctuation">)</span> informational,
+/var/log/anaconda/journal.log:Sep <span class="token number">22</span> <span class="token number">13</span>:09:41 localhost kernel: <span class="token assign-left variable">type</span><span class="token operator">=</span><span class="token number">1107</span> audit<span class="token punctuation">(</span><span class="token number">1632316181.830</span>:44<span class="token punctuation">)</span>: <span class="token assign-left variable">pid</span><span class="token operator">=</span><span class="token number">1577</span> <span class="token assign-left variable">uid</span><span class="token operator">=</span><span class="token number">0</span> <span class="token assign-left variable">auid</span><span class="token operator">=</span><span class="token number">4294967295</span> <span class="token assign-left variable">ses</span><span class="token operator">=</span><span class="token number">4294967295</span> <span class="token assign-left variable">subj</span><span class="token operator">=</span>system_u:system_r:system_dbusd_t:s0-s0:c0.c1023 <span class="token assign-left variable">msg</span><span class="token operator">=</span>'avc:  received policyload notice <span class="token punctuation">(</span>seqno<span class="token operator">=</span><span class="token number">2</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>将搜索到的文件重命名，可以在 <code>xargs</code> 中使用 <code>&#123;&#125;</code> 占位符来代表搜索结果：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-name</span> <span class="token string">"back.sh*"</span> <span class="token operator">|</span> <span class="token function">xargs</span> <span class="token parameter variable">-i</span> <span class="token function">mv</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>.dele
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ ll back*
+-rwxr--r--. <span class="token number">1</span> root root <span class="token number">52</span> Oct  <span class="token number">7</span> 06:15 back.sh1.dele
+-rwxr--r--. <span class="token number">2</span> root root <span class="token number">52</span> Sep <span class="token number">23</span> <span class="token number">19</span>:18 back.sh.dele<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 ]]></content>
       <categories>
         <category>Linux</category>
@@ -7704,6 +7704,143 @@ daemon<span class="token punctuation">[</span>:2:<span class="token punctuation"
       </categories>
   </entry>
   <entry>
+    <title>Linux 中文件属性详解</title>
+    <url>/1872252014/</url>
+    <content><![CDATA[<h1 id="查看文件属性"><a class="markdownIt-Anchor" href="#查看文件属性"></a> 查看文件属性</h1>
+<p>执行 <code>ls -la</code> 命令后，可以看到当前目录下所有文件的权限和属性：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll <span class="token parameter variable">-la</span>
+total <span class="token number">32</span>
+dr-xr-x---.  <span class="token number">4</span> root root  <span class="token number">175</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 <span class="token builtin class-name">.</span>
+dr-xr-xr-x. <span class="token number">17</span> root root  <span class="token number">224</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:37 <span class="token punctuation">..</span>
+-rw-------.  <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
+-rw-------.  <span class="token number">1</span> root root  <span class="token number">847</span> Sep  <span class="token number">8</span> <span class="token number">12</span>:32 .bash_history
+-rw-r--r--.  <span class="token number">1</span> root root   <span class="token number">18</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bash_logout
+-rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">176</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bash_profile
+-rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">176</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bashrc
+-rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">100</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .cshrc
+drwxr-xr-x.  <span class="token number">2</span> root root    <span class="token number">6</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 dir1
+drwxr-----.  <span class="token number">3</span> root root   <span class="token number">19</span> Sep  <span class="token number">7</span> 05:51 .pki
+-rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">129</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .tcshrc
+-rw-------.  <span class="token number">1</span> root root  <span class="token number">508</span> Sep  <span class="token number">7</span> 05:52 .viminfo<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>total 为该目录下的所有数据所占用的实际块数量乘以块大小的值。</p>
+<p>从左到右以空格分隔成七列，分别代表：类型和权限、连接、所有者、所有组、大小、修改时间、文件名。</p>
+<h1 id="文件类型"><a class="markdownIt-Anchor" href="#文件类型"></a> 文件类型</h1>
+<p>第一列第一个字段用来表示文件的类型，文件类型有下面几种：</p>
+<table>
+<thead>
+<tr>
+<th><strong>标记</strong></th>
+<th><strong>类型</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-</td>
+<td>普通文件</td>
+<td>文本文件、数据文件、可执行程序等都作为普通文件存储</td>
+</tr>
+<tr>
+<td>d</td>
+<td>目录</td>
+<td>目录不存放常规数据，它用来组织访问其他文件</td>
+</tr>
+<tr>
+<td>c</td>
+<td>字符设备文件</td>
+<td>指处理数据时每次只能处理一个字符的设备，例如鼠标、键盘（一次性读取设备）</td>
+</tr>
+<tr>
+<td>b</td>
+<td>块设备文件</td>
+<td>指处理数据时每次能处理大块数据的设备，例如硬盘</td>
+</tr>
+<tr>
+<td>s</td>
+<td>本地域套接字</td>
+<td>实现进程间通信的连接，本地域套接字由系统调用 socket 创建</td>
+</tr>
+<tr>
+<td>p</td>
+<td>有名管道(FIFO)</td>
+<td>让运行在同一主机上的两个进程相互通信，和 socket 文件相似</td>
+</tr>
+<tr>
+<td>l</td>
+<td>符号链接</td>
+<td>也叫做软链接（Linkfile），通过名字指向文件</td>
+</tr>
+</tbody>
+</table>
+<p><code>ls</code> 命令结果展示文件颜色含义：</p>
+<table>
+<thead>
+<tr>
+<th><strong>颜色</strong></th>
+<th><strong>含义</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>灰色</td>
+<td>普通文件</td>
+</tr>
+<tr>
+<td>蓝色</td>
+<td>目录</td>
+</tr>
+<tr>
+<td>绿色</td>
+<td>可执行文件</td>
+</tr>
+<tr>
+<td>黄色</td>
+<td>特殊文件</td>
+</tr>
+<tr>
+<td>红色</td>
+<td>压缩文件</td>
+</tr>
+</tbody>
+</table>
+<h1 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h1>
+<p>第一列后九个字段以三个为一组，分别表示：</p>
+<ul>
+<li>文件所有者权限</li>
+<li>同用户组权限</li>
+<li>其他用户权限</li>
+</ul>
+<p>权限为&quot;rwx&quot;的三个参数组合，没有权限显示为&quot;-&quot;减号。</p>
+<h1 id="连接节点"><a class="markdownIt-Anchor" href="#连接节点"></a> 连接节点</h1>
+<p>第二列数字表示节点，每个文件都会将它的权限与属性记录到文件系统的 inode 中。</p>
+<p>这个属性记录的就是有多少不同的文件名连接到相同的一个 inode 号码。</p>
+<h1 id="所有者所有组"><a class="markdownIt-Anchor" href="#所有者所有组"></a> 所有者/所有组</h1>
+<p>第三列和第四列分别表示文件所属的用户和用户组。</p>
+<h1 id="文件大小"><a class="markdownIt-Anchor" href="#文件大小"></a> 文件大小</h1>
+<p>第五列表示文件的容量大小，默认单位为 Bytes。</p>
+<p>目录显示的大小不是文件夹大小，而是目录元数据的大小。</p>
+<h1 id="修改日期"><a class="markdownIt-Anchor" href="#修改日期"></a> 修改日期</h1>
+<p>第六列为文件的创建日期或最近修改时间。</p>
+<p>如果修改时间距离太久，那时间部分会显示成年份。</p>
+<h1 id="文件名"><a class="markdownIt-Anchor" href="#文件名"></a> 文件名</h1>
+<p>第七列为文件名或文件夹名。</p>
+<p>Linux 的文件名是大小写敏感的。</p>
+<p>文件或目录名的第一个字母是&quot;.&quot;表示隐藏文件。</p>
+<p><strong>文件名规则</strong>：</p>
+<ul>
+<li>由大写字母、小写字母、数字和一些特殊符号组成；</li>
+<li>不可以包含 * ? &lt; &gt; ( ) [ ] { } / \ | &quot;  ` ＆ ;  ! 等符号；</li>
+<li>＋-可以出现在文件名中，但是不能作为文件名中的第一个字母；</li>
+<li>文件名中一般不应该包含空格；</li>
+<li>使用 Ext 文件系统时，文件名最长 255 个字符，路径最长 4096 个字符。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>0.基础概论</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Linux 主流文件系统</title>
     <url>/2794564793/</url>
     <content><![CDATA[<h1 id="查看文件系统支持"><a class="markdownIt-Anchor" href="#查看文件系统支持"></a> 查看文件系统支持</h1>
@@ -8182,143 +8319,6 @@ drwx------. <span class="token number">2</span> root root  16K Sep  <span class=
 <p><strong>Btrfs 文件系统</strong></p>
 <p>Btrfs 文件系统也被称为 B 树文件系统，它稳定易用，能够动态调整已挂载文件系统的大小。目前 OpenSUSE Linux 把 Btrfs 作为其默认文件系统。</p>
 </li>
-</ul>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>0.基础概论</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>Linux 中文件属性详解</title>
-    <url>/1872252014/</url>
-    <content><![CDATA[<h1 id="查看文件属性"><a class="markdownIt-Anchor" href="#查看文件属性"></a> 查看文件属性</h1>
-<p>执行 <code>ls -la</code> 命令后，可以看到当前目录下所有文件的权限和属性：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll <span class="token parameter variable">-la</span>
-total <span class="token number">32</span>
-dr-xr-x---.  <span class="token number">4</span> root root  <span class="token number">175</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 <span class="token builtin class-name">.</span>
-dr-xr-xr-x. <span class="token number">17</span> root root  <span class="token number">224</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:37 <span class="token punctuation">..</span>
--rw-------.  <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
--rw-------.  <span class="token number">1</span> root root  <span class="token number">847</span> Sep  <span class="token number">8</span> <span class="token number">12</span>:32 .bash_history
--rw-r--r--.  <span class="token number">1</span> root root   <span class="token number">18</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bash_logout
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">176</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bash_profile
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">176</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bashrc
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">100</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .cshrc
-drwxr-xr-x.  <span class="token number">2</span> root root    <span class="token number">6</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 dir1
-drwxr-----.  <span class="token number">3</span> root root   <span class="token number">19</span> Sep  <span class="token number">7</span> 05:51 .pki
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">129</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .tcshrc
--rw-------.  <span class="token number">1</span> root root  <span class="token number">508</span> Sep  <span class="token number">7</span> 05:52 .viminfo<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>total 为该目录下的所有数据所占用的实际块数量乘以块大小的值。</p>
-<p>从左到右以空格分隔成七列，分别代表：类型和权限、连接、所有者、所有组、大小、修改时间、文件名。</p>
-<h1 id="文件类型"><a class="markdownIt-Anchor" href="#文件类型"></a> 文件类型</h1>
-<p>第一列第一个字段用来表示文件的类型，文件类型有下面几种：</p>
-<table>
-<thead>
-<tr>
-<th><strong>标记</strong></th>
-<th><strong>类型</strong></th>
-<th><strong>说明</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>-</td>
-<td>普通文件</td>
-<td>文本文件、数据文件、可执行程序等都作为普通文件存储</td>
-</tr>
-<tr>
-<td>d</td>
-<td>目录</td>
-<td>目录不存放常规数据，它用来组织访问其他文件</td>
-</tr>
-<tr>
-<td>c</td>
-<td>字符设备文件</td>
-<td>指处理数据时每次只能处理一个字符的设备，例如鼠标、键盘（一次性读取设备）</td>
-</tr>
-<tr>
-<td>b</td>
-<td>块设备文件</td>
-<td>指处理数据时每次能处理大块数据的设备，例如硬盘</td>
-</tr>
-<tr>
-<td>s</td>
-<td>本地域套接字</td>
-<td>实现进程间通信的连接，本地域套接字由系统调用 socket 创建</td>
-</tr>
-<tr>
-<td>p</td>
-<td>有名管道(FIFO)</td>
-<td>让运行在同一主机上的两个进程相互通信，和 socket 文件相似</td>
-</tr>
-<tr>
-<td>l</td>
-<td>符号链接</td>
-<td>也叫做软链接（Linkfile），通过名字指向文件</td>
-</tr>
-</tbody>
-</table>
-<p><code>ls</code> 命令结果展示文件颜色含义：</p>
-<table>
-<thead>
-<tr>
-<th><strong>颜色</strong></th>
-<th><strong>含义</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>灰色</td>
-<td>普通文件</td>
-</tr>
-<tr>
-<td>蓝色</td>
-<td>目录</td>
-</tr>
-<tr>
-<td>绿色</td>
-<td>可执行文件</td>
-</tr>
-<tr>
-<td>黄色</td>
-<td>特殊文件</td>
-</tr>
-<tr>
-<td>红色</td>
-<td>压缩文件</td>
-</tr>
-</tbody>
-</table>
-<h1 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h1>
-<p>第一列后九个字段以三个为一组，分别表示：</p>
-<ul>
-<li>文件所有者权限</li>
-<li>同用户组权限</li>
-<li>其他用户权限</li>
-</ul>
-<p>权限为&quot;rwx&quot;的三个参数组合，没有权限显示为&quot;-&quot;减号。</p>
-<h1 id="连接节点"><a class="markdownIt-Anchor" href="#连接节点"></a> 连接节点</h1>
-<p>第二列数字表示节点，每个文件都会将它的权限与属性记录到文件系统的 inode 中。</p>
-<p>这个属性记录的就是有多少不同的文件名连接到相同的一个 inode 号码。</p>
-<h1 id="所有者所有组"><a class="markdownIt-Anchor" href="#所有者所有组"></a> 所有者/所有组</h1>
-<p>第三列和第四列分别表示文件所属的用户和用户组。</p>
-<h1 id="文件大小"><a class="markdownIt-Anchor" href="#文件大小"></a> 文件大小</h1>
-<p>第五列表示文件的容量大小，默认单位为 Bytes。</p>
-<p>目录显示的大小不是文件夹大小，而是目录元数据的大小。</p>
-<h1 id="修改日期"><a class="markdownIt-Anchor" href="#修改日期"></a> 修改日期</h1>
-<p>第六列为文件的创建日期或最近修改时间。</p>
-<p>如果修改时间距离太久，那时间部分会显示成年份。</p>
-<h1 id="文件名"><a class="markdownIt-Anchor" href="#文件名"></a> 文件名</h1>
-<p>第七列为文件名或文件夹名。</p>
-<p>Linux 的文件名是大小写敏感的。</p>
-<p>文件或目录名的第一个字母是&quot;.&quot;表示隐藏文件。</p>
-<p><strong>文件名规则</strong>：</p>
-<ul>
-<li>由大写字母、小写字母、数字和一些特殊符号组成；</li>
-<li>不可以包含 * ? &lt; &gt; ( ) [ ] { } / \ | &quot;  ` ＆ ;  ! 等符号；</li>
-<li>＋-可以出现在文件名中，但是不能作为文件名中的第一个字母；</li>
-<li>文件名中一般不应该包含空格；</li>
-<li>使用 Ext 文件系统时，文件名最长 255 个字符，路径最长 4096 个字符。</li>
 </ul>
 ]]></content>
       <categories>
@@ -9212,6 +9212,273 @@ shell <span class="token builtin class-name">command</span> <span class="token s
       </categories>
   </entry>
   <entry>
+    <title>Linux 引导启动配置与关机</title>
+    <url>/3107904477/</url>
+    <content><![CDATA[<h1 id="启动引导程序"><a class="markdownIt-Anchor" href="#启动引导程序"></a> 启动引导程序</h1>
+<p>目前在 Linux 下主要的引导启动程序是 Grub(Grand Unified Bootloader) 或 Grub2。通常 Grub2 主程序会将配置文件放到 /boot/grub2 目录下。Grub 则是直接修改 /boot/grub/grub.conf，一个很简单的配置文件。</p>
+<p>Grub2 引导程序的特点有：</p>
+<ul>
+<li>
+<p>认识与支持更多文件系统，并且可以使用 Grub2 的主程序直接在文件系统中搜寻内核文件名。</p>
+</li>
+<li>
+<p>开机时候，可以自行编辑与修改开机设置项目，类似 bash 的命令模式。</p>
+</li>
+<li>
+<p>可以动态搜寻配置文件，而不需要在修改配置后重新安装 Grub2。</p>
+</li>
+</ul>
+<p>Grub2 对硬盘的代号设置与 Linux 中不同，一般用下面代号：</p>
+<ul>
+<li>
+<p>(hd0,1)：一般的默认语法，由 Grub2 自动判断分区格式。</p>
+</li>
+<li>
+<p>(hd0,msdos1)：磁盘的分区为传统的 MBR 模式。</p>
+</li>
+<li>
+<p>(hd0,gpt1)：磁盘的分区为 GPT 模式。</p>
+</li>
+</ul>
+<p>硬盘代号用小括号()括起来，以搜寻顺序做硬盘编号，第一个分区从 1 开始计算，而不是 Grub 的 0 开始算。</p>
+<p>默认情况下 Grub2 随系统已经装好了，特殊情况下要手动安装 Grub2 可以使用 grub2-install 命令。例如安装到 /dev/sdc 下面：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ grub2-install /dev/sdc
+Installing <span class="token keyword">for</span> i386-pc platform.
+Installation finished. No error reported.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h2 id="grub2-配置文件"><a class="markdownIt-Anchor" href="#grub2-配置文件"></a> Grub2 配置文件</h2>
+<p>Grub2 的配置文件路径为 /boot/grub2/grub.cfg：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /boot/grub2/grub.cfg
+<span class="token comment">#</span>
+<span class="token comment"># DO NOT EDIT THIS FILE</span>
+<span class="token comment">#</span>
+<span class="token comment"># It is automatically generated by grub2-mkconfig using templates</span>
+<span class="token comment"># from /etc/grub.d and settings from /etc/default/grub</span>
+<span class="token comment">#</span>
+
+<span class="token comment">### BEGIN /etc/grub.d/00_header ###</span>
+<span class="token builtin class-name">set</span> <span class="token assign-left variable">pager</span><span class="token operator">=</span><span class="token number">1</span>
+
+<span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token parameter variable">-s</span> <span class="token variable">$prefix</span>/grubenv <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>此文件内容繁多，开头第一句就警告应该由<code>grub2-mkconfig</code>命令来创建配置，而不是直接修改它。</p>
+<p>第一部分以### BEGIN /etc/grub.d/00_header ###开头下面的内容，大多与环境设置与默认值设置等。比较重要的是<code>set default</code>默认开机选项和<code>set timeout</code>默认超时时间。</p>
+<p>第四部分以### BEGIN /etc/grub.d/10_linux ###开头段的内容设置了<code>menuentry</code>，也就是开机给的选择项。每个选项都有不同启动参数与模块载入。比较重要的有：</p>
+<ul>
+<li>
+<p><code>set root</code>：设置 grub2 配置文件所在的分区<code>(hd0,msdos1)</code>，可以用<code>mount</code>查一下挂载的分区。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mount</span> <span class="token operator">|</span> <span class="token function">grep</span> boot
+/dev/sda1 on /boot <span class="token builtin class-name">type</span> xfs <span class="token punctuation">(</span>rw,relatime,seclabel,attr2,inode64,noquota<span class="token punctuation">)</span>
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">fdisk</span> <span class="token parameter variable">-l</span>
+Disk /dev/sda: <span class="token number">21.5</span> GB, <span class="token number">21474836480</span> bytes, <span class="token number">41943040</span> sectors
+Units <span class="token operator">=</span> sectors of <span class="token number">1</span> * <span class="token number">512</span> <span class="token operator">=</span> <span class="token number">512</span> bytes
+Sector size <span class="token punctuation">(</span>logical/physical<span class="token punctuation">)</span>: <span class="token number">512</span> bytes / <span class="token number">512</span> bytes
+I/O size <span class="token punctuation">(</span>minimum/optimal<span class="token punctuation">)</span>: <span class="token number">512</span> bytes / <span class="token number">512</span> bytes
+Disk label type: dos<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>结果显示 /boot 是挂载在<code>/dev/sda1</code>下面，分区为 MBR 格式。</p>
+</li>
+<li>
+<p><code>linux16 /vmlinuz</code>：指定内核文件以及内核文件运行时加的参数。因为/boot 独立分区的缘故，这里的内核文件路径是<code>(hd0,msdos1)/vmlinuz</code>。如果/boot 挂载在根目录下面，内核文件路径会变成<code>(hd0,msdos1)/boot/vmlinuz</code>，也就是<code>linux16 /boot/vmlinuz</code>这样。后面的<code>root</code>指定的是 Linux 系统中根目录挂载的设备。</p>
+</li>
+<li>
+<p><code>initrd16 /initramfs</code>：指定虚拟文件系统 img 的位置。</p>
+</li>
+</ul>
+<h2 id="grub2-配置维护"><a class="markdownIt-Anchor" href="#grub2-配置维护"></a> Grub2 配置维护</h2>
+<p>我们可以通过修改<code>/etc/default/grub</code>文件和<code>/etc/grub.d/</code>目录内的相关配置文件来达成修改 Grub2 配置的目的。</p>
+<p>可以查看<code>/etc/default/grub</code>文件的内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/default/grub 
+<span class="token assign-left variable">GRUB_TIMEOUT</span><span class="token operator">=</span><span class="token number">5</span>
+<span class="token assign-left variable">GRUB_DISTRIBUTOR</span><span class="token operator">=</span><span class="token string">"<span class="token variable"><span class="token variable">$(</span><span class="token function">sed</span> <span class="token string">'s, release .*$,,g'</span> /etc/system-release<span class="token variable">)</span></span>"</span>
+<span class="token assign-left variable">GRUB_DEFAULT</span><span class="token operator">=</span>saved
+<span class="token assign-left variable">GRUB_DISABLE_SUBMENU</span><span class="token operator">=</span>true
+<span class="token assign-left variable">GRUB_TERMINAL_OUTPUT</span><span class="token operator">=</span><span class="token string">"console"</span>
+<span class="token assign-left variable">GRUB_CMDLINE_LINUX</span><span class="token operator">=</span><span class="token string">"crashkernel=auto rd.lvm.lv=centos/root rd.lvm.lv=centos/swap rhgb quiet"</span>
+<span class="token assign-left variable">GRUB_DISABLE_RECOVERY</span><span class="token operator">=</span><span class="token string">"true"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中，重点选项的含义如下：</p>
+<ul>
+<li>
+<p><code>GRUB_TIMEOUT</code>：设置选择菜单等待超时的秒数。设为 0 表示不等待，设为-1 表示必须手动选择。</p>
+</li>
+<li>
+<p><code>GRUB_TIMEOUT_STYLE</code>：可以设置的值为<code>menu</code>、<code>countdown</code>、<code>hidden</code>等，默认为<code>menu</code>。这个参数也就是设置是否要显示菜单。设置为<code>countdown</code>或者<code>hidden</code>会让用户看不到任何内容。</p>
+</li>
+<li>
+<p><code>GRUB_DEFAULT</code>：菜单默认选择项目。可以设置的值有<code>saved</code>、数字、title 名、ID 名等，依据<code>menuentry</code>的设置而定。例如，在配置中定义了三条<code>menuentry</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">menuentry <span class="token string">'CentOS'</span> <span class="token parameter variable">--unrestricted</span> <span class="token variable">$menuentry_id_option</span> <span class="token string">'linux-1'</span>
+menuentry <span class="token string">'Debian'</span> <span class="token parameter variable">--unrestricted</span> <span class="token variable">$menuentry_id_option</span> <span class="token string">'gnulinux'</span>
+menuentry <span class="token string">'Windows'</span> <span class="token parameter variable">--unrestricted</span> <span class="token variable">$menuentry_id_option</span> <span class="token string">'win'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>那么对应<code>GRUB_DEFAULT</code>的值：</p>
+<ul>
+<li>值为 1 表示选用排在第 2 个定义的 Debian 系统，因为数字编号从 0 开始算。</li>
+<li>值为 win 表示选择排在第 3 个定义的 Windows 系统，通过 ID 选的值。</li>
+<li>值为 saved 表示使用<code>grub2-set-default</code>来设置哪个为默认值，通常默认为 0。</li>
+</ul>
+</li>
+<li>
+<p><code>GRUB_TERMINAL_OUTPUT</code>：信息输出的终端模式。可以设置值有<code>console</code>、<code>serial</code>、<code>gfxterm</code>、<code>vga_text</code>等。</p>
+</li>
+<li>
+<p><code>GRUB_CMDLINE_LINUX</code>：内核的外加参数功能，用来设置内核启动时还需要额外加入的参数。</p>
+</li>
+</ul>
+<p>例如修改菜单等待时间为 30 秒，之后使用<code>grub2-mkconfig</code>命令重建<code>grub.cfg</code>:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-i</span> <span class="token string">'s/GRUB_TIMEOUT=5/GRUB_TIMEOUT=30/g'</span> /etc/default/grub <span class="token punctuation">;</span> <span class="token function">head</span> <span class="token parameter variable">-1</span> /etc/default/grub
+<span class="token assign-left variable">GRUB_TIMEOUT</span><span class="token operator">=</span><span class="token number">30</span>
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ grub2-mkconfig <span class="token parameter variable">-o</span> /boot/grub2/grub.cfg
+Generating grub configuration <span class="token function">file</span> <span class="token punctuation">..</span>.
+Found linux image: /boot/vmlinuz-3.10.0-1160.41.1.el7.x86_64
+Found initrd image: /boot/initramfs-3.10.0-1160.41.1.el7.x86_64.img
+Found linux image: /boot/vmlinuz-3.10.0-862.el7.x86_64
+Found initrd image: /boot/initramfs-3.10.0-862.el7.x86_64.img
+Found linux image: /boot/vmlinuz-0-rescue-77a36143eb014dd5a0d6e738b1d84778
+Found initrd image: /boot/initramfs-0-rescue-77a36143eb014dd5a0d6e738b1d84778.img
+<span class="token keyword">done</span>
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token function">timeout</span> /boot/grub2/grub.cfg
+<span class="token keyword">if</span> <span class="token punctuation">[</span> x<span class="token variable">$feature_timeout_style</span> <span class="token operator">=</span> xy <span class="token punctuation">]</span> <span class="token punctuation">;</span> <span class="token keyword">then</span>
+  <span class="token builtin class-name">set</span> <span class="token assign-left variable">timeout_style</span><span class="token operator">=</span>menu
+  <span class="token builtin class-name">set</span> <span class="token assign-left variable">timeout</span><span class="token operator">=</span><span class="token number">30</span>
+<span class="token comment"># Fallback normal timeout code in case the timeout_style feature is</span>
+  <span class="token builtin class-name">set</span> <span class="token assign-left variable">timeout</span><span class="token operator">=</span><span class="token number">30</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>再看一看<code>/etc/grub.d</code>文件夹的内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll /etc/grub.d
+total <span class="token number">72</span>
+-rwxr-xr-x. <span class="token number">1</span> root root  <span class="token number">8702</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> 00_header
+-rwxr-xr-x. <span class="token number">1</span> root root  <span class="token number">1043</span> Mar <span class="token number">21</span>  <span class="token number">2019</span> 00_tuned
+-rwxr-xr-x. <span class="token number">1</span> root root   <span class="token number">232</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> 01_users
+-rwxr-xr-x. <span class="token number">1</span> root root <span class="token number">10781</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> 10_linux
+-rwxr-xr-x. <span class="token number">1</span> root root <span class="token number">10275</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> 20_linux_xen
+-rwxr-xr-x. <span class="token number">1</span> root root  <span class="token number">2559</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> 20_ppc_terminfo
+-rwxr-xr-x. <span class="token number">1</span> root root <span class="token number">11169</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> 30_os-prober
+-rwxr-xr-x. <span class="token number">1</span> root root   <span class="token number">214</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> 40_custom
+-rwxr-xr-x. <span class="token number">1</span> root root   <span class="token number">216</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> 41_custom
+-rw-r--r--. <span class="token number">1</span> root root   <span class="token number">483</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> README<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到文件名刚好和<code>grub.cfg</code>中段头对应。主要文件有：</p>
+<ul>
+<li><code>00_header</code>: 主要在创建初始的显示项目，包括需要载入的模块分析，屏幕终端格式，倒数秒数，菜单是否要隐藏等，大部分在<code>/etc/default/grub</code>里面设置的变量，用到这个脚本里用来重建<code>grub.cfg</code>。</li>
+<li><code>01_users</code>: 设置账号密码，用来管控每个菜单选项进入权限。权限用在<code>menuentry</code>中有三种：不受限(<code>unrestricted</code>)，用户(<code>users</code>)，超级用户(<code>superusers</code>)。其中只有超级用户可以使用启动项编辑模式。</li>
+<li><code>10_linux</code>: 根据分析<code>/boot</code>下面的文件，尝试找到正确的 Linux 内核文件与虚拟文件系统镜像等，脚本会将找到的文件路径写入到<code>grub.cfg</code>中。因为每一内核文件都会建立一个启动选项，所以可以适当删除旧内核文件来精简启动菜单。</li>
+<li><code>30_os-prober</code>: 这个脚本用来找其他分区中可能存在的操作系统，如果找到则将其加入启动菜单中。可以在<code>/etc/default/grub</code>中加上<code>GRUB_DISABLE_OS_PROBER=true</code>参数来取消这一扫描。</li>
+<li><code>40_custom</code>: 用来手动添加菜单项目。例如想新增一个<code>menuentry</code>来指定开机进入图形模式，可以在<code>grub.cfg</code>中复制一个<code>menuentry</code>段，修改对应的<code>title</code>、<code>id</code>与<code>linux16</code>后面的参数（增加 <code>systemd.unit=graphical.target</code>），然后再用<code>grub2-mkconfig</code>命令重建<code>grub.cfg</code>即可。</li>
+</ul>
+<h2 id="设置多重引导"><a class="markdownIt-Anchor" href="#设置多重引导"></a> 设置多重引导</h2>
+<p>多重引导使用开机管理程序的链接（Chain Loader）功能，将开机引导程序指向其他位置。只需要设置另一个开机引导程序所在分区代号和所在扇区就可以了。</p>
+<p>假设系统有一块硬盘两个分区，分别装了 Linux（sdb1）和 Windows（sdb2），我们需要增加两个开机选项，一个指向 Windows 开机菜单，一个回到 MBR 的默认环境。<code>40_custom</code>文件内容大致如下：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/grub.d/40_custom 
+<span class="token comment">#!/bin/sh</span>
+<span class="token builtin class-name">exec</span> <span class="token function">tail</span> <span class="token parameter variable">-n</span> +3 <span class="token variable">$0</span>
+<span class="token comment"># This file provides an easy way to add custom menu entries.  Simply type the</span>
+<span class="token comment"># menu entries you want to add after this comment.  Be careful not to change</span>
+<span class="token comment"># the 'exec tail' line above.</span>
+menuentry <span class="token string">'Windows'</span> <span class="token parameter variable">--id</span> <span class="token string">'win'</span> <span class="token punctuation">&#123;</span>
+        insmod chain
+        insmod ntfs
+        <span class="token builtin class-name">set</span> <span class="token assign-left variable">root</span><span class="token operator">=</span><span class="token punctuation">(</span>hd0,msdos2<span class="token punctuation">)</span>
+        chainloader +1
+menuentry <span class="token string">'MBR'</span> <span class="token parameter variable">--id</span> <span class="token string">'mbr'</span> <span class="token punctuation">&#123;</span>
+        insmod chain
+        <span class="token builtin class-name">set</span> <span class="token assign-left variable">root</span><span class="token operator">=</span><span class="token punctuation">(</span>hd0<span class="token punctuation">)</span>
+        chainloader +1
+<span class="token string">"/etc/grub.d/40_custom"</span> 14L, 469C written
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中最重要的是载入 <code>chain</code> 和 <code>ntfs</code> 模块，由此 Grub2 才能正确读取文件系统执行 Chain Loader 功能。</p>
+<h2 id="启动项编辑模式"><a class="markdownIt-Anchor" href="#启动项编辑模式"></a> 启动项编辑模式</h2>
+<p>在启动菜单出现后，可以按下 e 进入启动项编辑模式。也就是直接编辑<code>grub.cfg</code>文件内容。</p>
+<p>例如，可以在<code>systemd.unit</code>中指定为<code>rescue.target</code>，这样就能直接进入救援模式，而不需要先进入系统。修改完毕后，使用快捷键 <code>[Ctrl]+x</code> 来执行。</p>
+<h1 id="启动异常处理"><a class="markdownIt-Anchor" href="#启动异常处理"></a> 启动异常处理</h1>
+<p>通常因为某些不正常的设置或不正常关机导致无法顺利开机时,可以进入 rescue 模式去处理.</p>
+<h2 id="忘记-root-密码"><a class="markdownIt-Anchor" href="#忘记-root-密码"></a> 忘记 root 密码</h2>
+<p>在使用 grub 做引导的系统可以这样处理：</p>
+<ol>
+<li>启动系统，在选择启动项的界面下，按 <code>e</code> 进入默认启动项 grub 编辑模式。</li>
+<li>移动到有 kernel 那行，再按一次 <code>e</code> 进入编辑界面，在最后方输入 <code>single</code>。</li>
+<li>按下回车，再按下 <code>b</code> 就可以进入单用户维护模式。</li>
+<li>这一模式下可以直接用 <code>passwd</code> 命令修改 root 密码。</li>
+</ol>
+<p>CentOS 7 中 rescue 模式也需要 root 密码才能登录，因此可以进入 emergency 救援模式：</p>
+<ol>
+<li>按 <code>e</code> 进入编辑默认启动项 grub，找到 linux16 那行，在最末尾输入 <code>init=/bin/sh</code>，按 <code>[Ctrl]+x</code> 执行；</li>
+<li>进入 emergency 模式后，输入 <code>mount -o remount,rw /</code> 命令将根目录挂载为可读写模式；</li>
+<li>然后使用 <code>passwd</code> 命令设置新的 root 密码；</li>
+<li>最后输入 <code>touch /.autorelabel</code> 更新系统信息，让 SELinux 生效；</li>
+<li>执行 <code>exec /sbin/init</code> 或 <code>reboot</code> 即可退出救援模式。</li>
+</ol>
+<p>通过 rd.break（Ram Disk 里面的操作系统）内核启动参数也可以处理：</p>
+<ol>
+<li>同样在编辑默认启动项 grub，在 linux16 那行末尾加入 <code>rd.break</code> 参数，按 <code>[Ctrl]+x</code> 执行；</li>
+<li>此时进入的是 Ram Disk 环境，系统被挂载到 <code>/sysroot</code> 目录下，用 <code>mount -o remount,rw /sysroot</code> 重新挂载；</li>
+<li>用命令 <code>chroot /sysroot</code> 来切换根目录，并使用 <code>passwd</code> 命令修改密码；</li>
+<li>同样用 <code>touch /.autorelabel</code> 来变回 SELinux 的安全标签。重启即可。</li>
+</ol>
+<p><code>touch /.autorelabel</code> 命令的作用：</p>
+<ul>
+<li>
+<p>在救援模式下系统没有 SELinux，所以用 <code>passwd</code> 命令修改了 <code>/etc/shadow</code> 文件后，它的 SELinux 安全标签会被取消，在 SELinux 为 Enforcing 模式下会无法登录系统。</p>
+</li>
+<li>
+<p>创建 <code>/.autorelabel</code> 文件就是要让系统在开机时自动使用默认 SELinux 类型重写入 SELinux 安全标签到每个文件。</p>
+</li>
+<li>
+<p>如果不想让每个文件都更新标签，可以改完密码后，将 SELinux 运行模式改为 permissive（修改 <code>/etc/selinux/config</code> 文件）。再重新开机后运行 <code>restorecon -Rv /etc</code> 仅恢复 <code>/etc</code> 目录下的默认安全上下文类型。最后将 SELinux 配置文件的运行模式改回 enforcing，用 <code>setenforce 1</code> 来生效。</p>
+</li>
+</ul>
+<h2 id="文件系统错误"><a class="markdownIt-Anchor" href="#文件系统错误"></a> 文件系统错误</h2>
+<p>断电或不正常关机会导致文件系统错误，通常是软件数据问题。如果根目录没有损坏，可以进入维护模式下使用<code>fsck</code>命令修复<code>ext4</code>格式的分区。修复完毕后以<code>reboot</code>重启即可：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">fsck</span> /dev/sda2
+<span class="token function">fsck</span> from util-linux <span class="token number">2.23</span>.2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>如果是<code>xfs</code>格式分区则使用<code>xfs_repair</code>命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_repair /dev/sda2
+xfs_repair: cannot <span class="token function">open</span> /dev/sda2: Device or resource busy<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>如果整个硬盘只有一个大区，那文件系统错误一定是根目录的问题。这时候需要将硬盘拔下来，接到另外一台 Linux 系统的机器上，并且不要挂载，以<code>root</code>身份执行<code>fsck</code>或<code>xfs_repair</code>命令修复。</p>
+<p>还有一种方法是使用 U 盘刻成 Live CD，在 U 盘启动的系统中执行修复命令。</p>
+<h1 id="关机重启"><a class="markdownIt-Anchor" href="#关机重启"></a> 关机重启</h1>
+<p>切换运行级别和模式并不会重启.</p>
+<h2 id="查看用户在线状态"><a class="markdownIt-Anchor" href="#查看用户在线状态"></a> 查看用户在线状态</h2>
+<p>如果有其他用户在线，强制关机可能会导致用户文件丢失，可以先使用<code>who</code>命令查看当前已登录的用户信息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">who</span> <span class="token parameter variable">-Hu</span>
+NAME     LINE         TIME             IDLE          PID COMMENT
+root     tty1         <span class="token number">2021</span>-09-11 09:35  old          <span class="token number">897</span>
+root     pts/0        <span class="token number">2021</span>-09-15 <span class="token number">12</span>:12   <span class="token builtin class-name">.</span>          <span class="token number">5334</span> <span class="token punctuation">(</span><span class="token number">192.168</span>.2.101<span class="token punctuation">)</span>
+root     pts/1        <span class="token number">2021</span>-09-14 08:40  old        <span class="token number">55207</span> <span class="token punctuation">(</span><span class="token number">192.168</span>.2.101<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="数据写回"><a class="markdownIt-Anchor" href="#数据写回"></a> 数据写回</h2>
+<p>默认情况下，某些加载到内存中的数据不会直接被写回硬盘，而是暂存在内存中。可以手动同步将数据写入硬盘：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">sync</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>使用重启或关机命令前也会自动调用<code>sync</code>命令。</p>
+<p>当非管理员使用<code>sync</code>命令时，只会更新该用户的操作数据。</p>
+<h2 id="关机操作"><a class="markdownIt-Anchor" href="#关机操作"></a> 关机操作</h2>
+<p>通常使用<code>shutdown</code>命令来进行关机操作。</p>
+<p>立即关机：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">shutdown</span> <span class="token parameter variable">-h</span> now<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>预定在 21:00 关机。如果当前时间超过 21:00 则会在隔天 21:00 才关机：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">shutdown</span> <span class="token parameter variable">-h</span> <span class="token number">21</span>:00<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>预定 2 分钟后关机，并发送消息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">shutdown</span> <span class="token parameter variable">-P</span> <span class="token number">120</span> <span class="token string">"will  poweroff"</span>
+Shutdown scheduled <span class="token keyword">for</span> Wed <span class="token number">2021</span>-09-15 <span class="token number">16</span>:01:48 EDT, use <span class="token string">'shutdown -c'</span> to cancel.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>取消即将进行的关机操作：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">shutdown</span> <span class="token parameter variable">-c</span>
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ 
+Broadcast message from root@101c7 <span class="token punctuation">(</span>Wed <span class="token number">2021</span>-09-15 <span class="token number">14</span>:01:54 EDT<span class="token punctuation">)</span>:
+
+The system <span class="token function">shutdown</span> has been cancelled at Wed <span class="token number">2021</span>-09-15 <span class="token number">14</span>:02:54 EDT<span class="token operator">!</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="重启操作"><a class="markdownIt-Anchor" href="#重启操作"></a> 重启操作</h2>
+<p>重启命令可用<code>reboot</code>或<code>halt</code>，选择其一即可。</p>
+<p>立即强制关机：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">halt</span> <span class="token parameter variable">-P</span> <span class="token parameter variable">-f</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>同步后重启系统：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">sync</span><span class="token punctuation">;</span> <span class="token function">sync</span><span class="token punctuation">;</span> <span class="token function">sync</span><span class="token punctuation">;</span> <span class="token function">reboot</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="切换执行等级"><a class="markdownIt-Anchor" href="#切换执行等级"></a> 切换执行等级</h2>
+<p>可以通过<code>init</code>命令来切换运行级别，例如进入单用户维护模式：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ init <span class="token number">1</span>
+Broadcast message from root@localhost.localdomain on pts/1 <span class="token punctuation">(</span>Fri <span class="token number">2019</span>-07-05 <span class="token number">15</span>:40:59 CST<span class="token punctuation">)</span>:
+
+The system is going down to rescue mode NOW<span class="token operator">!</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在 CentOS 7 中则是由<code>systemctl</code>来管理模式之间的切换，例如切换到救援模式：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ systemctl isolate rescue.target<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>1.基本操作</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Linux 下压缩和解压操作</title>
     <url>/635683850/</url>
     <content><![CDATA[<h1 id="常见压缩格式"><a class="markdownIt-Anchor" href="#常见压缩格式"></a> 常见压缩格式</h1>
@@ -9479,273 +9746,6 @@ etc/sudo.conf
 <span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll etc/
 total <span class="token number">4</span>
 -rw-r-----. <span class="token number">1</span> root root <span class="token number">1786</span> Sep <span class="token number">30</span>  <span class="token number">2020</span> sudo.conf<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>1.基本操作</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>Linux 引导启动配置与关机</title>
-    <url>/3107904477/</url>
-    <content><![CDATA[<h1 id="启动引导程序"><a class="markdownIt-Anchor" href="#启动引导程序"></a> 启动引导程序</h1>
-<p>目前在 Linux 下主要的引导启动程序是 Grub(Grand Unified Bootloader) 或 Grub2。通常 Grub2 主程序会将配置文件放到 /boot/grub2 目录下。Grub 则是直接修改 /boot/grub/grub.conf，一个很简单的配置文件。</p>
-<p>Grub2 引导程序的特点有：</p>
-<ul>
-<li>
-<p>认识与支持更多文件系统，并且可以使用 Grub2 的主程序直接在文件系统中搜寻内核文件名。</p>
-</li>
-<li>
-<p>开机时候，可以自行编辑与修改开机设置项目，类似 bash 的命令模式。</p>
-</li>
-<li>
-<p>可以动态搜寻配置文件，而不需要在修改配置后重新安装 Grub2。</p>
-</li>
-</ul>
-<p>Grub2 对硬盘的代号设置与 Linux 中不同，一般用下面代号：</p>
-<ul>
-<li>
-<p>(hd0,1)：一般的默认语法，由 Grub2 自动判断分区格式。</p>
-</li>
-<li>
-<p>(hd0,msdos1)：磁盘的分区为传统的 MBR 模式。</p>
-</li>
-<li>
-<p>(hd0,gpt1)：磁盘的分区为 GPT 模式。</p>
-</li>
-</ul>
-<p>硬盘代号用小括号()括起来，以搜寻顺序做硬盘编号，第一个分区从 1 开始计算，而不是 Grub 的 0 开始算。</p>
-<p>默认情况下 Grub2 随系统已经装好了，特殊情况下要手动安装 Grub2 可以使用 grub2-install 命令。例如安装到 /dev/sdc 下面：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ grub2-install /dev/sdc
-Installing <span class="token keyword">for</span> i386-pc platform.
-Installation finished. No error reported.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h2 id="grub2-配置文件"><a class="markdownIt-Anchor" href="#grub2-配置文件"></a> Grub2 配置文件</h2>
-<p>Grub2 的配置文件路径为 /boot/grub2/grub.cfg：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /boot/grub2/grub.cfg
-<span class="token comment">#</span>
-<span class="token comment"># DO NOT EDIT THIS FILE</span>
-<span class="token comment">#</span>
-<span class="token comment"># It is automatically generated by grub2-mkconfig using templates</span>
-<span class="token comment"># from /etc/grub.d and settings from /etc/default/grub</span>
-<span class="token comment">#</span>
-
-<span class="token comment">### BEGIN /etc/grub.d/00_header ###</span>
-<span class="token builtin class-name">set</span> <span class="token assign-left variable">pager</span><span class="token operator">=</span><span class="token number">1</span>
-
-<span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token parameter variable">-s</span> <span class="token variable">$prefix</span>/grubenv <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>此文件内容繁多，开头第一句就警告应该由<code>grub2-mkconfig</code>命令来创建配置，而不是直接修改它。</p>
-<p>第一部分以### BEGIN /etc/grub.d/00_header ###开头下面的内容，大多与环境设置与默认值设置等。比较重要的是<code>set default</code>默认开机选项和<code>set timeout</code>默认超时时间。</p>
-<p>第四部分以### BEGIN /etc/grub.d/10_linux ###开头段的内容设置了<code>menuentry</code>，也就是开机给的选择项。每个选项都有不同启动参数与模块载入。比较重要的有：</p>
-<ul>
-<li>
-<p><code>set root</code>：设置 grub2 配置文件所在的分区<code>(hd0,msdos1)</code>，可以用<code>mount</code>查一下挂载的分区。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mount</span> <span class="token operator">|</span> <span class="token function">grep</span> boot
-/dev/sda1 on /boot <span class="token builtin class-name">type</span> xfs <span class="token punctuation">(</span>rw,relatime,seclabel,attr2,inode64,noquota<span class="token punctuation">)</span>
-<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">fdisk</span> <span class="token parameter variable">-l</span>
-Disk /dev/sda: <span class="token number">21.5</span> GB, <span class="token number">21474836480</span> bytes, <span class="token number">41943040</span> sectors
-Units <span class="token operator">=</span> sectors of <span class="token number">1</span> * <span class="token number">512</span> <span class="token operator">=</span> <span class="token number">512</span> bytes
-Sector size <span class="token punctuation">(</span>logical/physical<span class="token punctuation">)</span>: <span class="token number">512</span> bytes / <span class="token number">512</span> bytes
-I/O size <span class="token punctuation">(</span>minimum/optimal<span class="token punctuation">)</span>: <span class="token number">512</span> bytes / <span class="token number">512</span> bytes
-Disk label type: dos<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>结果显示 /boot 是挂载在<code>/dev/sda1</code>下面，分区为 MBR 格式。</p>
-</li>
-<li>
-<p><code>linux16 /vmlinuz</code>：指定内核文件以及内核文件运行时加的参数。因为/boot 独立分区的缘故，这里的内核文件路径是<code>(hd0,msdos1)/vmlinuz</code>。如果/boot 挂载在根目录下面，内核文件路径会变成<code>(hd0,msdos1)/boot/vmlinuz</code>，也就是<code>linux16 /boot/vmlinuz</code>这样。后面的<code>root</code>指定的是 Linux 系统中根目录挂载的设备。</p>
-</li>
-<li>
-<p><code>initrd16 /initramfs</code>：指定虚拟文件系统 img 的位置。</p>
-</li>
-</ul>
-<h2 id="grub2-配置维护"><a class="markdownIt-Anchor" href="#grub2-配置维护"></a> Grub2 配置维护</h2>
-<p>我们可以通过修改<code>/etc/default/grub</code>文件和<code>/etc/grub.d/</code>目录内的相关配置文件来达成修改 Grub2 配置的目的。</p>
-<p>可以查看<code>/etc/default/grub</code>文件的内容：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/default/grub 
-<span class="token assign-left variable">GRUB_TIMEOUT</span><span class="token operator">=</span><span class="token number">5</span>
-<span class="token assign-left variable">GRUB_DISTRIBUTOR</span><span class="token operator">=</span><span class="token string">"<span class="token variable"><span class="token variable">$(</span><span class="token function">sed</span> <span class="token string">'s, release .*$,,g'</span> /etc/system-release<span class="token variable">)</span></span>"</span>
-<span class="token assign-left variable">GRUB_DEFAULT</span><span class="token operator">=</span>saved
-<span class="token assign-left variable">GRUB_DISABLE_SUBMENU</span><span class="token operator">=</span>true
-<span class="token assign-left variable">GRUB_TERMINAL_OUTPUT</span><span class="token operator">=</span><span class="token string">"console"</span>
-<span class="token assign-left variable">GRUB_CMDLINE_LINUX</span><span class="token operator">=</span><span class="token string">"crashkernel=auto rd.lvm.lv=centos/root rd.lvm.lv=centos/swap rhgb quiet"</span>
-<span class="token assign-left variable">GRUB_DISABLE_RECOVERY</span><span class="token operator">=</span><span class="token string">"true"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>其中，重点选项的含义如下：</p>
-<ul>
-<li>
-<p><code>GRUB_TIMEOUT</code>：设置选择菜单等待超时的秒数。设为 0 表示不等待，设为-1 表示必须手动选择。</p>
-</li>
-<li>
-<p><code>GRUB_TIMEOUT_STYLE</code>：可以设置的值为<code>menu</code>、<code>countdown</code>、<code>hidden</code>等，默认为<code>menu</code>。这个参数也就是设置是否要显示菜单。设置为<code>countdown</code>或者<code>hidden</code>会让用户看不到任何内容。</p>
-</li>
-<li>
-<p><code>GRUB_DEFAULT</code>：菜单默认选择项目。可以设置的值有<code>saved</code>、数字、title 名、ID 名等，依据<code>menuentry</code>的设置而定。例如，在配置中定义了三条<code>menuentry</code>：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">menuentry <span class="token string">'CentOS'</span> <span class="token parameter variable">--unrestricted</span> <span class="token variable">$menuentry_id_option</span> <span class="token string">'linux-1'</span>
-menuentry <span class="token string">'Debian'</span> <span class="token parameter variable">--unrestricted</span> <span class="token variable">$menuentry_id_option</span> <span class="token string">'gnulinux'</span>
-menuentry <span class="token string">'Windows'</span> <span class="token parameter variable">--unrestricted</span> <span class="token variable">$menuentry_id_option</span> <span class="token string">'win'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>那么对应<code>GRUB_DEFAULT</code>的值：</p>
-<ul>
-<li>值为 1 表示选用排在第 2 个定义的 Debian 系统，因为数字编号从 0 开始算。</li>
-<li>值为 win 表示选择排在第 3 个定义的 Windows 系统，通过 ID 选的值。</li>
-<li>值为 saved 表示使用<code>grub2-set-default</code>来设置哪个为默认值，通常默认为 0。</li>
-</ul>
-</li>
-<li>
-<p><code>GRUB_TERMINAL_OUTPUT</code>：信息输出的终端模式。可以设置值有<code>console</code>、<code>serial</code>、<code>gfxterm</code>、<code>vga_text</code>等。</p>
-</li>
-<li>
-<p><code>GRUB_CMDLINE_LINUX</code>：内核的外加参数功能，用来设置内核启动时还需要额外加入的参数。</p>
-</li>
-</ul>
-<p>例如修改菜单等待时间为 30 秒，之后使用<code>grub2-mkconfig</code>命令重建<code>grub.cfg</code>:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-i</span> <span class="token string">'s/GRUB_TIMEOUT=5/GRUB_TIMEOUT=30/g'</span> /etc/default/grub <span class="token punctuation">;</span> <span class="token function">head</span> <span class="token parameter variable">-1</span> /etc/default/grub
-<span class="token assign-left variable">GRUB_TIMEOUT</span><span class="token operator">=</span><span class="token number">30</span>
-<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ grub2-mkconfig <span class="token parameter variable">-o</span> /boot/grub2/grub.cfg
-Generating grub configuration <span class="token function">file</span> <span class="token punctuation">..</span>.
-Found linux image: /boot/vmlinuz-3.10.0-1160.41.1.el7.x86_64
-Found initrd image: /boot/initramfs-3.10.0-1160.41.1.el7.x86_64.img
-Found linux image: /boot/vmlinuz-3.10.0-862.el7.x86_64
-Found initrd image: /boot/initramfs-3.10.0-862.el7.x86_64.img
-Found linux image: /boot/vmlinuz-0-rescue-77a36143eb014dd5a0d6e738b1d84778
-Found initrd image: /boot/initramfs-0-rescue-77a36143eb014dd5a0d6e738b1d84778.img
-<span class="token keyword">done</span>
-<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token function">timeout</span> /boot/grub2/grub.cfg
-<span class="token keyword">if</span> <span class="token punctuation">[</span> x<span class="token variable">$feature_timeout_style</span> <span class="token operator">=</span> xy <span class="token punctuation">]</span> <span class="token punctuation">;</span> <span class="token keyword">then</span>
-  <span class="token builtin class-name">set</span> <span class="token assign-left variable">timeout_style</span><span class="token operator">=</span>menu
-  <span class="token builtin class-name">set</span> <span class="token assign-left variable">timeout</span><span class="token operator">=</span><span class="token number">30</span>
-<span class="token comment"># Fallback normal timeout code in case the timeout_style feature is</span>
-  <span class="token builtin class-name">set</span> <span class="token assign-left variable">timeout</span><span class="token operator">=</span><span class="token number">30</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>再看一看<code>/etc/grub.d</code>文件夹的内容：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll /etc/grub.d
-total <span class="token number">72</span>
--rwxr-xr-x. <span class="token number">1</span> root root  <span class="token number">8702</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> 00_header
--rwxr-xr-x. <span class="token number">1</span> root root  <span class="token number">1043</span> Mar <span class="token number">21</span>  <span class="token number">2019</span> 00_tuned
--rwxr-xr-x. <span class="token number">1</span> root root   <span class="token number">232</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> 01_users
--rwxr-xr-x. <span class="token number">1</span> root root <span class="token number">10781</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> 10_linux
--rwxr-xr-x. <span class="token number">1</span> root root <span class="token number">10275</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> 20_linux_xen
--rwxr-xr-x. <span class="token number">1</span> root root  <span class="token number">2559</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> 20_ppc_terminfo
--rwxr-xr-x. <span class="token number">1</span> root root <span class="token number">11169</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> 30_os-prober
--rwxr-xr-x. <span class="token number">1</span> root root   <span class="token number">214</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> 40_custom
--rwxr-xr-x. <span class="token number">1</span> root root   <span class="token number">216</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> 41_custom
--rw-r--r--. <span class="token number">1</span> root root   <span class="token number">483</span> Mar <span class="token number">16</span>  <span class="token number">2021</span> README<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以看到文件名刚好和<code>grub.cfg</code>中段头对应。主要文件有：</p>
-<ul>
-<li><code>00_header</code>: 主要在创建初始的显示项目，包括需要载入的模块分析，屏幕终端格式，倒数秒数，菜单是否要隐藏等，大部分在<code>/etc/default/grub</code>里面设置的变量，用到这个脚本里用来重建<code>grub.cfg</code>。</li>
-<li><code>01_users</code>: 设置账号密码，用来管控每个菜单选项进入权限。权限用在<code>menuentry</code>中有三种：不受限(<code>unrestricted</code>)，用户(<code>users</code>)，超级用户(<code>superusers</code>)。其中只有超级用户可以使用启动项编辑模式。</li>
-<li><code>10_linux</code>: 根据分析<code>/boot</code>下面的文件，尝试找到正确的 Linux 内核文件与虚拟文件系统镜像等，脚本会将找到的文件路径写入到<code>grub.cfg</code>中。因为每一内核文件都会建立一个启动选项，所以可以适当删除旧内核文件来精简启动菜单。</li>
-<li><code>30_os-prober</code>: 这个脚本用来找其他分区中可能存在的操作系统，如果找到则将其加入启动菜单中。可以在<code>/etc/default/grub</code>中加上<code>GRUB_DISABLE_OS_PROBER=true</code>参数来取消这一扫描。</li>
-<li><code>40_custom</code>: 用来手动添加菜单项目。例如想新增一个<code>menuentry</code>来指定开机进入图形模式，可以在<code>grub.cfg</code>中复制一个<code>menuentry</code>段，修改对应的<code>title</code>、<code>id</code>与<code>linux16</code>后面的参数（增加 <code>systemd.unit=graphical.target</code>），然后再用<code>grub2-mkconfig</code>命令重建<code>grub.cfg</code>即可。</li>
-</ul>
-<h2 id="设置多重引导"><a class="markdownIt-Anchor" href="#设置多重引导"></a> 设置多重引导</h2>
-<p>多重引导使用开机管理程序的链接（Chain Loader）功能，将开机引导程序指向其他位置。只需要设置另一个开机引导程序所在分区代号和所在扇区就可以了。</p>
-<p>假设系统有一块硬盘两个分区，分别装了 Linux（sdb1）和 Windows（sdb2），我们需要增加两个开机选项，一个指向 Windows 开机菜单，一个回到 MBR 的默认环境。<code>40_custom</code>文件内容大致如下：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/grub.d/40_custom 
-<span class="token comment">#!/bin/sh</span>
-<span class="token builtin class-name">exec</span> <span class="token function">tail</span> <span class="token parameter variable">-n</span> +3 <span class="token variable">$0</span>
-<span class="token comment"># This file provides an easy way to add custom menu entries.  Simply type the</span>
-<span class="token comment"># menu entries you want to add after this comment.  Be careful not to change</span>
-<span class="token comment"># the 'exec tail' line above.</span>
-menuentry <span class="token string">'Windows'</span> <span class="token parameter variable">--id</span> <span class="token string">'win'</span> <span class="token punctuation">&#123;</span>
-        insmod chain
-        insmod ntfs
-        <span class="token builtin class-name">set</span> <span class="token assign-left variable">root</span><span class="token operator">=</span><span class="token punctuation">(</span>hd0,msdos2<span class="token punctuation">)</span>
-        chainloader +1
-menuentry <span class="token string">'MBR'</span> <span class="token parameter variable">--id</span> <span class="token string">'mbr'</span> <span class="token punctuation">&#123;</span>
-        insmod chain
-        <span class="token builtin class-name">set</span> <span class="token assign-left variable">root</span><span class="token operator">=</span><span class="token punctuation">(</span>hd0<span class="token punctuation">)</span>
-        chainloader +1
-<span class="token string">"/etc/grub.d/40_custom"</span> 14L, 469C written
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>其中最重要的是载入 <code>chain</code> 和 <code>ntfs</code> 模块，由此 Grub2 才能正确读取文件系统执行 Chain Loader 功能。</p>
-<h2 id="启动项编辑模式"><a class="markdownIt-Anchor" href="#启动项编辑模式"></a> 启动项编辑模式</h2>
-<p>在启动菜单出现后，可以按下 e 进入启动项编辑模式。也就是直接编辑<code>grub.cfg</code>文件内容。</p>
-<p>例如，可以在<code>systemd.unit</code>中指定为<code>rescue.target</code>，这样就能直接进入救援模式，而不需要先进入系统。修改完毕后，使用快捷键 <code>[Ctrl]+x</code> 来执行。</p>
-<h1 id="启动异常处理"><a class="markdownIt-Anchor" href="#启动异常处理"></a> 启动异常处理</h1>
-<p>通常因为某些不正常的设置或不正常关机导致无法顺利开机时,可以进入 rescue 模式去处理.</p>
-<h2 id="忘记-root-密码"><a class="markdownIt-Anchor" href="#忘记-root-密码"></a> 忘记 root 密码</h2>
-<p>在使用 grub 做引导的系统可以这样处理：</p>
-<ol>
-<li>启动系统，在选择启动项的界面下，按 <code>e</code> 进入默认启动项 grub 编辑模式。</li>
-<li>移动到有 kernel 那行，再按一次 <code>e</code> 进入编辑界面，在最后方输入 <code>single</code>。</li>
-<li>按下回车，再按下 <code>b</code> 就可以进入单用户维护模式。</li>
-<li>这一模式下可以直接用 <code>passwd</code> 命令修改 root 密码。</li>
-</ol>
-<p>CentOS 7 中 rescue 模式也需要 root 密码才能登录，因此可以进入 emergency 救援模式：</p>
-<ol>
-<li>按 <code>e</code> 进入编辑默认启动项 grub，找到 linux16 那行，在最末尾输入 <code>init=/bin/sh</code>，按 <code>[Ctrl]+x</code> 执行；</li>
-<li>进入 emergency 模式后，输入 <code>mount -o remount,rw /</code> 命令将根目录挂载为可读写模式；</li>
-<li>然后使用 <code>passwd</code> 命令设置新的 root 密码；</li>
-<li>最后输入 <code>touch /.autorelabel</code> 更新系统信息，让 SELinux 生效；</li>
-<li>执行 <code>exec /sbin/init</code> 或 <code>reboot</code> 即可退出救援模式。</li>
-</ol>
-<p>通过 rd.break（Ram Disk 里面的操作系统）内核启动参数也可以处理：</p>
-<ol>
-<li>同样在编辑默认启动项 grub，在 linux16 那行末尾加入 <code>rd.break</code> 参数，按 <code>[Ctrl]+x</code> 执行；</li>
-<li>此时进入的是 Ram Disk 环境，系统被挂载到 <code>/sysroot</code> 目录下，用 <code>mount -o remount,rw /sysroot</code> 重新挂载；</li>
-<li>用命令 <code>chroot /sysroot</code> 来切换根目录，并使用 <code>passwd</code> 命令修改密码；</li>
-<li>同样用 <code>touch /.autorelabel</code> 来变回 SELinux 的安全标签。重启即可。</li>
-</ol>
-<p><code>touch /.autorelabel</code> 命令的作用：</p>
-<ul>
-<li>
-<p>在救援模式下系统没有 SELinux，所以用 <code>passwd</code> 命令修改了 <code>/etc/shadow</code> 文件后，它的 SELinux 安全标签会被取消，在 SELinux 为 Enforcing 模式下会无法登录系统。</p>
-</li>
-<li>
-<p>创建 <code>/.autorelabel</code> 文件就是要让系统在开机时自动使用默认 SELinux 类型重写入 SELinux 安全标签到每个文件。</p>
-</li>
-<li>
-<p>如果不想让每个文件都更新标签，可以改完密码后，将 SELinux 运行模式改为 permissive（修改 <code>/etc/selinux/config</code> 文件）。再重新开机后运行 <code>restorecon -Rv /etc</code> 仅恢复 <code>/etc</code> 目录下的默认安全上下文类型。最后将 SELinux 配置文件的运行模式改回 enforcing，用 <code>setenforce 1</code> 来生效。</p>
-</li>
-</ul>
-<h2 id="文件系统错误"><a class="markdownIt-Anchor" href="#文件系统错误"></a> 文件系统错误</h2>
-<p>断电或不正常关机会导致文件系统错误，通常是软件数据问题。如果根目录没有损坏，可以进入维护模式下使用<code>fsck</code>命令修复<code>ext4</code>格式的分区。修复完毕后以<code>reboot</code>重启即可：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">fsck</span> /dev/sda2
-<span class="token function">fsck</span> from util-linux <span class="token number">2.23</span>.2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>如果是<code>xfs</code>格式分区则使用<code>xfs_repair</code>命令：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_repair /dev/sda2
-xfs_repair: cannot <span class="token function">open</span> /dev/sda2: Device or resource busy<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>如果整个硬盘只有一个大区，那文件系统错误一定是根目录的问题。这时候需要将硬盘拔下来，接到另外一台 Linux 系统的机器上，并且不要挂载，以<code>root</code>身份执行<code>fsck</code>或<code>xfs_repair</code>命令修复。</p>
-<p>还有一种方法是使用 U 盘刻成 Live CD，在 U 盘启动的系统中执行修复命令。</p>
-<h1 id="关机重启"><a class="markdownIt-Anchor" href="#关机重启"></a> 关机重启</h1>
-<p>切换运行级别和模式并不会重启.</p>
-<h2 id="查看用户在线状态"><a class="markdownIt-Anchor" href="#查看用户在线状态"></a> 查看用户在线状态</h2>
-<p>如果有其他用户在线，强制关机可能会导致用户文件丢失，可以先使用<code>who</code>命令查看当前已登录的用户信息：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">who</span> <span class="token parameter variable">-Hu</span>
-NAME     LINE         TIME             IDLE          PID COMMENT
-root     tty1         <span class="token number">2021</span>-09-11 09:35  old          <span class="token number">897</span>
-root     pts/0        <span class="token number">2021</span>-09-15 <span class="token number">12</span>:12   <span class="token builtin class-name">.</span>          <span class="token number">5334</span> <span class="token punctuation">(</span><span class="token number">192.168</span>.2.101<span class="token punctuation">)</span>
-root     pts/1        <span class="token number">2021</span>-09-14 08:40  old        <span class="token number">55207</span> <span class="token punctuation">(</span><span class="token number">192.168</span>.2.101<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="数据写回"><a class="markdownIt-Anchor" href="#数据写回"></a> 数据写回</h2>
-<p>默认情况下，某些加载到内存中的数据不会直接被写回硬盘，而是暂存在内存中。可以手动同步将数据写入硬盘：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">sync</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>使用重启或关机命令前也会自动调用<code>sync</code>命令。</p>
-<p>当非管理员使用<code>sync</code>命令时，只会更新该用户的操作数据。</p>
-<h2 id="关机操作"><a class="markdownIt-Anchor" href="#关机操作"></a> 关机操作</h2>
-<p>通常使用<code>shutdown</code>命令来进行关机操作。</p>
-<p>立即关机：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">shutdown</span> <span class="token parameter variable">-h</span> now<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>预定在 21:00 关机。如果当前时间超过 21:00 则会在隔天 21:00 才关机：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">shutdown</span> <span class="token parameter variable">-h</span> <span class="token number">21</span>:00<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>预定 2 分钟后关机，并发送消息：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">shutdown</span> <span class="token parameter variable">-P</span> <span class="token number">120</span> <span class="token string">"will  poweroff"</span>
-Shutdown scheduled <span class="token keyword">for</span> Wed <span class="token number">2021</span>-09-15 <span class="token number">16</span>:01:48 EDT, use <span class="token string">'shutdown -c'</span> to cancel.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>取消即将进行的关机操作：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">shutdown</span> <span class="token parameter variable">-c</span>
-<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ 
-Broadcast message from root@101c7 <span class="token punctuation">(</span>Wed <span class="token number">2021</span>-09-15 <span class="token number">14</span>:01:54 EDT<span class="token punctuation">)</span>:
-
-The system <span class="token function">shutdown</span> has been cancelled at Wed <span class="token number">2021</span>-09-15 <span class="token number">14</span>:02:54 EDT<span class="token operator">!</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="重启操作"><a class="markdownIt-Anchor" href="#重启操作"></a> 重启操作</h2>
-<p>重启命令可用<code>reboot</code>或<code>halt</code>，选择其一即可。</p>
-<p>立即强制关机：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">halt</span> <span class="token parameter variable">-P</span> <span class="token parameter variable">-f</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>同步后重启系统：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">sync</span><span class="token punctuation">;</span> <span class="token function">sync</span><span class="token punctuation">;</span> <span class="token function">sync</span><span class="token punctuation">;</span> <span class="token function">reboot</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="切换执行等级"><a class="markdownIt-Anchor" href="#切换执行等级"></a> 切换执行等级</h2>
-<p>可以通过<code>init</code>命令来切换运行级别，例如进入单用户维护模式：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ init <span class="token number">1</span>
-Broadcast message from root@localhost.localdomain on pts/1 <span class="token punctuation">(</span>Fri <span class="token number">2019</span>-07-05 <span class="token number">15</span>:40:59 CST<span class="token punctuation">)</span>:
-
-The system is going down to rescue mode NOW<span class="token operator">!</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>在 CentOS 7 中则是由<code>systemctl</code>来管理模式之间的切换，例如切换到救援模式：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ systemctl isolate rescue.target<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 ]]></content>
       <categories>
         <category>Linux</category>
@@ -11077,8 +11077,8 @@ c3  css
 <p>正则表达式是一种处理字符串的方法，以行为单位来进行字符串的处理行为。通过一些特殊符号的辅助，让用户轻松（？）达到查找、删除、替换某特定字符串的处理程序。</p>
 <p>基础正则表达式（BRE）和扩展正则表达式（ERE）的区别在于支持的元字符不同：</p>
 <ul>
-<li><strong>BRE支持的元字符</strong>：^ $ . * [ ]</li>
-<li><strong>ERE支持的元字符</strong>：^ $ . * [ ] + ( ) { } ? |</li>
+<li><strong>BRE 支持的元字符</strong>：^ $ . * [ ]</li>
+<li><strong>ERE 支持的元字符</strong>：^ $ . * [ ] + ( ) { } ? |</li>
 </ul>
 <h2 id="元字符"><a class="markdownIt-Anchor" href="#元字符"></a> 元字符</h2>
 <p>元字符要代表字符串意思时必须用转义字符<code>\</code>转义，把元字符变成普通字符。</p>
@@ -11570,9 +11570,9 @@ c3  css
 </tr>
 </tbody>
 </table>
-<h1 id="字符组"><a class="markdownIt-Anchor" href="#字符组"></a> 字符组 []</h1>
+<h1 id="字符组"><a class="markdownIt-Anchor" href="#字符组"></a> 字符组 <code>[]</code></h1>
 <p>中括号<code>[]</code>表示字符组，里面可以列出多个字符或字符范围，用来匹配其中任意一个字符。例如<code>[aeiou]</code>可以匹配任意一个元音字母，<code>[0-9]</code>可以匹配任意一个数字字符。还可以用<code>[^...]</code>的形式表示反向字符组，匹配除了括号内列出的字符以外的任意一个字符。</p>
-<h2 id="字符组范围-"><a class="markdownIt-Anchor" href="#字符组范围-"></a> 字符组范围 [ - ]</h2>
+<h2 id="字符组范围-"><a class="markdownIt-Anchor" href="#字符组范围-"></a> 字符组范围 <code>[ - ]</code></h2>
 <p>在字符组内部连字符 <code>-</code> 表示一个范围，<strong>只有在字符组内部才是元字符</strong>，因此 <code>-</code> 不需要转义。</p>
 <p>如果 <code>-</code> 是 <code>[]</code> 内第一个字符，表明匹配 <code>-</code> 的本意，而不是作为连接符用。</p>
 <p>例如匹配数字和 <code>%</code>：</p>
@@ -11581,21 +11581,21 @@ auth <span class="token parameter variable">--enableshadow</span> <span class="t
 lang en_US.UTF-8
 %packages
 %end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="排除型字符组"><a class="markdownIt-Anchor" href="#排除型字符组"></a> 排除型字符组 [^]</h2>
+<h2 id="排除型字符组"><a class="markdownIt-Anchor" href="#排除型字符组"></a> 排除型字符组 <code>[^]</code></h2>
 <p><code>[^ ]</code>列出不希望匹配的字符，比如<code>[^x]</code>表示匹配一个不等于 x 的字符。</p>
 <p>并不能匹配空字符。</p>
 <h1 id="匹配条件"><a class="markdownIt-Anchor" href="#匹配条件"></a> 匹配条件</h1>
 <p>正则表达式中的匹配条件指的是匹配某个模式的限定条件。</p>
-<h2 id="匹配任意字符"><a class="markdownIt-Anchor" href="#匹配任意字符"></a> 匹配任意字符 .</h2>
+<h2 id="匹配任意字符"><a class="markdownIt-Anchor" href="#匹配任意字符"></a> 匹配任意字符 <code>.</code></h2>
 <p>元字符点号 <code>.</code> 用来匹配除换行符之外任意一个字符，在<strong>字符组内部</strong>比如 <code>[1.3]</code> 中不是元字符。</p>
-<h2 id="匹配任意子表达式"><a class="markdownIt-Anchor" href="#匹配任意子表达式"></a> 匹配任意子表达式 |</h2>
+<h2 id="匹配任意子表达式"><a class="markdownIt-Anchor" href="#匹配任意子表达式"></a> 匹配任意子表达式 <code>|</code></h2>
 <p>要表达或的意思用元字符竖线 <code>|</code>，表达式用小括号 <code>()</code> 括起来。</p>
 <p>例如匹配出 <code>pwpolicy</code> 为 <code>root</code> 和 <code>user</code> 和 <code>luks</code> 用户的配置：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token parameter variable">-E</span> <span class="token string">'pwpolicy\s(root|user|luks)'</span> a.cfg 
 pwpolicy root <span class="token parameter variable">--minlen</span><span class="token operator">=</span><span class="token number">6</span> <span class="token parameter variable">--minquality</span><span class="token operator">=</span><span class="token number">1</span> <span class="token parameter variable">--notstrict</span> <span class="token parameter variable">--nochanges</span> <span class="token parameter variable">--notempty</span>
 pwpolicy user <span class="token parameter variable">--minlen</span><span class="token operator">=</span><span class="token number">6</span> <span class="token parameter variable">--minquality</span><span class="token operator">=</span><span class="token number">1</span> <span class="token parameter variable">--notstrict</span> <span class="token parameter variable">--nochanges</span> <span class="token parameter variable">--emptyok</span>
 pwpolicy luks <span class="token parameter variable">--minlen</span><span class="token operator">=</span><span class="token number">6</span> <span class="token parameter variable">--minquality</span><span class="token operator">=</span><span class="token number">1</span> <span class="token parameter variable">--notstrict</span> <span class="token parameter variable">--nochanges</span> <span class="token parameter variable">--notempty</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="行的起始-和结束"><a class="markdownIt-Anchor" href="#行的起始-和结束"></a> 行的起始 ^ 和结束 $</h2>
+<h2 id="行的起始-和结束"><a class="markdownIt-Anchor" href="#行的起始-和结束"></a> 行的起始 <code>^</code> 和结束 <code>$</code></h2>
 <p>脱字符号 <code>^</code> 匹配一行的开始处空字符，美元符号 <code>$</code> 匹配一行的结尾处空字符。</p>
 <p>单个 <code>^</code> 匹配所有行。</p>
 <p>两个字符一起 <code>^$</code> 匹配空行。</p>
@@ -11604,9 +11604,9 @@ pwpolicy luks <span class="token parameter variable">--minlen</span><span class=
 auth <span class="token parameter variable">--enableshadow</span> <span class="token parameter variable">--passalgo</span><span class="token operator">=</span>sha512
 cdrom
 <span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token parameter variable">-E</span> <span class="token parameter variable">-v</span> <span class="token string">'^$|^#'</span> anaconda-ks.cfg <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="单词分界符-和"><a class="markdownIt-Anchor" href="#单词分界符-和"></a> 单词分界符 &lt; 和 &gt;</h2>
-<p><code>\&lt;单a</code> 表示匹配以 “单a” 开头的单词；</p>
-<p><code>尾a\&gt;</code> 表示匹配以 “尾a” 结束的单词；</p>
+<h2 id="单词分界符-和"><a class="markdownIt-Anchor" href="#单词分界符-和"></a> 单词分界符 <code>&lt;</code> 和 <code>&gt;</code></h2>
+<p><code>\&lt;单a</code> 表示匹配以 “单 a” 开头的单词；</p>
+<p><code>尾a\&gt;</code> 表示匹配以 “尾 a” 结束的单词；</p>
 <p><code>\&lt;单尾\&gt;</code> 表示匹配完整单词 “单尾”。</p>
 <p>例如分别搜索出有以 empty 开头或结尾单词所在行：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token parameter variable">-E</span> <span class="token string">'\&lt;empty'</span> a.cfg 
@@ -11616,8 +11616,8 @@ pwpolicy root <span class="token parameter variable">--minlen</span><span class=
 pwpolicy luks <span class="token parameter variable">--minlen</span><span class="token operator">=</span><span class="token number">6</span> <span class="token parameter variable">--minquality</span><span class="token operator">=</span><span class="token number">1</span> <span class="token parameter variable">--notstrict</span> <span class="token parameter variable">--nochanges</span> <span class="token parameter variable">--notempty</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h1 id="匹配次数"><a class="markdownIt-Anchor" href="#匹配次数"></a> 匹配次数</h1>
 <p>正则表达式中的匹配次数指的是匹配某个模式的次数。</p>
-<h2 id="可选项元素"><a class="markdownIt-Anchor" href="#可选项元素"></a> 可选项元素 ?</h2>
-<p>用问号 <code>?</code> 表示可选项，把它加在一个字符后面表示此处容许出现这个字符，不过它的出现并非匹配成功的必要条件，它只作用于之前紧邻的元素，<strong>匹配0到1次</strong>。可使用的语法如下：</p>
+<h2 id="可选项元素"><a class="markdownIt-Anchor" href="#可选项元素"></a> 可选项元素 <code>?</code></h2>
+<p>用问号 <code>?</code> 表示可选项，把它加在一个字符后面表示此处容许出现这个字符，不过它的出现并非匹配成功的必要条件，它只作用于之前紧邻的元素，<strong>匹配 0 到 1 次</strong>。可使用的语法如下：</p>
 <table>
 <thead>
 <tr>
@@ -11657,7 +11657,7 @@ pwpolicy luks <span class="token parameter variable">--minlen</span><span class=
 bin:x:1:1:bin:/bin:/sbin/nologin
 daemon:x:2:2:daemon:/sbin:/sbin/nologin
 sync:x:5:0:sync:/sbin:/bin/sync<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="重复单次-和多次"><a class="markdownIt-Anchor" href="#重复单次-和多次"></a> 重复单次 + 和多次 *</h2>
+<h2 id="重复单次-和多次"><a class="markdownIt-Anchor" href="#重复单次-和多次"></a> 重复单次 <code>+</code> 和多次 <code>*</code></h2>
 <p>加号 <code>+</code> 表示之前紧邻的元素匹配 1 次到多次。</p>
 <p>星号 <code>*</code> 表示之前紧邻的元素匹配 0 到任意次数。</p>
 <p>疑问号 <code>?</code>，星号 <code>*</code> 和加号 <code>+</code> 统称为量词，因为它们限定了所作用元素的匹配次数。</p>
@@ -11697,7 +11697,7 @@ sync:x:5:0:sync:/sbin:/bin/sync<span aria-hidden="true" class="line-numbers-rows
 </tr>
 </tbody>
 </table>
-<h2 id="指定匹配次数"><a class="markdownIt-Anchor" href="#指定匹配次数"></a> 指定匹配次数 {}</h2>
+<h2 id="指定匹配次数"><a class="markdownIt-Anchor" href="#指定匹配次数"></a> 指定匹配次数 <code>&#123;&#125;</code></h2>
 <p>大括号内接数字，用来限制找到的字符数量。例如查找 3 位数字的 UID：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token parameter variable">-E</span> <span class="token string">'[0-9]&#123;3&#125;'</span> b.cfg 
 games:x:12:100:games:/usr/games:/sbin/nologin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
@@ -11705,16 +11705,16 @@ games:x:12:100:games:/usr/games:/sbin/nologin<span aria-hidden="true" class="lin
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token parameter variable">-E</span> <span class="token string">'[0-9]&#123;6,8&#125;'</span> b.cfg<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>也可以只写一半区间，例如查找 11 位长度以上的号码：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token parameter variable">-E</span> <span class="token string">'[0-9]&#123;11,&#125;'</span> b.cfg<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h1 id="分组"><a class="markdownIt-Anchor" href="#分组"></a> 分组 ()</h1>
+<h1 id="分组"><a class="markdownIt-Anchor" href="#分组"></a> 分组 <code>()</code></h1>
 <p>分组功能可用功能在各种编程语言下调用形式不同。</p>
 <p>例如查找 id 和 gid 都为 89 或 99 的用户：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token parameter variable">-E</span> <span class="token string">'((89|99):)\1'</span> b.cfg 
 nobody:x:99:99:Nobody:/:/sbin/nologin
 postfix:x:89:89::/var/spool/postfix:/sbin/nologin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>注意分组内容一定是用小括号括起来。</p>
-<h2 id="非捕获分组"><a class="markdownIt-Anchor" href="#非捕获分组"></a> 非捕获分组 (?😃</h2>
+<h2 id="非捕获分组"><a class="markdownIt-Anchor" href="#非捕获分组"></a> 非捕获分组 <code>(?:)</code></h2>
 <p>在圆括号内以 <code>?:</code> 开头，这个圆括号内的内容不会被捕获。在 <code>grep</code> 中不可用。</p>
-<h2 id="反向引用"><a class="markdownIt-Anchor" href="#反向引用"></a> 反向引用 \</h2>
+<h2 id="反向引用"><a class="markdownIt-Anchor" href="#反向引用"></a> 反向引用 <code>\</code></h2>
 <p>也叫捕获分组或向后引用，匹配与表达式先前部分匹配的同样文本。需要用括号 () 包含分组。</p>
 <p>例如查找 “boo” 或 “Roo”：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token parameter variable">-E</span> <span class="token string">'(b|R)(o)\2'</span> a.cfg 
@@ -11722,16 +11722,16 @@ postfix:x:89:89::/var/spool/postfix:/sbin/nologin<span aria-hidden="true" class=
 firstboot <span class="token parameter variable">--enable</span>
 network  <span class="token parameter variable">--bootproto</span><span class="token operator">=</span>dhcp <span class="token parameter variable">--device</span><span class="token operator">=</span>ens33 <span class="token parameter variable">--onboot</span><span class="token operator">=</span>off <span class="token parameter variable">--ipv6</span><span class="token operator">=</span>auto --no-activate
 <span class="token comment"># Root password</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="正前瞻"><a class="markdownIt-Anchor" href="#正前瞻"></a> 正前瞻 (?=)</h2>
+<h2 id="正前瞻"><a class="markdownIt-Anchor" href="#正前瞻"></a> 正前瞻 <code>(?=)</code></h2>
 <p><code>grep</code> 中用得较少，一般用在编程中排除掉正前瞻内容作为匹配结果处理。例如正则表达式 <code>/bed(?=room)/</code> 只能匹配子串 “bedroom”，而子串 “room” 并不作为匹配结果返回，以进行后续处理。</p>
 <p>例如匹配 “nochanges --”，并要求后面接的参数为 “emptyok”：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token parameter variable">-P</span> <span class="token string">'nochanges\s\-\-(?=emptyok)'</span> a.cfg 
 pwpolicy user <span class="token parameter variable">--minlen</span><span class="token operator">=</span><span class="token number">6</span> <span class="token parameter variable">--minquality</span><span class="token operator">=</span><span class="token number">1</span> <span class="token parameter variable">--notstrict</span> <span class="token parameter variable">--nochanges</span> <span class="token parameter variable">--emptyok</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h2 id="反前瞻"><a class="markdownIt-Anchor" href="#反前瞻"></a> 反前瞻 (?!)</h2>
+<h2 id="反前瞻"><a class="markdownIt-Anchor" href="#反前瞻"></a> 反前瞻 <code>(?!)</code></h2>
 <p>匹配后面找不到含有给定前瞻模式的内容。</p>
-<h2 id="正后顾"><a class="markdownIt-Anchor" href="#正后顾"></a> 正后顾 (?&lt;=)</h2>
+<h2 id="正后顾"><a class="markdownIt-Anchor" href="#正后顾"></a> 正后顾 <code>(?&lt;=)</code></h2>
 <p>正后顾会查看左边的内容，这与正前瞻方向相反。</p>
-<h2 id="反后顾"><a class="markdownIt-Anchor" href="#反后顾"></a> 反后顾 (?&lt;!)</h2>
+<h2 id="反后顾"><a class="markdownIt-Anchor" href="#反后顾"></a> 反后顾 <code>(?&lt;!)</code></h2>
 <p>反后顾会查看某个模式在从左至右的文本流的后面没有出现。</p>
 <h1 id="示例"><a class="markdownIt-Anchor" href="#示例"></a> 示例</h1>
 <p>一些简单常用的例子。</p>
@@ -11747,7 +11747,7 @@ pwpolicy user <span class="token parameter variable">--minlen</span><span class=
 <p>匹配开/闭标签：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">&lt;</span>/?_a-zA-Z*<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>表示匹配标签内容，排除标签结束符 <code>&gt;</code>：</p>
-<pre class="line-numbers language-none"><code class="language-none">[^&gt;]<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>^<span class="token operator">></span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h2 id="匹配数字千位"><a class="markdownIt-Anchor" href="#匹配数字千位"></a> 匹配数字千位</h2>
 <p>即在每三个数字后面添加一个逗号，例如将 1234567 匹配为 1,234,567。这个正则表达式使用了正向肯定零宽断言和正向零宽断言两个技巧。其中 <code>(?&lt;=\d)</code> 表示匹配前面是数字的位置，<code>(?=(\d\d\d)+$)</code> 表示匹配后面是 3 个数字的倍数并且后面没有其他字符的位置。这样，正则表达式会在满足这两个条件的位置上添加逗号。</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">(</span>?<span class="token operator">&lt;=</span><span class="token punctuation">\</span>d<span class="token punctuation">)</span><span class="token punctuation">(</span>?<span class="token operator">=</span><span class="token punctuation">(</span><span class="token punctuation">\</span>d<span class="token punctuation">\</span>d<span class="token punctuation">\</span>d<span class="token punctuation">)</span>+$<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
