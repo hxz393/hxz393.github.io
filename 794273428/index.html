@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="基本定义 正则表达式是一种处理字符串的方法，以行为单位来进行字符串的处理行为。通过一些特殊符号的辅助，让用户轻松（？）达到查找、删除、替换某特定字符串的处理程序。 基础正则表达式（BRE）和扩展正则表达式（ERE）的区别在于支持的元字符不同：  BRE支持的元字符：^ $ . * [ ] ERE支持的元字符：^ $ . * [ ] + ( ) { } ? |   元字符 元字符要代表字符串意思时">
+<meta property="og:type" content="article">
+<meta property="og:title" content="正则表达式">
+<meta property="og:url" content="https://blog.x2b.net/794273428/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="基本定义 正则表达式是一种处理字符串的方法，以行为单位来进行字符串的处理行为。通过一些特殊符号的辅助，让用户轻松（？）达到查找、删除、替换某特定字符串的处理程序。 基础正则表达式（BRE）和扩展正则表达式（ERE）的区别在于支持的元字符不同：  BRE支持的元字符：^ $ . * [ ] ERE支持的元字符：^ $ . * [ ] + ( ) { } ? |   元字符 元字符要代表字符串意思时">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-09-18T03:57:47.000Z">
+<meta property="article:modified_time" content="2023-05-08T17:17:29.063Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/794273428/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/794273428/","path":"794273428/","title":"正则表达式"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>正则表达式 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">40</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%AE%9A%E4%B9%89"><span class="nav-number">1.</span> <span class="nav-text"> 基本定义</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%83%E5%AD%97%E7%AC%A6"><span class="nav-number">1.1.</span> <span class="nav-text"> 元字符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E7%AE%80%E5%86%99%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text"> 字符简写式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#posix-%E5%AD%97%E7%AC%A6%E7%B1%BB"><span class="nav-number">1.3.</span> <span class="nav-text"> POSIX 字符类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E5%AD%97%E7%AC%A6%E8%A1%A8"><span class="nav-number">1.4.</span> <span class="nav-text"> 控制字符表</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E7%BB%84"><span class="nav-number">2.</span> <span class="nav-text"> 字符组 []</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E7%BB%84%E8%8C%83%E5%9B%B4-"><span class="nav-number">2.1.</span> <span class="nav-text"> 字符组范围 [ - ]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E9%99%A4%E5%9E%8B%E5%AD%97%E7%AC%A6%E7%BB%84"><span class="nav-number">2.2.</span> <span class="nav-text"> 排除型字符组 [^]</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8C%B9%E9%85%8D%E6%9D%A1%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text"> 匹配条件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%B9%E9%85%8D%E4%BB%BB%E6%84%8F%E5%AD%97%E7%AC%A6"><span class="nav-number">3.1.</span> <span class="nav-text"> 匹配任意字符 .</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%B9%E9%85%8D%E4%BB%BB%E6%84%8F%E5%AD%90%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">3.2.</span> <span class="nav-text"> 匹配任意子表达式 |</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%8C%E7%9A%84%E8%B5%B7%E5%A7%8B-%E5%92%8C%E7%BB%93%E6%9D%9F"><span class="nav-number">3.3.</span> <span class="nav-text"> 行的起始 ^ 和结束 $</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E8%AF%8D%E5%88%86%E7%95%8C%E7%AC%A6-%E5%92%8C"><span class="nav-number">3.4.</span> <span class="nav-text"> 单词分界符 &lt; 和 &gt;</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8C%B9%E9%85%8D%E6%AC%A1%E6%95%B0"><span class="nav-number">4.</span> <span class="nav-text"> 匹配次数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E9%80%89%E9%A1%B9%E5%85%83%E7%B4%A0"><span class="nav-number">4.1.</span> <span class="nav-text"> 可选项元素 ?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E5%A4%8D%E5%8D%95%E6%AC%A1-%E5%92%8C%E5%A4%9A%E6%AC%A1"><span class="nav-number">4.2.</span> <span class="nav-text"> 重复单次 + 和多次 *</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E5%AE%9A%E5%8C%B9%E9%85%8D%E6%AC%A1%E6%95%B0"><span class="nav-number">4.3.</span> <span class="nav-text"> 指定匹配次数 {}</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E7%BB%84"><span class="nav-number">5.</span> <span class="nav-text"> 分组 ()</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%9E%E6%8D%95%E8%8E%B7%E5%88%86%E7%BB%84"><span class="nav-number">5.1.</span> <span class="nav-text"> 非捕获分组 (?😃</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8D%E5%90%91%E5%BC%95%E7%94%A8"><span class="nav-number">5.2.</span> <span class="nav-text"> 反向引用 \</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%89%8D%E7%9E%BB"><span class="nav-number">5.3.</span> <span class="nav-text"> 正前瞻 (?&#x3D;)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8D%E5%89%8D%E7%9E%BB"><span class="nav-number">5.4.</span> <span class="nav-text"> 反前瞻 (?!)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%90%8E%E9%A1%BE"><span class="nav-number">5.5.</span> <span class="nav-text"> 正后顾 (?&lt;&#x3D;)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8D%E5%90%8E%E9%A1%BE"><span class="nav-number">5.6.</span> <span class="nav-text"> 反后顾 (?&lt;!)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">6.</span> <span class="nav-text"> 示例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%B9%E9%85%8D-windows-%E4%B8%AD%E7%A9%BA%E8%A1%8C"><span class="nav-number">6.1.</span> <span class="nav-text"> 匹配 Windows 中空行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%B9%E9%85%8D-unix-%E4%B8%AD%E7%A9%BA%E8%A1%8C"><span class="nav-number">6.2.</span> <span class="nav-text"> 匹配 UNIX 中空行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%B9%E9%85%8D-html-%E6%A0%87%E7%AD%BE"><span class="nav-number">6.3.</span> <span class="nav-text"> 匹配 HTML 标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%B9%E9%85%8D%E6%95%B0%E5%AD%97%E5%8D%83%E4%BD%8D"><span class="nav-number">6.4.</span> <span class="nav-text"> 匹配数字千位</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.douban.com/people/Cyber.DraFonS" title="https:&#x2F;&#x2F;www.douban.com&#x2F;people&#x2F;Cyber.DraFonS" rel="noopener external nofollow noreferrer" target="_blank">豆瓣</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/794273428/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="正则表达式 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          正则表达式
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-09-18 11:57:47" itemprop="dateCreated datePublished" datetime="2021-09-18T11:57:47+08:00">2021-09-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-09 01:17:29" itemprop="dateModified" datetime="2023-05-09T01:17:29+08:00">2023-05-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/3-%E8%84%9A%E6%9C%AC%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">3.脚本编程</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>10 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="基本定义"><a class="markdownIt-Anchor" href="#基本定义"></a> 基本定义</h1>
+<p>正则表达式是一种处理字符串的方法，以行为单位来进行字符串的处理行为。通过一些特殊符号的辅助，让用户轻松（？）达到查找、删除、替换某特定字符串的处理程序。</p>
+<p>基础正则表达式（BRE）和扩展正则表达式（ERE）的区别在于支持的元字符不同：</p>
+<ul>
+<li><strong>BRE支持的元字符</strong>：^ $ . * [ ]</li>
+<li><strong>ERE支持的元字符</strong>：^ $ . * [ ] + ( ) { } ? |</li>
+</ul>
+<h2 id="元字符"><a class="markdownIt-Anchor" href="#元字符"></a> 元字符</h2>
+<p>元字符要代表字符串意思时必须用转义字符<code>\</code>转义，把元字符变成普通字符。</p>
+<table>
+<thead>
+<tr>
+<th>元字符</th>
+<th>名称</th>
+<th>Unicode 值</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.</td>
+<td>句点</td>
+<td>U+002E</td>
+<td>匹配任意字符</td>
+</tr>
+<tr>
+<td>\</td>
+<td>反斜线</td>
+<td>U+005C</td>
+<td>对字符转义</td>
+</tr>
+<tr>
+<td>|</td>
+<td>竖线符</td>
+<td>U+007C</td>
+<td>选择操作（或）</td>
+</tr>
+<tr>
+<td>^</td>
+<td>脱字符</td>
+<td>U+005E</td>
+<td>行起始锚位符</td>
+</tr>
+<tr>
+<td>$</td>
+<td>美元符</td>
+<td>U+0024</td>
+<td>行结束锚位符</td>
+</tr>
+<tr>
+<td>?</td>
+<td>问号</td>
+<td>U+003F</td>
+<td>匹配零次或一次的量词</td>
+</tr>
+<tr>
+<td>*</td>
+<td>星号</td>
+<td>U+002A</td>
+<td>匹配零次或多次的量词</td>
+</tr>
+<tr>
+<td>+</td>
+<td>加号</td>
+<td>U+002B</td>
+<td>匹配一次或多次的量词</td>
+</tr>
+<tr>
+<td>[</td>
+<td>左方括号</td>
+<td>U+005B</td>
+<td>字符组起始</td>
+</tr>
+<tr>
+<td>]</td>
+<td>右方括号</td>
+<td>U+005D</td>
+<td>字符组结束</td>
+</tr>
+<tr>
+<td>{</td>
+<td>左花括号</td>
+<td>U+007B</td>
+<td>量词或代码块起始</td>
+</tr>
+<tr>
+<td>}</td>
+<td>右花括号</td>
+<td>U+007D</td>
+<td>量词或代码块结束</td>
+</tr>
+<tr>
+<td>(</td>
+<td>左括号</td>
+<td>U+0028</td>
+<td>分组起始</td>
+</tr>
+<tr>
+<td>)</td>
+<td>右括号</td>
+<td>U+0029</td>
+<td>分组结束</td>
+</tr>
+</tbody>
+</table>
+<p>在字符组内部，某些特殊字符会失去其特殊含义，而只表示字面意义。这些特殊字符包括：</p>
+<ul>
+<li><code>[</code> 表示字符组的开始。</li>
+<li><code>]</code> 表示字符组的结束。</li>
+<li><code>-</code> 表示字符组中的范围。</li>
+<li><code>^</code> 表示字符组取反。</li>
+</ul>
+<p>例如在文件内容中查找 1.4：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token parameter variable">-E</span> <span class="token string">'1.4'</span> c.cfg 
+<span class="token number">1.4</span>
+1a4
+<span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token parameter variable">-E</span> <span class="token string">'1\.4'</span> c.cfg 
+<span class="token number">1.4</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="字符简写式"><a class="markdownIt-Anchor" href="#字符简写式"></a> 字符简写式</h2>
+<p>不同类型正则表达式所支持的字符简写式不同，下表用 B、E、P 代表基础、扩展、Perl 的支持状况：</p>
+<table>
+<thead>
+<tr>
+<th>字符简写式</th>
+<th>描述</th>
+<th>支持情况</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\a</td>
+<td>报警符</td>
+<td>P</td>
+</tr>
+<tr>
+<td>\b</td>
+<td>匹配一个单词边界，用法等同于单词分界符</td>
+<td>B E P</td>
+</tr>
+<tr>
+<td>\B</td>
+<td>匹配非单词边界，单词中的元素</td>
+<td>B E P</td>
+</tr>
+<tr>
+<td>\d</td>
+<td>数字字符，等同于 [0-9]</td>
+<td>P</td>
+</tr>
+<tr>
+<td>\D</td>
+<td>匹配除数字以外的所有字符</td>
+<td>P</td>
+</tr>
+<tr>
+<td>\f</td>
+<td>换页符，等价于 \x0c 和 \cL</td>
+<td>P</td>
+</tr>
+<tr>
+<td>\r</td>
+<td>回车符，等价于 \xd 和 \cM</td>
+<td>P</td>
+</tr>
+<tr>
+<td>\n</td>
+<td>换行符，等价于 \x0a 和 \cJ</td>
+<td>P</td>
+</tr>
+<tr>
+<td>\s</td>
+<td>匹配空格、制表符(\t)、换行符(\n)、回车符(\r)</td>
+<td>P</td>
+</tr>
+<tr>
+<td>\S</td>
+<td>匹配所有文本内容，包括中文，不包含空格。等价于 [^\t\n\r] 或 [^\s]</td>
+<td>P</td>
+</tr>
+<tr>
+<td>\t</td>
+<td>水平制表符，等价于 \x09 和 \cI</td>
+<td>P</td>
+</tr>
+<tr>
+<td>\v</td>
+<td>垂直制表符，等价于 \xb 和 \cK</td>
+<td>P</td>
+</tr>
+<tr>
+<td>\w</td>
+<td>匹配英文字母、数字和下划线，等同于 [a-zA-Z0-9_]</td>
+<td>B E P</td>
+</tr>
+<tr>
+<td>\W</td>
+<td>匹配任何非 ASCII 字母字符、非数字以及非下划线字符。等同于 [^A-Za-z0-9_]</td>
+<td>B E P</td>
+</tr>
+<tr>
+<td>[\b]</td>
+<td>退格字符</td>
+<td>P</td>
+</tr>
+<tr>
+<td>\cx</td>
+<td>匹配由 x 指明的控制字符，代码可参考控制字符表</td>
+<td>P</td>
+</tr>
+<tr>
+<td>\uxxxx</td>
+<td>字符的 Unicode 值，代码可参考控制字符表</td>
+<td>P</td>
+</tr>
+<tr>
+<td>\dxxx</td>
+<td>字符的十进制值</td>
+<td>P</td>
+</tr>
+<tr>
+<td>\oxxx</td>
+<td>字符的八进制值</td>
+<td>P</td>
+</tr>
+<tr>
+<td>\x xx</td>
+<td>字符的十六进制值</td>
+<td>P</td>
+</tr>
+</tbody>
+</table>
+<h2 id="posix-字符类"><a class="markdownIt-Anchor" href="#posix-字符类"></a> POSIX 字符类</h2>
+<p>不同的编码格式下，可能造成正则输出结果不一样，例如 LANG=zh_CN 情况下 a 和 A 的编号是相邻的。</p>
+<table>
+<thead>
+<tr>
+<th>字符类</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[:alnum:]</td>
+<td>任何一个字母或数字，等价于 [a-zA-Z0-9]</td>
+</tr>
+<tr>
+<td>[:alpha:]</td>
+<td>任何一个字母，等价于 [a-zA-Z]</td>
+</tr>
+<tr>
+<td>[:blank:]</td>
+<td>空格或制表符，等价于 [\t ]</td>
+</tr>
+<tr>
+<td>[:cntrl:]</td>
+<td>ASCII 控制字符，ASCII 0 到 31，再加上 ASCII 127</td>
+</tr>
+<tr>
+<td>[:digit:]</td>
+<td>任何一个数字，等价于 [0-9]</td>
+</tr>
+<tr>
+<td>[:graph:]</td>
+<td>和 [:print:] 一样，但不包括空格</td>
+</tr>
+<tr>
+<td>[:lower:]</td>
+<td>任何一个小写字母，等价于 [a-z]</td>
+</tr>
+<tr>
+<td>[:print:]</td>
+<td>任何一个可打印字符</td>
+</tr>
+<tr>
+<td>[:punct:]</td>
+<td>既不属于 [:alnum:] 也不属于 [:cntrl:] 的任何一个字符</td>
+</tr>
+<tr>
+<td>[:space:]</td>
+<td>任何一个空白字符，包括空格，等价于 [^\f\n\r\t\v ]</td>
+</tr>
+<tr>
+<td>[:upper:]</td>
+<td>任何一个大写字母，等价于 [A-Z]</td>
+</tr>
+<tr>
+<td>[:xdigit:]</td>
+<td>任何一个十六进制数字，等价于 [a-fA-F0-9]</td>
+</tr>
+</tbody>
+</table>
+<h2 id="控制字符表"><a class="markdownIt-Anchor" href="#控制字符表"></a> 控制字符表</h2>
+<p>对照表如下：</p>
+<table>
+<thead>
+<tr>
+<th>控制字符</th>
+<th>Unicode 值</th>
+<th>简写</th>
+<th>名称</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>c@*</td>
+<td>U+0000</td>
+<td>NUL</td>
+<td>空字符</td>
+</tr>
+<tr>
+<td>\cA</td>
+<td>U+0001</td>
+<td>SOH</td>
+<td>标题起始</td>
+</tr>
+<tr>
+<td>\cB</td>
+<td>U+0002</td>
+<td>STX</td>
+<td>文本起始</td>
+</tr>
+<tr>
+<td>\cC</td>
+<td>U+0003</td>
+<td>ETX</td>
+<td>文本结束</td>
+</tr>
+<tr>
+<td>\cD</td>
+<td>U+0004</td>
+<td>EOT</td>
+<td>传输结束</td>
+</tr>
+<tr>
+<td>\cE</td>
+<td>U+0005</td>
+<td>ENQ</td>
+<td>询问</td>
+</tr>
+<tr>
+<td>\cF</td>
+<td>U+0006</td>
+<td>ACK</td>
+<td>确认</td>
+</tr>
+<tr>
+<td>\cG</td>
+<td>U+0007</td>
+<td>BEL</td>
+<td>报警符</td>
+</tr>
+<tr>
+<td>\cH</td>
+<td>U+0008</td>
+<td>BS</td>
+<td>退格符</td>
+</tr>
+<tr>
+<td>\cI</td>
+<td>U+0009</td>
+<td>HT</td>
+<td>水平制表符</td>
+</tr>
+<tr>
+<td>\cJ</td>
+<td>U+000A</td>
+<td>LF</td>
+<td>换行符</td>
+</tr>
+<tr>
+<td>\cK</td>
+<td>U+000B</td>
+<td>VT</td>
+<td>垂直制表符</td>
+</tr>
+<tr>
+<td>\cL</td>
+<td>U+000C</td>
+<td>FF</td>
+<td>换页</td>
+</tr>
+<tr>
+<td>\cM</td>
+<td>U+000D</td>
+<td>CR</td>
+<td>回车符</td>
+</tr>
+<tr>
+<td>\cN</td>
+<td>U+000E</td>
+<td>SO</td>
+<td>移出</td>
+</tr>
+<tr>
+<td>\cO</td>
+<td>U+000F</td>
+<td>SI</td>
+<td>移入</td>
+</tr>
+<tr>
+<td>\cP</td>
+<td>U+0010</td>
+<td>DLE</td>
+<td>数据链转义</td>
+</tr>
+<tr>
+<td>\cQ</td>
+<td>U+0011</td>
+<td>DC1</td>
+<td>设备控制符一</td>
+</tr>
+<tr>
+<td>\cR</td>
+<td>U+0012</td>
+<td>DC2</td>
+<td>设备控制符二</td>
+</tr>
+<tr>
+<td>\cS</td>
+<td>U+0013</td>
+<td>DC3</td>
+<td>设备控制符三</td>
+</tr>
+<tr>
+<td>\cT</td>
+<td>U+0014</td>
+<td>DC4</td>
+<td>设备控制符四</td>
+</tr>
+<tr>
+<td>\cU</td>
+<td>U+0015</td>
+<td>NAK</td>
+<td>否定性确认</td>
+</tr>
+<tr>
+<td>\cV</td>
+<td>U+0016</td>
+<td>SYN</td>
+<td>同步空闲</td>
+</tr>
+<tr>
+<td>\cW</td>
+<td>U+0017</td>
+<td>ETB</td>
+<td>传输块结尾</td>
+</tr>
+<tr>
+<td>\cX</td>
+<td>U+0018</td>
+<td>CAN</td>
+<td>取消</td>
+</tr>
+<tr>
+<td>\cY</td>
+<td>U+0019</td>
+<td>EM</td>
+<td>介质结尾</td>
+</tr>
+<tr>
+<td>\cZ</td>
+<td>U+001A</td>
+<td>SUB</td>
+<td>替换</td>
+</tr>
+<tr>
+<td>\c[</td>
+<td>U+001B</td>
+<td>ESC</td>
+<td>转义</td>
+</tr>
+<tr>
+<td>\c\</td>
+<td>U+001C</td>
+<td>FS</td>
+<td>信息分隔符四</td>
+</tr>
+<tr>
+<td>\c]</td>
+<td>U+001D</td>
+<td>GS</td>
+<td>信息分隔符三</td>
+</tr>
+<tr>
+<td>\c^</td>
+<td>U+001E</td>
+<td>RS</td>
+<td>信息分隔符二</td>
+</tr>
+<tr>
+<td>\c_</td>
+<td>U+001F</td>
+<td>US</td>
+<td>信息分隔符一</td>
+</tr>
+</tbody>
+</table>
+<h1 id="字符组"><a class="markdownIt-Anchor" href="#字符组"></a> 字符组 []</h1>
+<p>中括号<code>[]</code>表示字符组，里面可以列出多个字符或字符范围，用来匹配其中任意一个字符。例如<code>[aeiou]</code>可以匹配任意一个元音字母，<code>[0-9]</code>可以匹配任意一个数字字符。还可以用<code>[^...]</code>的形式表示反向字符组，匹配除了括号内列出的字符以外的任意一个字符。</p>
+<h2 id="字符组范围-"><a class="markdownIt-Anchor" href="#字符组范围-"></a> 字符组范围 [ - ]</h2>
+<p>在字符组内部连字符 <code>-</code> 表示一个范围，<strong>只有在字符组内部才是元字符</strong>，因此 <code>-</code> 不需要转义。</p>
+<p>如果 <code>-</code> 是 <code>[]</code> 内第一个字符，表明匹配 <code>-</code> 的本意，而不是作为连接符用。</p>
+<p>例如匹配数字和 <code>%</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token string">'[0-9%]'</span> a.cfg 
+auth <span class="token parameter variable">--enableshadow</span> <span class="token parameter variable">--passalgo</span><span class="token operator">=</span>sha512
+lang en_US.UTF-8
+%packages
+%end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="排除型字符组"><a class="markdownIt-Anchor" href="#排除型字符组"></a> 排除型字符组 [^]</h2>
+<p><code>[^ ]</code>列出不希望匹配的字符，比如<code>[^x]</code>表示匹配一个不等于 x 的字符。</p>
+<p>并不能匹配空字符。</p>
+<h1 id="匹配条件"><a class="markdownIt-Anchor" href="#匹配条件"></a> 匹配条件</h1>
+<p>正则表达式中的匹配条件指的是匹配某个模式的限定条件。</p>
+<h2 id="匹配任意字符"><a class="markdownIt-Anchor" href="#匹配任意字符"></a> 匹配任意字符 .</h2>
+<p>元字符点号 <code>.</code> 用来匹配除换行符之外任意一个字符，在<strong>字符组内部</strong>比如 <code>[1.3]</code> 中不是元字符。</p>
+<h2 id="匹配任意子表达式"><a class="markdownIt-Anchor" href="#匹配任意子表达式"></a> 匹配任意子表达式 |</h2>
+<p>要表达或的意思用元字符竖线 <code>|</code>，表达式用小括号 <code>()</code> 括起来。</p>
+<p>例如匹配出 <code>pwpolicy</code> 为 <code>root</code> 和 <code>user</code> 和 <code>luks</code> 用户的配置：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token parameter variable">-E</span> <span class="token string">'pwpolicy\s(root|user|luks)'</span> a.cfg 
+pwpolicy root <span class="token parameter variable">--minlen</span><span class="token operator">=</span><span class="token number">6</span> <span class="token parameter variable">--minquality</span><span class="token operator">=</span><span class="token number">1</span> <span class="token parameter variable">--notstrict</span> <span class="token parameter variable">--nochanges</span> <span class="token parameter variable">--notempty</span>
+pwpolicy user <span class="token parameter variable">--minlen</span><span class="token operator">=</span><span class="token number">6</span> <span class="token parameter variable">--minquality</span><span class="token operator">=</span><span class="token number">1</span> <span class="token parameter variable">--notstrict</span> <span class="token parameter variable">--nochanges</span> <span class="token parameter variable">--emptyok</span>
+pwpolicy luks <span class="token parameter variable">--minlen</span><span class="token operator">=</span><span class="token number">6</span> <span class="token parameter variable">--minquality</span><span class="token operator">=</span><span class="token number">1</span> <span class="token parameter variable">--notstrict</span> <span class="token parameter variable">--nochanges</span> <span class="token parameter variable">--notempty</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="行的起始-和结束"><a class="markdownIt-Anchor" href="#行的起始-和结束"></a> 行的起始 ^ 和结束 $</h2>
+<p>脱字符号 <code>^</code> 匹配一行的开始处空字符，美元符号 <code>$</code> 匹配一行的结尾处空字符。</p>
+<p>单个 <code>^</code> 匹配所有行。</p>
+<p>两个字符一起 <code>^$</code> 匹配空行。</p>
+<p>例如去除配置文件中的空行和以 <code>#</code> 开头的注释行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token parameter variable">-v</span> <span class="token string">'^$'</span> a.cfg <span class="token operator">|</span> <span class="token function">grep</span> <span class="token parameter variable">-v</span> <span class="token string">'^#'</span>
+auth <span class="token parameter variable">--enableshadow</span> <span class="token parameter variable">--passalgo</span><span class="token operator">=</span>sha512
+cdrom
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token parameter variable">-E</span> <span class="token parameter variable">-v</span> <span class="token string">'^$|^#'</span> anaconda-ks.cfg <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="单词分界符-和"><a class="markdownIt-Anchor" href="#单词分界符-和"></a> 单词分界符 &lt; 和 &gt;</h2>
+<p><code>\&lt;单a</code> 表示匹配以 “单a” 开头的单词；</p>
+<p><code>尾a\&gt;</code> 表示匹配以 “尾a” 结束的单词；</p>
+<p><code>\&lt;单尾\&gt;</code> 表示匹配完整单词 “单尾”。</p>
+<p>例如分别搜索出有以 empty 开头或结尾单词所在行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token parameter variable">-E</span> <span class="token string">'\&lt;empty'</span> a.cfg 
+pwpolicy user <span class="token parameter variable">--minlen</span><span class="token operator">=</span><span class="token number">6</span> <span class="token parameter variable">--minquality</span><span class="token operator">=</span><span class="token number">1</span> <span class="token parameter variable">--notstrict</span> <span class="token parameter variable">--nochanges</span> <span class="token parameter variable">--emptyok</span>
+<span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token parameter variable">-E</span> <span class="token string">'empty\>'</span> a.cfg 
+pwpolicy root <span class="token parameter variable">--minlen</span><span class="token operator">=</span><span class="token number">6</span> <span class="token parameter variable">--minquality</span><span class="token operator">=</span><span class="token number">1</span> <span class="token parameter variable">--notstrict</span> <span class="token parameter variable">--nochanges</span> <span class="token parameter variable">--notempty</span>
+pwpolicy luks <span class="token parameter variable">--minlen</span><span class="token operator">=</span><span class="token number">6</span> <span class="token parameter variable">--minquality</span><span class="token operator">=</span><span class="token number">1</span> <span class="token parameter variable">--notstrict</span> <span class="token parameter variable">--nochanges</span> <span class="token parameter variable">--notempty</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="匹配次数"><a class="markdownIt-Anchor" href="#匹配次数"></a> 匹配次数</h1>
+<p>正则表达式中的匹配次数指的是匹配某个模式的次数。</p>
+<h2 id="可选项元素"><a class="markdownIt-Anchor" href="#可选项元素"></a> 可选项元素 ?</h2>
+<p>用问号 <code>?</code> 表示可选项，把它加在一个字符后面表示此处容许出现这个字符，不过它的出现并非匹配成功的必要条件，它只作用于之前紧邻的元素，<strong>匹配0到1次</strong>。可使用的语法如下：</p>
+<table>
+<thead>
+<tr>
+<th><strong>语法</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>??</code></td>
+<td>懒惰匹配零次或一次（可选）</td>
+</tr>
+<tr>
+<td><code>+?</code></td>
+<td>懒惰匹配一次或多次</td>
+</tr>
+<tr>
+<td><code>*?</code></td>
+<td>懒惰匹配零次或多次</td>
+</tr>
+<tr>
+<td><code>&#123;n&#125;?</code></td>
+<td>懒惰匹配 n 次</td>
+</tr>
+<tr>
+<td><code>&#123;n,&#125;?</code></td>
+<td>懒惰匹配 n 次或多次</td>
+</tr>
+<tr>
+<td><code>&#123;m,n&#125;?</code></td>
+<td>懒惰匹配 m 至 n 次（含 n 次）</td>
+</tr>
+</tbody>
+</table>
+<p>例如匹配路径<code>\bin</code>或<code>\sbin</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token parameter variable">-E</span> <span class="token string">'\/s?bin:'</span> b.cfg 
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="重复单次-和多次"><a class="markdownIt-Anchor" href="#重复单次-和多次"></a> 重复单次 + 和多次 *</h2>
+<p>加号 <code>+</code> 表示之前紧邻的元素匹配 1 次到多次。</p>
+<p>星号 <code>*</code> 表示之前紧邻的元素匹配 0 到任意次数。</p>
+<p>疑问号 <code>?</code>，星号 <code>*</code> 和加号 <code>+</code> 统称为量词，因为它们限定了所作用元素的匹配次数。</p>
+<p>疑问号 <code>?</code> 能匹配一个空格，星号 <code>*</code> 能匹配任意多个空格，它们永远不会匹配失败。加号 <code>+</code> 匹配不到会报告失败。</p>
+<p>语法如下：</p>
+<table>
+<thead>
+<tr>
+<th><strong>语法</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>?+</code></td>
+<td>占有式匹配零次或一次（可选）</td>
+</tr>
+<tr>
+<td><code>++</code></td>
+<td>占有式匹配一次或多次</td>
+</tr>
+<tr>
+<td><code>*+</code></td>
+<td>占有式匹配零次或多次</td>
+</tr>
+<tr>
+<td><code>&#123;n&#125;+</code></td>
+<td>占有式匹配 n 次</td>
+</tr>
+<tr>
+<td><code>&#123;n,&#125;+</code></td>
+<td>占有式匹配 n 次或更多次</td>
+</tr>
+<tr>
+<td><code>&#123;m,n&#125;+</code></td>
+<td>占有式匹配 m 至 n 次（含 n 次）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="指定匹配次数"><a class="markdownIt-Anchor" href="#指定匹配次数"></a> 指定匹配次数 {}</h2>
+<p>大括号内接数字，用来限制找到的字符数量。例如查找 3 位数字的 UID：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token parameter variable">-E</span> <span class="token string">'[0-9]&#123;3&#125;'</span> b.cfg 
+games:x:12:100:games:/usr/games:/sbin/nologin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>可以通过 <code>&#123;a,b&#125;</code> 来限定范围，例如查找 6 到 8 位数长的号码：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token parameter variable">-E</span> <span class="token string">'[0-9]&#123;6,8&#125;'</span> b.cfg<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>也可以只写一半区间，例如查找 11 位长度以上的号码：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token parameter variable">-E</span> <span class="token string">'[0-9]&#123;11,&#125;'</span> b.cfg<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="分组"><a class="markdownIt-Anchor" href="#分组"></a> 分组 ()</h1>
+<p>分组功能可用功能在各种编程语言下调用形式不同。</p>
+<p>例如查找 id 和 gid 都为 89 或 99 的用户：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token parameter variable">-E</span> <span class="token string">'((89|99):)\1'</span> b.cfg 
+nobody:x:99:99:Nobody:/:/sbin/nologin
+postfix:x:89:89::/var/spool/postfix:/sbin/nologin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>注意分组内容一定是用小括号括起来。</p>
+<h2 id="非捕获分组"><a class="markdownIt-Anchor" href="#非捕获分组"></a> 非捕获分组 (?😃</h2>
+<p>在圆括号内以 <code>?:</code> 开头，这个圆括号内的内容不会被捕获。在 <code>grep</code> 中不可用。</p>
+<h2 id="反向引用"><a class="markdownIt-Anchor" href="#反向引用"></a> 反向引用 \</h2>
+<p>也叫捕获分组或向后引用，匹配与表达式先前部分匹配的同样文本。需要用括号 () 包含分组。</p>
+<p>例如查找 “boo” 或 “Roo”：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token parameter variable">-E</span> <span class="token string">'(b|R)(o)\2'</span> a.cfg 
+<span class="token comment"># Run the Setup Agent on first boot</span>
+firstboot <span class="token parameter variable">--enable</span>
+network  <span class="token parameter variable">--bootproto</span><span class="token operator">=</span>dhcp <span class="token parameter variable">--device</span><span class="token operator">=</span>ens33 <span class="token parameter variable">--onboot</span><span class="token operator">=</span>off <span class="token parameter variable">--ipv6</span><span class="token operator">=</span>auto --no-activate
+<span class="token comment"># Root password</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="正前瞻"><a class="markdownIt-Anchor" href="#正前瞻"></a> 正前瞻 (?=)</h2>
+<p><code>grep</code> 中用得较少，一般用在编程中排除掉正前瞻内容作为匹配结果处理。例如正则表达式 <code>/bed(?=room)/</code> 只能匹配子串 “bedroom”，而子串 “room” 并不作为匹配结果返回，以进行后续处理。</p>
+<p>例如匹配 “nochanges --”，并要求后面接的参数为 “emptyok”：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token parameter variable">-P</span> <span class="token string">'nochanges\s\-\-(?=emptyok)'</span> a.cfg 
+pwpolicy user <span class="token parameter variable">--minlen</span><span class="token operator">=</span><span class="token number">6</span> <span class="token parameter variable">--minquality</span><span class="token operator">=</span><span class="token number">1</span> <span class="token parameter variable">--notstrict</span> <span class="token parameter variable">--nochanges</span> <span class="token parameter variable">--emptyok</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="反前瞻"><a class="markdownIt-Anchor" href="#反前瞻"></a> 反前瞻 (?!)</h2>
+<p>匹配后面找不到含有给定前瞻模式的内容。</p>
+<h2 id="正后顾"><a class="markdownIt-Anchor" href="#正后顾"></a> 正后顾 (?&lt;=)</h2>
+<p>正后顾会查看左边的内容，这与正前瞻方向相反。</p>
+<h2 id="反后顾"><a class="markdownIt-Anchor" href="#反后顾"></a> 反后顾 (?&lt;!)</h2>
+<p>反后顾会查看某个模式在从左至右的文本流的后面没有出现。</p>
+<h1 id="示例"><a class="markdownIt-Anchor" href="#示例"></a> 示例</h1>
+<p>一些简单常用的例子。</p>
+<h2 id="匹配-windows-中空行"><a class="markdownIt-Anchor" href="#匹配-windows-中空行"></a> 匹配 Windows 中空行</h2>
+<p>Windows 中空行是由 CR+LR，回车+换行组成，如果单个 \r\n 匹配一行中末尾替换成空字符会把下一行内容拼上来：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">\</span>r<span class="token punctuation">\</span>n<span class="token punctuation">\</span>r<span class="token punctuation">\</span>n<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="匹配-unix-中空行"><a class="markdownIt-Anchor" href="#匹配-unix-中空行"></a> 匹配 UNIX 中空行</h2>
+<p>Linux 系统中结尾只有 LR 换行符，两个换行符匹配一条空行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">\</span>n<span class="token punctuation">\</span>n<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="匹配-html-标签"><a class="markdownIt-Anchor" href="#匹配-html-标签"></a> 匹配 HTML 标签</h2>
+<p>匹配开标签：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">&lt;</span>_a-zA-Z*<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>匹配开/闭标签：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">&lt;</span>/?_a-zA-Z*<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>表示匹配标签内容，排除标签结束符 <code>&gt;</code>：</p>
+<pre class="line-numbers language-none"><code class="language-none">[^&gt;]<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="匹配数字千位"><a class="markdownIt-Anchor" href="#匹配数字千位"></a> 匹配数字千位</h2>
+<p>即在每三个数字后面添加一个逗号，例如将 1234567 匹配为 1,234,567。这个正则表达式使用了正向肯定零宽断言和正向零宽断言两个技巧。其中 <code>(?&lt;=\d)</code> 表示匹配前面是数字的位置，<code>(?=(\d\d\d)+$)</code> 表示匹配后面是 3 个数字的倍数并且后面没有其他字符的位置。这样，正则表达式会在满足这两个条件的位置上添加逗号。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">(</span>?<span class="token operator">&lt;=</span><span class="token punctuation">\</span>d<span class="token punctuation">)</span><span class="token punctuation">(</span>?<span class="token operator">=</span><span class="token punctuation">(</span><span class="token punctuation">\</span>d<span class="token punctuation">\</span>d<span class="token punctuation">\</span>d<span class="token punctuation">)</span>+$<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/794273428/" title="正则表达式">https://blog.x2b.net/794273428/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../2354164977/" rel="prev" title="Linux 权限配置管理">
+                  <i class="fa fa-chevron-left"></i> Linux 权限配置管理
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../17877528/" rel="next" title="Vim 工具基本使用">
+                  Vim 工具基本使用 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">102k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:42</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@next-theme/pjax@0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://unpkg.com/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://unpkg.com/katex@0.16.4/dist/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/794273428/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://unpkg.com/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'blog.x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>
