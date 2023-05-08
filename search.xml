@@ -7308,6 +7308,402 @@ crontab: installing new <span class="token function">crontab</span><span aria-hi
       </categories>
   </entry>
   <entry>
+    <title>Sed 命令简单使用</title>
+    <url>/507701603/</url>
+    <content><![CDATA[<h1 id="字符流编辑器"><a class="markdownIt-Anchor" href="#字符流编辑器"></a> 字符流编辑器</h1>
+<p>SED 是一个非交互式的面向字符流的编辑器（Stream Editor），输入流通过程序并输出直接送到标准输出端，<strong>输入文件本身不会发生改变</strong>，是操作、过滤和转换文本内容的强大工具。</p>
+<p>SED 可以把输出重定向到文件，但不允许直接送到输入文件。</p>
+<p>命令语法：<code>sed [-nefr] [动作]</code>。</p>
+<p>主要参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-n</td>
+<td>使用安静模式。只有被处理后的数据才会被列出来。</td>
+</tr>
+<tr>
+<td>-e</td>
+<td>直接在命令行模式上进行 sed 的动作编辑。</td>
+</tr>
+<tr>
+<td>-f</td>
+<td>指定加载的 sed 脚本。</td>
+</tr>
+<tr>
+<td>-r</td>
+<td>设置成支持扩展型正则表达式，默认是基础正则表达式。</td>
+</tr>
+<tr>
+<td>-i</td>
+<td>直接修改读取的文件内容，不在屏幕输出。</td>
+</tr>
+</tbody>
+</table>
+<p>动作说明：</p>
+<p><code>[n1 [,n2]] function</code></p>
+<p>function 参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a</td>
+<td>新增，在当前行后添加一行或多行。</td>
+</tr>
+<tr>
+<td>c</td>
+<td>替换行，c 后面接字符串，替换 n1，n2 之间的行。</td>
+</tr>
+<tr>
+<td>d</td>
+<td>删除行，只会删除输出中的内容，必须提供地址访问。</td>
+</tr>
+<tr>
+<td>i</td>
+<td>插入，在当前行之前插入文本。</td>
+</tr>
+<tr>
+<td>s</td>
+<td>替换数据，可以直接进行替换的工作。</td>
+</tr>
+<tr>
+<td>p</td>
+<td>打印，和 -n 一起合用来屏蔽 sed 的默认输出。</td>
+</tr>
+<tr>
+<td>q</td>
+<td>第一个模式匹配完成后立即退出。</td>
+</tr>
+<tr>
+<td>r</td>
+<td>从文件中读取输入行，类似重定向 &lt;。</td>
+</tr>
+<tr>
+<td>=</td>
+<td>显示文件行号。</td>
+</tr>
+<tr>
+<td>!</td>
+<td>对所选以外的所有行应用命令。</td>
+</tr>
+</tbody>
+</table>
+<p>替换标志（Substitution Flag）：</p>
+<table>
+<thead>
+<tr>
+<th>标志</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>n</td>
+<td>表示替换行内第 n 次匹配的值。</td>
+</tr>
+<tr>
+<td>i</td>
+<td>忽略大小写。</td>
+</tr>
+<tr>
+<td>g</td>
+<td>在行内进行全局替换，不设置只会替换每行第一次出现的原始字段。</td>
+</tr>
+<tr>
+<td>p</td>
+<td>只打印替换过的行。</td>
+</tr>
+<tr>
+<td>w</td>
+<td>将行写入文件。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="寻址模式"><a class="markdownIt-Anchor" href="#寻址模式"></a> 寻址模式</h1>
+<ul>
+<li>
+<p><strong>addr1,add2</strong></p>
+<p>定址 addr1, addr2 决定用于对哪些行进行编辑。地址的形式可以是数字、正则表达式或二者结合。</p>
+<p>如果没有指定地址，sed 将处理输入文件中的所有行。</p>
+<p>如果定址是一个数字，则这个数字代表行号。</p>
+<p>如果是逗号分隔的两个行号，那么需要处理的定址就是两行之间的范围（包括两行在内）。</p>
+</li>
+<li>
+<p><strong>addr1,+N</strong></p>
+<p>从 addr1 这行到往下 N 行匹配，总共匹配 N+1 行。</p>
+</li>
+<li>
+<p><strong>first~step</strong></p>
+<p>first 指起始匹配行，step 指步长，例如 <code>sed -n 2~5p</code> 表示从第 2 行开始匹配，隔 5 行匹配一次，即 2，7，12…</p>
+</li>
+<li>
+<p><strong>$</strong></p>
+<p>表示匹配最后一行。</p>
+</li>
+<li>
+<p><strong>/REGEXP/</strong></p>
+<p>表示匹配正则那一行，通过 // 之间的正则来匹配。</p>
+</li>
+<li>
+<p><strong>\cREGEXPc</strong></p>
+<p>表示匹配正则那一行，通过 \c 和 c 之间的正则来匹配，c 可以是任一字符。</p>
+</li>
+</ul>
+<h1 id="在命令行使用"><a class="markdownIt-Anchor" href="#在命令行使用"></a> 在命令行使用</h1>
+<p>例如打印并替换 <code>list</code> 文件中的 <code>BOB</code> 为 <code>Candy</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token string">'s/BOB/Candy/'</span> list
+Alice eats apples.
+Bob pets cats.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>同时多个替换命令可以在 ‘’ 内使用；分割两个指令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token string">'s/BOB/Candy/;s/aaa/bbb/'</span> list<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>也可以用 <code>-e</code> 参数来运行多条指令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-e</span> <span class="token string">'s/BOB/Candy/'</span> <span class="token parameter variable">-e</span> <span class="token string">'s/aaa/bbb/'</span> list<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>把单引号 ‘’ 内的内容用大括号 <code>&#123;&#125;</code> 括起来，可以多行输入执行多条命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@ ~<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-n</span> <span class="token string">'&#123;
+s/i/@/
+s/@/III/p
+&#125;'</span> test.txt
+<span class="token number">102</span>,Jason SmIIIth,IT Manager
+<span class="token number">103</span>,Raj Reddy,SysadmIIIn
+<span class="token number">105</span>,Jane MIIIller,Sales Manager<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="在脚本中使用"><a class="markdownIt-Anchor" href="#在脚本中使用"></a> 在脚本中使用</h1>
+<p>在 sed 和 awk 中，每个指令都包括模式和过程。</p>
+<p>模式是由斜杠 / 分割的正则表达式。</p>
+<p>过程指定一个或多个将被执行的动作，过程必须用大括号括起。</p>
+<p><strong>Sed 脚本执行流程:</strong></p>
+<ol>
+<li>sed 每次从 input-file 中读取一行记录，并执行命令，也就是会在第一行运用脚本所有内容。</li>
+<li>处理下一行，直到文件结束。</li>
+<li>脚本执行遵从下面简单易记的顺序：Read，Execute，Print，Repeat（读取，执行，打印，重复），简称 REPR。</li>
+</ol>
+<p>调用时直接在 <code>-f</code> 参数后接脚本名。例如用 <code>SED.sed</code> 脚本处理 <code>list</code> 文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-f</span> SED.sed list<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>脚本中命令一行单独一条命令即可。</p>
+<h1 id="打印显示"><a class="markdownIt-Anchor" href="#打印显示"></a> 打印显示</h1>
+<p>使用<code>p</code>动作将文件内容打印出来。例如从第3行打印到最后一行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-n</span> <span class="token string">'3,$p'</span> c.cfg 
+<span class="token number">1.4</span>
+1a4<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>打印正则匹配<code>halt</code>开头的行到<code>operator</code>开头的行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-n</span> <span class="token string">'/^halt/,/^operator/p'</span> b.cfg 
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="写入到文件"><a class="markdownIt-Anchor" href="#写入到文件"></a> 写入到文件</h1>
+<p>使用 <code>w</code> 动作将指定内容写入到文件中，而不是在屏幕显示：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-n</span> <span class="token string">'1,3 w cnew.txt'</span> c.cfg<span class="token punctuation">;</span><span class="token function">cat</span> cnew.txt
+abcac
+abc<span class="token punctuation">\</span>n
+<span class="token number">1.4</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果使用<code>-i</code>参数，则直接将修改应用到文件。例如去除文件中的#注释行和空行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-i</span> <span class="token parameter variable">-r</span> <span class="token string">'/^#|^$/d'</span> ac.cfg<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="删除指定行"><a class="markdownIt-Anchor" href="#删除指定行"></a> 删除指定行</h1>
+<p>使用<code>d</code>动作定义要删除的范围。例如将文件内容2到5行删除并打印：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">nl</span> b.cfg <span class="token operator">|</span> <span class="token function">sed</span> <span class="token string">'2,5d'</span>
+     <span class="token number">1</span>  root:x:0:0:root:/root:/bin/bash
+     <span class="token number">6</span>  sync:x:5:0:sync:/sbin:/bin/sync
+     <span class="token number">7</span>  shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>删除第一次匹配到的<code>sync</code>行，并删除后面2行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">nl</span> b.cfg <span class="token operator">|</span> <span class="token function">sed</span> <span class="token string">'/sync/,+2d'</span>
+     <span class="token number">4</span>  adm:x:3:4:adm:/var/adm:/sbin/nologin
+     <span class="token number">5</span>  lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+     <span class="token number">9</span>  mail:x:8:12:mail:/var/spool/mail:/sbin/nologin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="插入数据"><a class="markdownIt-Anchor" href="#插入数据"></a> 插入数据</h1>
+<p>使用 <code>a</code> 或 <code>i</code> 动作将字符串插入到指定行之后或之前：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-r</span> <span class="token string">'/^root/a 1999'</span> b.cfg 
+root:x:0:0:root:/root:/bin/bash
+<span class="token number">1999</span>
+bin:x:1:1:bin:/bin:/sbin/nologin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>增加多行内容可以用 <code>\</code> 来断行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-r</span> <span class="token string">'/^root/a 1999 \
+2000 
+'</span> b.cfg
+root:x:0:0:root:/root:/bin/bash
+<span class="token number">1999</span> 
+<span class="token number">2000</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="替换数据"><a class="markdownIt-Anchor" href="#替换数据"></a> 替换数据</h1>
+<p>整行替换使用<code>c</code>动作将行内容替换成指定内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-r</span> <span class="token string">'/^root/c 1999 \'</span> b.cfg 
+<span class="token number">1999</span> 
+bin:x:1:1:bin:/bin:/sbin/nologin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>以行为单位替换行内数据使用<code>s</code>动作。格式为：<code>'s/要被替换的字符串/新字符串/替换标记'</code></p>
+<p>例如将配置文件内<code>root</code>行的的<code>notempty</code>替换成<code>emptyok</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token string">'/root/s/notempty/emptyok/g'</span> a.cfg <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">'empty'</span>
+pwpolicy root <span class="token parameter variable">--minlen</span><span class="token operator">=</span><span class="token number">6</span> <span class="token parameter variable">--minquality</span><span class="token operator">=</span><span class="token number">1</span> <span class="token parameter variable">--notstrict</span> <span class="token parameter variable">--nochanges</span> <span class="token parameter variable">--emptyok</span>
+pwpolicy user <span class="token parameter variable">--minlen</span><span class="token operator">=</span><span class="token number">6</span> <span class="token parameter variable">--minquality</span><span class="token operator">=</span><span class="token number">1</span> <span class="token parameter variable">--notstrict</span> <span class="token parameter variable">--nochanges</span> <span class="token parameter variable">--emptyok</span>
+pwpolicy luks <span class="token parameter variable">--minlen</span><span class="token operator">=</span><span class="token number">6</span> <span class="token parameter variable">--minquality</span><span class="token operator">=</span><span class="token number">1</span> <span class="token parameter variable">--notstrict</span> <span class="token parameter variable">--nochanges</span> <span class="token parameter variable">--notempty</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>除了使用全局替换的<code>g</code>标志外，还可以使用数字来表示替换行内第几次匹配结果。</p>
+<p>例如替换每行第2次出现的<code>a</code>为<code>A</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token string">'s/a/A/2'</span> c.cfg 
+abcAca
+abc<span class="token punctuation">\</span>nA<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>还有<code>p</code>标记，用来只打印修改后的行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-n</span> <span class="token string">'s/a/A/3p'</span> c.cfg 
+abcacA<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>可以自由设置<strong>分界符号</strong>，这样可以方便使用作为字符串的<code>/</code>符号。</p>
+<p>例如使用<code>@</code>作为分界符，替换文件中的<code>/root/etc/</code>为<code>/etc/</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token string">'s@/root/etc/@/etc/@'</span> c.cfg 
+abcaca
+/etc/<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>**替换位置为<code>&amp;</code>**时，代表它会被替换成匹配到的被替换字符串或正则表达式。</p>
+<p>例如将行号数字用大括号<code>&#123;&#125;</code>括起来：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">nl</span> c.cfg <span class="token operator">|</span> <span class="token function">sed</span> <span class="token string">'s/[0-9]/&#123;&amp;&#125;/1'</span>
+     <span class="token punctuation">&#123;</span><span class="token number">1</span><span class="token punctuation">&#125;</span>        abcaca
+     <span class="token punctuation">&#123;</span><span class="token number">2</span><span class="token punctuation">&#125;</span>        /root/etc/
+     <span class="token punctuation">&#123;</span><span class="token number">3</span><span class="token punctuation">&#125;</span>        <span class="token number">1.4</span>
+     <span class="token punctuation">&#123;</span><span class="token number">4</span><span class="token punctuation">&#125;</span>        1a4<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>sed</code>支持<strong>分组替换</strong>，每个分组数据用<code>()</code>括起来。</p>
+<p>例如抽取第1和3组分组数据，并在第3分组数据用<code>[]</code>括起来：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-r</span> <span class="token string">'s/(^[a-z]+)(\:.)(\:[0-9]+\:).*/\1[\3]/g'</span> b.cfg
+root<span class="token punctuation">[</span>:0:<span class="token punctuation">]</span>
+bin<span class="token punctuation">[</span>:1:<span class="token punctuation">]</span>
+daemon<span class="token punctuation">[</span>:2:<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>3.脚本编程</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Linux 文件与目录权限</title>
+    <url>/46662635/</url>
+    <content><![CDATA[<h1 id="基本权限"><a class="markdownIt-Anchor" href="#基本权限"></a> 基本权限</h1>
+<p>基础权限有三种，分别是：读（r，Read）、写（w，Write）、执行（x，eXecute）。</p>
+<p>同样的权限标记对于文件和目录代表不同的意义。</p>
+<h2 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h2>
+<p>文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。</p>
+<table>
+<thead>
+<tr>
+<th>数字</th>
+<th>字符</th>
+<th>权限</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td>r</td>
+<td><strong>读取文件内容</strong>。例如使用 <code>cat</code> 命令查看，使用 <code>vim</code> 以<strong>只读</strong>方式打开。</td>
+</tr>
+<tr>
+<td>2</td>
+<td>w</td>
+<td><strong>编辑修改</strong>文件内容，但<strong>不包括删除</strong>文件。例如使用 <code>vim</code>、<code>sed</code> 等对文件内容进行修改并保存。</td>
+</tr>
+<tr>
+<td>1</td>
+<td>x</td>
+<td>文件具有可以被系统<strong>执行</strong>的权限。例如命令和脚本必须拥有此权限才能直接执行。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="目录权限"><a class="markdownIt-Anchor" href="#目录权限"></a> 目录权限</h2>
+<p>目录主要的内容是记录文件名清单，所以目录权限实际关联的是目录下文件属性查看与更改。</p>
+<table>
+<thead>
+<tr>
+<th>数字</th>
+<th>字符</th>
+<th>权限</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td>r</td>
+<td><strong>仅查询</strong>目录下的文件或目录<strong>名称</strong>，无法看到属性，相当于执行不加参数的 <code>ls</code> 命令。</td>
+</tr>
+<tr>
+<td>2</td>
+<td>w</td>
+<td>改变目录结构清单权限，也就是在目录下<strong>新建、删除、重命名</strong>文件或目录。</td>
+</tr>
+<tr>
+<td>1</td>
+<td>x</td>
+<td><strong>进入目录</strong>的权限，<strong>查询</strong>目录下的文件<strong>属性</strong>。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="权限参考"><a class="markdownIt-Anchor" href="#权限参考"></a> 权限参考</h1>
+<p>根据使用场景来配置权限。</p>
+<p><strong>用户进入目录所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限，来运行 <code>cd</code> 切换目录。</li>
+<li>目录需要 r 权限，来使用 <code>ls</code> 命令查看目录中文件列表。</li>
+</ul>
+<p><strong>用户读取目录内文件所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 r 权限来运行 <code>cat</code>、<code>more</code> 等读取文件命令。</li>
+</ul>
+<p><strong>用户修改目录内文件所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 r 和 w 权限来使用 <code>vi</code> 等工具进行文件读写。</li>
+</ul>
+<p><strong>用户创建一个文件所需权限</strong>：</p>
+<ul>
+<li>目录需要 w 和 x 权限来创建文件。</li>
+</ul>
+<p><strong>用户执行目录下的命令所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 x 权限来运行命令。</li>
+</ul>
+<h1 id="特殊权限"><a class="markdownIt-Anchor" href="#特殊权限"></a> 特殊权限</h1>
+<p>在 Linux 系统中，还有一些特殊权限。</p>
+<h2 id="suid"><a class="markdownIt-Anchor" href="#suid"></a> SUID</h2>
+<p>当 s 标志出现在文件所有者的 x 权限上时，被称为 Set UID，其含义为：</p>
+<ul>
+<li>SUID 权限<strong>仅对二进制程序有效</strong>，不能用在脚本上；</li>
+<li>执行者对该程序需要具有 x 的可执行权限；</li>
+<li>本权限仅在执行该程序的过程中（run-time）有效；</li>
+<li><strong>执行者将具有该程序所有者的权限</strong>。</li>
+</ul>
+<p>例如一般用户运行 <code>passwd</code> 命令修改密码，需要修改 <code>/etc/shadow</code> 文件。但是该文件的权限只有 root 可读写，而用户运行 passwd 程序时，会暂时获得 passwd 程序的 root 权限，从而可以通过 <code>passwd</code> 命令修改 <code>/etc/shadow</code> 文件。</p>
+<p>这是因为运行 <code>passwd</code> 后会启动一个新的进程，该进程会产生一个新的 PID。在该 PID 产生时，SUID 会给予该 PID 特殊的权限设置，使得执行者在该进程中具有该程序所有者的权限。</p>
+<h2 id="sgid"><a class="markdownIt-Anchor" href="#sgid"></a> SGID</h2>
+<p>当 s 标志出现在文件所属组的 x 权限上时，被称为 Set GID。SGID 可以针对文件或目录来设置。</p>
+<p><strong>针对文件</strong>，SGID 有以下功能：</p>
+<ul>
+<li>SGID 对二进制程序有效；</li>
+<li>程序执行者对该程序来说，需要具备 x 的权限；</li>
+<li><strong>执行者在执行的过程中将会获得该程序所属组的权限</strong>。</li>
+</ul>
+<p>例如，一般用户使用 <code>locate</code> 这个程序可以查询 <code>/var/lib/mlocate/mlocate.db</code> 文件的内容，会暂时获得 slocate 用户组的权限。</p>
+<p><strong>针对目录</strong>，SGID 有以下功能：</p>
+<ul>
+<li>用户若对此目录具有 r 和 x 的权限时，该用户能够进入此目录；</li>
+<li>用户在此目录下的有效用户组将会变成该目录的用户组；</li>
+<li><strong>若用户在此目录下具有 w 的权限，则用户所创建的新文件的所属组与此目录的所属组相同。</strong></li>
+</ul>
+<h2 id="sbit"><a class="markdownIt-Anchor" href="#sbit"></a> SBIT</h2>
+<p>当 t 出现在文件所有者的其他用户 x 权限上时，被称为 Sticky Bit。其含义为：</p>
+<ul>
+<li>SBIT 权限<strong>仅对目录有效</strong>；</li>
+<li>当用户对该目录具有 w 和 x 权限时，即具有写入权限时；</li>
+<li><strong>当用户在该目录下创建文件或目录时，仅有自己与 root 才有权力删除该文件。</strong></li>
+</ul>
+<p>例如，用户 1 对目录 A 具有 w 的权限，里面还有其他用户的文件。此时，目录 A 加上了 SBIT 权限时，用户 1 只能修改自己创建的文件，无法删除他人文件。</p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>0.基础概论</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Linux 中文件属性详解</title>
     <url>/1872252014/</url>
     <content><![CDATA[<h1 id="查看文件属性"><a class="markdownIt-Anchor" href="#查看文件属性"></a> 查看文件属性</h1>
@@ -7438,135 +7834,6 @@ drwxr-----.  <span class="token number">3</span> root root   <span class="token 
 <li>文件名中一般不应该包含空格；</li>
 <li>使用 Ext 文件系统时，文件名最长 255 个字符，路径最长 4096 个字符。</li>
 </ul>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>0.基础概论</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>Linux 文件与目录权限</title>
-    <url>/46662635/</url>
-    <content><![CDATA[<h1 id="基本权限"><a class="markdownIt-Anchor" href="#基本权限"></a> 基本权限</h1>
-<p>基础权限有三种，分别是：读（r，Read）、写（w，Write）、执行（x，eXecute）。</p>
-<p>同样的权限标记对于文件和目录代表不同的意义。</p>
-<h2 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h2>
-<p>文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。</p>
-<table>
-<thead>
-<tr>
-<th>数字</th>
-<th>字符</th>
-<th>权限</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>4</td>
-<td>r</td>
-<td><strong>读取文件内容</strong>。例如使用 <code>cat</code> 命令查看，使用 <code>vim</code> 以<strong>只读</strong>方式打开。</td>
-</tr>
-<tr>
-<td>2</td>
-<td>w</td>
-<td><strong>编辑修改</strong>文件内容，但<strong>不包括删除</strong>文件。例如使用 <code>vim</code>、<code>sed</code> 等对文件内容进行修改并保存。</td>
-</tr>
-<tr>
-<td>1</td>
-<td>x</td>
-<td>文件具有可以被系统<strong>执行</strong>的权限。例如命令和脚本必须拥有此权限才能直接执行。</td>
-</tr>
-</tbody>
-</table>
-<h2 id="目录权限"><a class="markdownIt-Anchor" href="#目录权限"></a> 目录权限</h2>
-<p>目录主要的内容是记录文件名清单，所以目录权限实际关联的是目录下文件属性查看与更改。</p>
-<table>
-<thead>
-<tr>
-<th>数字</th>
-<th>字符</th>
-<th>权限</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>4</td>
-<td>r</td>
-<td><strong>仅查询</strong>目录下的文件或目录<strong>名称</strong>，无法看到属性，相当于执行不加参数的 <code>ls</code> 命令。</td>
-</tr>
-<tr>
-<td>2</td>
-<td>w</td>
-<td>改变目录结构清单权限，也就是在目录下<strong>新建、删除、重命名</strong>文件或目录。</td>
-</tr>
-<tr>
-<td>1</td>
-<td>x</td>
-<td><strong>进入目录</strong>的权限，<strong>查询</strong>目录下的文件<strong>属性</strong>。</td>
-</tr>
-</tbody>
-</table>
-<h1 id="权限参考"><a class="markdownIt-Anchor" href="#权限参考"></a> 权限参考</h1>
-<p>根据使用场景来配置权限。</p>
-<p><strong>用户进入目录所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限，来运行 <code>cd</code> 切换目录。</li>
-<li>目录需要 r 权限，来使用 <code>ls</code> 命令查看目录中文件列表。</li>
-</ul>
-<p><strong>用户读取目录内文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 r 权限来运行 <code>cat</code>、<code>more</code> 等读取文件命令。</li>
-</ul>
-<p><strong>用户修改目录内文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 r 和 w 权限来使用 <code>vi</code> 等工具进行文件读写。</li>
-</ul>
-<p><strong>用户创建一个文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 w 和 x 权限来创建文件。</li>
-</ul>
-<p><strong>用户执行目录下的命令所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 x 权限来运行命令。</li>
-</ul>
-<h1 id="特殊权限"><a class="markdownIt-Anchor" href="#特殊权限"></a> 特殊权限</h1>
-<p>在 Linux 系统中，还有一些特殊权限。</p>
-<h2 id="suid"><a class="markdownIt-Anchor" href="#suid"></a> SUID</h2>
-<p>当 s 标志出现在文件所有者的 x 权限上时，被称为 Set UID，其含义为：</p>
-<ul>
-<li>SUID 权限<strong>仅对二进制程序有效</strong>，不能用在脚本上；</li>
-<li>执行者对该程序需要具有 x 的可执行权限；</li>
-<li>本权限仅在执行该程序的过程中（run-time）有效；</li>
-<li><strong>执行者将具有该程序所有者的权限</strong>。</li>
-</ul>
-<p>例如一般用户运行 <code>passwd</code> 命令修改密码，需要修改 <code>/etc/shadow</code> 文件。但是该文件的权限只有 root 可读写，而用户运行 passwd 程序时，会暂时获得 passwd 程序的 root 权限，从而可以通过 <code>passwd</code> 命令修改 <code>/etc/shadow</code> 文件。</p>
-<p>这是因为运行 <code>passwd</code> 后会启动一个新的进程，该进程会产生一个新的 PID。在该 PID 产生时，SUID 会给予该 PID 特殊的权限设置，使得执行者在该进程中具有该程序所有者的权限。</p>
-<h2 id="sgid"><a class="markdownIt-Anchor" href="#sgid"></a> SGID</h2>
-<p>当 s 标志出现在文件所属组的 x 权限上时，被称为 Set GID。SGID 可以针对文件或目录来设置。</p>
-<p><strong>针对文件</strong>，SGID 有以下功能：</p>
-<ul>
-<li>SGID 对二进制程序有效；</li>
-<li>程序执行者对该程序来说，需要具备 x 的权限；</li>
-<li><strong>执行者在执行的过程中将会获得该程序所属组的权限</strong>。</li>
-</ul>
-<p>例如，一般用户使用 <code>locate</code> 这个程序可以查询 <code>/var/lib/mlocate/mlocate.db</code> 文件的内容，会暂时获得 slocate 用户组的权限。</p>
-<p><strong>针对目录</strong>，SGID 有以下功能：</p>
-<ul>
-<li>用户若对此目录具有 r 和 x 的权限时，该用户能够进入此目录；</li>
-<li>用户在此目录下的有效用户组将会变成该目录的用户组；</li>
-<li><strong>若用户在此目录下具有 w 的权限，则用户所创建的新文件的所属组与此目录的所属组相同。</strong></li>
-</ul>
-<h2 id="sbit"><a class="markdownIt-Anchor" href="#sbit"></a> SBIT</h2>
-<p>当 t 出现在文件所有者的其他用户 x 权限上时，被称为 Sticky Bit。其含义为：</p>
-<ul>
-<li>SBIT 权限<strong>仅对目录有效</strong>；</li>
-<li>当用户对该目录具有 w 和 x 权限时，即具有写入权限时；</li>
-<li><strong>当用户在该目录下创建文件或目录时，仅有自己与 root 才有权力删除该文件。</strong></li>
-</ul>
-<p>例如，用户 1 对目录 A 具有 w 的权限，里面还有其他用户的文件。此时，目录 A 加上了 SBIT 权限时，用户 1 只能修改自己创建的文件，无法删除他人文件。</p>
 ]]></content>
       <categories>
         <category>Linux</category>
@@ -10366,6 +10633,171 @@ emacs           on<span aria-hidden="true" class="line-numbers-rows"><span></spa
       </categories>
   </entry>
   <entry>
+    <title>Awk 命令简单用法</title>
+    <url>/1712308461/</url>
+    <content><![CDATA[<h1 id="命令语法"><a class="markdownIt-Anchor" href="#命令语法"></a> 命令语法</h1>
+<p>awk 用于处理每一行的字段内的数据，默认字段的分隔符为空格或 <code>[Tab]</code>。</p>
+<p>awk 的命令语法如下：</p>
+<p><code>awk '条件类型1&#123;动作1&#125; 条件类型2&#123;动作2&#125; ...' 文件名</code></p>
+<p>awk 后面接两个单引号 ‘’ 并加上大括号 {} 来设置想要对数据进行的处理操作。</p>
+<p><code>$0</code> 代表整个输入行，<code>$n</code> 表示第 n 个字段。在应用脚本之前，awk 会先拆分输入记录。</p>
+<p>每次从一个或多个文件中读入一行或从标准输入中读入一行，指令包含在小括号对中。</p>
+<p>awk 将每个输入行解释为一条记录，行中的每个单词由空格或制表符分割解释为一个字段。</p>
+<h1 id="awk-处理流程"><a class="markdownIt-Anchor" href="#awk-处理流程"></a> awk 处理流程</h1>
+<p>整个 <code>awk</code> 的处理流程是：</p>
+<ol>
+<li>读入第一行，并将第一行的数据填入 <code>$0</code>, <code>$1</code>, <code>$2</code> 等变量中；</li>
+<li>依据条件类型的限制，判断是否需要进行后面的动作；</li>
+<li>完成所有动作与条件类型；</li>
+<li>重复以上流程步骤，直到所有数据读完为止。</li>
+</ol>
+<h1 id="awk-内置变量"><a class="markdownIt-Anchor" href="#awk-内置变量"></a> awk 内置变量</h1>
+<p><code>awk</code> 常用的内置变量如下表：</p>
+<table>
+<thead>
+<tr>
+<th><strong>变量名</strong></th>
+<th><strong>代表意义</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NF</td>
+<td>每一行(<code>$0</code>)拥有的字段总数(列数)</td>
+</tr>
+<tr>
+<td>NR</td>
+<td>目前 <code>awk</code> 所正在处理数据的行号</td>
+</tr>
+<tr>
+<td>FS</td>
+<td>输入字段分隔字符</td>
+</tr>
+<tr>
+<td>OFS</td>
+<td>输出字段分隔符</td>
+</tr>
+<tr>
+<td>RS</td>
+<td>输入记录分隔符</td>
+</tr>
+<tr>
+<td>ORS</td>
+<td>输出记录分隔符</td>
+</tr>
+<tr>
+<td>FIELDWIDTHS</td>
+<td>定义分割数据字段依据的宽度</td>
+</tr>
+</tbody>
+</table>
+<h1 id="格式化打印"><a class="markdownIt-Anchor" href="#格式化打印"></a> 格式化打印</h1>
+<p><code>printf</code> 可以帮我们将数据输出的结果格式化，并且支持一些特殊字符。</p>
+<p>命令格式：</p>
+<p><code>printf '打印样式' 实际内容</code></p>
+<p>特殊样式：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>样式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\a</td>
+<td>警告声音；</td>
+</tr>
+<tr>
+<td>\b</td>
+<td>退格键；</td>
+</tr>
+<tr>
+<td>\f</td>
+<td>清除屏幕；</td>
+</tr>
+<tr>
+<td>\n</td>
+<td>输出到新一行；</td>
+</tr>
+<tr>
+<td>\r</td>
+<td>回车键；</td>
+</tr>
+<tr>
+<td>\t</td>
+<td>水平 [tab] 按键；</td>
+</tr>
+<tr>
+<td>\v</td>
+<td>垂直 [tab] 按键；</td>
+</tr>
+<tr>
+<td>\xNN</td>
+<td>NN 为两位数的数字，可以转为字符；</td>
+</tr>
+<tr>
+<td>%ns</td>
+<td>n 为数字，s 表示字符串数量；</td>
+</tr>
+<tr>
+<td>%ni</td>
+<td>n 为数字，i 表示整数位数；</td>
+</tr>
+<tr>
+<td>%<a href="http://N.nf">N.nf</a></td>
+<td>n 与 N 为数字，f 代表多少位小数；</td>
+</tr>
+</tbody>
+</table>
+<h1 id="分割数据"><a class="markdownIt-Anchor" href="#分割数据"></a> 分割数据</h1>
+<p>例如取出 <code>last</code> 命令结果中用户名（第一列）与登录 IP（第三列）地址：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ last <span class="token parameter variable">-n</span> <span class="token number">5</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'&#123;print $1 "--" $3&#125;'</span>
+root--Sat
+root--192.168.2.101
+root--192.168.2.101
+root--192.168.2.101
+root--192.168.2.101<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 <code>print</code> 将结果打印出来是 <code>awk</code> 最常用功能。</p>
+<p>将内置变量打印出来：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ last <span class="token parameter variable">-n</span> <span class="token number">5</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'&#123;print $1 "  lines:" NR "   columes:" NF&#125;'</span>
+root  lines:1   columes:9
+root  lines:2   columes:10
+root  lines:3   columes:10
+root  lines:4   columes:10
+root  lines:5   columes:10<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>awk</code> 可以使用逻辑运算符来写判断条件。例如查找 UID 小于 10 的用户：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">cat</span> b.cfg <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'BEGIN &#123;FS=":"&#125; $3&lt;10&#123;print $1 "\t" $3&#125;'</span>
+root    <span class="token number">0</span>
+bin     <span class="token number">1</span>
+daemon  <span class="token number">2</span>
+adm     <span class="token number">3</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>命令由两个组成，前面一个命令定义了分隔符 <code>FS</code> 的值为：（也可以使用 <code>-F</code> 参数），同时使用 <code>BEGIN</code> 这个关键字，预先设置 <code>awk</code> 的变量。第二部分做逻辑判断 <code>$3</code> 小于 10 的才运行后面 <code>print</code> 命令。</p>
+<p>同时使用 <code>FS</code> 和 <code>OFS</code> 格式化输出：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ <span class="token function">awk</span> <span class="token string">'BEGIN&#123;FS=","; OFS="--"&#125; &#123;print $1,$2&#125;'</span> user.csv 
+user6--user6
+user7--user7<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>自定义按字符数来分割：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ <span class="token function">awk</span> <span class="token string">'BEGIN&#123;FIELDWIDTHS="5 1"&#125; &#123;print $1,$2,$0&#125;'</span> user.csv 
+user6 , user6,user6
+user7 , user7,user7<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>如果数据是多行形式，可以指定分隔符为 <code>\n</code>，以空行为界定新记录的分隔符：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ <span class="token function">awk</span> <span class="token string">'BEGIN&#123;FS="\n"; RS=""&#125; &#123;print $0 $2&#125;'</span> user.csv 
+user6,user6
+<span class="token number">403403</span>
+user7,user7
+<span class="token number">404404</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>awk</code> 还可以使用正则表达式来进行模式匹配。例如只显示 <code>$1</code> 含有 <code>root</code> 字符串的用户：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">cat</span> b.cfg <span class="token operator">|</span> <span class="token function">awk</span> -F: <span class="token string">'/root/&#123;print $1 "\t" $3&#125;'</span>
+root    <span class="token number">0</span>
+operator        <span class="token number">11</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>3.脚本编程</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Linux 权限配置管理</title>
     <url>/2354164977/</url>
     <content><![CDATA[<h1 id="修改文件所属用户组"><a class="markdownIt-Anchor" href="#修改文件所属用户组"></a> 修改文件所属用户组</h1>
@@ -12066,171 +12498,6 @@ dirquo        30M      <span class="token number">0</span>      <span class="tok
       <categories>
         <category>Linux</category>
         <category>2.系统管理</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>Awk 命令简单用法</title>
-    <url>/1712308461/</url>
-    <content><![CDATA[<h1 id="命令语法"><a class="markdownIt-Anchor" href="#命令语法"></a> 命令语法</h1>
-<p>awk 用于处理每一行的字段内的数据，默认字段的分隔符为空格或 <code>[Tab]</code>。</p>
-<p>awk 的命令语法如下：</p>
-<p><code>awk '条件类型1&#123;动作1&#125; 条件类型2&#123;动作2&#125; ...' 文件名</code></p>
-<p>awk 后面接两个单引号 ‘’ 并加上大括号 {} 来设置想要对数据进行的处理操作。</p>
-<p><code>$0</code> 代表整个输入行，<code>$n</code> 表示第 n 个字段。在应用脚本之前，awk 会先拆分输入记录。</p>
-<p>每次从一个或多个文件中读入一行或从标准输入中读入一行，指令包含在小括号对中。</p>
-<p>awk 将每个输入行解释为一条记录，行中的每个单词由空格或制表符分割解释为一个字段。</p>
-<h1 id="awk-处理流程"><a class="markdownIt-Anchor" href="#awk-处理流程"></a> awk 处理流程</h1>
-<p>整个 <code>awk</code> 的处理流程是：</p>
-<ol>
-<li>读入第一行，并将第一行的数据填入 <code>$0</code>, <code>$1</code>, <code>$2</code> 等变量中；</li>
-<li>依据条件类型的限制，判断是否需要进行后面的动作；</li>
-<li>完成所有动作与条件类型；</li>
-<li>重复以上流程步骤，直到所有数据读完为止。</li>
-</ol>
-<h1 id="awk-内置变量"><a class="markdownIt-Anchor" href="#awk-内置变量"></a> awk 内置变量</h1>
-<p><code>awk</code> 常用的内置变量如下表：</p>
-<table>
-<thead>
-<tr>
-<th><strong>变量名</strong></th>
-<th><strong>代表意义</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>NF</td>
-<td>每一行(<code>$0</code>)拥有的字段总数(列数)</td>
-</tr>
-<tr>
-<td>NR</td>
-<td>目前 <code>awk</code> 所正在处理数据的行号</td>
-</tr>
-<tr>
-<td>FS</td>
-<td>输入字段分隔字符</td>
-</tr>
-<tr>
-<td>OFS</td>
-<td>输出字段分隔符</td>
-</tr>
-<tr>
-<td>RS</td>
-<td>输入记录分隔符</td>
-</tr>
-<tr>
-<td>ORS</td>
-<td>输出记录分隔符</td>
-</tr>
-<tr>
-<td>FIELDWIDTHS</td>
-<td>定义分割数据字段依据的宽度</td>
-</tr>
-</tbody>
-</table>
-<h1 id="格式化打印"><a class="markdownIt-Anchor" href="#格式化打印"></a> 格式化打印</h1>
-<p><code>printf</code> 可以帮我们将数据输出的结果格式化，并且支持一些特殊字符。</p>
-<p>命令格式：</p>
-<p><code>printf '打印样式' 实际内容</code></p>
-<p>特殊样式：</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>样式</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>\a</td>
-<td>警告声音；</td>
-</tr>
-<tr>
-<td>\b</td>
-<td>退格键；</td>
-</tr>
-<tr>
-<td>\f</td>
-<td>清除屏幕；</td>
-</tr>
-<tr>
-<td>\n</td>
-<td>输出到新一行；</td>
-</tr>
-<tr>
-<td>\r</td>
-<td>回车键；</td>
-</tr>
-<tr>
-<td>\t</td>
-<td>水平 [tab] 按键；</td>
-</tr>
-<tr>
-<td>\v</td>
-<td>垂直 [tab] 按键；</td>
-</tr>
-<tr>
-<td>\xNN</td>
-<td>NN 为两位数的数字，可以转为字符；</td>
-</tr>
-<tr>
-<td>%ns</td>
-<td>n 为数字，s 表示字符串数量；</td>
-</tr>
-<tr>
-<td>%ni</td>
-<td>n 为数字，i 表示整数位数；</td>
-</tr>
-<tr>
-<td>%<a href="http://N.nf">N.nf</a></td>
-<td>n 与 N 为数字，f 代表多少位小数；</td>
-</tr>
-</tbody>
-</table>
-<h1 id="分割数据"><a class="markdownIt-Anchor" href="#分割数据"></a> 分割数据</h1>
-<p>例如取出 <code>last</code> 命令结果中用户名（第一列）与登录 IP（第三列）地址：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ last <span class="token parameter variable">-n</span> <span class="token number">5</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'&#123;print $1 "--" $3&#125;'</span>
-root--Sat
-root--192.168.2.101
-root--192.168.2.101
-root--192.168.2.101
-root--192.168.2.101<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>使用 <code>print</code> 将结果打印出来是 <code>awk</code> 最常用功能。</p>
-<p>将内置变量打印出来：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ last <span class="token parameter variable">-n</span> <span class="token number">5</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'&#123;print $1 "  lines:" NR "   columes:" NF&#125;'</span>
-root  lines:1   columes:9
-root  lines:2   columes:10
-root  lines:3   columes:10
-root  lines:4   columes:10
-root  lines:5   columes:10<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><code>awk</code> 可以使用逻辑运算符来写判断条件。例如查找 UID 小于 10 的用户：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">cat</span> b.cfg <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'BEGIN &#123;FS=":"&#125; $3&lt;10&#123;print $1 "\t" $3&#125;'</span>
-root    <span class="token number">0</span>
-bin     <span class="token number">1</span>
-daemon  <span class="token number">2</span>
-adm     <span class="token number">3</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>命令由两个组成，前面一个命令定义了分隔符 <code>FS</code> 的值为：（也可以使用 <code>-F</code> 参数），同时使用 <code>BEGIN</code> 这个关键字，预先设置 <code>awk</code> 的变量。第二部分做逻辑判断 <code>$3</code> 小于 10 的才运行后面 <code>print</code> 命令。</p>
-<p>同时使用 <code>FS</code> 和 <code>OFS</code> 格式化输出：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ <span class="token function">awk</span> <span class="token string">'BEGIN&#123;FS=","; OFS="--"&#125; &#123;print $1,$2&#125;'</span> user.csv 
-user6--user6
-user7--user7<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>自定义按字符数来分割：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ <span class="token function">awk</span> <span class="token string">'BEGIN&#123;FIELDWIDTHS="5 1"&#125; &#123;print $1,$2,$0&#125;'</span> user.csv 
-user6 , user6,user6
-user7 , user7,user7<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>如果数据是多行形式，可以指定分隔符为 <code>\n</code>，以空行为界定新记录的分隔符：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ <span class="token function">awk</span> <span class="token string">'BEGIN&#123;FS="\n"; RS=""&#125; &#123;print $0 $2&#125;'</span> user.csv 
-user6,user6
-<span class="token number">403403</span>
-user7,user7
-<span class="token number">404404</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><code>awk</code> 还可以使用正则表达式来进行模式匹配。例如只显示 <code>$1</code> 含有 <code>root</code> 字符串的用户：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">cat</span> b.cfg <span class="token operator">|</span> <span class="token function">awk</span> -F: <span class="token string">'/root/&#123;print $1 "\t" $3&#125;'</span>
-root    <span class="token number">0</span>
-operator        <span class="token number">11</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>3.脚本编程</category>
       </categories>
   </entry>
 </search>

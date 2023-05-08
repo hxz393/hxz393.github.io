@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="字符流编辑器 SED 是一个非交互式的面向字符流的编辑器（Stream Editor），输入流通过程序并输出直接送到标准输出端，输入文件本身不会发生改变，是操作、过滤和转换文本内容的强大工具。 SED 可以把输出重定向到文件，但不允许直接送到输入文件。 命令语法：sed [-nefr] [动作]。 主要参数：    参数 说明     -n 使用安静模式。只有被处理后的数据才会被列出来。   -">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sed 命令简单使用">
+<meta property="og:url" content="https://blog.x2b.net/507701603/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="字符流编辑器 SED 是一个非交互式的面向字符流的编辑器（Stream Editor），输入流通过程序并输出直接送到标准输出端，输入文件本身不会发生改变，是操作、过滤和转换文本内容的强大工具。 SED 可以把输出重定向到文件，但不允许直接送到输入文件。 命令语法：sed [-nefr] [动作]。 主要参数：    参数 说明     -n 使用安静模式。只有被处理后的数据才会被列出来。   -">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-09-18T04:23:09.000Z">
+<meta property="article:modified_time" content="2023-05-08T02:44:11.275Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/507701603/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/507701603/","path":"507701603/","title":"Sed 命令简单使用"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Sed 命令简单使用 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">38</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E6%B5%81%E7%BC%96%E8%BE%91%E5%99%A8"><span class="nav-number">1.</span> <span class="nav-text"> 字符流编辑器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%BB%E5%9D%80%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text"> 寻址模式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9C%A8%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%BD%BF%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text"> 在命令行使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9C%A8%E8%84%9A%E6%9C%AC%E4%B8%AD%E4%BD%BF%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text"> 在脚本中使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%93%E5%8D%B0%E6%98%BE%E7%A4%BA"><span class="nav-number">5.</span> <span class="nav-text"> 打印显示</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%99%E5%85%A5%E5%88%B0%E6%96%87%E4%BB%B6"><span class="nav-number">6.</span> <span class="nav-text"> 写入到文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E6%8C%87%E5%AE%9A%E8%A1%8C"><span class="nav-number">7.</span> <span class="nav-text"> 删除指定行</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E6%95%B0%E6%8D%AE"><span class="nav-number">8.</span> <span class="nav-text"> 插入数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%BF%E6%8D%A2%E6%95%B0%E6%8D%AE"><span class="nav-number">9.</span> <span class="nav-text"> 替换数据</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.douban.com/people/Cyber.DraFonS" title="https:&#x2F;&#x2F;www.douban.com&#x2F;people&#x2F;Cyber.DraFonS" rel="noopener external nofollow noreferrer" target="_blank">豆瓣</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/507701603/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Sed 命令简单使用 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Sed 命令简单使用
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-09-18 12:23:09" itemprop="dateCreated datePublished" datetime="2021-09-18T12:23:09+08:00">2021-09-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-08 10:44:11" itemprop="dateModified" datetime="2023-05-08T10:44:11+08:00">2023-05-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/3-%E8%84%9A%E6%9C%AC%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">3.脚本编程</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="字符流编辑器"><a class="markdownIt-Anchor" href="#字符流编辑器"></a> 字符流编辑器</h1>
+<p>SED 是一个非交互式的面向字符流的编辑器（Stream Editor），输入流通过程序并输出直接送到标准输出端，<strong>输入文件本身不会发生改变</strong>，是操作、过滤和转换文本内容的强大工具。</p>
+<p>SED 可以把输出重定向到文件，但不允许直接送到输入文件。</p>
+<p>命令语法：<code>sed [-nefr] [动作]</code>。</p>
+<p>主要参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-n</td>
+<td>使用安静模式。只有被处理后的数据才会被列出来。</td>
+</tr>
+<tr>
+<td>-e</td>
+<td>直接在命令行模式上进行 sed 的动作编辑。</td>
+</tr>
+<tr>
+<td>-f</td>
+<td>指定加载的 sed 脚本。</td>
+</tr>
+<tr>
+<td>-r</td>
+<td>设置成支持扩展型正则表达式，默认是基础正则表达式。</td>
+</tr>
+<tr>
+<td>-i</td>
+<td>直接修改读取的文件内容，不在屏幕输出。</td>
+</tr>
+</tbody>
+</table>
+<p>动作说明：</p>
+<p><code>[n1 [,n2]] function</code></p>
+<p>function 参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a</td>
+<td>新增，在当前行后添加一行或多行。</td>
+</tr>
+<tr>
+<td>c</td>
+<td>替换行，c 后面接字符串，替换 n1，n2 之间的行。</td>
+</tr>
+<tr>
+<td>d</td>
+<td>删除行，只会删除输出中的内容，必须提供地址访问。</td>
+</tr>
+<tr>
+<td>i</td>
+<td>插入，在当前行之前插入文本。</td>
+</tr>
+<tr>
+<td>s</td>
+<td>替换数据，可以直接进行替换的工作。</td>
+</tr>
+<tr>
+<td>p</td>
+<td>打印，和 -n 一起合用来屏蔽 sed 的默认输出。</td>
+</tr>
+<tr>
+<td>q</td>
+<td>第一个模式匹配完成后立即退出。</td>
+</tr>
+<tr>
+<td>r</td>
+<td>从文件中读取输入行，类似重定向 &lt;。</td>
+</tr>
+<tr>
+<td>=</td>
+<td>显示文件行号。</td>
+</tr>
+<tr>
+<td>!</td>
+<td>对所选以外的所有行应用命令。</td>
+</tr>
+</tbody>
+</table>
+<p>替换标志（Substitution Flag）：</p>
+<table>
+<thead>
+<tr>
+<th>标志</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>n</td>
+<td>表示替换行内第 n 次匹配的值。</td>
+</tr>
+<tr>
+<td>i</td>
+<td>忽略大小写。</td>
+</tr>
+<tr>
+<td>g</td>
+<td>在行内进行全局替换，不设置只会替换每行第一次出现的原始字段。</td>
+</tr>
+<tr>
+<td>p</td>
+<td>只打印替换过的行。</td>
+</tr>
+<tr>
+<td>w</td>
+<td>将行写入文件。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="寻址模式"><a class="markdownIt-Anchor" href="#寻址模式"></a> 寻址模式</h1>
+<ul>
+<li>
+<p><strong>addr1,add2</strong></p>
+<p>定址 addr1, addr2 决定用于对哪些行进行编辑。地址的形式可以是数字、正则表达式或二者结合。</p>
+<p>如果没有指定地址，sed 将处理输入文件中的所有行。</p>
+<p>如果定址是一个数字，则这个数字代表行号。</p>
+<p>如果是逗号分隔的两个行号，那么需要处理的定址就是两行之间的范围（包括两行在内）。</p>
+</li>
+<li>
+<p><strong>addr1,+N</strong></p>
+<p>从 addr1 这行到往下 N 行匹配，总共匹配 N+1 行。</p>
+</li>
+<li>
+<p><strong>first~step</strong></p>
+<p>first 指起始匹配行，step 指步长，例如 <code>sed -n 2~5p</code> 表示从第 2 行开始匹配，隔 5 行匹配一次，即 2，7，12…</p>
+</li>
+<li>
+<p><strong>$</strong></p>
+<p>表示匹配最后一行。</p>
+</li>
+<li>
+<p><strong>/REGEXP/</strong></p>
+<p>表示匹配正则那一行，通过 // 之间的正则来匹配。</p>
+</li>
+<li>
+<p><strong>\cREGEXPc</strong></p>
+<p>表示匹配正则那一行，通过 \c 和 c 之间的正则来匹配，c 可以是任一字符。</p>
+</li>
+</ul>
+<h1 id="在命令行使用"><a class="markdownIt-Anchor" href="#在命令行使用"></a> 在命令行使用</h1>
+<p>例如打印并替换 <code>list</code> 文件中的 <code>BOB</code> 为 <code>Candy</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token string">'s/BOB/Candy/'</span> list
+Alice eats apples.
+Bob pets cats.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>同时多个替换命令可以在 ‘’ 内使用；分割两个指令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token string">'s/BOB/Candy/;s/aaa/bbb/'</span> list<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>也可以用 <code>-e</code> 参数来运行多条指令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-e</span> <span class="token string">'s/BOB/Candy/'</span> <span class="token parameter variable">-e</span> <span class="token string">'s/aaa/bbb/'</span> list<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>把单引号 ‘’ 内的内容用大括号 <code>&#123;&#125;</code> 括起来，可以多行输入执行多条命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@ ~<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-n</span> <span class="token string">'&#123;
+s/i/@/
+s/@/III/p
+&#125;'</span> test.txt
+<span class="token number">102</span>,Jason SmIIIth,IT Manager
+<span class="token number">103</span>,Raj Reddy,SysadmIIIn
+<span class="token number">105</span>,Jane MIIIller,Sales Manager<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="在脚本中使用"><a class="markdownIt-Anchor" href="#在脚本中使用"></a> 在脚本中使用</h1>
+<p>在 sed 和 awk 中，每个指令都包括模式和过程。</p>
+<p>模式是由斜杠 / 分割的正则表达式。</p>
+<p>过程指定一个或多个将被执行的动作，过程必须用大括号括起。</p>
+<p><strong>Sed 脚本执行流程:</strong></p>
+<ol>
+<li>sed 每次从 input-file 中读取一行记录，并执行命令，也就是会在第一行运用脚本所有内容。</li>
+<li>处理下一行，直到文件结束。</li>
+<li>脚本执行遵从下面简单易记的顺序：Read，Execute，Print，Repeat（读取，执行，打印，重复），简称 REPR。</li>
+</ol>
+<p>调用时直接在 <code>-f</code> 参数后接脚本名。例如用 <code>SED.sed</code> 脚本处理 <code>list</code> 文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-f</span> SED.sed list<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>脚本中命令一行单独一条命令即可。</p>
+<h1 id="打印显示"><a class="markdownIt-Anchor" href="#打印显示"></a> 打印显示</h1>
+<p>使用<code>p</code>动作将文件内容打印出来。例如从第3行打印到最后一行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-n</span> <span class="token string">'3,$p'</span> c.cfg 
+<span class="token number">1.4</span>
+1a4<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>打印正则匹配<code>halt</code>开头的行到<code>operator</code>开头的行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-n</span> <span class="token string">'/^halt/,/^operator/p'</span> b.cfg 
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="写入到文件"><a class="markdownIt-Anchor" href="#写入到文件"></a> 写入到文件</h1>
+<p>使用 <code>w</code> 动作将指定内容写入到文件中，而不是在屏幕显示：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-n</span> <span class="token string">'1,3 w cnew.txt'</span> c.cfg<span class="token punctuation">;</span><span class="token function">cat</span> cnew.txt
+abcac
+abc<span class="token punctuation">\</span>n
+<span class="token number">1.4</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果使用<code>-i</code>参数，则直接将修改应用到文件。例如去除文件中的#注释行和空行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-i</span> <span class="token parameter variable">-r</span> <span class="token string">'/^#|^$/d'</span> ac.cfg<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="删除指定行"><a class="markdownIt-Anchor" href="#删除指定行"></a> 删除指定行</h1>
+<p>使用<code>d</code>动作定义要删除的范围。例如将文件内容2到5行删除并打印：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">nl</span> b.cfg <span class="token operator">|</span> <span class="token function">sed</span> <span class="token string">'2,5d'</span>
+     <span class="token number">1</span>  root:x:0:0:root:/root:/bin/bash
+     <span class="token number">6</span>  sync:x:5:0:sync:/sbin:/bin/sync
+     <span class="token number">7</span>  shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>删除第一次匹配到的<code>sync</code>行，并删除后面2行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">nl</span> b.cfg <span class="token operator">|</span> <span class="token function">sed</span> <span class="token string">'/sync/,+2d'</span>
+     <span class="token number">4</span>  adm:x:3:4:adm:/var/adm:/sbin/nologin
+     <span class="token number">5</span>  lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+     <span class="token number">9</span>  mail:x:8:12:mail:/var/spool/mail:/sbin/nologin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="插入数据"><a class="markdownIt-Anchor" href="#插入数据"></a> 插入数据</h1>
+<p>使用 <code>a</code> 或 <code>i</code> 动作将字符串插入到指定行之后或之前：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-r</span> <span class="token string">'/^root/a 1999'</span> b.cfg 
+root:x:0:0:root:/root:/bin/bash
+<span class="token number">1999</span>
+bin:x:1:1:bin:/bin:/sbin/nologin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>增加多行内容可以用 <code>\</code> 来断行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-r</span> <span class="token string">'/^root/a 1999 \
+2000 
+'</span> b.cfg
+root:x:0:0:root:/root:/bin/bash
+<span class="token number">1999</span> 
+<span class="token number">2000</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="替换数据"><a class="markdownIt-Anchor" href="#替换数据"></a> 替换数据</h1>
+<p>整行替换使用<code>c</code>动作将行内容替换成指定内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-r</span> <span class="token string">'/^root/c 1999 \'</span> b.cfg 
+<span class="token number">1999</span> 
+bin:x:1:1:bin:/bin:/sbin/nologin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>以行为单位替换行内数据使用<code>s</code>动作。格式为：<code>'s/要被替换的字符串/新字符串/替换标记'</code></p>
+<p>例如将配置文件内<code>root</code>行的的<code>notempty</code>替换成<code>emptyok</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token string">'/root/s/notempty/emptyok/g'</span> a.cfg <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">'empty'</span>
+pwpolicy root <span class="token parameter variable">--minlen</span><span class="token operator">=</span><span class="token number">6</span> <span class="token parameter variable">--minquality</span><span class="token operator">=</span><span class="token number">1</span> <span class="token parameter variable">--notstrict</span> <span class="token parameter variable">--nochanges</span> <span class="token parameter variable">--emptyok</span>
+pwpolicy user <span class="token parameter variable">--minlen</span><span class="token operator">=</span><span class="token number">6</span> <span class="token parameter variable">--minquality</span><span class="token operator">=</span><span class="token number">1</span> <span class="token parameter variable">--notstrict</span> <span class="token parameter variable">--nochanges</span> <span class="token parameter variable">--emptyok</span>
+pwpolicy luks <span class="token parameter variable">--minlen</span><span class="token operator">=</span><span class="token number">6</span> <span class="token parameter variable">--minquality</span><span class="token operator">=</span><span class="token number">1</span> <span class="token parameter variable">--notstrict</span> <span class="token parameter variable">--nochanges</span> <span class="token parameter variable">--notempty</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>除了使用全局替换的<code>g</code>标志外，还可以使用数字来表示替换行内第几次匹配结果。</p>
+<p>例如替换每行第2次出现的<code>a</code>为<code>A</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token string">'s/a/A/2'</span> c.cfg 
+abcAca
+abc<span class="token punctuation">\</span>nA<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>还有<code>p</code>标记，用来只打印修改后的行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-n</span> <span class="token string">'s/a/A/3p'</span> c.cfg 
+abcacA<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>可以自由设置<strong>分界符号</strong>，这样可以方便使用作为字符串的<code>/</code>符号。</p>
+<p>例如使用<code>@</code>作为分界符，替换文件中的<code>/root/etc/</code>为<code>/etc/</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token string">'s@/root/etc/@/etc/@'</span> c.cfg 
+abcaca
+/etc/<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>**替换位置为<code>&amp;</code>**时，代表它会被替换成匹配到的被替换字符串或正则表达式。</p>
+<p>例如将行号数字用大括号<code>&#123;&#125;</code>括起来：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">nl</span> c.cfg <span class="token operator">|</span> <span class="token function">sed</span> <span class="token string">'s/[0-9]/&#123;&amp;&#125;/1'</span>
+     <span class="token punctuation">&#123;</span><span class="token number">1</span><span class="token punctuation">&#125;</span>        abcaca
+     <span class="token punctuation">&#123;</span><span class="token number">2</span><span class="token punctuation">&#125;</span>        /root/etc/
+     <span class="token punctuation">&#123;</span><span class="token number">3</span><span class="token punctuation">&#125;</span>        <span class="token number">1.4</span>
+     <span class="token punctuation">&#123;</span><span class="token number">4</span><span class="token punctuation">&#125;</span>        1a4<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>sed</code>支持<strong>分组替换</strong>，每个分组数据用<code>()</code>括起来。</p>
+<p>例如抽取第1和3组分组数据，并在第3分组数据用<code>[]</code>括起来：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-r</span> <span class="token string">'s/(^[a-z]+)(\:.)(\:[0-9]+\:).*/\1[\3]/g'</span> b.cfg
+root<span class="token punctuation">[</span>:0:<span class="token punctuation">]</span>
+bin<span class="token punctuation">[</span>:1:<span class="token punctuation">]</span>
+daemon<span class="token punctuation">[</span>:2:<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/507701603/" title="Sed 命令简单使用">https://blog.x2b.net/507701603/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../46662635/" rel="prev" title="Linux 文件与目录权限">
+                  <i class="fa fa-chevron-left"></i> Linux 文件与目录权限
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../3847284551/" rel="next" title="Linux 工作调度与定时任务">
+                  Linux 工作调度与定时任务 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">97k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:24</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@next-theme/pjax@0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://unpkg.com/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://unpkg.com/katex@0.16.4/dist/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/507701603/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://unpkg.com/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'blog.x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>
