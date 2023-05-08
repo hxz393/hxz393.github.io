@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="Vim 基础知识 Vim（Vi IMproved）是一款强大的文本编辑器，是Linux和其他类Unix系统中最常用的编辑器之一。它不仅支持简单的文本编辑，还有许多高级功能，例如自动完成、宏录制、拼写检查和代码高亮等。Vim是一个模式化编辑器，有多种不同的模式，其中最常用的是命令模式、插入模式和可视模式。  Vim 模式 vi 分为三种模式，一般模式、编辑模式与命令行模式：   一般指令模式（Co">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vim 工具基本使用">
+<meta property="og:url" content="https://blog.x2b.net/17877528/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="Vim 基础知识 Vim（Vi IMproved）是一款强大的文本编辑器，是Linux和其他类Unix系统中最常用的编辑器之一。它不仅支持简单的文本编辑，还有许多高级功能，例如自动完成、宏录制、拼写检查和代码高亮等。Vim是一个模式化编辑器，有多种不同的模式，其中最常用的是命令模式、插入模式和可视模式。  Vim 模式 vi 分为三种模式，一般模式、编辑模式与命令行模式：   一般指令模式（Co">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-09-18T03:57:47.000Z">
+<meta property="article:modified_time" content="2023-05-08T03:58:01.754Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/17877528/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/17877528/","path":"17877528/","title":"Vim 工具基本使用"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Vim 工具基本使用 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">39</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#vim-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text"> Vim 基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#vim-%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text"> Vim 模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%95%8C%E9%9D%A2%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.2.</span> <span class="nav-text"> 界面介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%81%A2%E5%A4%8D%E5%8A%9F%E8%83%BD"><span class="nav-number">1.3.</span> <span class="nav-text"> 恢复功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.4.</span> <span class="nav-text"> 环境设置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#vim-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="nav-number">2.</span> <span class="nav-text"> Vim 基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E8%88%AC%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.1.</span> <span class="nav-text"> 一般模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A7%BB%E5%8A%A8"><span class="nav-number">2.1.1.</span> <span class="nav-text"> 移动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BF%BB%E9%A1%B5"><span class="nav-number">2.1.2.</span> <span class="nav-text"> 翻页</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%B3%E8%BD%AC"><span class="nav-number">2.1.3.</span> <span class="nav-text"> 跳转</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4"><span class="nav-number">2.1.4.</span> <span class="nav-text"> 删除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%AA%E5%88%87"><span class="nav-number">2.1.5.</span> <span class="nav-text"> 剪切</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6"><span class="nav-number">2.1.6.</span> <span class="nav-text"> 复制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B2%98%E8%B4%B4"><span class="nav-number">2.1.7.</span> <span class="nav-text"> 粘贴</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%92%A4%E9%94%80"><span class="nav-number">2.1.8.</span> <span class="nav-text"> 撤销</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E5%81%9A"><span class="nav-number">2.1.9.</span> <span class="nav-text"> 重做</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9D%97%E9%80%89%E6%8B%A9%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.1.10.</span> <span class="nav-text"> 块选择模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%BE%91%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text"> 编辑模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.3.</span> <span class="nav-text"> 命令模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%90%9C%E7%B4%A2"><span class="nav-number">2.3.1.</span> <span class="nav-text"> 搜索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%BF%E6%8D%A2"><span class="nav-number">2.3.2.</span> <span class="nav-text"> 替换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%9D%E5%AD%98"><span class="nav-number">2.3.3.</span> <span class="nav-text"> 保存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96"><span class="nav-number">2.3.4.</span> <span class="nav-text"> 读取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%80%E5%87%BA"><span class="nav-number">2.3.5.</span> <span class="nav-text"> 退出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.3.6.</span> <span class="nav-text"> 设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E7%AA%97%E5%8F%A3%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.3.7.</span> <span class="nav-text"> 多窗口模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E6%97%B6%E7%BC%96%E8%BE%91%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.3.8.</span> <span class="nav-text"> 同时编辑模式</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.douban.com/people/Cyber.DraFonS" title="https:&#x2F;&#x2F;www.douban.com&#x2F;people&#x2F;Cyber.DraFonS" rel="noopener external nofollow noreferrer" target="_blank">豆瓣</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/17877528/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Vim 工具基本使用 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Vim 工具基本使用
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-09-18 11:57:47" itemprop="dateCreated datePublished" datetime="2021-09-18T11:57:47+08:00">2021-09-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-08 11:58:01" itemprop="dateModified" datetime="2023-05-08T11:58:01+08:00">2023-05-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/3-%E8%84%9A%E6%9C%AC%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">3.脚本编程</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>8 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="vim-基础知识"><a class="markdownIt-Anchor" href="#vim-基础知识"></a> Vim 基础知识</h1>
+<p>Vim（Vi IMproved）是一款强大的文本编辑器，是Linux和其他类Unix系统中最常用的编辑器之一。它不仅支持简单的文本编辑，还有许多高级功能，例如自动完成、宏录制、拼写检查和代码高亮等。Vim是一个模式化编辑器，有多种不同的模式，其中最常用的是命令模式、插入模式和可视模式。</p>
+<h2 id="vim-模式"><a class="markdownIt-Anchor" href="#vim-模式"></a> Vim 模式</h2>
+<p>vi 分为三种模式，一般模式、编辑模式与命令行模式：</p>
+<ul>
+<li>
+<p>一般指令模式（Command Mode）</p>
+<p>用 vi 打开一个文件就进入一般模式，可以使用方向键来移动光标，删除，复制与粘贴。</p>
+</li>
+<li>
+<p>编辑模式（Insert Mode）</p>
+<p>在一般模式中，按下 “i o a r” 任何一个按键之后才会进入编辑模式，左下角会显示 INSERT 或 REPLACE 等字样。按 Esc 键可以返回一般模式。</p>
+</li>
+<li>
+<p>命令行模式（Command-line Mode）</p>
+<p>在一般模式下，输入 “: / ?” 三个中的任何一个按键，可以将光标移动到最下面一行，在此模式可以查找数据，读取保存，大量替换等操作。</p>
+</li>
+</ul>
+<h2 id="界面介绍"><a class="markdownIt-Anchor" href="#界面介绍"></a> 界面介绍</h2>
+<p>使用 <code>vi</code> 打开一个已存在的文件后，显示如下所示：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> anaconda-ks.cfg 
+<span class="token comment">#version=DEVEL</span>
+<span class="token comment"># System authorization information</span>
+auth <span class="token parameter variable">--enableshadow</span> <span class="token parameter variable">--passalgo</span><span class="token operator">=</span>sha512
+<span class="token comment"># Use CDROM installation media</span>
+cdrom
+<span class="token comment"># Use graphical install</span>
+graphical
+<span class="token comment"># Run the Setup Agent on first boot</span>
+<span class="token string">"anaconda-ks.cfg"</span> 48L, 1260C<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最下面一行分别展示了：</p>
+<ul>
+<li>“anaconda-ks.cfg”：文件名；</li>
+<li>48L：文件有 48 行；</li>
+<li>1260C：文件有 1260 个字符，也就是 1260B 大小。</li>
+</ul>
+<p>按下 <code>i</code> 键后，进入到编辑模式，最左下角显示：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">-- INSERT --<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>此时可以自由输入文字。按下 <code>Esc</code> 键退回到一般模式，再输入 <code>:wq</code> 按回车可以保存并离开 <code>vi</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">:wq
+<span class="token string">"anaconda-ks.cfg"</span> 48L, 1260C written<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>如果文件权限只读，可以使用 <code>:wq!</code> 来强制写入。</p>
+<h2 id="恢复功能"><a class="markdownIt-Anchor" href="#恢复功能"></a> 恢复功能</h2>
+<p>恢复功能是指，当因为某些原因导致死机的情况下，能通过一些方法将之前未保存的数据找回来。</p>
+<p>在使用 <code>vim</code> 编辑文件时，<code>vim</code> 会在被编辑文件同目录下新建一个名为 <code>.filename.swp</code> 的交换文件。每当键入 200 个字符或有 4 秒没有键入内容时，交换文件都会自动地更新。</p>
+<p>例如用 <code>vi</code> 新建打开一个文件，在命令模式下按 <code>Ctrl+z</code> 中断，再查看 <code>.swp</code> 文件内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">vi</span> <span class="token number">1</span>.txt
+a
+b
+~
+
+<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>+  Stopped                 <span class="token function">vi</span> <span class="token number">1</span>.txt
+<span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">cat</span> .1.txt.swp 
+U3210<span class="token comment">#"! Utpad???</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到 <code>swp</code> 实时保存了我们输入的内容。</p>
+<p>再次打开文件时，会提示有 <code>swp</code> 临时文件存在：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">vim</span> <span class="token number">1</span>.txt 
+
+E325: ATTENTION
+Found a swap <span class="token function">file</span> by the name <span class="token string">".1.txt.swp"</span>
+          owned by: root   dated: Sat Sep <span class="token number">11</span> 03:44:17 <span class="token number">2021</span>
+         <span class="token function">file</span> name: ~root/4/1.txt
+          modified: YES
+         user name: root   <span class="token function">host</span> name: 101c7
+        process ID: <span class="token number">87510</span> <span class="token punctuation">(</span>still running<span class="token punctuation">)</span>
+While opening <span class="token function">file</span> <span class="token string">"1.txt"</span>
+             dated: Sat Sep <span class="token number">11</span> 03:44:11 <span class="token number">2021</span>
+
+<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> Another program may be editing the same file.  If this is the case,
+    be careful not to end up with two different instances of the same
+    <span class="token function">file</span> when making changes.  Quit, or <span class="token builtin class-name">continue</span> with caution.
+<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span> An edit session <span class="token keyword">for</span> this <span class="token function">file</span> crashed.
+    If this is the case, use <span class="token string">":recover"</span> or <span class="token string">"vim -r 1.txt"</span>
+    to recover the changes <span class="token punctuation">(</span>see <span class="token string">":help recovery"</span><span class="token punctuation">)</span>.
+    If you did this already, delete the swap <span class="token function">file</span> <span class="token string">".1.txt.swp"</span>
+    to avoid this message.
+
+Swap <span class="token function">file</span> <span class="token string">".1.txt.swp"</span> already exists<span class="token operator">!</span>
+<span class="token punctuation">[</span>O<span class="token punctuation">]</span>pen Read-Only, <span class="token punctuation">(</span>E<span class="token punctuation">)</span>dit anyway, <span class="token punctuation">(</span>R<span class="token punctuation">)</span>ecover, <span class="token punctuation">(</span>Q<span class="token punctuation">)</span>uit, <span class="token punctuation">(</span>A<span class="token punctuation">)</span>bort:<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>提示会说明出现这一情况的两种原因：</p>
+<ul>
+<li>此文件正被另一个程序所使用；</li>
+<li>文件在编辑过程中非正常退出。</li>
+</ul>
+<p>此时可以选择以哪种模式来打开：</p>
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>O</td>
+<td>以只读模式打开，显示内容为没有保存的内容；</td>
+</tr>
+<tr>
+<td>E</td>
+<td>以正常模式编辑文件，不会载入暂存文件内容；</td>
+</tr>
+<tr>
+<td>R</td>
+<td>加载暂存文件内容，恢复之前的作业。修改完毕后需要手动删除 <code>.swp</code> 文件；</td>
+</tr>
+<tr>
+<td>Q</td>
+<td>直接退出不进行操作；</td>
+</tr>
+<tr>
+<td>A</td>
+<td>等同于 Q，直接退出。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="环境设置"><a class="markdownIt-Anchor" href="#环境设置"></a> 环境设置</h2>
+<p>在使用 <code>vim</code> 编辑文件时，文件会继承上一次编辑时的状态，比如光标出现在最后一行。这个记录操作文件保存在 <code>~/.viminfo</code> 里面。</p>
+<p>在命令模式下用 <code>set</code> 修改的设置值保存在 <code>/etc/vimrc</code> 这个文件中，不建议动它。需要自定义设置可以新建 <code>~/.vimrc</code> 这个文件将希望设置的值写入。</p>
+<p>例如设置自动缩进和行号功能：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vim</span> ~/.vimrc
+<span class="token builtin class-name">set</span> nu          <span class="token string">"hanghao
+set autoindent  "</span>suojin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>再次打开 <code>vim</code> 即可生效：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vim</span> ~/.vimrc
+  <span class="token number">1</span> <span class="token builtin class-name">set</span> nu          <span class="token string">"hanghao
+  2 set autoindent  "</span>suojin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h1 id="vim-基本操作"><a class="markdownIt-Anchor" href="#vim-基本操作"></a> Vim 基本操作</h1>
+<p>下面记录一些 Vim 的基本操作。</p>
+<h2 id="一般模式"><a class="markdownIt-Anchor" href="#一般模式"></a> 一般模式</h2>
+<p>光标移动针对的是在一般模式下快速浏览/定位文件。</p>
+<h3 id="移动"><a class="markdownIt-Anchor" href="#移动"></a> 移动</h3>
+<p>可以使用方向键 <code>←</code> <code>↓</code> <code>↑</code> <code>→</code> 或 <code>h</code> <code>j</code> <code>k</code> <code>l</code> 操作光标左/右/下/上移一个字符。</p>
+<p>可使用数字组合，例如 <code>30k</code> 代表光标向上移 30 行。</p>
+<h3 id="翻页"><a class="markdownIt-Anchor" href="#翻页"></a> 翻页</h3>
+<p>使用快捷键 <code>Ctrl+f</code>/<code>Ctrl+b</code> 来控制屏幕向下/上移动一页，相当于 <code>PageDown</code>/<code>PageUp</code>。</p>
+<h3 id="跳转"><a class="markdownIt-Anchor" href="#跳转"></a> 跳转</h3>
+<p>输入 <code>nG</code>（n 为数字）将光标移动到第 n 行位置。</p>
+<h3 id="删除"><a class="markdownIt-Anchor" href="#删除"></a> 删除</h3>
+<p>使用 <code>x</code>/<code>X</code> 来删除当前光标后/前个字符。</p>
+<p>可以使用数字组合，例如 <code>9x</code> 代表删除光标后连续 9 个字符。</p>
+<h3 id="剪切"><a class="markdownIt-Anchor" href="#剪切"></a> 剪切</h3>
+<p>使用 <code>dd</code> 剪切光标所在行。</p>
+<p>可以使用数字组合，例如 <code>9dd</code> 代表向下删除 9 行。</p>
+<h3 id="复制"><a class="markdownIt-Anchor" href="#复制"></a> 复制</h3>
+<p>使用 <code>yy</code> 复制光标所在行。</p>
+<p>可以使用数字组合，例如 <code>9yy</code> 代表复制向下 9 行。</p>
+<p>按 <code>v</code> 键进入复制可视模式，在移动光标时高亮显示文本，选择完毕后按 <code>y</code> 复制选择内容。</p>
+<h3 id="粘贴"><a class="markdownIt-Anchor" href="#粘贴"></a> 粘贴</h3>
+<p>使用 <code>p</code>/<code>P</code> 来将剪贴板数据粘贴到光标下/上一行。</p>
+<h3 id="撤销"><a class="markdownIt-Anchor" href="#撤销"></a> 撤销</h3>
+<p>使用 <code>u</code> 来撤销上一次操作。</p>
+<h3 id="重做"><a class="markdownIt-Anchor" href="#重做"></a> 重做</h3>
+<p>使用 <code>Ctrl+r</code> 快捷键来反撤销操作。</p>
+<h3 id="块选择模式"><a class="markdownIt-Anchor" href="#块选择模式"></a> 块选择模式</h3>
+<p>按下<code>Ctrl+v</code>进入块选择模式，之后用方向键操作光标选择块：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">vi</span> c.log 
+c1  ass
+c2  bss
+c3  css
+~
+-- VISUAL BLOCK --  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>此模式下按<code>y</code>复制，按<code>d</code>删除。</p>
+<h2 id="编辑模式"><a class="markdownIt-Anchor" href="#编辑模式"></a> 编辑模式</h2>
+<p>进入编辑模式有两个方式：</p>
+<ul>
+<li>
+<p>按 i：进入到插入模式（Insert Mode）。</p>
+</li>
+<li>
+<p>按 r/R：进入到替换/连续替换模式（Replace Mode）。</p>
+</li>
+</ul>
+<p>在编辑模式中主要执行文本插入和修改操作。</p>
+<h2 id="命令模式"><a class="markdownIt-Anchor" href="#命令模式"></a> 命令模式</h2>
+<p>在命令行模式下，可以进行文件读写、保存、退出、搜索、替换等操作，按下冒号(:)即可进入命令行模式。</p>
+<h3 id="搜索"><a class="markdownIt-Anchor" href="#搜索"></a> 搜索</h3>
+<p>搜索功能在命令模式下完成：</p>
+<ul>
+<li>
+<p>/word：向下搜索字符串 <code>word</code>。</p>
+</li>
+<li>
+<p>?word：向上搜索字符串 <code>word</code>。</p>
+</li>
+</ul>
+<p>对搜索结果按键 <code>n/N</code> 进行向下/向上跳转。</p>
+<h3 id="替换"><a class="markdownIt-Anchor" href="#替换"></a> 替换</h3>
+<ul>
+<li>
+<p>替换表达式：<code>:&#123;作用范围&#125;s/&#123;搜索关键词&#125;/&#123;替换成关键词&#125;/&#123;替换标志&#125;</code></p>
+</li>
+<li>
+<p>作用范围：n1,n2：n1 和 n2 为数字，表示在 n1 和 n2 行之间搜寻关键词并替换。例如在 100 到 200 行之间搜索：<code>100,200s/XS/xs/g</code></p>
+<p>1,&amp;s：表示从第 1 行到最后一行。</p>
+</li>
+<li>
+<p>替换标志</p>
+<p>g：表示全部替换，否则只会替换找到的第一个结果。</p>
+<p>i/I：表示搜索不区分/区分大小写，默认是区分大小写。</p>
+<p>c：表示替换前提示确认。</p>
+</li>
+</ul>
+<h3 id="保存"><a class="markdownIt-Anchor" href="#保存"></a> 保存</h3>
+<p>:w 直接保存文件。</p>
+<p>:w! 强制保存文件，针对某些设为只读权限的文件可以强制写入。</p>
+<p>:w file2 另存为当前编辑的文件为<code>file2</code>。</p>
+<h3 id="读取"><a class="markdownIt-Anchor" href="#读取"></a> 读取</h3>
+<p>:r file1 读取文件<code>file1</code>，并将内容加到光标所在行后面。</p>
+<h3 id="退出"><a class="markdownIt-Anchor" href="#退出"></a> 退出</h3>
+<p>:q 直接退出。</p>
+<p>:q! 强制退出，针对修改了文件内容不想保存情况下退出。</p>
+<p>:wq! 强制保存并退出。</p>
+<p><code>ZZ</code> 保存后退出，等同于<code>:wq</code>。</p>
+<h3 id="设置"><a class="markdownIt-Anchor" href="#设置"></a> 设置</h3>
+<p>使用 :set all 查看所有配置。使用 :set 查看有更改过的参数。</p>
+<ul>
+<li>
+<p>行号：set nu 设置行号，默认设置 nonu 没有行号。</p>
+</li>
+<li>
+<p>自动缩进：set autoindent 设置自动缩进，默认设置 noautoindent 没有自动缩进。</p>
+</li>
+<li>
+<p>设置备份：set backup 设置自动保存备份文件，默认设置 nobackup 没有备份。</p>
+</li>
+<li>
+<p>语法高亮：syntax on 依据语法来显示不同颜色。默认设置 syntax off。</p>
+</li>
+<li>
+<p>跳转：输入数字 n 直接跳转到第 n 行。</p>
+</li>
+<li>
+<p>显示文件名：f 显示正在编辑的文件名等信息。</p>
+</li>
+<li>
+<p>执行命令：! command 暂时离开 vim 到命令行模式下执行命令并展示结果。</p>
+</li>
+</ul>
+<h3 id="多窗口模式"><a class="markdownIt-Anchor" href="#多窗口模式"></a> 多窗口模式</h3>
+<p>在命令模式下输入<code>:sp</code>可对当前文件切割成上下两个窗口显示：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token number">111</span>
+<span class="token number">11</span>
+<span class="token number">1</span>
+~
+~
+<span class="token number">1</span>.txt                                                                                    <span class="token number">3,1</span>            All
+<span class="token number">111</span>
+<span class="token number">11</span>
+<span class="token number">1</span>
+~
+<span class="token number">1</span>.txt                                                                                    <span class="token number">1,1</span>            All
+:sp<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>通过按键<code>Ctrl+w</code>来切换窗口。</p>
+<p>也可以用<code>:sp</code>指定文件名，这样上下窗口分别显示两个不同文件内容。</p>
+<h3 id="同时编辑模式"><a class="markdownIt-Anchor" href="#同时编辑模式"></a> 同时编辑模式</h3>
+<p>可以同时用<code>vim</code>打开多个文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">vi</span> <span class="token number">1</span>.txt <span class="token number">2</span>.txt
+<span class="token number">2</span> files to edit
+
+~
+~
+<span class="token string">"1.txt"</span> 0L, 0C                                                                           <span class="token number">0,0</span>-1         All<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>输入命令<code>:n</code>或<code>:N</code>来编辑下一个或上一个文件。</p>
+<p>输入命令<code>:files</code>列出目前打开的所有文件。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/17877528/" title="Vim 工具基本使用">https://blog.x2b.net/17877528/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="../1712308461/" rel="next" title="Awk 命令简单用法">
+                  Awk 命令简单用法 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">99k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:32</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@next-theme/pjax@0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://unpkg.com/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://unpkg.com/katex@0.16.4/dist/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/17877528/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://unpkg.com/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'blog.x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>

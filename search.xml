@@ -1399,6 +1399,182 @@ operator:x:11:0:operator:/root:/sbin/nologin<span aria-hidden="true" class="line
       </categories>
   </entry>
   <entry>
+    <title>Linux 文件内容查看</title>
+    <url>/1251081056/</url>
+    <content><![CDATA[<h1 id="一次性输出"><a class="markdownIt-Anchor" href="#一次性输出"></a> 一次性输出</h1>
+<p>在 Linux 中，可以使用 <code>cat</code> 和 <code>tac</code> 命令一次性将文本内容打印出来，即将标准输入的数据复制到标准输出。</p>
+<p><code>cat</code> 是 Catenate 的缩写，从第一行开始显示文件内容。另外一个重要的应用是组合多个文件。如果没有指定文件或文件为 <code>-</code>，则从标准输入读取。</p>
+<p>例如，要查看 <code>c.log</code> 文件的内容，并使用 <code>-b</code> 参数来显示行号（不计空行，计空行使用 <code>-n</code>）：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">cat</span> <span class="token parameter variable">-b</span> c.log 
+     <span class="token number">1</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061.322</span>:415<span class="token punctuation">)</span>
+     <span class="token number">2</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_END <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061</span>
+     <span class="token number">3</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_START <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">163</span>
+     <span class="token number">4</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audi<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 <code>-A</code> 参数可以将特殊字符打印出来，例如 <code>[Tab]</code> 显示为 <code>^I</code>，<code>[Enter]</code> 换行显示为 <code>$</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">cat</span> <span class="token parameter variable">-nA</span> c.log 
+     <span class="token number">1</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061.322</span>:415<span class="token punctuation">)</span>
+     <span class="token number">2</span> ^Itype<span class="token operator">=</span>USER_END <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061</span>$
+     <span class="token number">3</span>   <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_START <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">163</span>$
+     <span class="token number">4</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audi$
+     <span class="token number">5</span> $<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>cat</code> 命令的一个常见用途是将多个文件内容组合到一个文件中：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> ftp.sh ca.srl <span class="token operator">>></span> newfile<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>使用 <code>tac</code> 命令可以倒序输出文件内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">tac</span> c.log 
+<span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audi
+  <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_START <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">163</span>
+       <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_END <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061</span>
+<span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061.322</span>:415<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果要将每行的内容反转输出，可以使用 <code>rev</code> 命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span>$ <span class="token function">rev</span> ftp.sh 
+gro.miv.ptf nepo
+bup <span class="token function">dc</span>
+txt.tahWdniFoTerehW teg
+eyb<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 <code>nl</code> 命令可以自定义行号位置打印文件内容，例如给行号加零填充：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">nl</span> <span class="token parameter variable">-n</span> rz c.log 
+000001 <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061.322</span>:415<span class="token punctuation">)</span>
+000002  <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_END <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061</span>
+000003   <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_START <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">163</span>
+000004 <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audi<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="阅读文件"><a class="markdownIt-Anchor" href="#阅读文件"></a> 阅读文件</h1>
+<p>使用 <code>more</code> 命令可以查看文件内容并逐页翻阅：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">more</span> nohup.out
+Vim: Warning: Output is not to a terminal
+Vim: Warning: Input is not from a terminal
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+--More--<span class="token punctuation">(</span><span class="token number">23</span>%<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>当文件内容超过一页时，会提示 <code>--More--</code>，此时可以使用以下按键进行操作：</p>
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th><strong>功能</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>空格(space)</td>
+<td>向下翻一页</td>
+</tr>
+<tr>
+<td>回车(enter)</td>
+<td>向下滚动一行</td>
+</tr>
+<tr>
+<td>/字符串</td>
+<td>向下搜索关键字,定位到那一页</td>
+</tr>
+<tr>
+<td>:f</td>
+<td>显示文件名以及当前行数</td>
+</tr>
+<tr>
+<td>q</td>
+<td>退出</td>
+</tr>
+<tr>
+<td>b</td>
+<td>往回翻页,对管道无用</td>
+</tr>
+<tr>
+<td>v</td>
+<td>调用 vi 编辑器</td>
+</tr>
+</tbody>
+</table>
+<p>使用<code>less</code>命令查看文件时，可以使用方向键进行导航：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">less</span> nohup.out
+Vim: Warning: Output is not to a terminal
+Vim: Warning: Output is not to a terminal
+<span class="token builtin class-name">:</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>进入查看页面后，可以使用以下键盘按键：</p>
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th><strong>功能</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PageUp/PageDown</td>
+<td>向上/向下翻页。</td>
+</tr>
+<tr>
+<td>方向键上/方向键下</td>
+<td>向上/向下滚动一行。</td>
+</tr>
+<tr>
+<td>/字符串&amp;?字符串</td>
+<td>向下&amp;向上查询字符串。</td>
+</tr>
+<tr>
+<td>n/N</td>
+<td>向下/向上重复查询。</td>
+</tr>
+<tr>
+<td>v</td>
+<td>启动 vi 编辑器编辑当前文件。</td>
+</tr>
+<tr>
+<td>q</td>
+<td>离开。</td>
+</tr>
+<tr>
+<td>h</td>
+<td>帮助文件。</td>
+</tr>
+</tbody>
+</table>
+<p>可以通过设置环境变量 PAGER 来指定希望使用的分页程序。</p>
+<h1 id="数据选取"><a class="markdownIt-Anchor" href="#数据选取"></a> 数据选取</h1>
+<p><code>head</code> 命令可以设定从文件开头开始选取多少行的内容。例如，要查看 nohup.out 文件的前 2 行内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">head</span> <span class="token parameter variable">-2</span> nohup.out
+Vim: Warning: Output is not to a terminal
+Vim: Warning: Input is not from a terminal<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><code>tail</code> 命令则从文件后面开始取多少行的内容并显示出来。例如，要选取查看 list.txt 文件最后 1 行的内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">tail</span> <span class="token parameter variable">-1</span> list.txt
+/tmp/etc/skel/.bashrc<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>可以加上 <code>-f</code> 参数来持续打印文件内容，这在查看日志文件时非常有用：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">tail</span> <span class="token parameter variable">-f</span> nohup.out 
+Vim: Error reading input, exiting<span class="token punctuation">..</span>.sers package to sandbox the tcsd daemon:/devv
+Vim: Finished.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>这将持续打印 nohup.out 文件的内容，直到手动停止命令。</p>
+<h1 id="二进制文件查看"><a class="markdownIt-Anchor" href="#二进制文件查看"></a> 二进制文件查看</h1>
+<p>使用普通的文本查看命令查看二进制文件会显示乱码，可以使用 <code>od</code> 命令来查阅二进制文件。</p>
+<p>例如，以默认八进制方式查看 <code>passwd</code> 文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ od /bin/passwd <span class="token operator">|</span> <span class="token function">head</span> <span class="token parameter variable">-n</span> <span class="token number">10</span>
+0000000 042577 043114 000402 000001 000000 000000 000000 000000
+0000020 000003 000076 000001 000000 031110 000000 000000 000000
+0000040 000100 000000 000000 000000 062620 000000 000000 000000
+0000060 000000 000000 000100 000070 000011 000100 000035 000034
+0000100 000006 000000 000005 000000 000100 000000 000000 000000<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>用 <code>-t</code> 参数指定显示格式，例如将十六位进制与 ASCII 字符同时显示：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ od <span class="token parameter variable">-t</span> xCc c.log
+0000000  <span class="token number">74</span>  <span class="token number">79</span>  <span class="token number">70</span>  <span class="token number">65</span>  3d  <span class="token number">43</span>  <span class="token number">52</span>  <span class="token number">45</span>  <span class="token number">44</span>  5f  <span class="token number">44</span>  <span class="token number">49</span>  <span class="token number">53</span>  <span class="token number">50</span>  <span class="token number">20</span>  6d
+          t   y   p   e   <span class="token operator">=</span>   C   R   E   D   _   D   I   S   P       m
+0000020  <span class="token number">73</span>  <span class="token number">67</span>  3d  <span class="token number">61</span>  <span class="token number">75</span>  <span class="token number">64</span>  <span class="token number">69</span>  <span class="token number">74</span>  <span class="token number">28</span>  <span class="token number">31</span>  <span class="token number">36</span>  <span class="token number">33</span>  <span class="token number">31</span>  <span class="token number">31</span>  <span class="token number">37</span>  <span class="token number">38</span>
+          s   g   <span class="token operator">=</span>   a   u   d   i   t   <span class="token punctuation">(</span>   <span class="token number">1</span>   <span class="token number">6</span>   <span class="token number">3</span>   <span class="token number">1</span>   <span class="token number">1</span>   <span class="token number">7</span>   <span class="token number">8</span>
+0000040  <span class="token number">30</span>  <span class="token number">36</span>  <span class="token number">31</span>  2e  <span class="token number">33</span>  <span class="token number">32</span>  <span class="token number">32</span>  3a  <span class="token number">34</span>  <span class="token number">31</span>  <span class="token number">35</span>  <span class="token number">29</span>  3a  <span class="token number">20</span>  <span class="token number">70</span>  <span class="token number">69</span>
+          <span class="token number">0</span>   <span class="token number">6</span>   <span class="token number">1</span>   <span class="token builtin class-name">.</span>   <span class="token number">3</span>   <span class="token number">2</span>   <span class="token number">2</span>   <span class="token builtin class-name">:</span>   <span class="token number">4</span>   <span class="token number">1</span>   <span class="token number">5</span>   <span class="token punctuation">)</span>   <span class="token builtin class-name">:</span>       p   i<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>也可以使用 <code>hexdump</code> 命令来查看二进制文件，唯一区别是 <code>hexdump</code> 默认情况下以十六进制显示数据：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span>$ hexdump <span class="token parameter variable">-C</span> /usr/bin/scsi_temperature
+00000000  <span class="token number">23</span> <span class="token number">21</span> 2f <span class="token number">62</span> <span class="token number">69</span> 6e 2f <span class="token number">62</span>  <span class="token number">61</span> <span class="token number">73</span> <span class="token number">68</span> 0a 0a <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span>  <span class="token operator">|</span><span class="token comment">#!/bin/bash..###|</span>
+00000010  <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span>  <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span>  <span class="token operator">|</span><span class="token comment">################|</span>
+*
+00000050  0a <span class="token number">23</span> 0a <span class="token number">23</span> <span class="token number">20</span> <span class="token number">20</span> <span class="token number">43</span> <span class="token number">68</span>  <span class="token number">65</span> <span class="token number">63</span> 6b <span class="token number">20</span> <span class="token number">74</span> <span class="token number">68</span> <span class="token number">65</span> <span class="token number">20</span>  <span class="token operator">|</span><span class="token builtin class-name">.</span><span class="token comment">#.#  Check the |</span>
+00000060  <span class="token number">74</span> <span class="token number">65</span> 6d <span class="token number">70</span> <span class="token number">65</span> <span class="token number">72</span> <span class="token number">61</span> <span class="token number">74</span>  <span class="token number">75</span> <span class="token number">72</span> <span class="token number">65</span> <span class="token number">20</span> 6f <span class="token number">66</span> <span class="token number">20</span> <span class="token number">74</span>  <span class="token operator">|</span>temperature of t<span class="token operator">|</span>
+00000070  <span class="token number">68</span> <span class="token number">65</span> <span class="token number">20</span> <span class="token number">67</span> <span class="token number">69</span> <span class="token number">76</span> <span class="token number">65</span> 6e  <span class="token number">20</span> <span class="token number">53</span> <span class="token number">43</span> <span class="token number">53</span> <span class="token number">49</span> <span class="token number">20</span> <span class="token number">64</span> <span class="token number">65</span>  <span class="token operator">|</span>he given SCSI de<span class="token operator">|</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上面二进制数据显示方式叫规范格式（Canonical Format）。每行最左边是十六进制表示的偏移，中间 16 个字节是实际数据，右边为相应 ASCII 字符。</p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>1.基本操作</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Linux 基本文件操作</title>
     <url>/3891118029/</url>
     <content><![CDATA[<h1 id="文件和目录查询"><a class="markdownIt-Anchor" href="#文件和目录查询"></a> 文件和目录查询</h1>
@@ -1702,182 +1878,6 @@ rm: cannot remove <span class="token string">'1'</span><span class="token builti
 --S--adA-------- ./3/3
 
 --S-ia-A-------- ./1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>1.基本操作</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>Linux 文件内容查看</title>
-    <url>/1251081056/</url>
-    <content><![CDATA[<h1 id="一次性输出"><a class="markdownIt-Anchor" href="#一次性输出"></a> 一次性输出</h1>
-<p>在 Linux 中，可以使用 <code>cat</code> 和 <code>tac</code> 命令一次性将文本内容打印出来，即将标准输入的数据复制到标准输出。</p>
-<p><code>cat</code> 是 Catenate 的缩写，从第一行开始显示文件内容。另外一个重要的应用是组合多个文件。如果没有指定文件或文件为 <code>-</code>，则从标准输入读取。</p>
-<p>例如，要查看 <code>c.log</code> 文件的内容，并使用 <code>-b</code> 参数来显示行号（不计空行，计空行使用 <code>-n</code>）：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">cat</span> <span class="token parameter variable">-b</span> c.log 
-     <span class="token number">1</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061.322</span>:415<span class="token punctuation">)</span>
-     <span class="token number">2</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_END <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061</span>
-     <span class="token number">3</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_START <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">163</span>
-     <span class="token number">4</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audi<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>使用 <code>-A</code> 参数可以将特殊字符打印出来，例如 <code>[Tab]</code> 显示为 <code>^I</code>，<code>[Enter]</code> 换行显示为 <code>$</code>：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">cat</span> <span class="token parameter variable">-nA</span> c.log 
-     <span class="token number">1</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061.322</span>:415<span class="token punctuation">)</span>
-     <span class="token number">2</span> ^Itype<span class="token operator">=</span>USER_END <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061</span>$
-     <span class="token number">3</span>   <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_START <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">163</span>$
-     <span class="token number">4</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audi$
-     <span class="token number">5</span> $<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><code>cat</code> 命令的一个常见用途是将多个文件内容组合到一个文件中：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> ftp.sh ca.srl <span class="token operator">>></span> newfile<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>使用 <code>tac</code> 命令可以倒序输出文件内容：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">tac</span> c.log 
-<span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audi
-  <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_START <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">163</span>
-       <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_END <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061</span>
-<span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061.322</span>:415<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>如果要将每行的内容反转输出，可以使用 <code>rev</code> 命令：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span>$ <span class="token function">rev</span> ftp.sh 
-gro.miv.ptf nepo
-bup <span class="token function">dc</span>
-txt.tahWdniFoTerehW teg
-eyb<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>使用 <code>nl</code> 命令可以自定义行号位置打印文件内容，例如给行号加零填充：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">nl</span> <span class="token parameter variable">-n</span> rz c.log 
-000001 <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061.322</span>:415<span class="token punctuation">)</span>
-000002  <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_END <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">1631178061</span>
-000003   <span class="token assign-left variable">type</span><span class="token operator">=</span>USER_START <span class="token assign-left variable">msg</span><span class="token operator">=</span>audit<span class="token punctuation">(</span><span class="token number">163</span>
-000004 <span class="token assign-left variable">type</span><span class="token operator">=</span>CRED_DISP <span class="token assign-left variable">msg</span><span class="token operator">=</span>audi<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="阅读文件"><a class="markdownIt-Anchor" href="#阅读文件"></a> 阅读文件</h1>
-<p>使用 <code>more</code> 命令可以查看文件内容并逐页翻阅：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">more</span> nohup.out
-Vim: Warning: Output is not to a terminal
-Vim: Warning: Input is not from a terminal
-root:x:0:0:root:/root:/bin/bash
-bin:x:1:1:bin:/bin:/sbin/nologin
---More--<span class="token punctuation">(</span><span class="token number">23</span>%<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>当文件内容超过一页时，会提示 <code>--More--</code>，此时可以使用以下按键进行操作：</p>
-<table>
-<thead>
-<tr>
-<th>按键</th>
-<th><strong>功能</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>空格(space)</td>
-<td>向下翻一页</td>
-</tr>
-<tr>
-<td>回车(enter)</td>
-<td>向下滚动一行</td>
-</tr>
-<tr>
-<td>/字符串</td>
-<td>向下搜索关键字,定位到那一页</td>
-</tr>
-<tr>
-<td>:f</td>
-<td>显示文件名以及当前行数</td>
-</tr>
-<tr>
-<td>q</td>
-<td>退出</td>
-</tr>
-<tr>
-<td>b</td>
-<td>往回翻页,对管道无用</td>
-</tr>
-<tr>
-<td>v</td>
-<td>调用 vi 编辑器</td>
-</tr>
-</tbody>
-</table>
-<p>使用<code>less</code>命令查看文件时，可以使用方向键进行导航：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">less</span> nohup.out
-Vim: Warning: Output is not to a terminal
-Vim: Warning: Output is not to a terminal
-<span class="token builtin class-name">:</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>进入查看页面后，可以使用以下键盘按键：</p>
-<table>
-<thead>
-<tr>
-<th>按键</th>
-<th><strong>功能</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>PageUp/PageDown</td>
-<td>向上/向下翻页。</td>
-</tr>
-<tr>
-<td>方向键上/方向键下</td>
-<td>向上/向下滚动一行。</td>
-</tr>
-<tr>
-<td>/字符串&amp;?字符串</td>
-<td>向下&amp;向上查询字符串。</td>
-</tr>
-<tr>
-<td>n/N</td>
-<td>向下/向上重复查询。</td>
-</tr>
-<tr>
-<td>v</td>
-<td>启动 vi 编辑器编辑当前文件。</td>
-</tr>
-<tr>
-<td>q</td>
-<td>离开。</td>
-</tr>
-<tr>
-<td>h</td>
-<td>帮助文件。</td>
-</tr>
-</tbody>
-</table>
-<p>可以通过设置环境变量 PAGER 来指定希望使用的分页程序。</p>
-<h1 id="数据选取"><a class="markdownIt-Anchor" href="#数据选取"></a> 数据选取</h1>
-<p><code>head</code> 命令可以设定从文件开头开始选取多少行的内容。例如，要查看 nohup.out 文件的前 2 行内容：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">head</span> <span class="token parameter variable">-2</span> nohup.out
-Vim: Warning: Output is not to a terminal
-Vim: Warning: Input is not from a terminal<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p><code>tail</code> 命令则从文件后面开始取多少行的内容并显示出来。例如，要选取查看 list.txt 文件最后 1 行的内容：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">tail</span> <span class="token parameter variable">-1</span> list.txt
-/tmp/etc/skel/.bashrc<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>可以加上 <code>-f</code> 参数来持续打印文件内容，这在查看日志文件时非常有用：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">tail</span> <span class="token parameter variable">-f</span> nohup.out 
-Vim: Error reading input, exiting<span class="token punctuation">..</span>.sers package to sandbox the tcsd daemon:/devv
-Vim: Finished.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>这将持续打印 nohup.out 文件的内容，直到手动停止命令。</p>
-<h1 id="二进制文件查看"><a class="markdownIt-Anchor" href="#二进制文件查看"></a> 二进制文件查看</h1>
-<p>使用普通的文本查看命令查看二进制文件会显示乱码，可以使用 <code>od</code> 命令来查阅二进制文件。</p>
-<p>例如，以默认八进制方式查看 <code>passwd</code> 文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ od /bin/passwd <span class="token operator">|</span> <span class="token function">head</span> <span class="token parameter variable">-n</span> <span class="token number">10</span>
-0000000 042577 043114 000402 000001 000000 000000 000000 000000
-0000020 000003 000076 000001 000000 031110 000000 000000 000000
-0000040 000100 000000 000000 000000 062620 000000 000000 000000
-0000060 000000 000000 000100 000070 000011 000100 000035 000034
-0000100 000006 000000 000005 000000 000100 000000 000000 000000<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>用 <code>-t</code> 参数指定显示格式，例如将十六位进制与 ASCII 字符同时显示：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ od <span class="token parameter variable">-t</span> xCc c.log
-0000000  <span class="token number">74</span>  <span class="token number">79</span>  <span class="token number">70</span>  <span class="token number">65</span>  3d  <span class="token number">43</span>  <span class="token number">52</span>  <span class="token number">45</span>  <span class="token number">44</span>  5f  <span class="token number">44</span>  <span class="token number">49</span>  <span class="token number">53</span>  <span class="token number">50</span>  <span class="token number">20</span>  6d
-          t   y   p   e   <span class="token operator">=</span>   C   R   E   D   _   D   I   S   P       m
-0000020  <span class="token number">73</span>  <span class="token number">67</span>  3d  <span class="token number">61</span>  <span class="token number">75</span>  <span class="token number">64</span>  <span class="token number">69</span>  <span class="token number">74</span>  <span class="token number">28</span>  <span class="token number">31</span>  <span class="token number">36</span>  <span class="token number">33</span>  <span class="token number">31</span>  <span class="token number">31</span>  <span class="token number">37</span>  <span class="token number">38</span>
-          s   g   <span class="token operator">=</span>   a   u   d   i   t   <span class="token punctuation">(</span>   <span class="token number">1</span>   <span class="token number">6</span>   <span class="token number">3</span>   <span class="token number">1</span>   <span class="token number">1</span>   <span class="token number">7</span>   <span class="token number">8</span>
-0000040  <span class="token number">30</span>  <span class="token number">36</span>  <span class="token number">31</span>  2e  <span class="token number">33</span>  <span class="token number">32</span>  <span class="token number">32</span>  3a  <span class="token number">34</span>  <span class="token number">31</span>  <span class="token number">35</span>  <span class="token number">29</span>  3a  <span class="token number">20</span>  <span class="token number">70</span>  <span class="token number">69</span>
-          <span class="token number">0</span>   <span class="token number">6</span>   <span class="token number">1</span>   <span class="token builtin class-name">.</span>   <span class="token number">3</span>   <span class="token number">2</span>   <span class="token number">2</span>   <span class="token builtin class-name">:</span>   <span class="token number">4</span>   <span class="token number">1</span>   <span class="token number">5</span>   <span class="token punctuation">)</span>   <span class="token builtin class-name">:</span>       p   i<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>也可以使用 <code>hexdump</code> 命令来查看二进制文件，唯一区别是 <code>hexdump</code> 默认情况下以十六进制显示数据：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span>$ hexdump <span class="token parameter variable">-C</span> /usr/bin/scsi_temperature
-00000000  <span class="token number">23</span> <span class="token number">21</span> 2f <span class="token number">62</span> <span class="token number">69</span> 6e 2f <span class="token number">62</span>  <span class="token number">61</span> <span class="token number">73</span> <span class="token number">68</span> 0a 0a <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span>  <span class="token operator">|</span><span class="token comment">#!/bin/bash..###|</span>
-00000010  <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span>  <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span> <span class="token number">23</span>  <span class="token operator">|</span><span class="token comment">################|</span>
-*
-00000050  0a <span class="token number">23</span> 0a <span class="token number">23</span> <span class="token number">20</span> <span class="token number">20</span> <span class="token number">43</span> <span class="token number">68</span>  <span class="token number">65</span> <span class="token number">63</span> 6b <span class="token number">20</span> <span class="token number">74</span> <span class="token number">68</span> <span class="token number">65</span> <span class="token number">20</span>  <span class="token operator">|</span><span class="token builtin class-name">.</span><span class="token comment">#.#  Check the |</span>
-00000060  <span class="token number">74</span> <span class="token number">65</span> 6d <span class="token number">70</span> <span class="token number">65</span> <span class="token number">72</span> <span class="token number">61</span> <span class="token number">74</span>  <span class="token number">75</span> <span class="token number">72</span> <span class="token number">65</span> <span class="token number">20</span> 6f <span class="token number">66</span> <span class="token number">20</span> <span class="token number">74</span>  <span class="token operator">|</span>temperature of t<span class="token operator">|</span>
-00000070  <span class="token number">68</span> <span class="token number">65</span> <span class="token number">20</span> <span class="token number">67</span> <span class="token number">69</span> <span class="token number">76</span> <span class="token number">65</span> 6e  <span class="token number">20</span> <span class="token number">53</span> <span class="token number">43</span> <span class="token number">53</span> <span class="token number">49</span> <span class="token number">20</span> <span class="token number">64</span> <span class="token number">65</span>  <span class="token operator">|</span>he given SCSI de<span class="token operator">|</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>上面二进制数据显示方式叫规范格式（Canonical Format）。每行最左边是十六进制表示的偏移，中间 16 个字节是实际数据，右边为相应 ASCII 字符。</p>
 ]]></content>
       <categories>
         <category>Linux</category>
@@ -2536,367 +2536,6 @@ scsidev: <span class="token string">'/dev/sr0'</span><span aria-hidden="true" cl
       </categories>
   </entry>
   <entry>
-    <title>Linux 用户管理</title>
-    <url>/3199649610/</url>
-    <content><![CDATA[<h1 id="用户管理"><a class="markdownIt-Anchor" href="#用户管理"></a> 用户管理</h1>
-<p>针对用户的新增,删除,修改操作.</p>
-<h2 id="新增用户"><a class="markdownIt-Anchor" href="#新增用户"></a> 新增用户</h2>
-<p>可以使用 <code>useradd</code> 命令来新建用户。命令用法如下：</p>
-<p><code>useradd [-u UID] [-g 初始组] [-G 次要组] [-nM] [-c 说明] [-d 主目录绝对路径] [-a shell] 用户名</code></p>
-<p>主要参数如下：</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>-u</td>
-<td>接 UID 数字，直接指定一个特定的 UID 号码</td>
-</tr>
-<tr>
-<td>-g</td>
-<td>接组名或 GID，设置初始用户组</td>
-</tr>
-<tr>
-<td>-G</td>
-<td>接组名或 GID，设置用户的附加组</td>
-</tr>
-<tr>
-<td>-M</td>
-<td>不创建用户主文件夹（系统账号默认值）</td>
-</tr>
-<tr>
-<td>-m</td>
-<td>创建用户主文件夹（一般账号默认值）</td>
-</tr>
-<tr>
-<td>-c</td>
-<td>用户说明文字内容</td>
-</tr>
-<tr>
-<td>-d</td>
-<td>指定用户主目录位置，必须使用绝对路径</td>
-</tr>
-<tr>
-<td>-r</td>
-<td>创建一个系统账号，UID 会有限制</td>
-</tr>
-<tr>
-<td>-s</td>
-<td>接指定的 shell，默认为 /bin/bash</td>
-</tr>
-<tr>
-<td>-e</td>
-<td>接日期格式 “YYYY-MM-DD”，设置账号失效日</td>
-</tr>
-<tr>
-<td>-f</td>
-<td>指定密码是否失效，0 为立刻失效，-1 为永不失效</td>
-</tr>
-<tr>
-<td>-N</td>
-<td>不创建同名的组</td>
-</tr>
-<tr>
-<td>-p</td>
-<td>设置密码</td>
-</tr>
-</tbody>
-</table>
-<p>例如，新建立用户 user1，密码为 user1：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">useradd</span> <span class="token parameter variable">-p</span> user1 user1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>设置一个 2040 年 1 月 13 日过期的临时用户 user2：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">useradd</span> <span class="token parameter variable">-p</span> <span class="token function">passwd</span> <span class="token parameter variable">-e</span> <span class="token number">2040</span>-01-13 user2<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="修改密码"><a class="markdownIt-Anchor" href="#修改密码"></a> 修改密码</h2>
-<p>可以使用 <code>passwd</code> 命令来进行密码设置功能。主要参数如下：</p>
-<table>
-<thead>
-<tr>
-<th><strong>参数</strong></th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>-l</td>
-<td>锁定密码，设置密码失效</td>
-</tr>
-<tr>
-<td>-i</td>
-<td>接日期，设置密码失效日期</td>
-</tr>
-<tr>
-<td>-u</td>
-<td>解锁密码</td>
-</tr>
-<tr>
-<td>-n</td>
-<td>设置修改密码限制周期</td>
-</tr>
-<tr>
-<td>-x</td>
-<td>设置密码使用最长天数</td>
-</tr>
-<tr>
-<td>-w</td>
-<td>密码过期前的警告天数</td>
-</tr>
-</tbody>
-</table>
-<p><code>passwd</code> 后不接账户名为设置当前账户密码。root 给别账号设置密码可以无视密码规则：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">passwd</span> user1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p><code>passwd</code> 支持 <code>--stdin</code> 参数，使得可以在脚本中批量建立账户：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token string">"abc"</span> <span class="token operator">|</span> <span class="token function">passwd</span> <span class="token parameter variable">--stdin</span> user1
-Changing password <span class="token keyword">for</span> user user1.
-passwd: all authentication tokens updated successfully.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>可以用 <code>chage</code> 查看密码策略。例如查看 user1 的参数：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ chage <span class="token parameter variable">-l</span> user1
-Last password change                                    <span class="token builtin class-name">:</span> Sep <span class="token number">13</span>, <span class="token number">2021</span>
-Password expires                                        <span class="token builtin class-name">:</span> never
-Password inactive                                       <span class="token builtin class-name">:</span> never
-Account expires                                         <span class="token builtin class-name">:</span> never
-Minimum number of days between password change          <span class="token builtin class-name">:</span> <span class="token number">0</span>
-Maximum number of days between password change          <span class="token builtin class-name">:</span> <span class="token number">99999</span>
-Number of days of warning before password expires       <span class="token builtin class-name">:</span> <span class="token number">7</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>另外 <code>chage</code> 还可以修改密码策略，例如修改密码最后修改时间为 0，用户下次登录时会被要求强制修改密码：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ chage <span class="token parameter variable">-d</span> <span class="token number">0</span> user1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="修改用户参数"><a class="markdownIt-Anchor" href="#修改用户参数"></a> 修改用户参数</h2>
-<p>可以使用 <code>usermod</code> 命令来修改已存在的用户设置，命令使用参数可参考 <code>useradd</code> 命令。</p>
-<p>例如，修改用户 <code>user7</code> 的用户名为 <code>user07</code>，并修改用户主目录：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">usermod</span> <span class="token parameter variable">-d</span> /home/user07 <span class="token parameter variable">-m</span> <span class="token parameter variable">-l</span> user07 user7<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>再例如，将用户 <code>user1</code> 的 shell 设置为 <code>id</code>，这样用户只能运行 <code>id</code> 命令：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">usermod</span> <span class="token parameter variable">-s</span> /usr/bin/id user1
-<span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">su</span> user1
-<span class="token assign-left variable">uid</span><span class="token operator">=</span><span class="token number">1000</span><span class="token punctuation">(</span>user1<span class="token punctuation">)</span> <span class="token assign-left variable">gid</span><span class="token operator">=</span><span class="token number">1000</span><span class="token punctuation">(</span>user1<span class="token punctuation">)</span> <span class="token assign-left variable">groups</span><span class="token operator">=</span><span class="token number">1000</span><span class="token punctuation">(</span>user1<span class="token punctuation">)</span> <span class="token assign-left variable">context</span><span class="token operator">=</span>unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>切换到 <code>user1</code> 时直接运行了 <code>id</code> 命令。修改 shell 还可以使用 <code>chsh</code> 命令来操作。</p>
-<p>将 shell 指定为 <code>/sbin/nologin</code> 表示不能登录，并将尝试登录记录到 syslog 后台程序。可以修改 <code>/etc/nologin.txt</code> 文件来为 <code>nologin</code> 用户展示信息。</p>
-<h2 id="删除用户"><a class="markdownIt-Anchor" href="#删除用户"></a> 删除用户</h2>
-<p>可以使用<code>userdel</code>命令来删除用户和用户相关数据，指定<code>-r</code>参数可以连同用户主目录和邮件一起删除:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">userdel</span> <span class="token parameter variable">-r</span> user1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>一般更建议先将用户停用，使用<code>usermod -e 1</code>让用户立即过期。</p>
-<h1 id="用户组管理"><a class="markdownIt-Anchor" href="#用户组管理"></a> 用户组管理</h1>
-<p>针对用户组的新增，修改，删除。</p>
-<h2 id="新增用户组"><a class="markdownIt-Anchor" href="#新增用户组"></a> 新增用户组</h2>
-<p>使用 <code>groupadd</code> 命令新建用户组，例如新建组 group1：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">groupadd</span> group1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="修改用户组"><a class="markdownIt-Anchor" href="#修改用户组"></a> 修改用户组</h2>
-<p>可以通过 <code>groupmod</code> 命令来修改已存在的组名或 GID。比如将组 group1 改名为 newgroup：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">groupmod</span> <span class="token parameter variable">-n</span> newgroup group1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>将组 user7 的 GID 改为 10007：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">groupmod</span> <span class="token parameter variable">-g</span> <span class="token number">10007</span> user7
-<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">tail</span> /etc/group <span class="token operator">|</span> <span class="token function">grep</span> user7
-user7:x:10007:<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h2 id="删除用户组"><a class="markdownIt-Anchor" href="#删除用户组"></a> 删除用户组</h2>
-<p>使用 <code>groupdel</code> 可以删除无人使用的用户组（目标不能是初始用户组）。例如删除组 group2：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">groupdel</span> group2<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="用户组管理员"><a class="markdownIt-Anchor" href="#用户组管理员"></a> 用户组管理员</h2>
-<p>用户组管理员是设置一个组内的成员为管理用，专门管理哪些账号可以加入/移出该组。</p>
-<p>管理用户组成员使用 <code>gpasswd</code> 命令。例如将 user2 设置为组 group2 的管理员：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ gpasswd <span class="token parameter variable">-A</span> user2 group2<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>设置组密码：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ gpasswd user2
-Changing the password <span class="token keyword">for</span> group user2
-New Password: 
-Re-enter new password: <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>管理员可以使用 <code>-a</code> 参数将其他用户加入到管理的小组。比如将 user3 加入到 group2：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ gpasswd <span class="token parameter variable">-a</span> user3 group2
-Adding user user3 to group group2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h1 id="查询信息"><a class="markdownIt-Anchor" href="#查询信息"></a> 查询信息</h1>
-<p>可以使用多种命令来查询用户和组的详细信息。</p>
-<h2 id="查询用户信息"><a class="markdownIt-Anchor" href="#查询用户信息"></a> 查询用户信息</h2>
-<p>通过<code>id</code>命令可以查询到用户的 UID 和 GID 信息，例如查询用户<code>user2</code>:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">id</span> user2
-<span class="token assign-left variable">uid</span><span class="token operator">=</span><span class="token number">1001</span><span class="token punctuation">(</span>user2<span class="token punctuation">)</span> <span class="token assign-left variable">gid</span><span class="token operator">=</span><span class="token number">1001</span><span class="token punctuation">(</span>user2<span class="token punctuation">)</span> <span class="token assign-left variable">groups</span><span class="token operator">=</span><span class="token number">1001</span><span class="token punctuation">(</span>user2<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>可以使用<code>whoami</code>命令显示当前登录的用户名，等同于<code>id -un</code>:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">whoami</span>
-root<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>查询用户属组信息可以使用<code>groups</code>命令，例如查询<code>user1</code>的所属组:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">groups</span> user1
-user1 <span class="token builtin class-name">:</span> user1 root<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p><code>finger</code>命令是一般用户可以使用的用户信息数据查询工具，例如查询<code>root</code>用户的信息:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ finger root
-Login: root                             Name: root
-Directory: /root                        Shell: /bin/bash
-On since Sat Sep <span class="token number">11</span> 09:35 <span class="token punctuation">(</span>EDT<span class="token punctuation">)</span> on tty1    <span class="token number">1</span> day <span class="token number">20</span> hours idle
-On since Sat Sep <span class="token number">11</span> 07:08 <span class="token punctuation">(</span>EDT<span class="token punctuation">)</span> on pts/0 from <span class="token number">192.168</span>.2.101
-   <span class="token number">3</span> seconds idle
-Last login Mon Sep <span class="token number">13</span> 05:48 <span class="token punctuation">(</span>EDT<span class="token punctuation">)</span> on pts/1
-No mail.
-No Plan.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>如果不加参数，<code>finger</code>查询出来的是目前在系统上登录的用户与登录时间。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ finger
-Login     Name       Tty      Idle  Login Time   Office     Office Phone   Host
-root      root       tty1       1d  Sep <span class="token number">11</span> 09:35           
-root      root       pts/0          Sep <span class="token number">11</span> 07:08                           <span class="token punctuation">(</span><span class="token number">192.168</span>.2.101<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="修改用户附加信息"><a class="markdownIt-Anchor" href="#修改用户附加信息"></a> 修改用户附加信息</h2>
-<p>若要修改 <code>finger</code> 命令输出结果中的 Office、Phone 等信息，可以使用 <code>chfn</code> 命令。</p>
-<p>输入 <code>chfn</code> 命令后，会进入交互式输入页面：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ chfn
-Changing finger information <span class="token keyword">for</span> root.
-Name <span class="token punctuation">[</span>root<span class="token punctuation">]</span>: assassing
-Office <span class="token punctuation">[</span><span class="token punctuation">]</span>: STU
-Office Phone <span class="token punctuation">[</span><span class="token punctuation">]</span>: 010-8515834
-Home Phone <span class="token punctuation">[</span><span class="token punctuation">]</span>: none
-
-Finger information changed.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>修改的内容实际存放在 <code>/etc/passwd</code> 文件中第五个字段中。</p>
-<h2 id="查询用户登录信息"><a class="markdownIt-Anchor" href="#查询用户登录信息"></a> 查询用户登录信息</h2>
-<p>使用<code>who</code>命令可以简单查看当前在线的用户：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">who</span>
-root     tty1         <span class="token number">2021</span>-09-11 09:35
-root     pts/0        <span class="token number">2021</span>-09-13 08:19 <span class="token punctuation">(</span><span class="token number">192.168</span>.2.101<span class="token punctuation">)</span>
-root     pts/1        <span class="token number">2021</span>-09-13 <span class="token number">11</span>:38 <span class="token punctuation">(</span><span class="token number">192.168</span>.2.101<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>使用<code>w</code>命令可以看到更详细的在线用户信息，包括系统资源使用和最后执行的命令：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ w
-<span class="token number">11</span>:38:55 up <span class="token number">3</span> days, <span class="token number">20</span>:30,  <span class="token number">3</span> users,  load average: <span class="token number">0.01</span>, <span class="token number">0.02</span>, <span class="token number">0.05</span>
-<span class="token environment constant">USER</span>     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
-root     tty1                      Sat09    2days  <span class="token number">0</span>.01s  <span class="token number">0</span>.01s <span class="token parameter variable">-bash</span>
-root     pts/0    <span class="token number">192.168</span>.2.101    08:19    <span class="token number">7</span>.00s  <span class="token number">0</span>.11s  <span class="token number">0</span>.00s w
-root     pts/1    <span class="token number">192.168</span>.2.101    <span class="token number">11</span>:38   <span class="token number">45</span>.00s  <span class="token number">0</span>.01s  <span class="token number">0</span>.00s <span class="token parameter variable">-bash</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>要查询用户的登录动作记录，可以使用<code>last</code>命令：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ last
-root     pts/1        <span class="token number">192.168</span>.2.101    Mon Sep <span class="token number">13</span> <span class="token number">11</span>:38   still logged <span class="token keyword">in</span>   
-root     pts/0        <span class="token number">192.168</span>.2.101    Mon Sep <span class="token number">13</span> 08:19   still logged <span class="token keyword">in</span>   
-root     tty1                          Sat Sep <span class="token number">11</span> 09:35   still logged <span class="token keyword">in</span>   
-root     pts/1        <span class="token number">192.168</span>.2.101    Sat Sep <span class="token number">11</span> 08:58 - 06:09 <span class="token punctuation">(</span><span class="token number">1</span>+21:10<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>想知道每个账号最后登录时间可以使用<code>lastlog</code>命令，它会去读取<code>/var/log/lastlog</code>文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ lastlog
-Username         Port     From             Latest
-root             pts/1    <span class="token number">192.168</span>.2.101    Mon Sep <span class="token number">13</span> <span class="token number">11</span>:38:10 <span class="token parameter variable">-0400</span> <span class="token number">2021</span>
-bin                                        **Never logged in**
-daemon                                     **Never logged in**<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="配置检查工具"><a class="markdownIt-Anchor" href="#配置检查工具"></a> 配置检查工具</h2>
-<p>使用<code>pwck</code>命令可以检查 <code>/etc/passwd</code> 文件是否正确：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ pwck
-user <span class="token string">'ftp'</span><span class="token builtin class-name">:</span> directory <span class="token string">'/var/ftp'</span> does not exist
-pwck: no changes<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p><code>pwconv</code> 命令将 <code>/etc/passwd</code> 内的账号与密码移动到 <code>/etc/shadow</code> 中，用来迁移早期 Linux 的用户数据。</p>
-<p><code>pwunconv</code> 是 <code>pwconv</code> 的反向操作。</p>
-<p><code>chpasswd</code> 用来读入未加密前的密码，并将加密后的密码写入到 <code>/etc/shadow</code> 中。例如修改 <code>user1</code> 的密码：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token string">"user1:newpassword"</span> <span class="token operator">|</span> chpasswd <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h1 id="用户交流"><a class="markdownIt-Anchor" href="#用户交流"></a> 用户交流</h1>
-<p>Linux 内置的几个命令可以直接和系统内其他用户交流。</p>
-<h2 id="在线交流"><a class="markdownIt-Anchor" href="#在线交流"></a> 在线交流</h2>
-<p>例如使用<code>write</code>可以直接将信息传给其他在线用户：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">write</span> root
-write: root is logged <span class="token keyword">in</span> <span class="token function">more</span> than once<span class="token punctuation">;</span> writing to pts/1
-my message1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>输入完毕用<code>Ctrl+d</code>结束并发送，对面会立即收到信息。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 ~<span class="token punctuation">]</span>$ 
-Message from root@101c7 on pts/0 at <span class="token number">11</span>:45 <span class="token punctuation">..</span>.
-my message1
-EOF<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>想要关闭消息接受可以使用<code>mesg n</code>命令（重新打开用<code>mesg y</code>）。</p>
-<h2 id="群发消息"><a class="markdownIt-Anchor" href="#群发消息"></a> 群发消息</h2>
-<p>使用<code>wall</code>命令能发送广播，让所有在线的用户都收到消息：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 ~<span class="token punctuation">]</span>$ wall <span class="token string">"911"</span>
-<span class="token punctuation">[</span>user1@101c7 ~<span class="token punctuation">]</span>$ 
-Broadcast message from user1@101c7 <span class="token punctuation">(</span>pts/1<span class="token punctuation">)</span> <span class="token punctuation">(</span>Mon Sep <span class="token number">13</span> <span class="token number">11</span>:52:06 <span class="token number">2021</span><span class="token punctuation">)</span>:
-
-<span class="token number">911</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="用户切换"><a class="markdownIt-Anchor" href="#用户切换"></a> 用户切换</h1>
-<p>在用户间切换使用<code>su</code>命令（switch user）。一般用户切换到 root 需要 root 的密码。命令格式为：</p>
-<p><code>su [-lm] [-c 命令] [用户名]</code></p>
-<p>可用参数如下：</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>-</td>
-<td>代表使用 login-shell 的变量文件读取方式来登录</td>
-</tr>
-<tr>
-<td>-l</td>
-<td>也是 login-shell 的方式，后面需要加账号</td>
-</tr>
-<tr>
-<td>-m</td>
-<td>使用目前的环境设置，而不读取新用户的配置文件</td>
-</tr>
-<tr>
-<td>-c</td>
-<td>仅运行一次命令，后面加要执行的命令</td>
-</tr>
-</tbody>
-</table>
-<h2 id="non-login-shell"><a class="markdownIt-Anchor" href="#non-login-shell"></a> non-login shell</h2>
-<p>使用<code>su</code>命令仅切换用户身份时，将以非登录 Shell 方式登录，此方式不会读取用户配置文件。例如，切换到<code>user1</code>：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 dir2<span class="token punctuation">]</span>$ <span class="token function">su</span> user1
-<span class="token punctuation">[</span>user1@101c7 dir2<span class="token punctuation">]</span>$ <span class="token function">env</span> <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">'root'</span>
-<span class="token assign-left variable"><span class="token environment constant">PATH</span></span><span class="token operator">=</span>/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin
-<span class="token assign-left variable">MAIL</span><span class="token operator">=</span>/var/spool/mail/root
-<span class="token assign-left variable"><span class="token environment constant">PWD</span></span><span class="token operator">=</span>/root/sdb4m/dir1/dir2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以看到，<code>PATH</code>和<code>MAIL</code>等变量并没有切换到<code>user1</code>。</p>
-<h2 id="login-shell"><a class="markdownIt-Anchor" href="#login-shell"></a> login shell</h2>
-<p>要使用登录 Shell 的方式登录需要记得使用 <code>-</code>（切换到 root）或 <code>-l</code> 参数：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 dir2<span class="token punctuation">]</span>$ <span class="token function">su</span> <span class="token parameter variable">-l</span> user1
-Last login: Mon Sep <span class="token number">13</span> 08:11:48 EDT <span class="token number">2021</span> on pts/0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>使用 <code>-c</code> 参数能很方便地使用其他账户身份运行命令而并不需要登录：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 dir2<span class="token punctuation">]</span>$ <span class="token function">su</span> <span class="token parameter variable">-l</span> user1 <span class="token parameter variable">-c</span> <span class="token string">'whoami'</span>
-user1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h2 id="用-sudo-执行命令"><a class="markdownIt-Anchor" href="#用-sudo-执行命令"></a> 用 sudo 执行命令</h2>
-<p>通过 <code>sudo</code> 命令，能让在 <code>/etc/sudoers</code> 文件中列出的用户使用其他用户的身份（包括 nologin 的系统用户）来执行命令。使用方法如下：</p>
-<p><code>sudo [-b] [-u 其他用户名]</code></p>
-<p>例如，以 <code>user2</code> 的身份在 <code>/tmp</code> 目录下新建名为 <code>us2</code> 的文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">sudo</span> <span class="token parameter variable">-u</span> user2 <span class="token function">touch</span> /tmp/us2 <span class="token punctuation">;</span> ll <span class="token parameter variable">-l</span> /tmp/us2
--rw-r--r--. <span class="token number">1</span> user2 user2 <span class="token number">0</span> Sep <span class="token number">13</span> 08:24 /tmp/us2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>如果要运行一连串命令，使用 <code>sh -c</code> 将命令用双引号括起来：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">sudo</span> <span class="token parameter variable">-u</span> user2 <span class="token function">sh</span> <span class="token parameter variable">-c</span> <span class="token string">"touch /tmp/us1; mv /tmp/us1 /tmp/us3"</span><span class="token punctuation">;</span>ll /tmp/us3
--rw-r--r--. <span class="token number">1</span> user2 user2 <span class="token number">0</span> Sep <span class="token number">13</span> 08:29 /tmp/us3<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h2 id="设置-sudoers"><a class="markdownIt-Anchor" href="#设置-sudoers"></a> 设置 sudoers</h2>
-<p>使用 <code>visudo</code> 命令设置 sudo 配置文件 <code>/etc/sudoers</code>。例如，将 <code>user1</code> 加入到 <code>sudoers</code> 中：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ visudo
-<span class="token comment">## Allow root to run any commands anywhere</span>
-root     <span class="token assign-left variable">ALL</span><span class="token operator">=</span><span class="token punctuation">(</span>ALL<span class="token punctuation">)</span>       ALL
-user1    <span class="token assign-left variable">ALL</span><span class="token operator">=</span><span class="token punctuation">(</span>ALL<span class="token punctuation">)</span>       ALL<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>第二段 <code>(ALL)=(ALL)</code> 表示登录者的来源主机名=(可切换的身份)，第三段表示可执行的命令。必须使用绝对路径指定。</p>
-<p>切换到 <code>user1</code> 使用 <code>sudo</code> 运行命令：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">sudo</span> ll /root
-
-We trust you have received the usual lecture from the <span class="token builtin class-name">local</span> System
-Administrator. It usually boils down to these three things:
-
-    <span class="token comment">#1) Respect the privacy of others.</span>
-    <span class="token comment">#2) Think before you type.</span>
-    <span class="token comment">#3) With great power comes great responsibility.</span>
-<span class="token punctuation">[</span>sudo<span class="token punctuation">]</span> password <span class="token keyword">for</span> user1: 
-sudo: ll: <span class="token builtin class-name">command</span> not found<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>输入 <code>user1</code> 的密码后可以自由使用 <code>sudo</code>。如果两次 <code>sudo</code> 操作的间隔超过 5 分钟，需要重新输入一次密码。</p>
-<p>设置用户组 <code>%group2</code> 可以不需要密码使用 <code>sudo</code>：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ visudo
-root       <span class="token assign-left variable">ALL</span><span class="token operator">=</span><span class="token punctuation">(</span>ALL<span class="token punctuation">)</span>       ALL
-%group2    <span class="token assign-left variable">ALL</span><span class="token operator">=</span><span class="token punctuation">(</span>ALL<span class="token punctuation">)</span>       NOPASSWD:ALL<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>可以通过 <code>User_Alias</code> 和 <code>Cmnd_alias</code> 配置来设置别名，配置使用的别名一定要使用大写。</p>
-<p>例如，将 <code>ADMUSER</code> 指向用户 <code>user1</code> 和 <code>user2</code>，<code>ADMPW</code> 指向 <code>/usr/bin/passwd</code>，并排除掉直接运行 <code>passwd</code> 和 <code>passwd root</code> 命令（都为给 <code>root</code> 修改密码）：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ visudo
-User_Alias ADMUSER <span class="token operator">=</span> user1, user2
-Cmnd_Alias ADMPW <span class="token operator">=</span> /usr/bin/passwd <span class="token punctuation">[</span>A-za-z<span class="token punctuation">]</span>*, <span class="token operator">!</span>/usr/bin/passd, <span class="token operator">!</span>/usr/bin/passwd root
-ADMUSER   <span class="token assign-left variable">ALL</span><span class="token operator">=</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span>       NOPASSWD:ADMPW<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>使用 <code>sudo -l</code> 可以查询当前 <code>sudo</code> 权限设置情况：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">sudo</span> <span class="token parameter variable">-l</span>
-Matching Defaults entries <span class="token keyword">for</span> root on server1:
-    <span class="token operator">!</span>visiblepw, always_set_home, match_group_by_gid, always_query_group_plugin, env_reset, <span class="token assign-left variable">env_keep</span><span class="token operator">=</span><span class="token string">"COLORS DISPLAY HOSTNAME
-    HISTSIZE KDEDIR LS_COLORS"</span>, <span class="token assign-left variable">env_keep</span><span class="token operator">+=</span><span class="token string">"MAIL PS1 PS2 QTDIR USERNAME LANG LC_ADDRESS LC_CTYPE"</span>, <span class="token assign-left variable">env_keep</span><span class="token operator">+=</span><span class="token string">"LC_COLLATE
-    LC_IDENTIFICATION LC_MEASUREMENT LC_MESSAGES"</span>, <span class="token assign-left variable">env_keep</span><span class="token operator">+=</span><span class="token string">"LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER LC_TELEPHONE"</span>,
-    <span class="token assign-left variable">env_keep</span><span class="token operator">+=</span><span class="token string">"LC_TIME LC_ALL LANGUAGE LINGUAS _XKB_CHARSET XAUTHORITY"</span>, <span class="token assign-left variable">secure_path</span><span class="token operator">=</span>/sbin<span class="token punctuation">\</span>:/bin<span class="token punctuation">\</span>:/usr/sbin<span class="token punctuation">\</span>:/usr/bin
-
-User root may run the following commands on server1:
-    <span class="token punctuation">(</span>ALL<span class="token punctuation">)</span> ALL<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>2.系统管理</category>
-      </categories>
-  </entry>
-  <entry>
     <title>Linux 软件安装与管理</title>
     <url>/1357678012/</url>
     <content><![CDATA[<h1 id="编译安装"><a class="markdownIt-Anchor" href="#编译安装"></a> 编译安装</h1>
@@ -3384,6 +3023,367 @@ base/7/x86_64                 CentOS-7 - Base                          enabled: 
 </ul>
 <p>软件群组内软件分主要和可选，使用 <code>groupinstall</code> 只会安装主要软件，可以修改 <code>/etc/yum.conf</code> 配置，在 <code>distroverpkg</code> 下面加入一行配置 <code>group_package_types=default, mandatory, optional</code> 来安装所有软件群组的软件。</p>
 <p>另外，想要通过代理连接下载，可以在配置文件中新增一行 <code>proxy=代理服务器地址</code> 来启用。</p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>2.系统管理</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Linux 用户管理</title>
+    <url>/3199649610/</url>
+    <content><![CDATA[<h1 id="用户管理"><a class="markdownIt-Anchor" href="#用户管理"></a> 用户管理</h1>
+<p>针对用户的新增,删除,修改操作.</p>
+<h2 id="新增用户"><a class="markdownIt-Anchor" href="#新增用户"></a> 新增用户</h2>
+<p>可以使用 <code>useradd</code> 命令来新建用户。命令用法如下：</p>
+<p><code>useradd [-u UID] [-g 初始组] [-G 次要组] [-nM] [-c 说明] [-d 主目录绝对路径] [-a shell] 用户名</code></p>
+<p>主要参数如下：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-u</td>
+<td>接 UID 数字，直接指定一个特定的 UID 号码</td>
+</tr>
+<tr>
+<td>-g</td>
+<td>接组名或 GID，设置初始用户组</td>
+</tr>
+<tr>
+<td>-G</td>
+<td>接组名或 GID，设置用户的附加组</td>
+</tr>
+<tr>
+<td>-M</td>
+<td>不创建用户主文件夹（系统账号默认值）</td>
+</tr>
+<tr>
+<td>-m</td>
+<td>创建用户主文件夹（一般账号默认值）</td>
+</tr>
+<tr>
+<td>-c</td>
+<td>用户说明文字内容</td>
+</tr>
+<tr>
+<td>-d</td>
+<td>指定用户主目录位置，必须使用绝对路径</td>
+</tr>
+<tr>
+<td>-r</td>
+<td>创建一个系统账号，UID 会有限制</td>
+</tr>
+<tr>
+<td>-s</td>
+<td>接指定的 shell，默认为 /bin/bash</td>
+</tr>
+<tr>
+<td>-e</td>
+<td>接日期格式 “YYYY-MM-DD”，设置账号失效日</td>
+</tr>
+<tr>
+<td>-f</td>
+<td>指定密码是否失效，0 为立刻失效，-1 为永不失效</td>
+</tr>
+<tr>
+<td>-N</td>
+<td>不创建同名的组</td>
+</tr>
+<tr>
+<td>-p</td>
+<td>设置密码</td>
+</tr>
+</tbody>
+</table>
+<p>例如，新建立用户 user1，密码为 user1：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">useradd</span> <span class="token parameter variable">-p</span> user1 user1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>设置一个 2040 年 1 月 13 日过期的临时用户 user2：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">useradd</span> <span class="token parameter variable">-p</span> <span class="token function">passwd</span> <span class="token parameter variable">-e</span> <span class="token number">2040</span>-01-13 user2<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="修改密码"><a class="markdownIt-Anchor" href="#修改密码"></a> 修改密码</h2>
+<p>可以使用 <code>passwd</code> 命令来进行密码设置功能。主要参数如下：</p>
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-l</td>
+<td>锁定密码，设置密码失效</td>
+</tr>
+<tr>
+<td>-i</td>
+<td>接日期，设置密码失效日期</td>
+</tr>
+<tr>
+<td>-u</td>
+<td>解锁密码</td>
+</tr>
+<tr>
+<td>-n</td>
+<td>设置修改密码限制周期</td>
+</tr>
+<tr>
+<td>-x</td>
+<td>设置密码使用最长天数</td>
+</tr>
+<tr>
+<td>-w</td>
+<td>密码过期前的警告天数</td>
+</tr>
+</tbody>
+</table>
+<p><code>passwd</code> 后不接账户名为设置当前账户密码。root 给别账号设置密码可以无视密码规则：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">passwd</span> user1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><code>passwd</code> 支持 <code>--stdin</code> 参数，使得可以在脚本中批量建立账户：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token string">"abc"</span> <span class="token operator">|</span> <span class="token function">passwd</span> <span class="token parameter variable">--stdin</span> user1
+Changing password <span class="token keyword">for</span> user user1.
+passwd: all authentication tokens updated successfully.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>可以用 <code>chage</code> 查看密码策略。例如查看 user1 的参数：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ chage <span class="token parameter variable">-l</span> user1
+Last password change                                    <span class="token builtin class-name">:</span> Sep <span class="token number">13</span>, <span class="token number">2021</span>
+Password expires                                        <span class="token builtin class-name">:</span> never
+Password inactive                                       <span class="token builtin class-name">:</span> never
+Account expires                                         <span class="token builtin class-name">:</span> never
+Minimum number of days between password change          <span class="token builtin class-name">:</span> <span class="token number">0</span>
+Maximum number of days between password change          <span class="token builtin class-name">:</span> <span class="token number">99999</span>
+Number of days of warning before password expires       <span class="token builtin class-name">:</span> <span class="token number">7</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>另外 <code>chage</code> 还可以修改密码策略，例如修改密码最后修改时间为 0，用户下次登录时会被要求强制修改密码：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ chage <span class="token parameter variable">-d</span> <span class="token number">0</span> user1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="修改用户参数"><a class="markdownIt-Anchor" href="#修改用户参数"></a> 修改用户参数</h2>
+<p>可以使用 <code>usermod</code> 命令来修改已存在的用户设置，命令使用参数可参考 <code>useradd</code> 命令。</p>
+<p>例如，修改用户 <code>user7</code> 的用户名为 <code>user07</code>，并修改用户主目录：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">usermod</span> <span class="token parameter variable">-d</span> /home/user07 <span class="token parameter variable">-m</span> <span class="token parameter variable">-l</span> user07 user7<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>再例如，将用户 <code>user1</code> 的 shell 设置为 <code>id</code>，这样用户只能运行 <code>id</code> 命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">usermod</span> <span class="token parameter variable">-s</span> /usr/bin/id user1
+<span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">su</span> user1
+<span class="token assign-left variable">uid</span><span class="token operator">=</span><span class="token number">1000</span><span class="token punctuation">(</span>user1<span class="token punctuation">)</span> <span class="token assign-left variable">gid</span><span class="token operator">=</span><span class="token number">1000</span><span class="token punctuation">(</span>user1<span class="token punctuation">)</span> <span class="token assign-left variable">groups</span><span class="token operator">=</span><span class="token number">1000</span><span class="token punctuation">(</span>user1<span class="token punctuation">)</span> <span class="token assign-left variable">context</span><span class="token operator">=</span>unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>切换到 <code>user1</code> 时直接运行了 <code>id</code> 命令。修改 shell 还可以使用 <code>chsh</code> 命令来操作。</p>
+<p>将 shell 指定为 <code>/sbin/nologin</code> 表示不能登录，并将尝试登录记录到 syslog 后台程序。可以修改 <code>/etc/nologin.txt</code> 文件来为 <code>nologin</code> 用户展示信息。</p>
+<h2 id="删除用户"><a class="markdownIt-Anchor" href="#删除用户"></a> 删除用户</h2>
+<p>可以使用<code>userdel</code>命令来删除用户和用户相关数据，指定<code>-r</code>参数可以连同用户主目录和邮件一起删除:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">userdel</span> <span class="token parameter variable">-r</span> user1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>一般更建议先将用户停用，使用<code>usermod -e 1</code>让用户立即过期。</p>
+<h1 id="用户组管理"><a class="markdownIt-Anchor" href="#用户组管理"></a> 用户组管理</h1>
+<p>针对用户组的新增，修改，删除。</p>
+<h2 id="新增用户组"><a class="markdownIt-Anchor" href="#新增用户组"></a> 新增用户组</h2>
+<p>使用 <code>groupadd</code> 命令新建用户组，例如新建组 group1：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">groupadd</span> group1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="修改用户组"><a class="markdownIt-Anchor" href="#修改用户组"></a> 修改用户组</h2>
+<p>可以通过 <code>groupmod</code> 命令来修改已存在的组名或 GID。比如将组 group1 改名为 newgroup：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">groupmod</span> <span class="token parameter variable">-n</span> newgroup group1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>将组 user7 的 GID 改为 10007：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">groupmod</span> <span class="token parameter variable">-g</span> <span class="token number">10007</span> user7
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">tail</span> /etc/group <span class="token operator">|</span> <span class="token function">grep</span> user7
+user7:x:10007:<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h2 id="删除用户组"><a class="markdownIt-Anchor" href="#删除用户组"></a> 删除用户组</h2>
+<p>使用 <code>groupdel</code> 可以删除无人使用的用户组（目标不能是初始用户组）。例如删除组 group2：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">groupdel</span> group2<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="用户组管理员"><a class="markdownIt-Anchor" href="#用户组管理员"></a> 用户组管理员</h2>
+<p>用户组管理员是设置一个组内的成员为管理用，专门管理哪些账号可以加入/移出该组。</p>
+<p>管理用户组成员使用 <code>gpasswd</code> 命令。例如将 user2 设置为组 group2 的管理员：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ gpasswd <span class="token parameter variable">-A</span> user2 group2<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>设置组密码：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ gpasswd user2
+Changing the password <span class="token keyword">for</span> group user2
+New Password: 
+Re-enter new password: <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>管理员可以使用 <code>-a</code> 参数将其他用户加入到管理的小组。比如将 user3 加入到 group2：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ gpasswd <span class="token parameter variable">-a</span> user3 group2
+Adding user user3 to group group2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h1 id="查询信息"><a class="markdownIt-Anchor" href="#查询信息"></a> 查询信息</h1>
+<p>可以使用多种命令来查询用户和组的详细信息。</p>
+<h2 id="查询用户信息"><a class="markdownIt-Anchor" href="#查询用户信息"></a> 查询用户信息</h2>
+<p>通过<code>id</code>命令可以查询到用户的 UID 和 GID 信息，例如查询用户<code>user2</code>:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">id</span> user2
+<span class="token assign-left variable">uid</span><span class="token operator">=</span><span class="token number">1001</span><span class="token punctuation">(</span>user2<span class="token punctuation">)</span> <span class="token assign-left variable">gid</span><span class="token operator">=</span><span class="token number">1001</span><span class="token punctuation">(</span>user2<span class="token punctuation">)</span> <span class="token assign-left variable">groups</span><span class="token operator">=</span><span class="token number">1001</span><span class="token punctuation">(</span>user2<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>可以使用<code>whoami</code>命令显示当前登录的用户名，等同于<code>id -un</code>:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">whoami</span>
+root<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>查询用户属组信息可以使用<code>groups</code>命令，例如查询<code>user1</code>的所属组:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">groups</span> user1
+user1 <span class="token builtin class-name">:</span> user1 root<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p><code>finger</code>命令是一般用户可以使用的用户信息数据查询工具，例如查询<code>root</code>用户的信息:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ finger root
+Login: root                             Name: root
+Directory: /root                        Shell: /bin/bash
+On since Sat Sep <span class="token number">11</span> 09:35 <span class="token punctuation">(</span>EDT<span class="token punctuation">)</span> on tty1    <span class="token number">1</span> day <span class="token number">20</span> hours idle
+On since Sat Sep <span class="token number">11</span> 07:08 <span class="token punctuation">(</span>EDT<span class="token punctuation">)</span> on pts/0 from <span class="token number">192.168</span>.2.101
+   <span class="token number">3</span> seconds idle
+Last login Mon Sep <span class="token number">13</span> 05:48 <span class="token punctuation">(</span>EDT<span class="token punctuation">)</span> on pts/1
+No mail.
+No Plan.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果不加参数，<code>finger</code>查询出来的是目前在系统上登录的用户与登录时间。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ finger
+Login     Name       Tty      Idle  Login Time   Office     Office Phone   Host
+root      root       tty1       1d  Sep <span class="token number">11</span> 09:35           
+root      root       pts/0          Sep <span class="token number">11</span> 07:08                           <span class="token punctuation">(</span><span class="token number">192.168</span>.2.101<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="修改用户附加信息"><a class="markdownIt-Anchor" href="#修改用户附加信息"></a> 修改用户附加信息</h2>
+<p>若要修改 <code>finger</code> 命令输出结果中的 Office、Phone 等信息，可以使用 <code>chfn</code> 命令。</p>
+<p>输入 <code>chfn</code> 命令后，会进入交互式输入页面：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ chfn
+Changing finger information <span class="token keyword">for</span> root.
+Name <span class="token punctuation">[</span>root<span class="token punctuation">]</span>: assassing
+Office <span class="token punctuation">[</span><span class="token punctuation">]</span>: STU
+Office Phone <span class="token punctuation">[</span><span class="token punctuation">]</span>: 010-8515834
+Home Phone <span class="token punctuation">[</span><span class="token punctuation">]</span>: none
+
+Finger information changed.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>修改的内容实际存放在 <code>/etc/passwd</code> 文件中第五个字段中。</p>
+<h2 id="查询用户登录信息"><a class="markdownIt-Anchor" href="#查询用户登录信息"></a> 查询用户登录信息</h2>
+<p>使用<code>who</code>命令可以简单查看当前在线的用户：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">who</span>
+root     tty1         <span class="token number">2021</span>-09-11 09:35
+root     pts/0        <span class="token number">2021</span>-09-13 08:19 <span class="token punctuation">(</span><span class="token number">192.168</span>.2.101<span class="token punctuation">)</span>
+root     pts/1        <span class="token number">2021</span>-09-13 <span class="token number">11</span>:38 <span class="token punctuation">(</span><span class="token number">192.168</span>.2.101<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用<code>w</code>命令可以看到更详细的在线用户信息，包括系统资源使用和最后执行的命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ w
+<span class="token number">11</span>:38:55 up <span class="token number">3</span> days, <span class="token number">20</span>:30,  <span class="token number">3</span> users,  load average: <span class="token number">0.01</span>, <span class="token number">0.02</span>, <span class="token number">0.05</span>
+<span class="token environment constant">USER</span>     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+root     tty1                      Sat09    2days  <span class="token number">0</span>.01s  <span class="token number">0</span>.01s <span class="token parameter variable">-bash</span>
+root     pts/0    <span class="token number">192.168</span>.2.101    08:19    <span class="token number">7</span>.00s  <span class="token number">0</span>.11s  <span class="token number">0</span>.00s w
+root     pts/1    <span class="token number">192.168</span>.2.101    <span class="token number">11</span>:38   <span class="token number">45</span>.00s  <span class="token number">0</span>.01s  <span class="token number">0</span>.00s <span class="token parameter variable">-bash</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>要查询用户的登录动作记录，可以使用<code>last</code>命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ last
+root     pts/1        <span class="token number">192.168</span>.2.101    Mon Sep <span class="token number">13</span> <span class="token number">11</span>:38   still logged <span class="token keyword">in</span>   
+root     pts/0        <span class="token number">192.168</span>.2.101    Mon Sep <span class="token number">13</span> 08:19   still logged <span class="token keyword">in</span>   
+root     tty1                          Sat Sep <span class="token number">11</span> 09:35   still logged <span class="token keyword">in</span>   
+root     pts/1        <span class="token number">192.168</span>.2.101    Sat Sep <span class="token number">11</span> 08:58 - 06:09 <span class="token punctuation">(</span><span class="token number">1</span>+21:10<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>想知道每个账号最后登录时间可以使用<code>lastlog</code>命令，它会去读取<code>/var/log/lastlog</code>文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ lastlog
+Username         Port     From             Latest
+root             pts/1    <span class="token number">192.168</span>.2.101    Mon Sep <span class="token number">13</span> <span class="token number">11</span>:38:10 <span class="token parameter variable">-0400</span> <span class="token number">2021</span>
+bin                                        **Never logged in**
+daemon                                     **Never logged in**<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="配置检查工具"><a class="markdownIt-Anchor" href="#配置检查工具"></a> 配置检查工具</h2>
+<p>使用<code>pwck</code>命令可以检查 <code>/etc/passwd</code> 文件是否正确：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ pwck
+user <span class="token string">'ftp'</span><span class="token builtin class-name">:</span> directory <span class="token string">'/var/ftp'</span> does not exist
+pwck: no changes<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><code>pwconv</code> 命令将 <code>/etc/passwd</code> 内的账号与密码移动到 <code>/etc/shadow</code> 中，用来迁移早期 Linux 的用户数据。</p>
+<p><code>pwunconv</code> 是 <code>pwconv</code> 的反向操作。</p>
+<p><code>chpasswd</code> 用来读入未加密前的密码，并将加密后的密码写入到 <code>/etc/shadow</code> 中。例如修改 <code>user1</code> 的密码：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token string">"user1:newpassword"</span> <span class="token operator">|</span> chpasswd <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="用户交流"><a class="markdownIt-Anchor" href="#用户交流"></a> 用户交流</h1>
+<p>Linux 内置的几个命令可以直接和系统内其他用户交流。</p>
+<h2 id="在线交流"><a class="markdownIt-Anchor" href="#在线交流"></a> 在线交流</h2>
+<p>例如使用<code>write</code>可以直接将信息传给其他在线用户：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">write</span> root
+write: root is logged <span class="token keyword">in</span> <span class="token function">more</span> than once<span class="token punctuation">;</span> writing to pts/1
+my message1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>输入完毕用<code>Ctrl+d</code>结束并发送，对面会立即收到信息。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 ~<span class="token punctuation">]</span>$ 
+Message from root@101c7 on pts/0 at <span class="token number">11</span>:45 <span class="token punctuation">..</span>.
+my message1
+EOF<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>想要关闭消息接受可以使用<code>mesg n</code>命令（重新打开用<code>mesg y</code>）。</p>
+<h2 id="群发消息"><a class="markdownIt-Anchor" href="#群发消息"></a> 群发消息</h2>
+<p>使用<code>wall</code>命令能发送广播，让所有在线的用户都收到消息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 ~<span class="token punctuation">]</span>$ wall <span class="token string">"911"</span>
+<span class="token punctuation">[</span>user1@101c7 ~<span class="token punctuation">]</span>$ 
+Broadcast message from user1@101c7 <span class="token punctuation">(</span>pts/1<span class="token punctuation">)</span> <span class="token punctuation">(</span>Mon Sep <span class="token number">13</span> <span class="token number">11</span>:52:06 <span class="token number">2021</span><span class="token punctuation">)</span>:
+
+<span class="token number">911</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="用户切换"><a class="markdownIt-Anchor" href="#用户切换"></a> 用户切换</h1>
+<p>在用户间切换使用<code>su</code>命令（switch user）。一般用户切换到 root 需要 root 的密码。命令格式为：</p>
+<p><code>su [-lm] [-c 命令] [用户名]</code></p>
+<p>可用参数如下：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-</td>
+<td>代表使用 login-shell 的变量文件读取方式来登录</td>
+</tr>
+<tr>
+<td>-l</td>
+<td>也是 login-shell 的方式，后面需要加账号</td>
+</tr>
+<tr>
+<td>-m</td>
+<td>使用目前的环境设置，而不读取新用户的配置文件</td>
+</tr>
+<tr>
+<td>-c</td>
+<td>仅运行一次命令，后面加要执行的命令</td>
+</tr>
+</tbody>
+</table>
+<h2 id="non-login-shell"><a class="markdownIt-Anchor" href="#non-login-shell"></a> non-login shell</h2>
+<p>使用<code>su</code>命令仅切换用户身份时，将以非登录 Shell 方式登录，此方式不会读取用户配置文件。例如，切换到<code>user1</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 dir2<span class="token punctuation">]</span>$ <span class="token function">su</span> user1
+<span class="token punctuation">[</span>user1@101c7 dir2<span class="token punctuation">]</span>$ <span class="token function">env</span> <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">'root'</span>
+<span class="token assign-left variable"><span class="token environment constant">PATH</span></span><span class="token operator">=</span>/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin
+<span class="token assign-left variable">MAIL</span><span class="token operator">=</span>/var/spool/mail/root
+<span class="token assign-left variable"><span class="token environment constant">PWD</span></span><span class="token operator">=</span>/root/sdb4m/dir1/dir2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到，<code>PATH</code>和<code>MAIL</code>等变量并没有切换到<code>user1</code>。</p>
+<h2 id="login-shell"><a class="markdownIt-Anchor" href="#login-shell"></a> login shell</h2>
+<p>要使用登录 Shell 的方式登录需要记得使用 <code>-</code>（切换到 root）或 <code>-l</code> 参数：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 dir2<span class="token punctuation">]</span>$ <span class="token function">su</span> <span class="token parameter variable">-l</span> user1
+Last login: Mon Sep <span class="token number">13</span> 08:11:48 EDT <span class="token number">2021</span> on pts/0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>使用 <code>-c</code> 参数能很方便地使用其他账户身份运行命令而并不需要登录：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 dir2<span class="token punctuation">]</span>$ <span class="token function">su</span> <span class="token parameter variable">-l</span> user1 <span class="token parameter variable">-c</span> <span class="token string">'whoami'</span>
+user1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="用-sudo-执行命令"><a class="markdownIt-Anchor" href="#用-sudo-执行命令"></a> 用 sudo 执行命令</h2>
+<p>通过 <code>sudo</code> 命令，能让在 <code>/etc/sudoers</code> 文件中列出的用户使用其他用户的身份（包括 nologin 的系统用户）来执行命令。使用方法如下：</p>
+<p><code>sudo [-b] [-u 其他用户名]</code></p>
+<p>例如，以 <code>user2</code> 的身份在 <code>/tmp</code> 目录下新建名为 <code>us2</code> 的文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">sudo</span> <span class="token parameter variable">-u</span> user2 <span class="token function">touch</span> /tmp/us2 <span class="token punctuation">;</span> ll <span class="token parameter variable">-l</span> /tmp/us2
+-rw-r--r--. <span class="token number">1</span> user2 user2 <span class="token number">0</span> Sep <span class="token number">13</span> 08:24 /tmp/us2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>如果要运行一连串命令，使用 <code>sh -c</code> 将命令用双引号括起来：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">sudo</span> <span class="token parameter variable">-u</span> user2 <span class="token function">sh</span> <span class="token parameter variable">-c</span> <span class="token string">"touch /tmp/us1; mv /tmp/us1 /tmp/us3"</span><span class="token punctuation">;</span>ll /tmp/us3
+-rw-r--r--. <span class="token number">1</span> user2 user2 <span class="token number">0</span> Sep <span class="token number">13</span> 08:29 /tmp/us3<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="设置-sudoers"><a class="markdownIt-Anchor" href="#设置-sudoers"></a> 设置 sudoers</h2>
+<p>使用 <code>visudo</code> 命令设置 sudo 配置文件 <code>/etc/sudoers</code>。例如，将 <code>user1</code> 加入到 <code>sudoers</code> 中：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ visudo
+<span class="token comment">## Allow root to run any commands anywhere</span>
+root     <span class="token assign-left variable">ALL</span><span class="token operator">=</span><span class="token punctuation">(</span>ALL<span class="token punctuation">)</span>       ALL
+user1    <span class="token assign-left variable">ALL</span><span class="token operator">=</span><span class="token punctuation">(</span>ALL<span class="token punctuation">)</span>       ALL<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>第二段 <code>(ALL)=(ALL)</code> 表示登录者的来源主机名=(可切换的身份)，第三段表示可执行的命令。必须使用绝对路径指定。</p>
+<p>切换到 <code>user1</code> 使用 <code>sudo</code> 运行命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">sudo</span> ll /root
+
+We trust you have received the usual lecture from the <span class="token builtin class-name">local</span> System
+Administrator. It usually boils down to these three things:
+
+    <span class="token comment">#1) Respect the privacy of others.</span>
+    <span class="token comment">#2) Think before you type.</span>
+    <span class="token comment">#3) With great power comes great responsibility.</span>
+<span class="token punctuation">[</span>sudo<span class="token punctuation">]</span> password <span class="token keyword">for</span> user1: 
+sudo: ll: <span class="token builtin class-name">command</span> not found<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>输入 <code>user1</code> 的密码后可以自由使用 <code>sudo</code>。如果两次 <code>sudo</code> 操作的间隔超过 5 分钟，需要重新输入一次密码。</p>
+<p>设置用户组 <code>%group2</code> 可以不需要密码使用 <code>sudo</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ visudo
+root       <span class="token assign-left variable">ALL</span><span class="token operator">=</span><span class="token punctuation">(</span>ALL<span class="token punctuation">)</span>       ALL
+%group2    <span class="token assign-left variable">ALL</span><span class="token operator">=</span><span class="token punctuation">(</span>ALL<span class="token punctuation">)</span>       NOPASSWD:ALL<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>可以通过 <code>User_Alias</code> 和 <code>Cmnd_alias</code> 配置来设置别名，配置使用的别名一定要使用大写。</p>
+<p>例如，将 <code>ADMUSER</code> 指向用户 <code>user1</code> 和 <code>user2</code>，<code>ADMPW</code> 指向 <code>/usr/bin/passwd</code>，并排除掉直接运行 <code>passwd</code> 和 <code>passwd root</code> 命令（都为给 <code>root</code> 修改密码）：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ visudo
+User_Alias ADMUSER <span class="token operator">=</span> user1, user2
+Cmnd_Alias ADMPW <span class="token operator">=</span> /usr/bin/passwd <span class="token punctuation">[</span>A-za-z<span class="token punctuation">]</span>*, <span class="token operator">!</span>/usr/bin/passd, <span class="token operator">!</span>/usr/bin/passwd root
+ADMUSER   <span class="token assign-left variable">ALL</span><span class="token operator">=</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span>       NOPASSWD:ADMPW<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 <code>sudo -l</code> 可以查询当前 <code>sudo</code> 权限设置情况：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">sudo</span> <span class="token parameter variable">-l</span>
+Matching Defaults entries <span class="token keyword">for</span> root on server1:
+    <span class="token operator">!</span>visiblepw, always_set_home, match_group_by_gid, always_query_group_plugin, env_reset, <span class="token assign-left variable">env_keep</span><span class="token operator">=</span><span class="token string">"COLORS DISPLAY HOSTNAME
+    HISTSIZE KDEDIR LS_COLORS"</span>, <span class="token assign-left variable">env_keep</span><span class="token operator">+=</span><span class="token string">"MAIL PS1 PS2 QTDIR USERNAME LANG LC_ADDRESS LC_CTYPE"</span>, <span class="token assign-left variable">env_keep</span><span class="token operator">+=</span><span class="token string">"LC_COLLATE
+    LC_IDENTIFICATION LC_MEASUREMENT LC_MESSAGES"</span>, <span class="token assign-left variable">env_keep</span><span class="token operator">+=</span><span class="token string">"LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER LC_TELEPHONE"</span>,
+    <span class="token assign-left variable">env_keep</span><span class="token operator">+=</span><span class="token string">"LC_TIME LC_ALL LANGUAGE LINGUAS _XKB_CHARSET XAUTHORITY"</span>, <span class="token assign-left variable">secure_path</span><span class="token operator">=</span>/sbin<span class="token punctuation">\</span>:/bin<span class="token punctuation">\</span>:/usr/sbin<span class="token punctuation">\</span>:/usr/bin
+
+User root may run the following commands on server1:
+    <span class="token punctuation">(</span>ALL<span class="token punctuation">)</span> ALL<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 ]]></content>
       <categories>
         <category>Linux</category>
@@ -7555,7 +7555,7 @@ abcacA<span aria-hidden="true" class="line-numbers-rows"><span></span><span></sp
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token string">'s@/root/etc/@/etc/@'</span> c.cfg 
 abcaca
 /etc/<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>**替换位置为<code>&amp;</code>**时，代表它会被替换成匹配到的被替换字符串或正则表达式。</p>
+<p>替换位置为<code>&amp;</code>时，代表它会被替换成匹配到的被替换字符串或正则表达式。</p>
 <p>例如将行号数字用大括号<code>&#123;&#125;</code>括起来：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">nl</span> c.cfg <span class="token operator">|</span> <span class="token function">sed</span> <span class="token string">'s/[0-9]/&#123;&amp;&#125;/1'</span>
      <span class="token punctuation">&#123;</span><span class="token number">1</span><span class="token punctuation">&#125;</span>        abcaca
@@ -7572,135 +7572,6 @@ daemon<span class="token punctuation">[</span>:2:<span class="token punctuation"
       <categories>
         <category>Linux</category>
         <category>3.脚本编程</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>Linux 文件与目录权限</title>
-    <url>/46662635/</url>
-    <content><![CDATA[<h1 id="基本权限"><a class="markdownIt-Anchor" href="#基本权限"></a> 基本权限</h1>
-<p>基础权限有三种，分别是：读（r，Read）、写（w，Write）、执行（x，eXecute）。</p>
-<p>同样的权限标记对于文件和目录代表不同的意义。</p>
-<h2 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h2>
-<p>文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。</p>
-<table>
-<thead>
-<tr>
-<th>数字</th>
-<th>字符</th>
-<th>权限</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>4</td>
-<td>r</td>
-<td><strong>读取文件内容</strong>。例如使用 <code>cat</code> 命令查看，使用 <code>vim</code> 以<strong>只读</strong>方式打开。</td>
-</tr>
-<tr>
-<td>2</td>
-<td>w</td>
-<td><strong>编辑修改</strong>文件内容，但<strong>不包括删除</strong>文件。例如使用 <code>vim</code>、<code>sed</code> 等对文件内容进行修改并保存。</td>
-</tr>
-<tr>
-<td>1</td>
-<td>x</td>
-<td>文件具有可以被系统<strong>执行</strong>的权限。例如命令和脚本必须拥有此权限才能直接执行。</td>
-</tr>
-</tbody>
-</table>
-<h2 id="目录权限"><a class="markdownIt-Anchor" href="#目录权限"></a> 目录权限</h2>
-<p>目录主要的内容是记录文件名清单，所以目录权限实际关联的是目录下文件属性查看与更改。</p>
-<table>
-<thead>
-<tr>
-<th>数字</th>
-<th>字符</th>
-<th>权限</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>4</td>
-<td>r</td>
-<td><strong>仅查询</strong>目录下的文件或目录<strong>名称</strong>，无法看到属性，相当于执行不加参数的 <code>ls</code> 命令。</td>
-</tr>
-<tr>
-<td>2</td>
-<td>w</td>
-<td>改变目录结构清单权限，也就是在目录下<strong>新建、删除、重命名</strong>文件或目录。</td>
-</tr>
-<tr>
-<td>1</td>
-<td>x</td>
-<td><strong>进入目录</strong>的权限，<strong>查询</strong>目录下的文件<strong>属性</strong>。</td>
-</tr>
-</tbody>
-</table>
-<h1 id="权限参考"><a class="markdownIt-Anchor" href="#权限参考"></a> 权限参考</h1>
-<p>根据使用场景来配置权限。</p>
-<p><strong>用户进入目录所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限，来运行 <code>cd</code> 切换目录。</li>
-<li>目录需要 r 权限，来使用 <code>ls</code> 命令查看目录中文件列表。</li>
-</ul>
-<p><strong>用户读取目录内文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 r 权限来运行 <code>cat</code>、<code>more</code> 等读取文件命令。</li>
-</ul>
-<p><strong>用户修改目录内文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 r 和 w 权限来使用 <code>vi</code> 等工具进行文件读写。</li>
-</ul>
-<p><strong>用户创建一个文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 w 和 x 权限来创建文件。</li>
-</ul>
-<p><strong>用户执行目录下的命令所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 x 权限来运行命令。</li>
-</ul>
-<h1 id="特殊权限"><a class="markdownIt-Anchor" href="#特殊权限"></a> 特殊权限</h1>
-<p>在 Linux 系统中，还有一些特殊权限。</p>
-<h2 id="suid"><a class="markdownIt-Anchor" href="#suid"></a> SUID</h2>
-<p>当 s 标志出现在文件所有者的 x 权限上时，被称为 Set UID，其含义为：</p>
-<ul>
-<li>SUID 权限<strong>仅对二进制程序有效</strong>，不能用在脚本上；</li>
-<li>执行者对该程序需要具有 x 的可执行权限；</li>
-<li>本权限仅在执行该程序的过程中（run-time）有效；</li>
-<li><strong>执行者将具有该程序所有者的权限</strong>。</li>
-</ul>
-<p>例如一般用户运行 <code>passwd</code> 命令修改密码，需要修改 <code>/etc/shadow</code> 文件。但是该文件的权限只有 root 可读写，而用户运行 passwd 程序时，会暂时获得 passwd 程序的 root 权限，从而可以通过 <code>passwd</code> 命令修改 <code>/etc/shadow</code> 文件。</p>
-<p>这是因为运行 <code>passwd</code> 后会启动一个新的进程，该进程会产生一个新的 PID。在该 PID 产生时，SUID 会给予该 PID 特殊的权限设置，使得执行者在该进程中具有该程序所有者的权限。</p>
-<h2 id="sgid"><a class="markdownIt-Anchor" href="#sgid"></a> SGID</h2>
-<p>当 s 标志出现在文件所属组的 x 权限上时，被称为 Set GID。SGID 可以针对文件或目录来设置。</p>
-<p><strong>针对文件</strong>，SGID 有以下功能：</p>
-<ul>
-<li>SGID 对二进制程序有效；</li>
-<li>程序执行者对该程序来说，需要具备 x 的权限；</li>
-<li><strong>执行者在执行的过程中将会获得该程序所属组的权限</strong>。</li>
-</ul>
-<p>例如，一般用户使用 <code>locate</code> 这个程序可以查询 <code>/var/lib/mlocate/mlocate.db</code> 文件的内容，会暂时获得 slocate 用户组的权限。</p>
-<p><strong>针对目录</strong>，SGID 有以下功能：</p>
-<ul>
-<li>用户若对此目录具有 r 和 x 的权限时，该用户能够进入此目录；</li>
-<li>用户在此目录下的有效用户组将会变成该目录的用户组；</li>
-<li><strong>若用户在此目录下具有 w 的权限，则用户所创建的新文件的所属组与此目录的所属组相同。</strong></li>
-</ul>
-<h2 id="sbit"><a class="markdownIt-Anchor" href="#sbit"></a> SBIT</h2>
-<p>当 t 出现在文件所有者的其他用户 x 权限上时，被称为 Sticky Bit。其含义为：</p>
-<ul>
-<li>SBIT 权限<strong>仅对目录有效</strong>；</li>
-<li>当用户对该目录具有 w 和 x 权限时，即具有写入权限时；</li>
-<li><strong>当用户在该目录下创建文件或目录时，仅有自己与 root 才有权力删除该文件。</strong></li>
-</ul>
-<p>例如，用户 1 对目录 A 具有 w 的权限，里面还有其他用户的文件。此时，目录 A 加上了 SBIT 权限时，用户 1 只能修改自己创建的文件，无法删除他人文件。</p>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>0.基础概论</category>
       </categories>
   </entry>
   <entry>
@@ -7834,6 +7705,135 @@ drwxr-----.  <span class="token number">3</span> root root   <span class="token 
 <li>文件名中一般不应该包含空格；</li>
 <li>使用 Ext 文件系统时，文件名最长 255 个字符，路径最长 4096 个字符。</li>
 </ul>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>0.基础概论</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Linux 文件与目录权限</title>
+    <url>/46662635/</url>
+    <content><![CDATA[<h1 id="基本权限"><a class="markdownIt-Anchor" href="#基本权限"></a> 基本权限</h1>
+<p>基础权限有三种，分别是：读（r，Read）、写（w，Write）、执行（x，eXecute）。</p>
+<p>同样的权限标记对于文件和目录代表不同的意义。</p>
+<h2 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h2>
+<p>文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。</p>
+<table>
+<thead>
+<tr>
+<th>数字</th>
+<th>字符</th>
+<th>权限</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td>r</td>
+<td><strong>读取文件内容</strong>。例如使用 <code>cat</code> 命令查看，使用 <code>vim</code> 以<strong>只读</strong>方式打开。</td>
+</tr>
+<tr>
+<td>2</td>
+<td>w</td>
+<td><strong>编辑修改</strong>文件内容，但<strong>不包括删除</strong>文件。例如使用 <code>vim</code>、<code>sed</code> 等对文件内容进行修改并保存。</td>
+</tr>
+<tr>
+<td>1</td>
+<td>x</td>
+<td>文件具有可以被系统<strong>执行</strong>的权限。例如命令和脚本必须拥有此权限才能直接执行。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="目录权限"><a class="markdownIt-Anchor" href="#目录权限"></a> 目录权限</h2>
+<p>目录主要的内容是记录文件名清单，所以目录权限实际关联的是目录下文件属性查看与更改。</p>
+<table>
+<thead>
+<tr>
+<th>数字</th>
+<th>字符</th>
+<th>权限</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td>r</td>
+<td><strong>仅查询</strong>目录下的文件或目录<strong>名称</strong>，无法看到属性，相当于执行不加参数的 <code>ls</code> 命令。</td>
+</tr>
+<tr>
+<td>2</td>
+<td>w</td>
+<td>改变目录结构清单权限，也就是在目录下<strong>新建、删除、重命名</strong>文件或目录。</td>
+</tr>
+<tr>
+<td>1</td>
+<td>x</td>
+<td><strong>进入目录</strong>的权限，<strong>查询</strong>目录下的文件<strong>属性</strong>。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="权限参考"><a class="markdownIt-Anchor" href="#权限参考"></a> 权限参考</h1>
+<p>根据使用场景来配置权限。</p>
+<p><strong>用户进入目录所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限，来运行 <code>cd</code> 切换目录。</li>
+<li>目录需要 r 权限，来使用 <code>ls</code> 命令查看目录中文件列表。</li>
+</ul>
+<p><strong>用户读取目录内文件所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 r 权限来运行 <code>cat</code>、<code>more</code> 等读取文件命令。</li>
+</ul>
+<p><strong>用户修改目录内文件所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 r 和 w 权限来使用 <code>vi</code> 等工具进行文件读写。</li>
+</ul>
+<p><strong>用户创建一个文件所需权限</strong>：</p>
+<ul>
+<li>目录需要 w 和 x 权限来创建文件。</li>
+</ul>
+<p><strong>用户执行目录下的命令所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 x 权限来运行命令。</li>
+</ul>
+<h1 id="特殊权限"><a class="markdownIt-Anchor" href="#特殊权限"></a> 特殊权限</h1>
+<p>在 Linux 系统中，还有一些特殊权限。</p>
+<h2 id="suid"><a class="markdownIt-Anchor" href="#suid"></a> SUID</h2>
+<p>当 s 标志出现在文件所有者的 x 权限上时，被称为 Set UID，其含义为：</p>
+<ul>
+<li>SUID 权限<strong>仅对二进制程序有效</strong>，不能用在脚本上；</li>
+<li>执行者对该程序需要具有 x 的可执行权限；</li>
+<li>本权限仅在执行该程序的过程中（run-time）有效；</li>
+<li><strong>执行者将具有该程序所有者的权限</strong>。</li>
+</ul>
+<p>例如一般用户运行 <code>passwd</code> 命令修改密码，需要修改 <code>/etc/shadow</code> 文件。但是该文件的权限只有 root 可读写，而用户运行 passwd 程序时，会暂时获得 passwd 程序的 root 权限，从而可以通过 <code>passwd</code> 命令修改 <code>/etc/shadow</code> 文件。</p>
+<p>这是因为运行 <code>passwd</code> 后会启动一个新的进程，该进程会产生一个新的 PID。在该 PID 产生时，SUID 会给予该 PID 特殊的权限设置，使得执行者在该进程中具有该程序所有者的权限。</p>
+<h2 id="sgid"><a class="markdownIt-Anchor" href="#sgid"></a> SGID</h2>
+<p>当 s 标志出现在文件所属组的 x 权限上时，被称为 Set GID。SGID 可以针对文件或目录来设置。</p>
+<p><strong>针对文件</strong>，SGID 有以下功能：</p>
+<ul>
+<li>SGID 对二进制程序有效；</li>
+<li>程序执行者对该程序来说，需要具备 x 的权限；</li>
+<li><strong>执行者在执行的过程中将会获得该程序所属组的权限</strong>。</li>
+</ul>
+<p>例如，一般用户使用 <code>locate</code> 这个程序可以查询 <code>/var/lib/mlocate/mlocate.db</code> 文件的内容，会暂时获得 slocate 用户组的权限。</p>
+<p><strong>针对目录</strong>，SGID 有以下功能：</p>
+<ul>
+<li>用户若对此目录具有 r 和 x 的权限时，该用户能够进入此目录；</li>
+<li>用户在此目录下的有效用户组将会变成该目录的用户组；</li>
+<li><strong>若用户在此目录下具有 w 的权限，则用户所创建的新文件的所属组与此目录的所属组相同。</strong></li>
+</ul>
+<h2 id="sbit"><a class="markdownIt-Anchor" href="#sbit"></a> SBIT</h2>
+<p>当 t 出现在文件所有者的其他用户 x 权限上时，被称为 Sticky Bit。其含义为：</p>
+<ul>
+<li>SBIT 权限<strong>仅对目录有效</strong>；</li>
+<li>当用户对该目录具有 w 和 x 权限时，即具有写入权限时；</li>
+<li><strong>当用户在该目录下创建文件或目录时，仅有自己与 root 才有权力删除该文件。</strong></li>
+</ul>
+<p>例如，用户 1 对目录 A 具有 w 的权限，里面还有其他用户的文件。此时，目录 A 加上了 SBIT 权限时，用户 1 只能修改自己创建的文件，无法删除他人文件。</p>
 ]]></content>
       <categories>
         <category>Linux</category>
@@ -10633,171 +10633,6 @@ emacs           on<span aria-hidden="true" class="line-numbers-rows"><span></spa
       </categories>
   </entry>
   <entry>
-    <title>Awk 命令简单用法</title>
-    <url>/1712308461/</url>
-    <content><![CDATA[<h1 id="命令语法"><a class="markdownIt-Anchor" href="#命令语法"></a> 命令语法</h1>
-<p>awk 用于处理每一行的字段内的数据，默认字段的分隔符为空格或 <code>[Tab]</code>。</p>
-<p>awk 的命令语法如下：</p>
-<p><code>awk '条件类型1&#123;动作1&#125; 条件类型2&#123;动作2&#125; ...' 文件名</code></p>
-<p>awk 后面接两个单引号 ‘’ 并加上大括号 {} 来设置想要对数据进行的处理操作。</p>
-<p><code>$0</code> 代表整个输入行，<code>$n</code> 表示第 n 个字段。在应用脚本之前，awk 会先拆分输入记录。</p>
-<p>每次从一个或多个文件中读入一行或从标准输入中读入一行，指令包含在小括号对中。</p>
-<p>awk 将每个输入行解释为一条记录，行中的每个单词由空格或制表符分割解释为一个字段。</p>
-<h1 id="awk-处理流程"><a class="markdownIt-Anchor" href="#awk-处理流程"></a> awk 处理流程</h1>
-<p>整个 <code>awk</code> 的处理流程是：</p>
-<ol>
-<li>读入第一行，并将第一行的数据填入 <code>$0</code>, <code>$1</code>, <code>$2</code> 等变量中；</li>
-<li>依据条件类型的限制，判断是否需要进行后面的动作；</li>
-<li>完成所有动作与条件类型；</li>
-<li>重复以上流程步骤，直到所有数据读完为止。</li>
-</ol>
-<h1 id="awk-内置变量"><a class="markdownIt-Anchor" href="#awk-内置变量"></a> awk 内置变量</h1>
-<p><code>awk</code> 常用的内置变量如下表：</p>
-<table>
-<thead>
-<tr>
-<th><strong>变量名</strong></th>
-<th><strong>代表意义</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>NF</td>
-<td>每一行(<code>$0</code>)拥有的字段总数(列数)</td>
-</tr>
-<tr>
-<td>NR</td>
-<td>目前 <code>awk</code> 所正在处理数据的行号</td>
-</tr>
-<tr>
-<td>FS</td>
-<td>输入字段分隔字符</td>
-</tr>
-<tr>
-<td>OFS</td>
-<td>输出字段分隔符</td>
-</tr>
-<tr>
-<td>RS</td>
-<td>输入记录分隔符</td>
-</tr>
-<tr>
-<td>ORS</td>
-<td>输出记录分隔符</td>
-</tr>
-<tr>
-<td>FIELDWIDTHS</td>
-<td>定义分割数据字段依据的宽度</td>
-</tr>
-</tbody>
-</table>
-<h1 id="格式化打印"><a class="markdownIt-Anchor" href="#格式化打印"></a> 格式化打印</h1>
-<p><code>printf</code> 可以帮我们将数据输出的结果格式化，并且支持一些特殊字符。</p>
-<p>命令格式：</p>
-<p><code>printf '打印样式' 实际内容</code></p>
-<p>特殊样式：</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>样式</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>\a</td>
-<td>警告声音；</td>
-</tr>
-<tr>
-<td>\b</td>
-<td>退格键；</td>
-</tr>
-<tr>
-<td>\f</td>
-<td>清除屏幕；</td>
-</tr>
-<tr>
-<td>\n</td>
-<td>输出到新一行；</td>
-</tr>
-<tr>
-<td>\r</td>
-<td>回车键；</td>
-</tr>
-<tr>
-<td>\t</td>
-<td>水平 [tab] 按键；</td>
-</tr>
-<tr>
-<td>\v</td>
-<td>垂直 [tab] 按键；</td>
-</tr>
-<tr>
-<td>\xNN</td>
-<td>NN 为两位数的数字，可以转为字符；</td>
-</tr>
-<tr>
-<td>%ns</td>
-<td>n 为数字，s 表示字符串数量；</td>
-</tr>
-<tr>
-<td>%ni</td>
-<td>n 为数字，i 表示整数位数；</td>
-</tr>
-<tr>
-<td>%<a href="http://N.nf">N.nf</a></td>
-<td>n 与 N 为数字，f 代表多少位小数；</td>
-</tr>
-</tbody>
-</table>
-<h1 id="分割数据"><a class="markdownIt-Anchor" href="#分割数据"></a> 分割数据</h1>
-<p>例如取出 <code>last</code> 命令结果中用户名（第一列）与登录 IP（第三列）地址：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ last <span class="token parameter variable">-n</span> <span class="token number">5</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'&#123;print $1 "--" $3&#125;'</span>
-root--Sat
-root--192.168.2.101
-root--192.168.2.101
-root--192.168.2.101
-root--192.168.2.101<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>使用 <code>print</code> 将结果打印出来是 <code>awk</code> 最常用功能。</p>
-<p>将内置变量打印出来：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ last <span class="token parameter variable">-n</span> <span class="token number">5</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'&#123;print $1 "  lines:" NR "   columes:" NF&#125;'</span>
-root  lines:1   columes:9
-root  lines:2   columes:10
-root  lines:3   columes:10
-root  lines:4   columes:10
-root  lines:5   columes:10<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><code>awk</code> 可以使用逻辑运算符来写判断条件。例如查找 UID 小于 10 的用户：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">cat</span> b.cfg <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'BEGIN &#123;FS=":"&#125; $3&lt;10&#123;print $1 "\t" $3&#125;'</span>
-root    <span class="token number">0</span>
-bin     <span class="token number">1</span>
-daemon  <span class="token number">2</span>
-adm     <span class="token number">3</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>命令由两个组成，前面一个命令定义了分隔符 <code>FS</code> 的值为：（也可以使用 <code>-F</code> 参数），同时使用 <code>BEGIN</code> 这个关键字，预先设置 <code>awk</code> 的变量。第二部分做逻辑判断 <code>$3</code> 小于 10 的才运行后面 <code>print</code> 命令。</p>
-<p>同时使用 <code>FS</code> 和 <code>OFS</code> 格式化输出：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ <span class="token function">awk</span> <span class="token string">'BEGIN&#123;FS=","; OFS="--"&#125; &#123;print $1,$2&#125;'</span> user.csv 
-user6--user6
-user7--user7<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>自定义按字符数来分割：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ <span class="token function">awk</span> <span class="token string">'BEGIN&#123;FIELDWIDTHS="5 1"&#125; &#123;print $1,$2,$0&#125;'</span> user.csv 
-user6 , user6,user6
-user7 , user7,user7<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>如果数据是多行形式，可以指定分隔符为 <code>\n</code>，以空行为界定新记录的分隔符：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ <span class="token function">awk</span> <span class="token string">'BEGIN&#123;FS="\n"; RS=""&#125; &#123;print $0 $2&#125;'</span> user.csv 
-user6,user6
-<span class="token number">403403</span>
-user7,user7
-<span class="token number">404404</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><code>awk</code> 还可以使用正则表达式来进行模式匹配。例如只显示 <code>$1</code> 含有 <code>root</code> 字符串的用户：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">cat</span> b.cfg <span class="token operator">|</span> <span class="token function">awk</span> -F: <span class="token string">'/root/&#123;print $1 "\t" $3&#125;'</span>
-root    <span class="token number">0</span>
-operator        <span class="token number">11</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>3.脚本编程</category>
-      </categories>
-  </entry>
-  <entry>
     <title>Linux 权限配置管理</title>
     <url>/2354164977/</url>
     <content><![CDATA[<h1 id="修改文件所属用户组"><a class="markdownIt-Anchor" href="#修改文件所属用户组"></a> 修改文件所属用户组</h1>
@@ -12498,6 +12333,444 @@ dirquo        30M      <span class="token number">0</span>      <span class="tok
       <categories>
         <category>Linux</category>
         <category>2.系统管理</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Awk 命令简单用法</title>
+    <url>/1712308461/</url>
+    <content><![CDATA[<h1 id="命令语法"><a class="markdownIt-Anchor" href="#命令语法"></a> 命令语法</h1>
+<p>awk 用于处理每一行的字段内的数据，默认字段的分隔符为空格或 <code>[Tab]</code>。</p>
+<p>awk 的命令语法如下：</p>
+<p><code>awk '条件类型1&#123;动作1&#125; 条件类型2&#123;动作2&#125; ...' 文件名</code></p>
+<p>awk 后面接两个单引号 ‘’ 并加上大括号 {} 来设置想要对数据进行的处理操作。</p>
+<p><code>$0</code> 代表整个输入行，<code>$n</code> 表示第 n 个字段。在应用脚本之前，awk 会先拆分输入记录。</p>
+<p>每次从一个或多个文件中读入一行或从标准输入中读入一行，指令包含在小括号对中。</p>
+<p>awk 将每个输入行解释为一条记录，行中的每个单词由空格或制表符分割解释为一个字段。</p>
+<h1 id="awk-处理流程"><a class="markdownIt-Anchor" href="#awk-处理流程"></a> awk 处理流程</h1>
+<p>整个 <code>awk</code> 的处理流程是：</p>
+<ol>
+<li>读入第一行，并将第一行的数据填入 <code>$0</code>, <code>$1</code>, <code>$2</code> 等变量中；</li>
+<li>依据条件类型的限制，判断是否需要进行后面的动作；</li>
+<li>完成所有动作与条件类型；</li>
+<li>重复以上流程步骤，直到所有数据读完为止。</li>
+</ol>
+<h1 id="awk-内置变量"><a class="markdownIt-Anchor" href="#awk-内置变量"></a> awk 内置变量</h1>
+<p><code>awk</code> 常用的内置变量如下表：</p>
+<table>
+<thead>
+<tr>
+<th><strong>变量名</strong></th>
+<th><strong>代表意义</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NF</td>
+<td>每一行(<code>$0</code>)拥有的字段总数(列数)</td>
+</tr>
+<tr>
+<td>NR</td>
+<td>目前 <code>awk</code> 所正在处理数据的行号</td>
+</tr>
+<tr>
+<td>FS</td>
+<td>输入字段分隔字符</td>
+</tr>
+<tr>
+<td>OFS</td>
+<td>输出字段分隔符</td>
+</tr>
+<tr>
+<td>RS</td>
+<td>输入记录分隔符</td>
+</tr>
+<tr>
+<td>ORS</td>
+<td>输出记录分隔符</td>
+</tr>
+<tr>
+<td>FIELDWIDTHS</td>
+<td>定义分割数据字段依据的宽度</td>
+</tr>
+</tbody>
+</table>
+<h1 id="格式化打印"><a class="markdownIt-Anchor" href="#格式化打印"></a> 格式化打印</h1>
+<p><code>printf</code> 可以帮我们将数据输出的结果格式化，并且支持一些特殊字符。</p>
+<p>命令格式：</p>
+<p><code>printf '打印样式' 实际内容</code></p>
+<p>特殊样式：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>样式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\a</td>
+<td>警告声音；</td>
+</tr>
+<tr>
+<td>\b</td>
+<td>退格键；</td>
+</tr>
+<tr>
+<td>\f</td>
+<td>清除屏幕；</td>
+</tr>
+<tr>
+<td>\n</td>
+<td>输出到新一行；</td>
+</tr>
+<tr>
+<td>\r</td>
+<td>回车键；</td>
+</tr>
+<tr>
+<td>\t</td>
+<td>水平 [tab] 按键；</td>
+</tr>
+<tr>
+<td>\v</td>
+<td>垂直 [tab] 按键；</td>
+</tr>
+<tr>
+<td>\xNN</td>
+<td>NN 为两位数的数字，可以转为字符；</td>
+</tr>
+<tr>
+<td>%ns</td>
+<td>n 为数字，s 表示字符串数量；</td>
+</tr>
+<tr>
+<td>%ni</td>
+<td>n 为数字，i 表示整数位数；</td>
+</tr>
+<tr>
+<td>%<a href="http://N.nf">N.nf</a></td>
+<td>n 与 N 为数字，f 代表多少位小数；</td>
+</tr>
+</tbody>
+</table>
+<h1 id="分割数据"><a class="markdownIt-Anchor" href="#分割数据"></a> 分割数据</h1>
+<p>例如取出 <code>last</code> 命令结果中用户名（第一列）与登录 IP（第三列）地址：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ last <span class="token parameter variable">-n</span> <span class="token number">5</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'&#123;print $1 "--" $3&#125;'</span>
+root--Sat
+root--192.168.2.101
+root--192.168.2.101
+root--192.168.2.101
+root--192.168.2.101<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 <code>print</code> 将结果打印出来是 <code>awk</code> 最常用功能。</p>
+<p>将内置变量打印出来：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ last <span class="token parameter variable">-n</span> <span class="token number">5</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'&#123;print $1 "  lines:" NR "   columes:" NF&#125;'</span>
+root  lines:1   columes:9
+root  lines:2   columes:10
+root  lines:3   columes:10
+root  lines:4   columes:10
+root  lines:5   columes:10<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>awk</code> 可以使用逻辑运算符来写判断条件。例如查找 UID 小于 10 的用户：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">cat</span> b.cfg <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'BEGIN &#123;FS=":"&#125; $3&lt;10&#123;print $1 "\t" $3&#125;'</span>
+root    <span class="token number">0</span>
+bin     <span class="token number">1</span>
+daemon  <span class="token number">2</span>
+adm     <span class="token number">3</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>命令由两个组成，前面一个命令定义了分隔符 <code>FS</code> 的值为：（也可以使用 <code>-F</code> 参数），同时使用 <code>BEGIN</code> 这个关键字，预先设置 <code>awk</code> 的变量。第二部分做逻辑判断 <code>$3</code> 小于 10 的才运行后面 <code>print</code> 命令。</p>
+<p>同时使用 <code>FS</code> 和 <code>OFS</code> 格式化输出：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ <span class="token function">awk</span> <span class="token string">'BEGIN&#123;FS=","; OFS="--"&#125; &#123;print $1,$2&#125;'</span> user.csv 
+user6--user6
+user7--user7<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>自定义按字符数来分割：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ <span class="token function">awk</span> <span class="token string">'BEGIN&#123;FIELDWIDTHS="5 1"&#125; &#123;print $1,$2,$0&#125;'</span> user.csv 
+user6 , user6,user6
+user7 , user7,user7<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>如果数据是多行形式，可以指定分隔符为 <code>\n</code>，以空行为界定新记录的分隔符：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ <span class="token function">awk</span> <span class="token string">'BEGIN&#123;FS="\n"; RS=""&#125; &#123;print $0 $2&#125;'</span> user.csv 
+user6,user6
+<span class="token number">403403</span>
+user7,user7
+<span class="token number">404404</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>awk</code> 还可以使用正则表达式来进行模式匹配。例如只显示 <code>$1</code> 含有 <code>root</code> 字符串的用户：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">cat</span> b.cfg <span class="token operator">|</span> <span class="token function">awk</span> -F: <span class="token string">'/root/&#123;print $1 "\t" $3&#125;'</span>
+root    <span class="token number">0</span>
+operator        <span class="token number">11</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>3.脚本编程</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Vim 工具基本使用</title>
+    <url>/17877528/</url>
+    <content><![CDATA[<h1 id="vim-基础知识"><a class="markdownIt-Anchor" href="#vim-基础知识"></a> Vim 基础知识</h1>
+<p>Vim（Vi IMproved）是一款强大的文本编辑器，是Linux和其他类Unix系统中最常用的编辑器之一。它不仅支持简单的文本编辑，还有许多高级功能，例如自动完成、宏录制、拼写检查和代码高亮等。Vim是一个模式化编辑器，有多种不同的模式，其中最常用的是命令模式、插入模式和可视模式。</p>
+<h2 id="vim-模式"><a class="markdownIt-Anchor" href="#vim-模式"></a> Vim 模式</h2>
+<p>vi 分为三种模式，一般模式、编辑模式与命令行模式：</p>
+<ul>
+<li>
+<p>一般指令模式（Command Mode）</p>
+<p>用 vi 打开一个文件就进入一般模式，可以使用方向键来移动光标，删除，复制与粘贴。</p>
+</li>
+<li>
+<p>编辑模式（Insert Mode）</p>
+<p>在一般模式中，按下 “i o a r” 任何一个按键之后才会进入编辑模式，左下角会显示 INSERT 或 REPLACE 等字样。按 Esc 键可以返回一般模式。</p>
+</li>
+<li>
+<p>命令行模式（Command-line Mode）</p>
+<p>在一般模式下，输入 “: / ?” 三个中的任何一个按键，可以将光标移动到最下面一行，在此模式可以查找数据，读取保存，大量替换等操作。</p>
+</li>
+</ul>
+<h2 id="界面介绍"><a class="markdownIt-Anchor" href="#界面介绍"></a> 界面介绍</h2>
+<p>使用 <code>vi</code> 打开一个已存在的文件后，显示如下所示：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> anaconda-ks.cfg 
+<span class="token comment">#version=DEVEL</span>
+<span class="token comment"># System authorization information</span>
+auth <span class="token parameter variable">--enableshadow</span> <span class="token parameter variable">--passalgo</span><span class="token operator">=</span>sha512
+<span class="token comment"># Use CDROM installation media</span>
+cdrom
+<span class="token comment"># Use graphical install</span>
+graphical
+<span class="token comment"># Run the Setup Agent on first boot</span>
+<span class="token string">"anaconda-ks.cfg"</span> 48L, 1260C<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最下面一行分别展示了：</p>
+<ul>
+<li>“anaconda-ks.cfg”：文件名；</li>
+<li>48L：文件有 48 行；</li>
+<li>1260C：文件有 1260 个字符，也就是 1260B 大小。</li>
+</ul>
+<p>按下 <code>i</code> 键后，进入到编辑模式，最左下角显示：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">-- INSERT --<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>此时可以自由输入文字。按下 <code>Esc</code> 键退回到一般模式，再输入 <code>:wq</code> 按回车可以保存并离开 <code>vi</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">:wq
+<span class="token string">"anaconda-ks.cfg"</span> 48L, 1260C written<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>如果文件权限只读，可以使用 <code>:wq!</code> 来强制写入。</p>
+<h2 id="恢复功能"><a class="markdownIt-Anchor" href="#恢复功能"></a> 恢复功能</h2>
+<p>恢复功能是指，当因为某些原因导致死机的情况下，能通过一些方法将之前未保存的数据找回来。</p>
+<p>在使用 <code>vim</code> 编辑文件时，<code>vim</code> 会在被编辑文件同目录下新建一个名为 <code>.filename.swp</code> 的交换文件。每当键入 200 个字符或有 4 秒没有键入内容时，交换文件都会自动地更新。</p>
+<p>例如用 <code>vi</code> 新建打开一个文件，在命令模式下按 <code>Ctrl+z</code> 中断，再查看 <code>.swp</code> 文件内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">vi</span> <span class="token number">1</span>.txt
+a
+b
+~
+
+<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>+  Stopped                 <span class="token function">vi</span> <span class="token number">1</span>.txt
+<span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">cat</span> .1.txt.swp 
+U3210<span class="token comment">#"! Utpad???</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到 <code>swp</code> 实时保存了我们输入的内容。</p>
+<p>再次打开文件时，会提示有 <code>swp</code> 临时文件存在：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">vim</span> <span class="token number">1</span>.txt 
+
+E325: ATTENTION
+Found a swap <span class="token function">file</span> by the name <span class="token string">".1.txt.swp"</span>
+          owned by: root   dated: Sat Sep <span class="token number">11</span> 03:44:17 <span class="token number">2021</span>
+         <span class="token function">file</span> name: ~root/4/1.txt
+          modified: YES
+         user name: root   <span class="token function">host</span> name: 101c7
+        process ID: <span class="token number">87510</span> <span class="token punctuation">(</span>still running<span class="token punctuation">)</span>
+While opening <span class="token function">file</span> <span class="token string">"1.txt"</span>
+             dated: Sat Sep <span class="token number">11</span> 03:44:11 <span class="token number">2021</span>
+
+<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> Another program may be editing the same file.  If this is the case,
+    be careful not to end up with two different instances of the same
+    <span class="token function">file</span> when making changes.  Quit, or <span class="token builtin class-name">continue</span> with caution.
+<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span> An edit session <span class="token keyword">for</span> this <span class="token function">file</span> crashed.
+    If this is the case, use <span class="token string">":recover"</span> or <span class="token string">"vim -r 1.txt"</span>
+    to recover the changes <span class="token punctuation">(</span>see <span class="token string">":help recovery"</span><span class="token punctuation">)</span>.
+    If you did this already, delete the swap <span class="token function">file</span> <span class="token string">".1.txt.swp"</span>
+    to avoid this message.
+
+Swap <span class="token function">file</span> <span class="token string">".1.txt.swp"</span> already exists<span class="token operator">!</span>
+<span class="token punctuation">[</span>O<span class="token punctuation">]</span>pen Read-Only, <span class="token punctuation">(</span>E<span class="token punctuation">)</span>dit anyway, <span class="token punctuation">(</span>R<span class="token punctuation">)</span>ecover, <span class="token punctuation">(</span>Q<span class="token punctuation">)</span>uit, <span class="token punctuation">(</span>A<span class="token punctuation">)</span>bort:<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>提示会说明出现这一情况的两种原因：</p>
+<ul>
+<li>此文件正被另一个程序所使用；</li>
+<li>文件在编辑过程中非正常退出。</li>
+</ul>
+<p>此时可以选择以哪种模式来打开：</p>
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>O</td>
+<td>以只读模式打开，显示内容为没有保存的内容；</td>
+</tr>
+<tr>
+<td>E</td>
+<td>以正常模式编辑文件，不会载入暂存文件内容；</td>
+</tr>
+<tr>
+<td>R</td>
+<td>加载暂存文件内容，恢复之前的作业。修改完毕后需要手动删除 <code>.swp</code> 文件；</td>
+</tr>
+<tr>
+<td>Q</td>
+<td>直接退出不进行操作；</td>
+</tr>
+<tr>
+<td>A</td>
+<td>等同于 Q，直接退出。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="环境设置"><a class="markdownIt-Anchor" href="#环境设置"></a> 环境设置</h2>
+<p>在使用 <code>vim</code> 编辑文件时，文件会继承上一次编辑时的状态，比如光标出现在最后一行。这个记录操作文件保存在 <code>~/.viminfo</code> 里面。</p>
+<p>在命令模式下用 <code>set</code> 修改的设置值保存在 <code>/etc/vimrc</code> 这个文件中，不建议动它。需要自定义设置可以新建 <code>~/.vimrc</code> 这个文件将希望设置的值写入。</p>
+<p>例如设置自动缩进和行号功能：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vim</span> ~/.vimrc
+<span class="token builtin class-name">set</span> nu          <span class="token string">"hanghao
+set autoindent  "</span>suojin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>再次打开 <code>vim</code> 即可生效：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vim</span> ~/.vimrc
+  <span class="token number">1</span> <span class="token builtin class-name">set</span> nu          <span class="token string">"hanghao
+  2 set autoindent  "</span>suojin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h1 id="vim-基本操作"><a class="markdownIt-Anchor" href="#vim-基本操作"></a> Vim 基本操作</h1>
+<p>下面记录一些 Vim 的基本操作。</p>
+<h2 id="一般模式"><a class="markdownIt-Anchor" href="#一般模式"></a> 一般模式</h2>
+<p>光标移动针对的是在一般模式下快速浏览/定位文件。</p>
+<h3 id="移动"><a class="markdownIt-Anchor" href="#移动"></a> 移动</h3>
+<p>可以使用方向键 <code>←</code> <code>↓</code> <code>↑</code> <code>→</code> 或 <code>h</code> <code>j</code> <code>k</code> <code>l</code> 操作光标左/右/下/上移一个字符。</p>
+<p>可使用数字组合，例如 <code>30k</code> 代表光标向上移 30 行。</p>
+<h3 id="翻页"><a class="markdownIt-Anchor" href="#翻页"></a> 翻页</h3>
+<p>使用快捷键 <code>Ctrl+f</code>/<code>Ctrl+b</code> 来控制屏幕向下/上移动一页，相当于 <code>PageDown</code>/<code>PageUp</code>。</p>
+<h3 id="跳转"><a class="markdownIt-Anchor" href="#跳转"></a> 跳转</h3>
+<p>输入 <code>nG</code>（n 为数字）将光标移动到第 n 行位置。</p>
+<h3 id="删除"><a class="markdownIt-Anchor" href="#删除"></a> 删除</h3>
+<p>使用 <code>x</code>/<code>X</code> 来删除当前光标后/前个字符。</p>
+<p>可以使用数字组合，例如 <code>9x</code> 代表删除光标后连续 9 个字符。</p>
+<h3 id="剪切"><a class="markdownIt-Anchor" href="#剪切"></a> 剪切</h3>
+<p>使用 <code>dd</code> 剪切光标所在行。</p>
+<p>可以使用数字组合，例如 <code>9dd</code> 代表向下删除 9 行。</p>
+<h3 id="复制"><a class="markdownIt-Anchor" href="#复制"></a> 复制</h3>
+<p>使用 <code>yy</code> 复制光标所在行。</p>
+<p>可以使用数字组合，例如 <code>9yy</code> 代表复制向下 9 行。</p>
+<p>按 <code>v</code> 键进入复制可视模式，在移动光标时高亮显示文本，选择完毕后按 <code>y</code> 复制选择内容。</p>
+<h3 id="粘贴"><a class="markdownIt-Anchor" href="#粘贴"></a> 粘贴</h3>
+<p>使用 <code>p</code>/<code>P</code> 来将剪贴板数据粘贴到光标下/上一行。</p>
+<h3 id="撤销"><a class="markdownIt-Anchor" href="#撤销"></a> 撤销</h3>
+<p>使用 <code>u</code> 来撤销上一次操作。</p>
+<h3 id="重做"><a class="markdownIt-Anchor" href="#重做"></a> 重做</h3>
+<p>使用 <code>Ctrl+r</code> 快捷键来反撤销操作。</p>
+<h3 id="块选择模式"><a class="markdownIt-Anchor" href="#块选择模式"></a> 块选择模式</h3>
+<p>按下<code>Ctrl+v</code>进入块选择模式，之后用方向键操作光标选择块：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">vi</span> c.log 
+c1  ass
+c2  bss
+c3  css
+~
+-- VISUAL BLOCK --  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>此模式下按<code>y</code>复制，按<code>d</code>删除。</p>
+<h2 id="编辑模式"><a class="markdownIt-Anchor" href="#编辑模式"></a> 编辑模式</h2>
+<p>进入编辑模式有两个方式：</p>
+<ul>
+<li>
+<p>按 i：进入到插入模式（Insert Mode）。</p>
+</li>
+<li>
+<p>按 r/R：进入到替换/连续替换模式（Replace Mode）。</p>
+</li>
+</ul>
+<p>在编辑模式中主要执行文本插入和修改操作。</p>
+<h2 id="命令模式"><a class="markdownIt-Anchor" href="#命令模式"></a> 命令模式</h2>
+<p>在命令行模式下，可以进行文件读写、保存、退出、搜索、替换等操作，按下冒号(:)即可进入命令行模式。</p>
+<h3 id="搜索"><a class="markdownIt-Anchor" href="#搜索"></a> 搜索</h3>
+<p>搜索功能在命令模式下完成：</p>
+<ul>
+<li>
+<p>/word：向下搜索字符串 <code>word</code>。</p>
+</li>
+<li>
+<p>?word：向上搜索字符串 <code>word</code>。</p>
+</li>
+</ul>
+<p>对搜索结果按键 <code>n/N</code> 进行向下/向上跳转。</p>
+<h3 id="替换"><a class="markdownIt-Anchor" href="#替换"></a> 替换</h3>
+<ul>
+<li>
+<p>替换表达式：<code>:&#123;作用范围&#125;s/&#123;搜索关键词&#125;/&#123;替换成关键词&#125;/&#123;替换标志&#125;</code></p>
+</li>
+<li>
+<p>作用范围：n1,n2：n1 和 n2 为数字，表示在 n1 和 n2 行之间搜寻关键词并替换。例如在 100 到 200 行之间搜索：<code>100,200s/XS/xs/g</code></p>
+<p>1,&amp;s：表示从第 1 行到最后一行。</p>
+</li>
+<li>
+<p>替换标志</p>
+<p>g：表示全部替换，否则只会替换找到的第一个结果。</p>
+<p>i/I：表示搜索不区分/区分大小写，默认是区分大小写。</p>
+<p>c：表示替换前提示确认。</p>
+</li>
+</ul>
+<h3 id="保存"><a class="markdownIt-Anchor" href="#保存"></a> 保存</h3>
+<p>:w 直接保存文件。</p>
+<p>:w! 强制保存文件，针对某些设为只读权限的文件可以强制写入。</p>
+<p>:w file2 另存为当前编辑的文件为<code>file2</code>。</p>
+<h3 id="读取"><a class="markdownIt-Anchor" href="#读取"></a> 读取</h3>
+<p>:r file1 读取文件<code>file1</code>，并将内容加到光标所在行后面。</p>
+<h3 id="退出"><a class="markdownIt-Anchor" href="#退出"></a> 退出</h3>
+<p>:q 直接退出。</p>
+<p>:q! 强制退出，针对修改了文件内容不想保存情况下退出。</p>
+<p>:wq! 强制保存并退出。</p>
+<p><code>ZZ</code> 保存后退出，等同于<code>:wq</code>。</p>
+<h3 id="设置"><a class="markdownIt-Anchor" href="#设置"></a> 设置</h3>
+<p>使用 :set all 查看所有配置。使用 :set 查看有更改过的参数。</p>
+<ul>
+<li>
+<p>行号：set nu 设置行号，默认设置 nonu 没有行号。</p>
+</li>
+<li>
+<p>自动缩进：set autoindent 设置自动缩进，默认设置 noautoindent 没有自动缩进。</p>
+</li>
+<li>
+<p>设置备份：set backup 设置自动保存备份文件，默认设置 nobackup 没有备份。</p>
+</li>
+<li>
+<p>语法高亮：syntax on 依据语法来显示不同颜色。默认设置 syntax off。</p>
+</li>
+<li>
+<p>跳转：输入数字 n 直接跳转到第 n 行。</p>
+</li>
+<li>
+<p>显示文件名：f 显示正在编辑的文件名等信息。</p>
+</li>
+<li>
+<p>执行命令：! command 暂时离开 vim 到命令行模式下执行命令并展示结果。</p>
+</li>
+</ul>
+<h3 id="多窗口模式"><a class="markdownIt-Anchor" href="#多窗口模式"></a> 多窗口模式</h3>
+<p>在命令模式下输入<code>:sp</code>可对当前文件切割成上下两个窗口显示：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token number">111</span>
+<span class="token number">11</span>
+<span class="token number">1</span>
+~
+~
+<span class="token number">1</span>.txt                                                                                    <span class="token number">3,1</span>            All
+<span class="token number">111</span>
+<span class="token number">11</span>
+<span class="token number">1</span>
+~
+<span class="token number">1</span>.txt                                                                                    <span class="token number">1,1</span>            All
+:sp<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>通过按键<code>Ctrl+w</code>来切换窗口。</p>
+<p>也可以用<code>:sp</code>指定文件名，这样上下窗口分别显示两个不同文件内容。</p>
+<h3 id="同时编辑模式"><a class="markdownIt-Anchor" href="#同时编辑模式"></a> 同时编辑模式</h3>
+<p>可以同时用<code>vim</code>打开多个文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">vi</span> <span class="token number">1</span>.txt <span class="token number">2</span>.txt
+<span class="token number">2</span> files to edit
+
+~
+~
+<span class="token string">"1.txt"</span> 0L, 0C                                                                           <span class="token number">0,0</span>-1         All<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>输入命令<code>:n</code>或<code>:N</code>来编辑下一个或上一个文件。</p>
+<p>输入命令<code>:files</code>列出目前打开的所有文件。</p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>3.脚本编程</category>
       </categories>
   </entry>
 </search>
