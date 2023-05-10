@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="Shell 的定义 Shell 是一个命令行解释器，其功能是提供用户操作系统的一个接口，因此 shell 需要可以调用其他软件，用户通过 shell 来操作这些应用程序。也就是只要能够操作应用程序的接口都能够称为 shell。 可以通过检查 &#x2F;etc&#x2F;shells 来得知当前系统可用的 shell： [root@101c7 4]$ cat &#x2F;etc&#x2F;shells  &#x2F;bin&#x2F;sh &#x2F;bin&#x2F;ba">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Bash 基础">
+<meta property="og:url" content="https://blog.x2b.net/1325555629/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="Shell 的定义 Shell 是一个命令行解释器，其功能是提供用户操作系统的一个接口，因此 shell 需要可以调用其他软件，用户通过 shell 来操作这些应用程序。也就是只要能够操作应用程序的接口都能够称为 shell。 可以通过检查 &#x2F;etc&#x2F;shells 来得知当前系统可用的 shell： [root@101c7 4]$ cat &#x2F;etc&#x2F;shells  &#x2F;bin&#x2F;sh &#x2F;bin&#x2F;ba">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-20T01:01:17.000Z">
+<meta property="article:modified_time" content="2023-05-10T18:10:12.189Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/1325555629/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/1325555629/","path":"1325555629/","title":"Bash 基础"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Bash 基础 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">43</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#shell-%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">1.</span> <span class="nav-text"> Shell 的定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#bash-%E7%89%B9%E7%82%B9"><span class="nav-number">2.</span> <span class="nav-text"> bash 特点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.</span> <span class="nav-text"> 命令类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E7%AC%A6%E5%8F%B7"><span class="nav-number">4.</span> <span class="nav-text"> 特殊符号</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E5%9B%9E%E4%BC%A0%E7%A0%81"><span class="nav-number">5.</span> <span class="nav-text"> 命令回传码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%87%E5%87%86%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA"><span class="nav-number">6.</span> <span class="nav-text"> 标准输入输出</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8C%BF%E5%90%8D%E7%AE%A1%E9%81%93"><span class="nav-number">7.</span> <span class="nav-text"> 匿名管道</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%91%BD%E5%90%8D%E7%AE%A1%E9%81%93"><span class="nav-number">8.</span> <span class="nav-text"> 命名管道</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%87%8F%E5%8F%B7-%E7%94%A8%E9%80%94"><span class="nav-number">9.</span> <span class="nav-text"> 减号 - 用途</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%90-shell"><span class="nav-number">10.</span> <span class="nav-text"> 子 shell</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%B5%81%E9%87%8D%E5%AE%9A%E5%90%91"><span class="nav-number">11.</span> <span class="nav-text"> 数据流重定向</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%8C%E5%90%91%E9%87%8D%E5%AE%9A%E5%90%91"><span class="nav-number">12.</span> <span class="nav-text"> 双向重定向</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E4%BB%A3%E6%8D%A2"><span class="nav-number">13.</span> <span class="nav-text"> 参数代换</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.douban.com/people/Cyber.DraFonS" title="https:&#x2F;&#x2F;www.douban.com&#x2F;people&#x2F;Cyber.DraFonS" rel="noopener external nofollow noreferrer" target="_blank">豆瓣</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/1325555629/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Bash 基础 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Bash 基础
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-03-20 09:01:17" itemprop="dateCreated datePublished" datetime="2022-03-20T09:01:17+08:00">2022-03-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-11 02:10:12" itemprop="dateModified" datetime="2023-05-11T02:10:12+08:00">2023-05-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/3-%E8%84%9A%E6%9C%AC%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">3.脚本编程</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>10 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="shell-的定义"><a class="markdownIt-Anchor" href="#shell-的定义"></a> Shell 的定义</h1>
+<p>Shell 是一个命令行解释器，其功能是提供用户操作系统的一个接口，因此 shell 需要可以调用其他软件，用户通过 shell 来操作这些应用程序。也就是只要能够操作应用程序的接口都能够称为 shell。</p>
+<p>可以通过检查 <code>/etc/shells</code> 来得知当前系统可用的 shell：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/shells 
+/bin/sh
+/bin/bash
+/usr/bin/sh
+/usr/bin/bash<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>文件 <code>passwd</code> 里记录了用户能使用的 shell：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/passwd <span class="token operator">|</span> <span class="token function">grep</span> root
+root:x:0:0:root:/root:/bin/bash
+operator:x:11:0:operator:/root:/sbin/nologin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h1 id="bash-特点"><a class="markdownIt-Anchor" href="#bash-特点"></a> bash 特点</h1>
+<p>Bash (Bourne Again Shell) 的主要特点有：</p>
+<ul>
+<li><strong>命令记忆能力</strong>：在命令行中按上下键就能找到输入过的命令， 默认记录最大 1000 条。</li>
+<li><strong>命令补全功能</strong>：通过 <code>[Tab]</code> 按键能自动补全命令或文件名。</li>
+<li><strong>命令别名功能</strong>：可以使用 <code>alias</code> 命名一些自定义命令。</li>
+<li><strong>作业后台控制</strong>：可以将工作丢到后台执行。</li>
+<li><strong>使用程序脚本</strong>：可以将很多命令写成一个文件执行。</li>
+<li><strong>可使用通配符</strong>：支持常用的通配符比如 <code>*</code> 和 <code>?</code>。</li>
+</ul>
+<h1 id="命令类型"><a class="markdownIt-Anchor" href="#命令类型"></a> 命令类型</h1>
+<p>bash 已经内置了很多命令，可以使用 <code>type</code> 命令来查询命令类型。内建命令（Builtin）和外部命令的区别在于前者不需要使用子程序来进行，它们已经和 shell 编译成一体，作为 shell 工具的组成部分存在。因此内建命令执行速度更快，效率更高。</p>
+<p>有些命令两种实现都有，<code>which</code> 命令只显示出外部命令文件，这种情况下要使用外部命令文件直接使用绝对路径运行。</p>
+<p>例如查询 <code>man</code> 和 <code>cd</code> 命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token builtin class-name">type</span> <span class="token function">ls</span>
+<span class="token function">ls</span> is aliased to `ls <span class="token parameter variable">--color</span><span class="token operator">=</span>auto'
+<span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token builtin class-name">type</span> <span class="token function">man</span>
+<span class="token function">man</span> is /usr/bin/man
+<span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token builtin class-name">type</span> <span class="token builtin class-name">cd</span>
+<span class="token builtin class-name">cd</span> is a shell <span class="token builtin class-name">builtin</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>结果显示 <code>man</code> 是外部命令，<code>cd</code> 是内部命令，<code>ls</code> 有别名。</p>
+<p>对于别名命令可以用 <code>-a</code> 参数进一步查询：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token builtin class-name">type</span> <span class="token parameter variable">-a</span> <span class="token function">ls</span>
+<span class="token function">ls</span> is aliased to `ls <span class="token parameter variable">--color</span><span class="token operator">=</span>auto'
+<span class="token function">ls</span> is /usr/bin/ls<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h1 id="特殊符号"><a class="markdownIt-Anchor" href="#特殊符号"></a> 特殊符号</h1>
+<p>理论上文件名中不要使用以下已被特殊定义的字符：</p>
+<table>
+<thead>
+<tr>
+<th><strong>符号</strong></th>
+<th><strong>内容</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>#</code></td>
+<td>批注符号，一般在脚本中拿来注释说明行。</td>
+</tr>
+<tr>
+<td><code>**</code></td>
+<td>转义符号，将特殊字符还原成一般字符。</td>
+</tr>
+<tr>
+<td>|</td>
+<td>管道（pipe），分隔两个管道命令的界定。</td>
+</tr>
+<tr>
+<td><code>;</code></td>
+<td>连续命令执行分隔符。</td>
+</tr>
+<tr>
+<td><code>~</code></td>
+<td>用户的主文件夹。</td>
+</tr>
+<tr>
+<td><code>$</code></td>
+<td>使用变量前导符，即是变量之前需要加的变量替代值。</td>
+</tr>
+<tr>
+<td><code>&amp;</code></td>
+<td>作业控制（job control），将命令放置后台工作。</td>
+</tr>
+<tr>
+<td><code>!</code></td>
+<td>逻辑运算意义的非（not）。</td>
+</tr>
+<tr>
+<td><code>/</code></td>
+<td>目录符号，路径分隔的符号。</td>
+</tr>
+<tr>
+<td><code>&gt;</code>, <code>&gt;&gt;</code></td>
+<td>数据流重定向，输出导向，代表替换与追加。</td>
+</tr>
+<tr>
+<td><code>&lt;</code>, <code>&lt;&lt;</code></td>
+<td>数据流重定向，输入导向。</td>
+</tr>
+<tr>
+<td><code>' '</code></td>
+<td>单引号，不具有变量置换功能。</td>
+</tr>
+<tr>
+<td><code>&quot; &quot;</code></td>
+<td>双引号，具有变量置换功能。</td>
+</tr>
+<tr>
+<td>` `</td>
+<td>套在可以先执行的命令两边，等同于 <code>$()</code>。</td>
+</tr>
+<tr>
+<td><code>( )</code></td>
+<td>在中间为子 shell 的起始与结束。</td>
+</tr>
+<tr>
+<td><code>&#123; &#125;</code></td>
+<td>在中间为命令块的组合。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="命令回传码"><a class="markdownIt-Anchor" href="#命令回传码"></a> 命令回传码</h1>
+<p>可以通过命令回传码来判断后续命令是否执行，在两条命令间用 <code>&amp;&amp;</code> 或 <code>||</code> 连起来。具体意义如下：</p>
+<table>
+<thead>
+<tr>
+<th><strong>执行的命令</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cmd1 &amp;&amp; cmd2</td>
+<td>若 cmd1 执行完毕且正确执行(<code>$?</code>=0)，继续执行 cmd2。否则(<code>$?</code>≠b0)不执行 cmd2</td>
+</tr>
+<tr>
+<td>cmd1 || cmd2</td>
+<td>若 cmd1 执行完毕且正确执行(<code>$?</code>=0)，不执行 cmd2。否则(<code>$?</code>≠0)继续执行 cmd2</td>
+</tr>
+</tbody>
+</table>
+<p>例如判断目录 <code>/tmp/abc</code> 存在时执行 <code>cd</code> 命令：</p>
+ <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> /tmp/abc <span class="token operator">&amp;&amp;</span> <span class="token builtin class-name">cd</span> /tmp/abc
+ls: cannot access /tmp/abc: No such <span class="token function">file</span> or directory<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>结果只有 <code>ls</code> 报错，说明并没有执行后面的 <code>cd</code> 命令。</p>
+<p>例如判断目录 <code>/tmp/abc</code> 不存在时自动新建目录并进入：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> /tmp/abc <span class="token operator">||</span> <span class="token function">mkdir</span> /tmp/abc <span class="token operator">&amp;&amp;</span> <span class="token builtin class-name">cd</span> /tmp/abc <span class="token punctuation">;</span> <span class="token builtin class-name">pwd</span>
+ls: cannot access /tmp/abc: No such <span class="token function">file</span> or directory
+/tmp/abc<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>假如目录 <code>/tmp/abc</code> 存在时，回传为 0，不执行 <code>mkdir</code> 命令，$?=0 继续向后传，顺利执行 <code>cd</code> 命令。</p>
+<p>如果将 <code>||</code> 和 <code>&amp;&amp;</code> 后面的命令调转一下位置，先进行 <code>&amp;&amp;</code> 判断，那么在文件夹不存在的情况下，<code>cd</code> 命令不会运行，但会执行 <code>mkdir</code> 命令，没有达到目标。因此命令执行的顺序很重要。</p>
+<h1 id="标准输入输出"><a class="markdownIt-Anchor" href="#标准输入输出"></a> 标准输入输出</h1>
+<p>标准输出（stdout，Standard Output）与标准错误输出（stderr，Standard Error Output）指的是命令执行所回传的正常与报错信息。默认情况下都是输出到屏幕上。</p>
+<p>标准输入（stdin，Standard Input）一般接受的是用户键盘输入数据。</p>
+<h1 id="匿名管道"><a class="markdownIt-Anchor" href="#匿名管道"></a> 匿名管道</h1>
+<p>匿名管道（Anonymous Pipe）命令使用 <code>|</code> 符号界定用途时，将前一个命令的标准输出（stdout，不能处理 stderr）转给后一命令做标准输入，管道将自动创建。</p>
+<p>每个管道后面接的第一个数据必须是命令，并且这个命令必须能接受stdin的数据。例如 <code>less</code>、<code>tail</code>、<code>grep</code> 等。</p>
+<h1 id="命名管道"><a class="markdownIt-Anchor" href="#命名管道"></a> 命名管道</h1>
+<p>命名管道（FIFO，First-in First-out）和匿名管道相似，不同的是命名管道必须显式创建，并且可以重用。</p>
+<p>通常命名管道用来促进两个进程之间的数据交换，这一操作也叫做进程间通信（IPC，Interprocess Communication），程序将在需要时创建，使用然后删除命名管道。</p>
+<p>命名管道使用 <code>mkfifo</code> 命令来创建。例如创建一个叫做 <code>fifotest</code> 的管道并输送一些数据：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">mkfifo</span> fifotest
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ ll <span class="token operator">></span> fifotest<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>再另开一个终端通过 <code>cat</code> 来捕获 <code>fifotest</code> 中的内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> <span class="token operator">&lt;</span> fifotest 
+total <span class="token number">16</span>
+-rw-------. <span class="token number">1</span> root root <span class="token number">1818</span> Sep <span class="token number">22</span> <span class="token number">21</span>:13 anaconda-ks.cfg
+drwxr-xr-x. <span class="token number">4</span> root root  <span class="token number">157</span> Sep <span class="token number">29</span> <span class="token number">18</span>:17 bin
+prw-r--r--. <span class="token number">1</span> root root    <span class="token number">0</span> Oct  <span class="token number">4</span> <span class="token number">23</span>:14 fifotest<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>管道本身没有储存数据，一旦管道中有数据进入，<code>cat</code> 会立即将其打印出来。</p>
+<h1 id="减号-用途"><a class="markdownIt-Anchor" href="#减号-用途"></a> 减号 <code>-</code> 用途</h1>
+<p>在管道命令中，经常会使用到前一个命令的 stdout 作为这次的 stdin，某些命令需要用到文件名（例如 tar）来进行处理时，该 stdin 与 stdout 可以利用减号 <code>-</code> 来代替。</p>
+<h1 id="子-shell"><a class="markdownIt-Anchor" href="#子-shell"></a> 子 shell</h1>
+<p>把命令用括号括起来（可以是连续命令）后，命令列表就成为了进程列表，这些命令被称为一个编组（Grouping）。其作用表示使用一个子 shell 来执行对应命令。</p>
+<p>使用 <code>$BASH_SUBSHELL</code> 变量可以检测是否在子 shell 中运行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">pwd</span> <span class="token punctuation">;</span> <span class="token builtin class-name">echo</span> <span class="token variable">$BASH_SUBSHELL</span> 
+/root
+<span class="token number">0</span>
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token punctuation">(</span>pwd <span class="token punctuation">;</span> <span class="token builtin class-name">echo</span> <span class="token variable">$BASH_SUBSHELL</span><span class="token punctuation">)</span>
+/root
+<span class="token number">1</span>
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token punctuation">(</span>pwd <span class="token punctuation">;</span> <span class="token punctuation">(</span>echo <span class="token variable">$BASH_SUBSHELL</span><span class="token punctuation">))</span>
+/root
+<span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>创建子 shell 可以嵌套运行，一般用来进行多进程处理，例如将程序置入后台运行。但是采用子 shell 的代价太高，必须为子 shell 创建出一个全新的环境，会明显拖慢处理速度。</p>
+<p>另一个可以调用子 shell 的方式是使用协程，它能在后台生成一个子 shell 并在这个子 shell 中执行命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ coproc my_sleep <span class="token punctuation">&#123;</span> <span class="token function">sleep</span> <span class="token number">100</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token number">41326</span>
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">jobs</span>
+<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>+  Running                 coproc my_sleep <span class="token punctuation">&#123;</span> <span class="token function">sleep</span> <span class="token number">100</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span> <span class="token operator">&amp;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="数据流重定向"><a class="markdownIt-Anchor" href="#数据流重定向"></a> 数据流重定向</h1>
+<p>数据流重定向可以将 stdout 和 stderr 分别传送到其他的文件或设备中去，将由 stdin 的数据改为文件内容来替代输入：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>表示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>标准输入（stdin）</td>
+<td>代码 0，使用 &lt; 或 &lt;&lt;；</td>
+</tr>
+<tr>
+<td>标准输出（stdout）</td>
+<td>代码 1，使用 &gt; 或 &gt;&gt;；</td>
+</tr>
+<tr>
+<td>标准错误输出（stderr）</td>
+<td>代码 2，使用 2&gt; 或 2&gt;&gt;</td>
+</tr>
+</tbody>
+</table>
+<p>例如将根目录文件列表输出到 <code>root.txt</code> 文件中：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> <span class="token parameter variable">-la</span> / <span class="token operator">></span> root.txt
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">tail</span> root.txt 
+drwxr-xr-x.   <span class="token number">2</span> root root    <span class="token number">6</span> Apr <span class="token number">11</span>  <span class="token number">2018</span> opt
+dr-xr-xr-x. <span class="token number">227</span> root root    <span class="token number">0</span> Sep  <span class="token number">9</span> <span class="token number">15</span>:08 proc<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>将 <code>/root</code> 目录信息追加到 <code>root.txt</code> 文件中：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> <span class="token parameter variable">-la</span> ~ <span class="token operator"><span class="token file-descriptor important">1</span>>></span> root.txt
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll <span class="token operator">|</span> <span class="token function">grep</span> root.txt 
+-rw-r--r--. <span class="token number">1</span> root root      <span class="token number">2640</span> Sep <span class="token number">11</span> <span class="token number">10</span>:05 root.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>也可以使用 <code>1&gt;</code> 来定义标准输出，因为默认就是代码 1，要输出标准错误，使用 <code>2&gt;</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> xx <span class="token operator"><span class="token file-descriptor important">2</span>>></span> root.txt <span class="token punctuation">;</span> <span class="token function">tail</span> <span class="token parameter variable">-3</span> root.txt
+cat: xx: No such <span class="token function">file</span> or directory
+-rw-r--r--.  <span class="token number">1</span> root root       <span class="token number">129</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .tcshrc
+-rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">20971520</span> Jul  <span class="token number">7</span> 04:07 TinyCore-current.iso<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>将标准输出和标准错误输出分别输出到不同文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> / <span class="token parameter variable">-name</span> .bashrc <span class="token operator">></span> list.txt <span class="token operator"><span class="token file-descriptor important">2</span>></span> list_error.txt<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>将标准输出和标准错误输出到同一个文件可以用 <code>2&gt;&amp;1</code>，也可以用 <code>&amp;&gt;</code> 来操作：</p>
+ <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> / <span class="token parameter variable">-name</span> .bashrc <span class="token operator">></span> list.txt <span class="token operator"><span class="token file-descriptor important">2</span>></span><span class="token file-descriptor important">&amp;1</span>
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> / <span class="token parameter variable">-name</span> .bashrc <span class="token operator">&amp;></span> list.txt <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>也可以将标准错误输出直接丢弃：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> / <span class="token parameter variable">-name</span> .bashrc <span class="token operator">></span> list.txt <span class="token operator"><span class="token file-descriptor important">2</span>></span> /dev/null<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>将 <code>list.txt</code> 文件的内容作为 <code>cat</code> 命令的输入来生成文件 <code>catfile</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> <span class="token operator">></span> catfile <span class="token operator">&lt;</span> /root/list.txt <span class="token punctuation">;</span> <span class="token function">head</span> catfile
+/etc/skel/.bashrc
+/root/.bashrc<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><code>&lt;&lt;</code> 称为内联输入重定向（Inline Input Redirection），代表的含义是从标准输入接收数据，遇到了关键词则结束输入。例如下面设的结束关键词 “end”，输入 end 再敲击回车后，输入立马结束，不同于 <code>Ctrl+d</code> 结束输入，end 这个关键词不会被记录到文件中，仅仅作为结束标记使用：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> <span class="token operator">></span> catfile <span class="token operator">&lt;&lt;</span> <span class="token string">"end"</span>
+<span class="token operator">></span> <span class="token function">yes</span> it/<span class="token string">'s begin
+> line 2
+> end
+[root@101c7 ~]$ cat catfile 
+yes it/'</span>s begin
+line <span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>操作符 <code>&gt;</code> 有几个修饰符标记，这些标记可以改变它的行为。例如：</p>
+<ol>
+<li>操作符 <code>&gt;&amp;</code> 表示将标准输出和错误同时进行重定向；</li>
+<li>操作符 <code>&gt;!</code> 将迫使文件以 append 模式创建，或者以 normal 模式覆盖一个已存在的文件；</li>
+<li>操作符 <code>&gt;@</code> 将以二进制模式而不是文件模式打开一个文件。</li>
+</ol>
+<h1 id="双向重定向"><a class="markdownIt-Anchor" href="#双向重定向"></a> 双向重定向</h1>
+<p><code>tee</code> 命令可以将单向传输的数据流半路截取同时移作他用。</p>
+<p>例如将 <code>ls</code> 命令的结果追加到 <code>root.txt</code> 文件末尾并排序打印出来：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> <span class="token parameter variable">-la</span> <span class="token operator">|</span> <span class="token function">tee</span> <span class="token parameter variable">-a</span> root.txt <span class="token operator">|</span> <span class="token function">sort</span> <span class="token operator">|</span> <span class="token function">head</span> -3<span class="token punctuation">;</span> <span class="token function">tail</span> <span class="token parameter variable">-3</span> root.txt 
+drwx------.  <span class="token number">2</span> root root        <span class="token number">52</span> Sep <span class="token number">11</span> 04:07 audit
+drwxr-----.  <span class="token number">3</span> root root        <span class="token number">19</span> Sep  <span class="token number">7</span> 05:51 .pki
+drwxr-xr-x.  <span class="token number">2</span> root root        <span class="token number">23</span> Sep <span class="token number">10</span> <span class="token number">13</span>:03 etc
+-rw-r--r--.  <span class="token number">1</span> root root       <span class="token number">129</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .tcshrc
+-rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">20971520</span> Jul  <span class="token number">7</span> 04:07 TinyCore-current.iso
+-rw-------.  <span class="token number">1</span> root root      <span class="token number">3358</span> Sep <span class="token number">11</span> 04:33 .viminfo<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="参数代换"><a class="markdownIt-Anchor" href="#参数代换"></a> 参数代换</h1>
+<p><code>xargs</code> 用来产生某个命令的参数。<code>xargs</code> 可以读入 <code>stdin</code> 的数据，并以空格符或断行字符进行分辨，将 <code>stdin</code> 的数据分隔成为参数。主要是因为很多命令并不支持管道命令，才需要使用 <code>xargs</code>。</p>
+<p>基本用法：<code>xargs [-0epn] command</code></p>
+<p>参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-0</td>
+<td>如果输入的 <code>stdin</code> 含有特殊字符比如 <code>,</code> 、<code>\</code>、 <code>  </code> 等，这个参数可以将它还原成一般字符；</td>
+</tr>
+<tr>
+<td>-e</td>
+<td>这个是 <code>EOF</code> 的意思，后面可以接一个字符串，当解析到这个字符串时就会停止继续工作；</td>
+</tr>
+<tr>
+<td>-p</td>
+<td>在执行每个命令参数时，都会询问用户；</td>
+</tr>
+<tr>
+<td>-n</td>
+<td>后面接次数，每次 <code>command</code> 命令执行时，要使用几个参数。</td>
+</tr>
+<tr>
+<td></td>
+<td>当 <code>xargs</code> 后面没有接任何的命令时，默认以 <code>echo</code> 来进行输出。</td>
+</tr>
+</tbody>
+</table>
+<p>例如将 <code>/etc/passwd</code> 第 1 列取出，只取 3 行，使用 <code>finger</code> 命令将账号内容显示出来：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">cut</span> <span class="token parameter variable">-d</span> <span class="token string">':'</span> <span class="token parameter variable">-f</span> <span class="token number">1</span> /etc/passwd <span class="token operator">|</span> <span class="token function">head</span> <span class="token parameter variable">-3</span> <span class="token operator">|</span> <span class="token function">xargs</span> finger
+Login: root                             Name: root
+Directory: /root                        Shell: /bin/bash
+On since Sat Sep <span class="token number">11</span> 09:35 <span class="token punctuation">(</span>EDT<span class="token punctuation">)</span> on tty1    <span class="token number">3</span> hours <span class="token number">14</span> minutes idle
+On since Sat Sep <span class="token number">11</span> 07:08 <span class="token punctuation">(</span>EDT<span class="token punctuation">)</span> on pts/0 from <span class="token number">192.168</span>.2.101<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>finger</code> 命令用来查询账户说明信息，<code>xargs</code> 将 3 个账号名称传给 <code>finger</code> 作为参数。</p>
+<p>将 <code>passwd</code> 中所有账号都用 <code>finger</code> 查询，但一次只查询 5 个：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">cut</span> <span class="token parameter variable">-d</span> <span class="token string">':'</span> <span class="token parameter variable">-f</span> <span class="token number">1</span> /etc/passwd <span class="token operator">|</span> <span class="token function">xargs</span> <span class="token parameter variable">-p</span> <span class="token parameter variable">-n</span> <span class="token number">5</span> finger
+finger root bin daemon adm lp ?<span class="token punctuation">..</span>.
+finger <span class="token function">sync</span> <span class="token function">shutdown</span> <span class="token function">halt</span> mail operator ?<span class="token punctuation">..</span>.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>同上，当参数分析到 <code>lp</code> 就结束命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">cut</span> <span class="token parameter variable">-d</span> <span class="token string">':'</span> <span class="token parameter variable">-f</span> <span class="token number">1</span> /etc/passwd <span class="token operator">|</span> <span class="token function">xargs</span> <span class="token parameter variable">-p</span> -e<span class="token string">'lp'</span> finger
+finger root bin daemon adm ?<span class="token punctuation">..</span>.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>注意 <code>-e</code> 与 <code>'lp'</code> 之间没有空格。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/1325555629/" title="Bash 基础">https://blog.x2b.net/1325555629/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../2734315757/" rel="prev" title="Shell 脚本基础">
+                  <i class="fa fa-chevron-left"></i> Shell 脚本基础
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../0/" rel="next" title="">
+                   <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">112k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">6:13</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@next-theme/pjax@0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://unpkg.com/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://unpkg.com/katex@0.16.4/dist/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/1325555629/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://unpkg.com/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'blog.x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>
