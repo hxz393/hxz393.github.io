@@ -218,7 +218,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/794273428/">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/3491093041/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="../../images/avatar.jpg">
@@ -236,7 +236,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="../../794273428/" class="post-title-link" itemprop="url">正则表达式</a>
+          <a href="../../3491093041/" class="post-title-link" itemprop="url">Linux 磁盘管理</a>
         </h2>
 
         <div class="post-meta-container">
@@ -254,7 +254,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-09 01:28:32" itemprop="dateModified" datetime="2023-05-09T01:28:32+08:00">2023-05-09</time>
+      <time title="修改时间：2023-05-03 22:42:31" itemprop="dateModified" datetime="2023-05-03T22:42:31+08:00">2023-05-03</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -266,7 +266,7 @@
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Linux/3-%E8%84%9A%E6%9C%AC%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">3.脚本编程</span></a>
+          <a href="../../categories/Linux/2-%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">2.系统管理</span></a>
         </span>
     </span>
 
@@ -277,14 +277,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>3k</span>
+      <span>7.2k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>10 分钟</span>
+      <span>24 分钟</span>
     </span>
 </div>
 
@@ -295,18 +295,24 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="基本定义"><a class="markdownIt-Anchor" href="#基本定义"></a> 基本定义</h1>
-<p>正则表达式是一种处理字符串的方法，以行为单位来进行字符串的处理行为。通过一些特殊符号的辅助，让用户轻松（？）达到查找、删除、替换某特定字符串的处理程序。</p>
-<p>基础正则表达式（BRE）和扩展正则表达式（ERE）的区别在于支持的元字符不同：</p>
-<ul>
-<li><strong>BRE 支持的元字符</strong>：^ $ . * [ ]</li>
-<li><strong>ERE 支持的元字符</strong>：^ $ . * [ ] + ( ) { } ? |</li>
-</ul>
-<h2 id="元字符"><a class="markdownIt-Anchor" href="#元字符"></a> 元字符</h2>
-<p>元字符要代表字符串意思时必须用转义字符<code>\</code>转义，把元字符变成普通字符。</p>
+          <h1 id="磁盘查询"><a class="markdownIt-Anchor" href="#磁盘查询"></a> 磁盘查询</h1>
+<p>主要是 <code>df</code> 这个命令，经常用来查询系统中磁盘剩余空间。比如发现根目录 <code>/</code> 满了，说明系统危险了。</p>
+<h2 id="查询磁盘容量"><a class="markdownIt-Anchor" href="#查询磁盘容量"></a> 查询磁盘容量</h2>
+<p>使用 <code>df</code> 查看磁盘使用量，<code>df</code> 读取的是在 Superblock 内的信息。</p>
+<p>例如查看系统内所有的文件系统：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 /<span class="token punctuation">]</span>$ <span class="token function">df</span> <span class="token parameter variable">-h</span>
+Filesystem               Size  Used Avail Use% Mounted on
+devtmpfs                 <span class="token number">1</span>.9G     <span class="token number">0</span>  <span class="token number">1</span>.9G   <span class="token number">0</span>% /dev
+tmpfs                    <span class="token number">1</span>.9G     <span class="token number">0</span>  <span class="token number">1</span>.9G   <span class="token number">0</span>% /dev/shm
+tmpfs                    <span class="token number">1</span>.9G   12M  <span class="token number">1</span>.9G   <span class="token number">1</span>% /run
+tmpfs                    <span class="token number">1</span>.9G     <span class="token number">0</span>  <span class="token number">1</span>.9G   <span class="token number">0</span>% /sys/fs/cgroup
+/dev/mapper/centos-root   17G  <span class="token number">2</span>.1G   15G  <span class="token number">13</span>% /
+/dev/sda1               1014M  187M  828M  <span class="token number">19</span>% /boot
+tmpfs                    378M     <span class="token number">0</span>  378M   <span class="token number">0</span>% /run/user/0
+/dev/sdb1                991M  <span class="token number">1</span>.3M  939M   <span class="token number">1</span>% /ext333<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="../../794273428/#more" rel="contents">
+              <a class="btn" href="../../3491093041/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
