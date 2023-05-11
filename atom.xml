@@ -332,110 +332,31 @@ total &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;
   </entry>
   
   <entry>
-    <title>Linux 备份与刻录工具</title>
-    <link href="https://blog.x2b.net/3733482185/"/>
-    <id>https://blog.x2b.net/3733482185/</id>
+    <title>Bash 基础</title>
+    <link href="https://blog.x2b.net/1325555629/"/>
+    <id>https://blog.x2b.net/1325555629/</id>
     <published>2022-03-20T01:01:17.000Z</published>
-    <updated>2023-05-07T12:06:17.641Z</updated>
+    <updated>2023-05-10T18:25:04.074Z</updated>
     
     
-    <summary type="html">&lt;h1 id=&quot;备份基础&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#备份基础&quot;&gt;&lt;/a&gt; 备份基础&lt;/h1&gt;
-&lt;p&gt;系统备份重要目录有：&lt;code&gt;/etc/&lt;/code&gt;、&lt;code&gt;/home/&lt;/code&gt;、&lt;code&gt;/root/&lt;/code&gt;、&lt;code&gt;/var&lt;/code&gt;。不需要备份的目录有：&lt;code&gt;/dev&lt;/code&gt;、&lt;code&gt;/proc&lt;/code&gt;、&lt;code&gt;/sys&lt;/code&gt;、&lt;code&gt;/run&lt;/code&gt;、&lt;code&gt;/mnt&lt;/code&gt;、&lt;code&gt;/media&lt;/code&gt;、&lt;code&gt;/tmp&lt;/code&gt;。&lt;/p&gt;
-&lt;p&gt;常见备份类型有 3 种：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;完全备份（full）：在备份定义的范围内备份所有数据。&lt;/li&gt;
-&lt;li&gt;差分备份（differential）：备份所有自上次备份之后发生过变化的数据。在恢复时需要用到完全备份和最近的差分备份。&lt;/li&gt;
-&lt;li&gt;增量备份（incremental）：备份上次备份完成之后所有发生变化的数据，而不考虑上次备份是什么类型。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h1 id=&quot;使用-rsync-备份&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#使用-rsync-备份&quot;&gt;&lt;/a&gt; 使用 rsync 备份&lt;/h1&gt;
-&lt;p&gt;&lt;code&gt;rsync&lt;/code&gt;可以对两个目录进行镜像，用法非常简单：&lt;code&gt;rsync -av 来源目录 目标目录&lt;/code&gt;&lt;/p&gt;</summary>
+    <summary type="html">&lt;h1 id=&quot;shell-的定义&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#shell-的定义&quot;&gt;&lt;/a&gt; Shell 的定义&lt;/h1&gt;
+&lt;p&gt;Shell 是一个命令行解释器，其功能是提供用户操作系统的一个接口，因此 shell 需要可以调用其他软件，用户通过 shell 来操作这些应用程序。也就是只要能够操作应用程序的接口都能够称为 shell。&lt;/p&gt;
+&lt;p&gt;可以通过检查 &lt;code&gt;/etc/shells&lt;/code&gt; 来得知当前系统可用的 shell：&lt;/p&gt;
+&lt;pre class=&quot;line-numbers language-bash&quot; data-language=&quot;bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;root@101c7 &lt;span class=&quot;token number&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;$ &lt;span class=&quot;token function&quot;&gt;cat&lt;/span&gt; /etc/shells 
+/bin/sh
+/bin/bash
+/usr/bin/sh
+/usr/bin/bash&lt;span aria-hidden=&quot;true&quot; class=&quot;line-numbers-rows&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;文件 &lt;code&gt;passwd&lt;/code&gt; 里记录了用户能使用的 shell：&lt;/p&gt;
+&lt;pre class=&quot;line-numbers language-bash&quot; data-language=&quot;bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;root@101c7 &lt;span class=&quot;token number&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;$ &lt;span class=&quot;token function&quot;&gt;cat&lt;/span&gt; /etc/passwd &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;grep&lt;/span&gt; root
+root:x:0:0:root:/root:/bin/bash
+operator:x:11:0:operator:/root:/sbin/nologin&lt;span aria-hidden=&quot;true&quot; class=&quot;line-numbers-rows&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;</summary>
     
     
     
     <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
     
-    <category term="2.系统管理" scheme="https://blog.x2b.net/categories/Linux/2-%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Linux 软件安装与管理</title>
-    <link href="https://blog.x2b.net/1357678012/"/>
-    <id>https://blog.x2b.net/1357678012/</id>
-    <published>2022-03-20T01:01:17.000Z</published>
-    <updated>2023-05-07T12:01:52.777Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;编译安装&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#编译安装&quot;&gt;&lt;/a&gt; 编译安装&lt;/h1&gt;
-&lt;p&gt;编译程序是将源代码编译成机器语言生成可执行二进制程序的过程。&lt;/p&gt;
-&lt;p&gt;在 Linux 中，可以使用 &lt;code&gt;configure&lt;/code&gt; 命令对系统环境进行检测和收集，生成 &lt;code&gt;Makefile&lt;/code&gt; 文件，&lt;code&gt;make&lt;/code&gt; 命令根据 &lt;code&gt;Makefile&lt;/code&gt; 文件的配置来对源文件进行编译，生成可执行二进制程序。&lt;/p&gt;
-&lt;p&gt;简单来说，通过源代码安装程序的步骤如下：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;从网上下载包含源代码的压缩包；&lt;/li&gt;
-&lt;li&gt;解压压缩包；&lt;/li&gt;
-&lt;li&gt;使用 &lt;code&gt;gcc&lt;/code&gt; 进行源代码编译，生成目标文件（object files）；&lt;/li&gt;
-&lt;li&gt;使用 &lt;code&gt;gcc&lt;/code&gt; 进行函数库、主程序和辅助程序的链接，形成二进制文件；&lt;/li&gt;
-&lt;li&gt;将二进制文件及相关配置文件安装到指定目录。&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;编译安装需要用到的程序包括：&lt;code&gt;gcc&lt;/code&gt;、&lt;code&gt;make&lt;/code&gt;、&lt;code&gt;autoconfig&lt;/code&gt;，以及相关的库文件和头文件。通常可以使用 &lt;code&gt;yum groupinstall &amp;quot;Development Tools&amp;quot;&lt;/code&gt; 命令来安装所需套件。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
-    
-    <category term="2.系统管理" scheme="https://blog.x2b.net/categories/Linux/2-%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>NTP 服务</title>
-    <link href="https://blog.x2b.net/3532663001/"/>
-    <id>https://blog.x2b.net/3532663001/</id>
-    <published>2022-03-20T01:01:17.000Z</published>
-    <updated>2023-05-11T14:13:39.822Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;ntp-通信协议&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#ntp-通信协议&quot;&gt;&lt;/a&gt; NTP 通信协议&lt;/h1&gt;
-&lt;p&gt;NTP 是网络校时协议（Network Time Protocol）。为了修正因为 BIOS 内部芯片问题导致与标准时间（UTC, Coordinated Universal Time）存在的偏差，而通过网络进行时间同步（Synchronize）。此外，DTSS（Digital Time Synchronization Protocol）也可实现同样的功能。&lt;/p&gt;
-&lt;p&gt;Linux 系统中有两个时间：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;软件时钟：Linux 自己的系统时间，从 1970.1.1 开始记录的时间参数。&lt;/li&gt;
-&lt;li&gt;硬件时钟：计算机在 BIOS 记录的实际时间（UTC），通过硬件记录。写入硬件时钟使用 &lt;code&gt;hwclock&lt;/code&gt; 命令。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;NTP 服务器使用的端口为 123，通过 UDP 数据包传输。&lt;/p&gt;
-&lt;p&gt;我国授时中心服务器的 IP 地址为 210.72.145.44。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
-    
-    <category term="4.网络服务" scheme="https://blog.x2b.net/categories/Linux/4-%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Linux 用户管理</title>
-    <link href="https://blog.x2b.net/3199649610/"/>
-    <id>https://blog.x2b.net/3199649610/</id>
-    <published>2022-03-20T01:01:17.000Z</published>
-    <updated>2023-04-30T07:22:33.547Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;用户管理&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#用户管理&quot;&gt;&lt;/a&gt; 用户管理&lt;/h1&gt;
-&lt;p&gt;针对用户的新增,删除,修改操作.&lt;/p&gt;
-&lt;h2 id=&quot;新增用户&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#新增用户&quot;&gt;&lt;/a&gt; 新增用户&lt;/h2&gt;
-&lt;p&gt;可以使用 &lt;code&gt;useradd&lt;/code&gt; 命令来新建用户。命令用法如下：&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;useradd [-u UID] [-g 初始组] [-G 次要组] [-nM] [-c 说明] [-d 主目录绝对路径] [-a shell] 用户名&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;主要参数如下：&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
-    
-    <category term="2.系统管理" scheme="https://blog.x2b.net/categories/Linux/2-%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/"/>
+    <category term="3.脚本编程" scheme="https://blog.x2b.net/categories/Linux/3-%E8%84%9A%E6%9C%AC%E7%BC%96%E7%A8%8B/"/>
     
     
   </entry>
@@ -497,31 +418,110 @@ total &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;
   </entry>
   
   <entry>
-    <title>Bash 基础</title>
-    <link href="https://blog.x2b.net/1325555629/"/>
-    <id>https://blog.x2b.net/1325555629/</id>
+    <title>NTP 服务</title>
+    <link href="https://blog.x2b.net/3532663001/"/>
+    <id>https://blog.x2b.net/3532663001/</id>
     <published>2022-03-20T01:01:17.000Z</published>
-    <updated>2023-05-10T18:25:04.074Z</updated>
+    <updated>2023-05-11T14:13:39.822Z</updated>
     
     
-    <summary type="html">&lt;h1 id=&quot;shell-的定义&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#shell-的定义&quot;&gt;&lt;/a&gt; Shell 的定义&lt;/h1&gt;
-&lt;p&gt;Shell 是一个命令行解释器，其功能是提供用户操作系统的一个接口，因此 shell 需要可以调用其他软件，用户通过 shell 来操作这些应用程序。也就是只要能够操作应用程序的接口都能够称为 shell。&lt;/p&gt;
-&lt;p&gt;可以通过检查 &lt;code&gt;/etc/shells&lt;/code&gt; 来得知当前系统可用的 shell：&lt;/p&gt;
-&lt;pre class=&quot;line-numbers language-bash&quot; data-language=&quot;bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;root@101c7 &lt;span class=&quot;token number&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;$ &lt;span class=&quot;token function&quot;&gt;cat&lt;/span&gt; /etc/shells 
-/bin/sh
-/bin/bash
-/usr/bin/sh
-/usr/bin/bash&lt;span aria-hidden=&quot;true&quot; class=&quot;line-numbers-rows&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;文件 &lt;code&gt;passwd&lt;/code&gt; 里记录了用户能使用的 shell：&lt;/p&gt;
-&lt;pre class=&quot;line-numbers language-bash&quot; data-language=&quot;bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;root@101c7 &lt;span class=&quot;token number&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;$ &lt;span class=&quot;token function&quot;&gt;cat&lt;/span&gt; /etc/passwd &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;grep&lt;/span&gt; root
-root:x:0:0:root:/root:/bin/bash
-operator:x:11:0:operator:/root:/sbin/nologin&lt;span aria-hidden=&quot;true&quot; class=&quot;line-numbers-rows&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;</summary>
+    <summary type="html">&lt;h1 id=&quot;ntp-通信协议&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#ntp-通信协议&quot;&gt;&lt;/a&gt; NTP 通信协议&lt;/h1&gt;
+&lt;p&gt;NTP 是网络校时协议（Network Time Protocol）。为了修正因为 BIOS 内部芯片问题导致与标准时间（UTC, Coordinated Universal Time）存在的偏差，而通过网络进行时间同步（Synchronize）。此外，DTSS（Digital Time Synchronization Protocol）也可实现同样的功能。&lt;/p&gt;
+&lt;p&gt;Linux 系统中有两个时间：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;软件时钟：Linux 自己的系统时间，从 1970.1.1 开始记录的时间参数。&lt;/li&gt;
+&lt;li&gt;硬件时钟：计算机在 BIOS 记录的实际时间（UTC），通过硬件记录。写入硬件时钟使用 &lt;code&gt;hwclock&lt;/code&gt; 命令。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;NTP 服务器使用的端口为 123，通过 UDP 数据包传输。&lt;/p&gt;
+&lt;p&gt;我国授时中心服务器的 IP 地址为 210.72.145.44。&lt;/p&gt;</summary>
     
     
     
     <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
     
-    <category term="3.脚本编程" scheme="https://blog.x2b.net/categories/Linux/3-%E8%84%9A%E6%9C%AC%E7%BC%96%E7%A8%8B/"/>
+    <category term="4.网络服务" scheme="https://blog.x2b.net/categories/Linux/4-%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Linux 备份与刻录工具</title>
+    <link href="https://blog.x2b.net/3733482185/"/>
+    <id>https://blog.x2b.net/3733482185/</id>
+    <published>2022-03-20T01:01:17.000Z</published>
+    <updated>2023-05-07T12:06:17.641Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;备份基础&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#备份基础&quot;&gt;&lt;/a&gt; 备份基础&lt;/h1&gt;
+&lt;p&gt;系统备份重要目录有：&lt;code&gt;/etc/&lt;/code&gt;、&lt;code&gt;/home/&lt;/code&gt;、&lt;code&gt;/root/&lt;/code&gt;、&lt;code&gt;/var&lt;/code&gt;。不需要备份的目录有：&lt;code&gt;/dev&lt;/code&gt;、&lt;code&gt;/proc&lt;/code&gt;、&lt;code&gt;/sys&lt;/code&gt;、&lt;code&gt;/run&lt;/code&gt;、&lt;code&gt;/mnt&lt;/code&gt;、&lt;code&gt;/media&lt;/code&gt;、&lt;code&gt;/tmp&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;常见备份类型有 3 种：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;完全备份（full）：在备份定义的范围内备份所有数据。&lt;/li&gt;
+&lt;li&gt;差分备份（differential）：备份所有自上次备份之后发生过变化的数据。在恢复时需要用到完全备份和最近的差分备份。&lt;/li&gt;
+&lt;li&gt;增量备份（incremental）：备份上次备份完成之后所有发生变化的数据，而不考虑上次备份是什么类型。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&quot;使用-rsync-备份&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#使用-rsync-备份&quot;&gt;&lt;/a&gt; 使用 rsync 备份&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;rsync&lt;/code&gt;可以对两个目录进行镜像，用法非常简单：&lt;code&gt;rsync -av 来源目录 目标目录&lt;/code&gt;&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
+    
+    <category term="2.系统管理" scheme="https://blog.x2b.net/categories/Linux/2-%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Linux 用户管理</title>
+    <link href="https://blog.x2b.net/3199649610/"/>
+    <id>https://blog.x2b.net/3199649610/</id>
+    <published>2022-03-20T01:01:17.000Z</published>
+    <updated>2023-04-30T07:22:33.547Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;用户管理&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#用户管理&quot;&gt;&lt;/a&gt; 用户管理&lt;/h1&gt;
+&lt;p&gt;针对用户的新增,删除,修改操作.&lt;/p&gt;
+&lt;h2 id=&quot;新增用户&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#新增用户&quot;&gt;&lt;/a&gt; 新增用户&lt;/h2&gt;
+&lt;p&gt;可以使用 &lt;code&gt;useradd&lt;/code&gt; 命令来新建用户。命令用法如下：&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;useradd [-u UID] [-g 初始组] [-G 次要组] [-nM] [-c 说明] [-d 主目录绝对路径] [-a shell] 用户名&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;主要参数如下：&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
+    
+    <category term="2.系统管理" scheme="https://blog.x2b.net/categories/Linux/2-%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Linux 软件安装与管理</title>
+    <link href="https://blog.x2b.net/1357678012/"/>
+    <id>https://blog.x2b.net/1357678012/</id>
+    <published>2022-03-20T01:01:17.000Z</published>
+    <updated>2023-05-07T12:01:52.777Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;编译安装&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#编译安装&quot;&gt;&lt;/a&gt; 编译安装&lt;/h1&gt;
+&lt;p&gt;编译程序是将源代码编译成机器语言生成可执行二进制程序的过程。&lt;/p&gt;
+&lt;p&gt;在 Linux 中，可以使用 &lt;code&gt;configure&lt;/code&gt; 命令对系统环境进行检测和收集，生成 &lt;code&gt;Makefile&lt;/code&gt; 文件，&lt;code&gt;make&lt;/code&gt; 命令根据 &lt;code&gt;Makefile&lt;/code&gt; 文件的配置来对源文件进行编译，生成可执行二进制程序。&lt;/p&gt;
+&lt;p&gt;简单来说，通过源代码安装程序的步骤如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;从网上下载包含源代码的压缩包；&lt;/li&gt;
+&lt;li&gt;解压压缩包；&lt;/li&gt;
+&lt;li&gt;使用 &lt;code&gt;gcc&lt;/code&gt; 进行源代码编译，生成目标文件（object files）；&lt;/li&gt;
+&lt;li&gt;使用 &lt;code&gt;gcc&lt;/code&gt; 进行函数库、主程序和辅助程序的链接，形成二进制文件；&lt;/li&gt;
+&lt;li&gt;将二进制文件及相关配置文件安装到指定目录。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;编译安装需要用到的程序包括：&lt;code&gt;gcc&lt;/code&gt;、&lt;code&gt;make&lt;/code&gt;、&lt;code&gt;autoconfig&lt;/code&gt;，以及相关的库文件和头文件。通常可以使用 &lt;code&gt;yum groupinstall &amp;quot;Development Tools&amp;quot;&lt;/code&gt; 命令来安装所需套件。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
+    
+    <category term="2.系统管理" scheme="https://blog.x2b.net/categories/Linux/2-%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/"/>
     
     
   </entry>
@@ -551,6 +551,54 @@ operator:x:11:0:operator:/root:/sbin/nologin&lt;span aria-hidden=&quot;true&quot
     <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
     
     <category term="0.基础概论" scheme="https://blog.x2b.net/categories/Linux/0-%E5%9F%BA%E7%A1%80%E6%A6%82%E8%AE%BA/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>NFS服务</title>
+    <link href="https://blog.x2b.net/165304807/"/>
+    <id>https://blog.x2b.net/165304807/</id>
+    <published>2021-10-10T06:00:26.000Z</published>
+    <updated>2023-05-11T14:34:36.162Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;nfs服务器&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#nfs服务器&quot;&gt;&lt;/a&gt; NFS服务器&lt;/h1&gt;
+&lt;p&gt;NFS 为 Network File System 的简称，目的是想让不同机器、不同操作系统可以彼此共享数据文件。NFS 服务器可以让主机将网络中 NFS 服务器共享的目录挂载到本地端的文件系统中，用起来就像本地分区一样。&lt;/p&gt;
+&lt;p&gt;NFS 服务端口是 2049，此外用来传输的端口是小于 1024 号的随机端口，由 RPC 协议来调用。&lt;/p&gt;
+&lt;p&gt;远程过程调用（RPC，Remote Procedure Call）服务主要功能是指定每个 NFS 功能所对应的端口号，并通知给客户端。端口号由 NFS 启动时随机选取并向 RPC 注册，因此 RPC 服务需要先于 NFS 启动。&lt;/p&gt;
+&lt;p&gt;RPC 服务使用固定的 111 端口来监听客户端需求。使用 NFS 时，客户端和服务端都需要启动 RPC 服务，实际上称 NFS 为 RPC 服务的一种。&lt;/p&gt;
+&lt;p&gt;NFS 所依赖的 RPC 服务如下：&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
+    
+    <category term="4.网络服务" scheme="https://blog.x2b.net/categories/Linux/4-%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>DHCP 服务</title>
+    <link href="https://blog.x2b.net/4189308113/"/>
+    <id>https://blog.x2b.net/4189308113/</id>
+    <published>2021-10-09T18:55:42.000Z</published>
+    <updated>2023-05-11T14:24:38.193Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;dhcp服务器&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#dhcp服务器&quot;&gt;&lt;/a&gt; DHCP服务器&lt;/h1&gt;
+&lt;p&gt;DHCP（Dynamic Host Configuration Protocol）服务器的主要工作是自动地将网络参数分配给网络中的计算机，这些网络参数包括 IP，网关，DNS 地址等。&lt;/p&gt;
+&lt;p&gt;一般 DHCP 服务器用在计算机（或移动设备）数量众多的局域网内。如果局域网内计算机数量较少，使用手动配置 IP 能节省开机后从 DHCP 服务器获取 IP 的时间。&lt;/p&gt;
+&lt;h1 id=&quot;dhcp协议&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#dhcp协议&quot;&gt;&lt;/a&gt; DHCP协议&lt;/h1&gt;
+&lt;p&gt;DHCP 通常是用于局域网内的一个通信协议，它主要通过客户端发送广播数据包给整个物理网段内的所有主机，如果有 DHCP 服务器则会响应客户端的 IP 参数要求。&lt;/p&gt;
+&lt;p&gt;整个请求过程如下：&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
+    
+    <category term="4.网络服务" scheme="https://blog.x2b.net/categories/Linux/4-%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1/"/>
     
     
   </entry>
@@ -656,70 +704,6 @@ Connection successfully activated &lt;span class=&quot;token punctuation&quot;&g
 &lt;li&gt;&lt;code&gt;rsyslog.service&lt;/code&gt;：主要登录系统与网络等服务的信息；&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;logrotate&lt;/code&gt;：对日志文件进行轮替处理。&lt;/li&gt;
 &lt;/ul&gt;</summary>
-    
-    
-    
-    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
-    
-    <category term="2.系统管理" scheme="https://blog.x2b.net/categories/Linux/2-%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Linux 服务管理</title>
-    <link href="https://blog.x2b.net/1224880312/"/>
-    <id>https://blog.x2b.net/1224880312/</id>
-    <published>2021-09-18T15:12:15.000Z</published>
-    <updated>2023-05-01T09:59:12.051Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;服务定义&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#服务定义&quot;&gt;&lt;/a&gt; 服务定义&lt;/h1&gt;
-&lt;p&gt;可以将守护进程（Daemon）和服务（Service）视为同一个东西的不同称呼。&lt;/p&gt;
-&lt;p&gt;服务是常驻内存中的进程，通常负责提供系统功能以服务用户的各项任务。&lt;/p&gt;
-&lt;p&gt;一般来说，守护进程类型的程序会在文件名末尾加上“d”。&lt;/p&gt;
-&lt;h1 id=&quot;init-脚本管理&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#init-脚本管理&quot;&gt;&lt;/a&gt; Init 脚本管理&lt;/h1&gt;
-&lt;p&gt;SysV（System V）的 init 脚本程序处理方式为：将第一个启动的程序称为 init，然后由 init 去启动其他系统所需服务。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
-    
-    <category term="2.系统管理" scheme="https://blog.x2b.net/categories/Linux/2-%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>SELinux 安全访问控制</title>
-    <link href="https://blog.x2b.net/1359563972/"/>
-    <id>https://blog.x2b.net/1359563972/</id>
-    <published>2021-09-18T07:03:17.000Z</published>
-    <updated>2023-05-02T06:59:14.449Z</updated>
-    
-    
-    <summary type="html">&lt;hr&gt;
-&lt;h1 id=&quot;selinux-介绍&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#selinux-介绍&quot;&gt;&lt;/a&gt; SELinux 介绍&lt;/h1&gt;
-&lt;p&gt;&lt;code&gt;SELinux&lt;/code&gt;（Security Enhanced Linux）是在进行程序、文件等权限设置依据的一个内核模块。&lt;/p&gt;
-&lt;p&gt;传统的权限管理方式称为自主访问控制，&lt;code&gt;SELinux&lt;/code&gt;使用的是委托访问控制：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;自主访问控制:&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;自主访问控制（&lt;code&gt;DAC&lt;/code&gt;，Discretionary Access Control）是依据进程的所有者与文件资源的&lt;code&gt;rwx&lt;/code&gt;权限来决定文件的访问能力。&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;DAC&lt;/code&gt;访问控制的缺陷：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;root&lt;/code&gt;具有最高权限；&lt;/li&gt;
-&lt;li&gt;用户可以取得进程来更改文件资源的访问权限。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;强制访问控制:&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;SELinux&lt;/code&gt;导入了强制访问控制（&lt;code&gt;MAC&lt;/code&gt;，Mandatory Access Control）的方法。&lt;code&gt;MAC&lt;/code&gt;可以针对特定的进程与特定的文件资源来进行权限控制，控制的主体变成了进程而不是用户。&lt;/p&gt;
-&lt;p&gt;此外这个主体进程也不能任意使用系统文件资源，因为每个文件资源也有针对该主体进程设置可取用的权限。&lt;/p&gt;
-&lt;p&gt;这样，可以控制的项目和策略组合非常多，因此 &lt;code&gt;SELinux&lt;/code&gt; 也提供一些默认的策略，并在该策略内提供多个规则，以便用户可以选择是否启用该控制规则。&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h1 id=&quot;selinux-名词&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#selinux-名词&quot;&gt;&lt;/a&gt; SELinux 名词&lt;/h1&gt;</summary>
     
     
     

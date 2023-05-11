@@ -22,28 +22,28 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
 
-    <meta name="description" content="基本权限 基础权限有三种，分别是：读（r，Read）、写（w，Write）、执行（x，eXecute）。 同样的权限标记对于文件和目录代表不同的意义。  文件权限 文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。    数字 字符 权限     4 r 读取文件内容。例如使用 cat 命令查看，使用 vim 以只读方式打开。   2 w 编辑修">
+    <meta name="description" content="NFS服务器 NFS 为 Network File System 的简称，目的是想让不同机器、不同操作系统可以彼此共享数据文件。NFS 服务器可以让主机将网络中 NFS 服务器共享的目录挂载到本地端的文件系统中，用起来就像本地分区一样。 NFS 服务端口是 2049，此外用来传输的端口是小于 1024 号的随机端口，由 RPC 协议来调用。 远程过程调用（RPC，Remote Procedure">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux 文件与目录权限">
-<meta property="og:url" content="https://blog.x2b.net/46662635/index.html">
+<meta property="og:title" content="NFS服务">
+<meta property="og:url" content="https://blog.x2b.net/165304807/index.html">
 <meta property="og:site_name" content="X to Bytes">
-<meta property="og:description" content="基本权限 基础权限有三种，分别是：读（r，Read）、写（w，Write）、执行（x，eXecute）。 同样的权限标记对于文件和目录代表不同的意义。  文件权限 文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。    数字 字符 权限     4 r 读取文件内容。例如使用 cat 命令查看，使用 vim 以只读方式打开。   2 w 编辑修">
+<meta property="og:description" content="NFS服务器 NFS 为 Network File System 的简称，目的是想让不同机器、不同操作系统可以彼此共享数据文件。NFS 服务器可以让主机将网络中 NFS 服务器共享的目录挂载到本地端的文件系统中，用起来就像本地分区一样。 NFS 服务端口是 2049，此外用来传输的端口是小于 1024 号的随机端口，由 RPC 协议来调用。 远程过程调用（RPC，Remote Procedure">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-09-18T03:57:47.000Z">
-<meta property="article:modified_time" content="2023-05-07T09:35:29.392Z">
+<meta property="article:published_time" content="2021-10-10T06:00:26.000Z">
+<meta property="article:modified_time" content="2023-05-11T14:34:36.162Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://blog.x2b.net/46662635/">
+<link rel="canonical" href="https://blog.x2b.net/165304807/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/46662635/","path":"46662635/","title":"Linux 文件与目录权限"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/165304807/","path":"165304807/","title":"NFS服务"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Linux 文件与目录权限 | X to Bytes</title>
+<title>NFS服务 | X to Bytes</title>
   
 
   <script src="../js/third-party/analytics/baidu-analytics.js"></script>
@@ -145,7 +145,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%9D%83%E9%99%90"><span class="nav-number">1.</span> <span class="nav-text"> 基本权限</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90"><span class="nav-number">1.1.</span> <span class="nav-text"> 文件权限</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95%E6%9D%83%E9%99%90"><span class="nav-number">1.2.</span> <span class="nav-text"> 目录权限</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9D%83%E9%99%90%E5%8F%82%E8%80%83"><span class="nav-number">2.</span> <span class="nav-text"> 权限参考</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E6%9D%83%E9%99%90"><span class="nav-number">3.</span> <span class="nav-text"> 特殊权限</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#suid"><span class="nav-number">3.1.</span> <span class="nav-text"> SUID</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sgid"><span class="nav-number">3.2.</span> <span class="nav-text"> SGID</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sbit"><span class="nav-number">3.3.</span> <span class="nav-text"> SBIT</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#nfs%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">1.</span> <span class="nav-text"> NFS服务器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#nfs%E6%9C%8D%E5%8A%A1%E9%85%8D%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text"> NFS服务配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#nfs%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text"> NFS服务管理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#nfs%E7%9B%AE%E5%BD%95%E6%8C%82%E8%BD%BD"><span class="nav-number">4.</span> <span class="nav-text"> NFS目录挂载</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -222,7 +222,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/46662635/">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/165304807/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="../images/avatar.jpg">
@@ -235,12 +235,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Linux 文件与目录权限 | X to Bytes">
+      <meta itemprop="name" content="NFS服务 | X to Bytes">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Linux 文件与目录权限
+          NFS服务
         </h1>
 
         <div class="post-meta-container">
@@ -251,14 +251,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2021-09-18 11:57:47" itemprop="dateCreated datePublished" datetime="2021-09-18T11:57:47+08:00">2021-09-18</time>
+      <time title="创建时间：2021-10-10 14:00:26" itemprop="dateCreated datePublished" datetime="2021-10-10T14:00:26+08:00">2021-10-10</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-07 17:35:29" itemprop="dateModified" datetime="2023-05-07T17:35:29+08:00">2023-05-07</time>
+      <time title="修改时间：2023-05-11 22:34:36" itemprop="dateModified" datetime="2023-05-11T22:34:36+08:00">2023-05-11</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -270,7 +270,7 @@
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../categories/Linux/0-%E5%9F%BA%E7%A1%80%E6%A6%82%E8%AE%BA/" itemprop="url" rel="index"><span itemprop="name">0.基础概论</span></a>
+          <a href="../categories/Linux/4-%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1/" itemprop="url" rel="index"><span itemprop="name">4.网络服务</span></a>
         </span>
     </span>
 
@@ -306,126 +306,83 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="基本权限"><a class="markdownIt-Anchor" href="#基本权限"></a> 基本权限</h1>
-<p>基础权限有三种，分别是：读（r，Read）、写（w，Write）、执行（x，eXecute）。</p>
-<p>同样的权限标记对于文件和目录代表不同的意义。</p>
-<h2 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h2>
-<p>文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。</p>
-<table>
-<thead>
-<tr>
-<th>数字</th>
-<th>字符</th>
-<th>权限</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>4</td>
-<td>r</td>
-<td><strong>读取文件内容</strong>。例如使用 <code>cat</code> 命令查看，使用 <code>vim</code> 以<strong>只读</strong>方式打开。</td>
-</tr>
-<tr>
-<td>2</td>
-<td>w</td>
-<td><strong>编辑修改</strong>文件内容，但<strong>不包括删除</strong>文件。例如使用 <code>vim</code>、<code>sed</code> 等对文件内容进行修改并保存。</td>
-</tr>
-<tr>
-<td>1</td>
-<td>x</td>
-<td>文件具有可以被系统<strong>执行</strong>的权限。例如命令和脚本必须拥有此权限才能直接执行。</td>
-</tr>
-</tbody>
-</table>
-<h2 id="目录权限"><a class="markdownIt-Anchor" href="#目录权限"></a> 目录权限</h2>
-<p>目录主要的内容是记录文件名清单，所以目录权限实际关联的是目录下文件属性查看与更改。</p>
-<table>
-<thead>
-<tr>
-<th>数字</th>
-<th>字符</th>
-<th>权限</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>4</td>
-<td>r</td>
-<td><strong>仅查询</strong>目录下的文件或目录<strong>名称</strong>，无法看到属性，相当于执行不加参数的 <code>ls</code> 命令。</td>
-</tr>
-<tr>
-<td>2</td>
-<td>w</td>
-<td>改变目录结构清单权限，也就是在目录下<strong>新建、删除、重命名</strong>文件或目录。</td>
-</tr>
-<tr>
-<td>1</td>
-<td>x</td>
-<td><strong>进入目录</strong>的权限，<strong>查询</strong>目录下的文件<strong>属性</strong>。</td>
-</tr>
-</tbody>
-</table>
-<h1 id="权限参考"><a class="markdownIt-Anchor" href="#权限参考"></a> 权限参考</h1>
-<p>根据使用场景来配置权限。</p>
-<p><strong>用户进入目录所需权限</strong>：</p>
+        <h1 id="nfs服务器"><a class="markdownIt-Anchor" href="#nfs服务器"></a> NFS服务器</h1>
+<p>NFS 为 Network File System 的简称，目的是想让不同机器、不同操作系统可以彼此共享数据文件。NFS 服务器可以让主机将网络中 NFS 服务器共享的目录挂载到本地端的文件系统中，用起来就像本地分区一样。</p>
+<p>NFS 服务端口是 2049，此外用来传输的端口是小于 1024 号的随机端口，由 RPC 协议来调用。</p>
+<p>远程过程调用（RPC，Remote Procedure Call）服务主要功能是指定每个 NFS 功能所对应的端口号，并通知给客户端。端口号由 NFS 启动时随机选取并向 RPC 注册，因此 RPC 服务需要先于 NFS 启动。</p>
+<p>RPC 服务使用固定的 111 端口来监听客户端需求。使用 NFS 时，客户端和服务端都需要启动 RPC 服务，实际上称 NFS 为 RPC 服务的一种。</p>
+<p>NFS 所依赖的 RPC 服务如下：</p>
 <ul>
-<li>目录需要 x 权限，来运行 <code>cd</code> 切换目录。</li>
-<li>目录需要 r 权限，来使用 <code>ls</code> 命令查看目录中文件列表。</li>
+<li><code>rpc.nfsd</code>：最主要的 NFS 服务提供程序，管理客户端是否能够使用服务器文件系统挂载信息等。</li>
+<li><code>rpc.mountd</code>：用于管理 NFS 文件系统的权限，它会去读 NFS 配置文件 <code>/etc/exports</code> 来对比客户端权限。</li>
+<li><code>rpc.lockd</code>：用于管理文件锁定功能。需要服务端和客户端同时开启，与 <code>rpc.statd</code> 有依赖关系，非必须启动。</li>
+<li><code>rpc.statd</code>：用来检查文件的一致性，如果文件被多客户端同时使用造成损坏时，它可以检测并尝试恢复文件。</li>
 </ul>
-<p><strong>用户读取目录内文件所需权限</strong>：</p>
+<h1 id="nfs服务配置"><a class="markdownIt-Anchor" href="#nfs服务配置"></a> NFS服务配置</h1>
+<p>要想启动 NFS 服务器，需要具备下面两个程序：</p>
 <ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 r 权限来运行 <code>cat</code>、<code>more</code> 等读取文件命令。</li>
+<li><code>rpcbind</code>：RPC 的主程序，用来做好端口对应的工作。</li>
+<li><code>nfs-utils</code>：提供 <code>rpc.nfsd</code> 及 <code>rpc.mountd</code> 服务的程序</li>
 </ul>
-<p><strong>用户修改目录内文件所需权限</strong>：</p>
+<p>默认情况下没有安装，使用 yum 来安装：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ yum <span class="token function">install</span> <span class="token parameter variable">-y</span> rpcbind
+<span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ yum <span class="token function">install</span> <span class="token parameter variable">-y</span> nfs-utils<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>NFS 的配置文件存在 <code>/etc/exports</code>，日志文件放在 <code>/var/lib/nfs/</code> 路径下。</p>
+<p>例如将 <code>/tmp</code> 目录共享给主机 192.168.2.234 和 10.1.1.0/24，将 <code>/root/nf</code> 目录分享给所有人：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/exports
+/tmp <span class="token number">192.168</span>.2.234<span class="token punctuation">(</span>ro<span class="token punctuation">)</span> <span class="token number">10.1</span>.1.0/24<span class="token punctuation">(</span>rw<span class="token punctuation">)</span>
+/root/nf *<span class="token punctuation">(</span>rw,no_root_squash<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>括号内的权限设置有下面几种组合，可以用逗号，分隔指定多个权限：</p>
 <ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 r 和 w 权限来使用 <code>vi</code> 等工具进行文件读写。</li>
+<li>rw, ro：目录共享权限为可读写（read-write）或只读（read-only）。还需要参考文件系统权限和身份。</li>
+<li>sync, async：数据同步或异步写入到硬盘。</li>
+<li>no_root_squash, root_squash：root_squash 表示将 root 身份替换成 nfsnobody。否则开放 root 身份权限。</li>
+<li>all_squash：将所有用户都压缩成匿名用户（nfsnobody）。</li>
+<li>anonuid=, anongid=：设置匿名用户 UID 或 GID 值。</li>
 </ul>
-<p><strong>用户创建一个文件所需权限</strong>：</p>
+<p>一般 NFS 服务不会对互联网开放，如果遇到特殊要求，可以调整配置 <code>/etc/sysconfig/nfs</code> 让除了 111 和 2049 号外的端口固定，以方便防火墙设置规则。</p>
+<h1 id="nfs服务管理"><a class="markdownIt-Anchor" href="#nfs服务管理"></a> NFS服务管理</h1>
+<p>改好配置文件后就可以启动 NFS 服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ systemctl start rpcbind
+<span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ systemctl start nfs<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>可以使用 <code>rpcinfo</code> 来查询本机 RPC 状态：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ rpcinfo <span class="token parameter variable">-p</span>
+   program vers proto   port  <span class="token function">service</span>
+    <span class="token number">100000</span>    <span class="token number">4</span>   tcp    <span class="token number">111</span>  portmapper
+    <span class="token number">100000</span>    <span class="token number">3</span>   tcp    <span class="token number">111</span>  portmapper<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>修改配置文件后，可以使用 <code>exportfs</code> 命令重新挂载 NFS 文件系统：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ exportfs <span class="token parameter variable">-arv</span>
+exporting <span class="token number">192.168</span>.2.234:/tmp
+exporting <span class="token number">10.1</span>.1.0/24:/tmp
+exporting *:/root/nf<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>卸载已经共享的 NFS 目录也使用 <code>exportfs</code> 命令操作：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ exportfs <span class="token parameter variable">-auv</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="nfs目录挂载"><a class="markdownIt-Anchor" href="#nfs目录挂载"></a> NFS目录挂载</h1>
+<p>可以使用 <code>showmount</code> 来查询 NFS 服务器共享目录情况：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ showmount <span class="token parameter variable">-e</span> <span class="token number">10.1</span>.1.1
+Export list <span class="token keyword">for</span> <span class="token number">127.0</span>.0.1:
+/root/nf *
+/tmp     <span class="token number">10.1</span>.1.0/24,192.168.2.234<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>客户端可以使用 <code>mount</code> 命令直接挂载使用共享目录：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">mount</span> <span class="token number">192.168</span>.2.254:/tmp <span class="token number">111</span>
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ ll
+total <span class="token number">8992</span>
+drwxrwxrwt. <span class="token number">8</span> root root     <span class="token number">172</span> Oct <span class="token number">10</span> <span class="token number">14</span>:52 <span class="token number">111</span>
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">df</span>
+Filesystem              1K-blocks    Used Available Use% Mounted on
+<span class="token number">192.168</span>.2.254:/tmp        <span class="token number">1020928</span>   <span class="token number">33280</span>    <span class="token number">987648</span>   <span class="token number">4</span>% /root/111<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>卸载 NFS 目录使用 <code>umount</code> 命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">umount</span> <span class="token number">111</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>另外客户端在挂载 NFS 文件系统时，可以使用一些特殊的挂载参数：</p>
 <ul>
-<li>目录需要 w 和 x 权限来创建文件。</li>
+<li>fg, bg：执行挂载时，挂载行为在前台或后台执行。默认是前台，在后台执行挂载不会影响到前台工作。</li>
+<li>soft, hard：默认 hard 参数，在主机脱机时 RPC 会持续尝试连接，使用 soft 参数则会等待超时时间后再尝试。</li>
+<li>intr：如果采用 hard 方式挂载，使用 intr 参数可以中断尝试连接。</li>
+<li>rsize, wsize：读写区块大小，默认 1024 bytes。调大可以加速网络传输速度。</li>
 </ul>
-<p><strong>用户执行目录下的命令所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 x 权限来运行命令。</li>
-</ul>
-<h1 id="特殊权限"><a class="markdownIt-Anchor" href="#特殊权限"></a> 特殊权限</h1>
-<p>在 Linux 系统中，还有一些特殊权限。</p>
-<h2 id="suid"><a class="markdownIt-Anchor" href="#suid"></a> SUID</h2>
-<p>当 s 标志出现在文件所有者的 x 权限上时，被称为 Set UID，其含义为：</p>
-<ul>
-<li>SUID 权限<strong>仅对二进制程序有效</strong>，不能用在脚本上；</li>
-<li>执行者对该程序需要具有 x 的可执行权限；</li>
-<li>本权限仅在执行该程序的过程中（run-time）有效；</li>
-<li><strong>执行者将具有该程序所有者的权限</strong>。</li>
-</ul>
-<p>例如一般用户运行 <code>passwd</code> 命令修改密码，需要修改 <code>/etc/shadow</code> 文件。但是该文件的权限只有 root 可读写，而用户运行 passwd 程序时，会暂时获得 passwd 程序的 root 权限，从而可以通过 <code>passwd</code> 命令修改 <code>/etc/shadow</code> 文件。</p>
-<p>这是因为运行 <code>passwd</code> 后会启动一个新的进程，该进程会产生一个新的 PID。在该 PID 产生时，SUID 会给予该 PID 特殊的权限设置，使得执行者在该进程中具有该程序所有者的权限。</p>
-<h2 id="sgid"><a class="markdownIt-Anchor" href="#sgid"></a> SGID</h2>
-<p>当 s 标志出现在文件所属组的 x 权限上时，被称为 Set GID。SGID 可以针对文件或目录来设置。</p>
-<p><strong>针对文件</strong>，SGID 有以下功能：</p>
-<ul>
-<li>SGID 对二进制程序有效；</li>
-<li>程序执行者对该程序来说，需要具备 x 的权限；</li>
-<li><strong>执行者在执行的过程中将会获得该程序所属组的权限</strong>。</li>
-</ul>
-<p>例如，一般用户使用 <code>locate</code> 这个程序可以查询 <code>/var/lib/mlocate/mlocate.db</code> 文件的内容，会暂时获得 slocate 用户组的权限。</p>
-<p><strong>针对目录</strong>，SGID 有以下功能：</p>
-<ul>
-<li>用户若对此目录具有 r 和 x 的权限时，该用户能够进入此目录；</li>
-<li>用户在此目录下的有效用户组将会变成该目录的用户组；</li>
-<li><strong>若用户在此目录下具有 w 的权限，则用户所创建的新文件的所属组与此目录的所属组相同。</strong></li>
-</ul>
-<h2 id="sbit"><a class="markdownIt-Anchor" href="#sbit"></a> SBIT</h2>
-<p>当 t 出现在文件所有者的其他用户 x 权限上时，被称为 Sticky Bit。其含义为：</p>
-<ul>
-<li>SBIT 权限<strong>仅对目录有效</strong>；</li>
-<li>当用户对该目录具有 w 和 x 权限时，即具有写入权限时；</li>
-<li><strong>当用户在该目录下创建文件或目录时，仅有自己与 root 才有权力删除该文件。</strong></li>
-</ul>
-<p>例如，用户 1 对目录 A 具有 w 的权限，里面还有其他用户的文件。此时，目录 A 加上了 SBIT 权限时，用户 1 只能修改自己创建的文件，无法删除他人文件。</p>
+<p>例如采用后台软挂载，调整读写区块大小为 32K：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">mount</span> <span class="token parameter variable">-t</span> nfs <span class="token parameter variable">-o</span> bg,soft,rsize<span class="token operator">=</span><span class="token number">32768</span>,wsize<span class="token operator">=</span><span class="token number">32768</span> <span class="token number">10.1</span>.1.1:/root/nf <span class="token number">111</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>想要开机挂载可以将上面的命令写入到 <code>/etc/rc.d/rc.local</code> 文件中，并加入运行权限。</p>
 
     </div>
 
@@ -457,7 +414,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://blog.x2b.net/46662635/" title="Linux 文件与目录权限">https://blog.x2b.net/46662635/</a>
+      <a href="https://blog.x2b.net/165304807/" title="NFS服务">https://blog.x2b.net/165304807/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
@@ -487,13 +444,13 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="../2794564793/" rel="prev" title="Linux 主流文件系统">
-                  <i class="fa fa-chevron-left"></i> Linux 主流文件系统
+                <a href="../4189308113/" rel="prev" title="DHCP 服务">
+                  <i class="fa fa-chevron-left"></i> DHCP 服务
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="../1872252014/" rel="next" title="Linux 中文件属性详解">
-                  Linux 中文件属性详解 <i class="fa fa-chevron-right"></i>
+                <a href="../4291230975/" rel="next" title="Linux 中引导与启动流程">
+                  Linux 中引导与启动流程 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -603,7 +560,7 @@
 
 
   <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
-  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/46662635/"}</script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/165304807/"}</script>
   <script src="../js/third-party/quicklink.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
