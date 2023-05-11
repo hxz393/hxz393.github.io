@@ -92,7 +92,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="../../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">47</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="../../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">49</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -157,7 +157,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="../../archives/">
-          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-count">49</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -695,7 +695,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/4291230975/">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/1516343977/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="../../images/avatar.jpg">
@@ -713,7 +713,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="../../4291230975/" class="post-title-link" itemprop="url">Linux 中引导与启动流程</a>
+          <a href="../../1516343977/" class="post-title-link" itemprop="url">Postfix 服务</a>
         </h2>
 
         <div class="post-meta-container">
@@ -724,14 +724,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2021-10-10 20:54:21" itemprop="dateCreated datePublished" datetime="2021-10-10T20:54:21+08:00">2021-10-10</time>
+      <time title="创建时间：2021-10-17 19:10:05" itemprop="dateCreated datePublished" datetime="2021-10-17T19:10:05+08:00">2021-10-17</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-07 17:40:20" itemprop="dateModified" datetime="2023-05-07T17:40:20+08:00">2023-05-07</time>
+      <time title="修改时间：2023-05-11 23:36:23" itemprop="dateModified" datetime="2023-05-11T23:36:23+08:00">2023-05-11</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -743,7 +743,7 @@
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Linux/0-%E5%9F%BA%E7%A1%80%E6%A6%82%E8%AE%BA/" itemprop="url" rel="index"><span itemprop="name">0.基础概论</span></a>
+          <a href="../../categories/Linux/4-%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1/" itemprop="url" rel="index"><span itemprop="name">4.网络服务</span></a>
         </span>
     </span>
 
@@ -754,14 +754,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>3.6k</span>
+      <span>2.9k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>12 分钟</span>
+      <span>10 分钟</span>
     </span>
 </div>
 
@@ -772,20 +772,37 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="bios-启动流程"><a class="markdownIt-Anchor" href="#bios-启动流程"></a> BIOS 启动流程</h1>
-<p>目前，主机系统在载入硬件驱动方面的程序有两种：使用 BIOS 和 UEFI。简单的开机流程分为以下步骤：</p>
-<ol>
-<li>载入 BIOS 或 UEFI 的硬件信息与自测（POST，Power-On Self-Test），并根据设置取得第一个可开机的设备；</li>
-<li>对于 BIOS，通过硬件的 INT 13 中断功能，读取并执行第一个可开机设备内 MBR 的引导加载程序（Boot Loader）；对于 UEFI，读取并执行第一个可开机设备内 EFI 分区的引导加载程序；</li>
-<li>依据引导加载程序的设置，识别文件系统格式，加载核心文件。由内核开始检测硬件与驱动；</li>
-<li>启动初始进程管理程序（systemd 或 System V），最终目的都是启动基础服务和用户设置的开机启动程序。</li>
-</ol>
-<p>在使用 BIOS 时，通常搭配 MBR（Master Boot Record）分区表。而在使用 UEFI 时，通常搭配 GPT（GUID Partition Table）分区表。GPT 格式启动过程与 MBR 类似，差异在于开机管理程序是否支持 GPT。</p>
-<p>在引导加载程序读取到内核文件后，Linux 会将内核解压到内存中，由内核开始测试与驱动硬件。此时 Linux 内核会以自己检测结果为准，而不理会 BIOS 的硬件检测结果。也就是说内核此时开始接管 BIOS 后的工作了。</p>
-<h1 id="多系统引导"><a class="markdownIt-Anchor" href="#多系统引导"></a> 多系统引导</h1>
+          <h1 id="邮件服务器"><a class="markdownIt-Anchor" href="#邮件服务器"></a> 邮件服务器</h1>
+<p>架设邮件服务器（Mail Server）首先需要有一个合法注册的域名，然后需要申请 IP 反解策略。最后是设置 MX 和 A 类型记录，来对应到邮件服务器的 IP 地址上。</p>
+<p>邮件传输过程中所需要的组件和协议如下：</p>
+<ul>
+<li>
+<p>MUA（Mail User Agent）</p>
+<p>MUA，顾名思义就是邮件用户代理人，用来将用户信件送到邮件服务器上。最常见的 MUA 有 Thunderbird、Kmail、Outlook Express 等所谓邮件客户端。</p>
+</li>
+<li>
+<p>MTA（Mail Transfer Agent）</p>
+<p>MTA 是邮件发送代理人，它可以使用简单邮件传输协议（SMTP，Simple Mail Transfer Protocol）来接受用户邮件，并具有中继转发（Relay）功能。常见的 MTA 有 sendmail、postfix 等所谓邮件服务端。</p>
+</li>
+<li>
+<p>MDA（Mail Delivery Agent）</p>
+<p>MDA 是邮件传送代理人，其实是 MTA 下面的组件。主要功能是分析由 MTA 所收到的邮件表头或内容等数据，来决定这份邮件的去向。此外，MDA 还有分析与过滤邮件和自动回复功能。</p>
+</li>
+</ul>
+<p>用户收信过程中所需的组件和协议如下：</p>
+<ul>
+<li>
+<p>MRA（Mail Retrieval Agent）</p>
+<p>MRA 也是 MTA 下面的组件，用户可以通过邮政服务协议（POP，Post Office Protocol）来接收自己的邮件，也可以通过 IMAP（Internet Message Access Protocol）将邮件保留在邮件主机上面。</p>
+</li>
+<li>
+<p>Mailbox</p>
+<p>电子邮箱就是某个账号专用的邮件收取文件。在 Linux 下默认放在 <code>/var/spool/mail/</code> 下面。</p>
+</li>
+</ul>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="../../4291230975/#more" rel="contents">
+              <a class="btn" href="../../1516343977/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -832,13 +849,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">117k</span>
+    <span title="站点总字数">121k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">6:29</span>
+    <span title="站点阅读时长">6:43</span>
   </span>
 </div>
 <div class="busuanzi-count">
