@@ -22,28 +22,28 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
 
-    <meta name="description" content="进程与程序 程序（Program）是可执行的二进制文件。 当触发执行程序动作后，程序内容及程序数据会加载到内存中，成为一个运行中的程序，即进程（Process）。 系统为这个进程分配一个 ID，称为 PID（Program ID）。同时，根据触发这个进程的用户及相关属性关系，为这个 PID 设置一组有效的权限。  子进程与父进程 登录系统后，会获得一个 bash 的 shell。通过 bash">
+    <meta name="description" content="FTP 协议 文件传输协议（FTP，File Transfer Protocol）主要功能是在服务器与客户端之间进行文件传输。它使用明文传输方式，所以建议只在局域网内使用。 FTP 服务器提供以下功能：  身份验证：默认情况下分为三种用户：用户 user，访客 guest 和匿名用户 anonymous。 日志记录：FTP 可以利用 syslogd 来进行数据记录，存放于 &#x2F;var&#x2F;log&#x2F; 下">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux 中程序与进程关系">
-<meta property="og:url" content="https://blog.x2b.net/630034191/index.html">
+<meta property="og:title" content="vsftpd 服务">
+<meta property="og:url" content="https://blog.x2b.net/1853961938/index.html">
 <meta property="og:site_name" content="X to Bytes">
-<meta property="og:description" content="进程与程序 程序（Program）是可执行的二进制文件。 当触发执行程序动作后，程序内容及程序数据会加载到内存中，成为一个运行中的程序，即进程（Process）。 系统为这个进程分配一个 ID，称为 PID（Program ID）。同时，根据触发这个进程的用户及相关属性关系，为这个 PID 设置一组有效的权限。  子进程与父进程 登录系统后，会获得一个 bash 的 shell。通过 bash">
+<meta property="og:description" content="FTP 协议 文件传输协议（FTP，File Transfer Protocol）主要功能是在服务器与客户端之间进行文件传输。它使用明文传输方式，所以建议只在局域网内使用。 FTP 服务器提供以下功能：  身份验证：默认情况下分为三种用户：用户 user，访客 guest 和匿名用户 anonymous。 日志记录：FTP 可以利用 syslogd 来进行数据记录，存放于 &#x2F;var&#x2F;log&#x2F; 下">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-09-18T05:44:21.000Z">
-<meta property="article:modified_time" content="2023-05-07T09:33:51.484Z">
+<meta property="article:published_time" content="2021-10-16T20:37:10.000Z">
+<meta property="article:modified_time" content="2023-05-11T16:00:15.729Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://blog.x2b.net/630034191/">
+<link rel="canonical" href="https://blog.x2b.net/1853961938/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/630034191/","path":"630034191/","title":"Linux 中程序与进程关系"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/1853961938/","path":"1853961938/","title":"vsftpd 服务"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Linux 中程序与进程关系 | X to Bytes</title>
+<title>vsftpd 服务 | X to Bytes</title>
   
 
   <script src="../js/third-party/analytics/baidu-analytics.js"></script>
@@ -145,7 +145,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E4%B8%8E%E7%A8%8B%E5%BA%8F"><span class="nav-number">1.</span> <span class="nav-text"> 进程与程序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%90%E8%BF%9B%E7%A8%8B%E4%B8%8E%E7%88%B6%E8%BF%9B%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text"> 子进程与父进程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%87%E7%A8%8B%E8%B0%83%E7%94%A8%E7%9A%84%E6%B5%81%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text"> 过程调用的流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%85%E9%83%A8%E7%A8%8B%E5%BA%8F%E6%B2%9F%E9%80%9A"><span class="nav-number">4.</span> <span class="nav-text"> 内部程序沟通</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%9A%E7%94%A8%E6%88%B7%E4%B8%8E%E5%A4%9A%E4%BB%BB%E5%8A%A1%E7%8E%AF%E5%A2%83"><span class="nav-number">5.</span> <span class="nav-text"> 多用户与多任务环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B"><span class="nav-number">6.</span> <span class="nav-text"> 僵尸进程</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ftp-%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.</span> <span class="nav-text"> FTP 协议</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ftp-%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text"> FTP 工作流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.1.</span> <span class="nav-text"> 主动模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A2%AB%E5%8A%A8%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text"> 被动模式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E8%BA%AB%E4%BB%BD"><span class="nav-number">3.</span> <span class="nav-text"> 用户身份</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%88%B7"><span class="nav-number">3.1.</span> <span class="nav-text"> 用户</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BF%E5%AE%A2"><span class="nav-number">3.2.</span> <span class="nav-text"> 访客</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%BF%E5%90%8D%E7%94%A8%E6%88%B7"><span class="nav-number">3.3.</span> <span class="nav-text"> 匿名用户</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#vsftpd-%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">4.</span> <span class="nav-text"> vsftpd 服务器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#vsftpd-%E9%85%8D%E7%BD%AE"><span class="nav-number">5.</span> <span class="nav-text"> vsftpd 配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#vsftpd-%E6%B5%8B%E8%AF%95"><span class="nav-number">6.</span> <span class="nav-text"> vsftpd 测试</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -222,7 +222,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/630034191/">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/1853961938/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="../images/avatar.jpg">
@@ -235,12 +235,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Linux 中程序与进程关系 | X to Bytes">
+      <meta itemprop="name" content="vsftpd 服务 | X to Bytes">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Linux 中程序与进程关系
+          vsftpd 服务
         </h1>
 
         <div class="post-meta-container">
@@ -251,14 +251,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2021-09-18 13:44:21" itemprop="dateCreated datePublished" datetime="2021-09-18T13:44:21+08:00">2021-09-18</time>
+      <time title="创建时间：2021-10-17 04:37:10" itemprop="dateCreated datePublished" datetime="2021-10-17T04:37:10+08:00">2021-10-17</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-07 17:33:51" itemprop="dateModified" datetime="2023-05-07T17:33:51+08:00">2023-05-07</time>
+      <time title="修改时间：2023-05-12 00:00:15" itemprop="dateModified" datetime="2023-05-12T00:00:15+08:00">2023-05-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -270,7 +270,7 @@
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../categories/Linux/0-%E5%9F%BA%E7%A1%80%E6%A6%82%E8%AE%BA/" itemprop="url" rel="index"><span itemprop="name">0.基础概论</span></a>
+          <a href="../categories/Linux/4-%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1/" itemprop="url" rel="index"><span itemprop="name">4.网络服务</span></a>
         </span>
     </span>
 
@@ -288,14 +288,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>950</span>
+      <span>1.6k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>3 分钟</span>
+      <span>5 分钟</span>
     </span>
 </div>
 
@@ -306,66 +306,160 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="进程与程序"><a class="markdownIt-Anchor" href="#进程与程序"></a> 进程与程序</h1>
-<p>程序（Program）是可执行的二进制文件。</p>
-<p>当触发执行程序动作后，程序内容及程序数据会加载到内存中，成为一个运行中的程序，即进程（Process）。</p>
-<p>系统为这个进程分配一个 ID，称为 PID（Program ID）。同时，根据触发这个进程的用户及相关属性关系，为这个 PID 设置一组有效的权限。</p>
-<h1 id="子进程与父进程"><a class="markdownIt-Anchor" href="#子进程与父进程"></a> 子进程与父进程</h1>
-<p>登录系统后，会获得一个 bash 的 shell。通过 bash 提供的接口执行另一个命令，如 <code>vim</code>，它也会被分配一个 PID。此时，原本的 bash 就是 <code>vim</code> 的父进程。父进程的 PID 可以用 PPID（Parent ID）表示。</p>
-<p>通常，子进程会继承父进程的相关权限和环境变量。</p>
-<p>例如，在 bash 中执行 <code>bash</code>，再用<code>ps -l</code>命令查看：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">bash</span>
-<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">ps</span> <span class="token parameter variable">-l</span>
-F S   <span class="token environment constant">UID</span>    PID   <span class="token environment constant">PPID</span>  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
-<span class="token number">4</span> S     <span class="token number">0</span>   <span class="token number">5713</span>   <span class="token number">5709</span>  <span class="token number">0</span>  <span class="token number">80</span>   <span class="token number">0</span> - <span class="token number">28920</span> do_wai pts/0    00:00:00 <span class="token function">bash</span>
-<span class="token number">4</span> S     <span class="token number">0</span>  <span class="token number">35555</span>   <span class="token number">5713</span>  <span class="token number">0</span>  <span class="token number">80</span>   <span class="token number">0</span> - <span class="token number">28919</span> do_wai pts/0    00:00:00 <span class="token function">bash</span>
-<span class="token number">0</span> R     <span class="token number">0</span>  <span class="token number">35570</span>  <span class="token number">35555</span>  <span class="token number">0</span>  <span class="token number">80</span>   <span class="token number">0</span> - <span class="token number">38332</span> -      pts/0    00:00:00 <span class="token function">ps</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以看到第一个 bash 的 PID 5517 是第二个 bash 的 PPID。</p>
-<h1 id="过程调用的流程"><a class="markdownIt-Anchor" href="#过程调用的流程"></a> 过程调用的流程</h1>
-<p>父进程和子进程之间的互相调用过程通常称为 fork-and-exec 的流程。进程都会通过父进程以复制（fork）的方式产生一个一模一样的子进程，然后被复制的子进程再以 exec 的方式执行实际要进行的进程，最终成为一个子进程的存在。</p>
-<p>其过程从上往下执行如下示意：</p>
-<table>
-<thead>
-<tr>
-<th><strong>阶段</strong></th>
-<th><strong>状态</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>父进程</td>
-<td>PID=x，程序=a</td>
-</tr>
-<tr>
-<td>中间暂存进程</td>
-<td>PID=y，程序=a，PPID=x</td>
-</tr>
-<tr>
-<td>子进程</td>
-<td>PID=y，程序=b，PPID=x</td>
-</tr>
-</tbody>
-</table>
-<h1 id="内部程序沟通"><a class="markdownIt-Anchor" href="#内部程序沟通"></a> 内部程序沟通</h1>
-<p>在系统内，许多进程需要互相交换信息。除了通过文件进行沟通，还包括共享内存（Shared Memory）、消息队列（Message Queues）、管道（Pipe）等方式，统称为内部程序沟通（Interprocess Communication）。可以用命令 <code>ipcs</code> 观察沟通状态：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ ipcs
-
- Message Queues 
-key        msqid      owner      perms      used-bytes   messages    
-
- Shared Memory Segments 
-key        shmid      owner      perms      bytes      nattch     status      
-
- Semaphore Arrays 
-key        semid      owner      perms      nsems   <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以通过 <code>ipcrm</code> 命令将看到的 interprocess 删除。</p>
-<h1 id="多用户与多任务环境"><a class="markdownIt-Anchor" href="#多用户与多任务环境"></a> 多用户与多任务环境</h1>
-<p>多用户系统也叫分时系统（Time-Share System），指多个用户可以在同一时间使用计算机系统。与 Linux 相比，Windows 系统是单用户系统。</p>
-<p>多任务是指 Linux 可以同时执行几个任务，它可以在还未执行完一个任务时又执行另一项任务。</p>
-<p>每个用户权限不同，所以登录后获得的 shell 的 PID 不同。而 CPU 速度 1GHz 代表 CPU 每秒可以运行 10<sup>9</sup>次命令，每个工作都占用 CPU 的几个命令次数。Linux 可以让 CPU 在各个进程间进行切换。所以实际上，所谓多任务处理是 CPU 快速地执行多个任务，看上去就像它们同时被执行一样。CPU 切换进程的工作与这些工作进入到 CPU 运行的调度会影响到系统的整体性能。由于 CPU 性能出众，所以可以支持多个用户同时登录运行不同程序，这就是多用户与多任务环境。</p>
-<h1 id="僵尸进程"><a class="markdownIt-Anchor" href="#僵尸进程"></a> 僵尸进程</h1>
-<p>造成僵尸进程的原因是该进程应该已经执行完毕或因故应该要终止时，该进程的父进程很可能已经死亡，无法完整将该进程结束掉，而造成那个进程一直滞留在内存。</p>
-<p>使用 <code>ps</code> 命令查看进程时，如果发现某个进程的 CMD 后面有 <code>&lt;defunct&gt;</code>，就代表该进程是僵尸进程。</p>
+        <h1 id="ftp-协议"><a class="markdownIt-Anchor" href="#ftp-协议"></a> FTP 协议</h1>
+<p>文件传输协议（FTP，File Transfer Protocol）主要功能是在服务器与客户端之间进行文件传输。它使用明文传输方式，所以建议只在局域网内使用。</p>
+<p>FTP 服务器提供以下功能：</p>
+<ul>
+<li>身份验证：默认情况下分为三种用户：用户 <code>user</code>，访客 <code>guest</code> 和匿名用户 <code>anonymous</code>。</li>
+<li>日志记录：FTP 可以利用 <code>syslogd</code> 来进行数据记录，存放于 <code>/var/log/</code> 下面。</li>
+<li>限制用户活动目录：<code>change root</code> 简称 <code>chroot</code>，将用户的工作范围局限在用户主目录下。</li>
+</ul>
+<h1 id="ftp-工作流程"><a class="markdownIt-Anchor" href="#ftp-工作流程"></a> FTP 工作流程</h1>
+<p>FTP 协议使用 TCP 数据包协议，并建立两个连接：命令通道与数据流通道（<code>ftp-data</code>）。</p>
+<h2 id="主动模式"><a class="markdownIt-Anchor" href="#主动模式"></a> 主动模式</h2>
+<p>FTP 默认的主动模式（Active）连接流程如下：</p>
+<ol>
+<li>客户端随机选取一个大于 1024 的端口来与服务端的 21 端口实现连接。实现连接后客户端可以通过这个连接来对服务器执行命令。</li>
+<li>当客户端需要传输数据时，会随机启用一个端口，并告诉服务端使用主动模式，通过此端口传输（通过 21 端口）。</li>
+<li>服务端接收到消息后，会主动使用 20 端口与客户端告之的端口建立连接，传输数据。</li>
+</ol>
+<p>在防火墙后面的客户端要想连接服务端下载数据时，会因为防火墙端口被拒绝而收不到回应，造成无法建立数据流通道。可以使用 <code>modprobe</code> 命令来加载 <code>ip_conntrack_ftp</code> 和 <code>ip_nat_ftp</code> 等模块，来让 <code>iptables</code> 分析目标是 21 端口的连接信息，由此放行数据传输端口。</p>
+<h2 id="被动模式"><a class="markdownIt-Anchor" href="#被动模式"></a> 被动模式</h2>
+<p>FTP 的被动模式（Passive）连接流程如下：</p>
+<ol>
+<li>客户端同样使用大于 1024 号的随机端口与服务端 21 端口建立连接。</li>
+<li>当客户端要传输数据时，只发送 <code>PASV</code> 的被动式连接请求，等待服务器回应。</li>
+<li>服务端收到请求后，会启动一个随机的被动监听端口，并告知客户端使用此端口来传输数据。</li>
+<li>客户端使用大于 1024 号的随机端口与主机被动端口连接，传输数据。</li>
+</ol>
+<h1 id="用户身份"><a class="markdownIt-Anchor" href="#用户身份"></a> 用户身份</h1>
+<p>FTP 提供的三种身份适用情况如下。</p>
+<h2 id="用户"><a class="markdownIt-Anchor" href="#用户"></a> 用户</h2>
+<p>此用户为服务器中存在的实体用户，以实体用户作为 FTP 登录者身份时，系统默认没有针对实体用户来进行限制，用户可以针对整个文件系统进行任何有权限的操作。</p>
+<p>因此建议实体用户模式使用 <code>sftp</code> 服务来代替。</p>
+<h2 id="访客"><a class="markdownIt-Anchor" href="#访客"></a> 访客</h2>
+<p>通常见于网页空间服务，用户需要管理自己的网页空间，但不需要实体用户的权限。</p>
+<p>在服务器的设置中，需要针对不同访客设置不同用户主目录，并且用户主目录与用户的权限设置需要符合。此外还有诸多如容量、时间、命令等需要限制。</p>
+<h2 id="匿名用户"><a class="markdownIt-Anchor" href="#匿名用户"></a> 匿名用户</h2>
+<p>匿名用户可以被所有人使用，所以开放匿名登录时需要限制上传和最大连接数量。</p>
+<h1 id="vsftpd-服务器"><a class="markdownIt-Anchor" href="#vsftpd-服务器"></a> vsftpd 服务器</h1>
+<p><code>vsftpd</code> 的全名是 Very Secure FTP，它针对操作系统的程序权限（privilege）来设计，具有以下特点：</p>
+<ul>
+<li><code>vsftpd</code> 服务的启动者身份为一般用户，对系统的权限较低。此外 <code>vsftpd</code> 利用 <code>chroot</code> 来更换根目录，使得系统工具不会被 <code>vsftpd</code> 服务所误用。</li>
+<li>任何需要具有较高执行权限的 <code>vsftpd</code> 命令均由一个特殊的上层程序控制，此上层程序享有的权限已被限制得很低，并且确保不会影响到系统。</li>
+<li>绝大部分 FTP 命令都已被整合到 <code>vsftpd</code> 主程序中了，不需要再调用外部命令。</li>
+<li>所有客户端想使用上层程序提供的较高执行权限的 <code>vsftpd</code> 命令（例如 <code>chown</code>，<code>login</code>），均被视作不可信任的要求处理，必须经过身份确认。</li>
+</ul>
+<p>使用 <code>yum</code> 来安装 <code>vsftpd</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 cgi-bin<span class="token punctuation">]</span>$ yum <span class="token function">install</span> <span class="token parameter variable">-y</span> vsftpd<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>和 <code>vsftpd</code> 配置有关的文件有：</p>
+<ul>
+<li>
+<p><code>/etc/vsftpd/vsftpd.conf</code></p>
+<p><code>vsftpd</code> 主要配置文件。以参数 = 设置值来设置，等号 = 两边不能有空格。</p>
+</li>
+<li>
+<p><code>/etc/pam.d/vsftpd</code></p>
+<p><code>vsftpd</code> 使用 PAM 模块时的相关配置文件，主要可设置拒绝用户文件 <code>/etc/vsftpd/ftpusers</code> 路径。</p>
+</li>
+<li>
+<p><code>/etc/vsftpd/ftpusers</code></p>
+<p>由 PAM 模块指定的拒绝用户列表记录文件，只需要一行一个记录拒绝用户账号即可。默认已经填入了系统账号。</p>
+</li>
+<li>
+<p><code>/etc/vsftpd/user_list</code></p>
+<p><code>vsftpd</code> 提供的访问控制，由 <code>userlist_enable</code> 和 <code>userlist_deny</code> 的设置控制。如 <code>userlist_deny=NO</code> 为用户白名单。</p>
+</li>
+<li>
+<p><code>/etc/vsftpd/chroot_list</code></p>
+<p>此文件需手动建立，作用是将用户 <code>chroot</code> 建立在用户主目录下。由 <code>chroot_list_enable</code> 和 <code>chroot_list_file</code> 设置启用。</p>
+</li>
+<li>
+<p><code>/var/ftp</code></p>
+<p>默认匿名用户登录的根目录。与 <code>ftp</code> 账号的用户主目录有关。</p>
+</li>
+</ul>
+<h1 id="vsftpd-配置"><a class="markdownIt-Anchor" href="#vsftpd-配置"></a> vsftpd 配置</h1>
+<p>配置文件 <code>/etc/vsftpd/vsftpd.conf</code> 中一些常用的选项如下：</p>
+<ul>
+<li>
+<p><code>connect_from_port_20=YES</code></p>
+<p>主动模式使用的数据传输端口。</p>
+</li>
+<li>
+<p><code>listen_port=21</code></p>
+<p>命令通道端口。如果使用非正规端口号，需要同时开启 <code>listen=YES</code> 来以 stand alone 的方式启动。</p>
+</li>
+<li>
+<p><code>listen=YES</code></p>
+<p>默认为 NO，设置为 YES 表示以 stand alone 的方式来启动。</p>
+</li>
+<li>
+<p><code>pasv_enable=YES</code></p>
+<p>设置传输使用被动模式。</p>
+</li>
+<li>
+<p><code>write_enable=YES</code></p>
+<p>允许用户上传。</p>
+</li>
+<li>
+<p><code>max_clients=0</code></p>
+<p>设置同时最多连接客户端数量。</p>
+</li>
+<li>
+<p><code>max_per_ip=0</code></p>
+<p>设置同一个 IP 同时最多允许的连接数。</p>
+</li>
+<li>
+<p><code>pasv_min_port=0, pasv_max_port=0</code></p>
+<p>设置被动模式下可使用的传输端口范围。</p>
+</li>
+<li>
+<p><code>guest_enable=YES</code></p>
+<p>设置为 YES 时，任何实体账号都会被假设成访客。访客在 <code>vsftpd</code> 中默认取得 <code>ftp</code> 用户的权限。</p>
+</li>
+<li>
+<p><code>local_enable=YES</code></p>
+<p>设置为 YES 时，实体账号才可以登录 <code>vsftpd</code> 服务器。</p>
+</li>
+<li>
+<p><code>chroot_local_user=YES</code></p>
+<p>设置是否将用户限制在主目录内。</p>
+</li>
+<li>
+<p><code>anonymous_enable=YES</code></p>
+<p>是否允许匿名用户登录，默认为 YES。</p>
+</li>
+</ul>
+<h1 id="vsftpd-测试"><a class="markdownIt-Anchor" href="#vsftpd-测试"></a> vsftpd 测试</h1>
+<p><code>vsftpd</code> 启动使用 <code>systemctl</code> 控制：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 cgi-bin<span class="token punctuation">]</span>$ systemctl <span class="token builtin class-name">enable</span> <span class="token parameter variable">--now</span> vsftpd<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>新建一个账号，并测试 <code>ftp</code> 连接：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 cgi-bin<span class="token punctuation">]</span>$ <span class="token function">useradd</span> <span class="token parameter variable">-p</span> user02 user02
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">ftp</span> <span class="token number">192.168</span>.2.254
+Connected to <span class="token number">192.168</span>.2.254 <span class="token punctuation">(</span><span class="token number">192.168</span>.2.254<span class="token punctuation">)</span>.
+<span class="token number">220</span> <span class="token punctuation">(</span>vsFTPd <span class="token number">3.0</span>.2<span class="token punctuation">)</span>
+Name <span class="token punctuation">(</span><span class="token number">192.168</span>.2.254:root<span class="token punctuation">)</span>: user02
+<span class="token number">331</span> Please specify the password.
+Password:
+<span class="token number">230</span> Login successful.
+Remote system <span class="token builtin class-name">type</span> is UNIX.
+Using binary mode to transfer files.
+ftp<span class="token operator">></span> <span class="token builtin class-name">pwd</span>
+<span class="token number">257</span> <span class="token string">"/home/user02"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>将用户 <code>user02</code> 添加进 <code>/etc/vsftpd/ftpusers</code> 后再次测试：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> /etc/vsftpd/
+<span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/vsftpd/ftpusers
+user02
+<span class="token punctuation">[</span>root@server2 home<span class="token punctuation">]</span>$ systemctl reload sshd
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">ftp</span> <span class="token number">192.168</span>.2.254
+Connected to <span class="token number">192.168</span>.2.254 <span class="token punctuation">(</span><span class="token number">192.168</span>.2.254<span class="token punctuation">)</span>.
+<span class="token number">220</span> <span class="token punctuation">(</span>vsFTPd <span class="token number">3.0</span>.2<span class="token punctuation">)</span>
+Name <span class="token punctuation">(</span><span class="token number">192.168</span>.2.254:root<span class="token punctuation">)</span>: user02
+<span class="token number">331</span> Please specify the password.
+Password:
+<span class="token number">530</span> Login incorrect.
+Login failed.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
     </div>
 
@@ -397,7 +491,7 @@ key        semid      owner      perms      nsems   <span aria-hidden="true" cla
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://blog.x2b.net/630034191/" title="Linux 中程序与进程关系">https://blog.x2b.net/630034191/</a>
+      <a href="https://blog.x2b.net/1853961938/" title="vsftpd 服务">https://blog.x2b.net/1853961938/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
@@ -427,13 +521,13 @@ key        semid      owner      perms      nsems   <span aria-hidden="true" cla
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="../3847284551/" rel="prev" title="Linux 工作调度与定时任务">
-                  <i class="fa fa-chevron-left"></i> Linux 工作调度与定时任务
+                <a href="../1886159042/" rel="prev" title="Squid 服务">
+                  <i class="fa fa-chevron-left"></i> Squid 服务
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="../517799084/" rel="next" title="Linux 进程前后台切换">
-                  Linux 进程前后台切换 <i class="fa fa-chevron-right"></i>
+                <a href="../1516343977/" rel="next" title="Postfix 服务">
+                  Postfix 服务 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -543,7 +637,7 @@ key        semid      owner      perms      nsems   <span aria-hidden="true" cla
 
 
   <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
-  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/630034191/"}</script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/1853961938/"}</script>
   <script src="../js/third-party/quicklink.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 

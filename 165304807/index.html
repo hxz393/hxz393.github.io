@@ -22,15 +22,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
 
-    <meta name="description" content="NFS服务器 NFS 为 Network File System 的简称，目的是想让不同机器、不同操作系统可以彼此共享数据文件。NFS 服务器可以让主机将网络中 NFS 服务器共享的目录挂载到本地端的文件系统中，用起来就像本地分区一样。 NFS 服务端口是 2049，此外用来传输的端口是小于 1024 号的随机端口，由 RPC 协议来调用。 远程过程调用（RPC，Remote Procedure">
+    <meta name="description" content="NFS 服务器 NFS 为 Network File System 的简称，目的是想让不同机器、不同操作系统可以彼此共享数据文件。NFS 服务器可以让主机将网络中 NFS 服务器共享的目录挂载到本地端的文件系统中，用起来就像本地分区一样。 NFS 服务端口是 2049，此外用来传输的端口是小于 1024 号的随机端口，由 RPC 协议来调用。 远程过程调用（RPC，Remote Procedur">
 <meta property="og:type" content="article">
 <meta property="og:title" content="NFS服务">
 <meta property="og:url" content="https://blog.x2b.net/165304807/index.html">
 <meta property="og:site_name" content="X to Bytes">
-<meta property="og:description" content="NFS服务器 NFS 为 Network File System 的简称，目的是想让不同机器、不同操作系统可以彼此共享数据文件。NFS 服务器可以让主机将网络中 NFS 服务器共享的目录挂载到本地端的文件系统中，用起来就像本地分区一样。 NFS 服务端口是 2049，此外用来传输的端口是小于 1024 号的随机端口，由 RPC 协议来调用。 远程过程调用（RPC，Remote Procedure">
+<meta property="og:description" content="NFS 服务器 NFS 为 Network File System 的简称，目的是想让不同机器、不同操作系统可以彼此共享数据文件。NFS 服务器可以让主机将网络中 NFS 服务器共享的目录挂载到本地端的文件系统中，用起来就像本地分区一样。 NFS 服务端口是 2049，此外用来传输的端口是小于 1024 号的随机端口，由 RPC 协议来调用。 远程过程调用（RPC，Remote Procedur">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-10-10T06:00:26.000Z">
-<meta property="article:modified_time" content="2023-05-11T14:34:36.162Z">
+<meta property="article:modified_time" content="2023-05-11T15:37:21.118Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python">
 <meta name="twitter:card" content="summary">
@@ -94,7 +94,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">49</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">51</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -145,7 +145,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#nfs%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">1.</span> <span class="nav-text"> NFS服务器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#nfs%E6%9C%8D%E5%8A%A1%E9%85%8D%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text"> NFS服务配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#nfs%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text"> NFS服务管理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#nfs%E7%9B%AE%E5%BD%95%E6%8C%82%E8%BD%BD"><span class="nav-number">4.</span> <span class="nav-text"> NFS目录挂载</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#nfs-%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">1.</span> <span class="nav-text"> NFS 服务器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#nfs-%E6%9C%8D%E5%8A%A1%E9%85%8D%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text"> NFS 服务配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#nfs-%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text"> NFS 服务管理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#nfs-%E7%9B%AE%E5%BD%95%E6%8C%82%E8%BD%BD"><span class="nav-number">4.</span> <span class="nav-text"> NFS 目录挂载</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -160,7 +160,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="../archives/">
-          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-count">51</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -258,7 +258,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-11 22:34:36" itemprop="dateModified" datetime="2023-05-11T22:34:36+08:00">2023-05-11</time>
+      <time title="修改时间：2023-05-11 23:37:21" itemprop="dateModified" datetime="2023-05-11T23:37:21+08:00">2023-05-11</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -306,7 +306,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="nfs服务器"><a class="markdownIt-Anchor" href="#nfs服务器"></a> NFS服务器</h1>
+        <h1 id="nfs-服务器"><a class="markdownIt-Anchor" href="#nfs-服务器"></a> NFS 服务器</h1>
 <p>NFS 为 Network File System 的简称，目的是想让不同机器、不同操作系统可以彼此共享数据文件。NFS 服务器可以让主机将网络中 NFS 服务器共享的目录挂载到本地端的文件系统中，用起来就像本地分区一样。</p>
 <p>NFS 服务端口是 2049，此外用来传输的端口是小于 1024 号的随机端口，由 RPC 协议来调用。</p>
 <p>远程过程调用（RPC，Remote Procedure Call）服务主要功能是指定每个 NFS 功能所对应的端口号，并通知给客户端。端口号由 NFS 启动时随机选取并向 RPC 注册，因此 RPC 服务需要先于 NFS 启动。</p>
@@ -318,7 +318,7 @@
 <li><code>rpc.lockd</code>：用于管理文件锁定功能。需要服务端和客户端同时开启，与 <code>rpc.statd</code> 有依赖关系，非必须启动。</li>
 <li><code>rpc.statd</code>：用来检查文件的一致性，如果文件被多客户端同时使用造成损坏时，它可以检测并尝试恢复文件。</li>
 </ul>
-<h1 id="nfs服务配置"><a class="markdownIt-Anchor" href="#nfs服务配置"></a> NFS服务配置</h1>
+<h1 id="nfs-服务配置"><a class="markdownIt-Anchor" href="#nfs-服务配置"></a> NFS 服务配置</h1>
 <p>要想启动 NFS 服务器，需要具备下面两个程序：</p>
 <ul>
 <li><code>rpcbind</code>：RPC 的主程序，用来做好端口对应的工作。</li>
@@ -341,7 +341,7 @@
 <li>anonuid=, anongid=：设置匿名用户 UID 或 GID 值。</li>
 </ul>
 <p>一般 NFS 服务不会对互联网开放，如果遇到特殊要求，可以调整配置 <code>/etc/sysconfig/nfs</code> 让除了 111 和 2049 号外的端口固定，以方便防火墙设置规则。</p>
-<h1 id="nfs服务管理"><a class="markdownIt-Anchor" href="#nfs服务管理"></a> NFS服务管理</h1>
+<h1 id="nfs-服务管理"><a class="markdownIt-Anchor" href="#nfs-服务管理"></a> NFS 服务管理</h1>
 <p>改好配置文件后就可以启动 NFS 服务：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ systemctl start rpcbind
 <span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ systemctl start nfs<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
@@ -357,7 +357,7 @@ exporting <span class="token number">10.1</span>.1.0/24:/tmp
 exporting *:/root/nf<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>卸载已经共享的 NFS 目录也使用 <code>exportfs</code> 命令操作：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ exportfs <span class="token parameter variable">-auv</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h1 id="nfs目录挂载"><a class="markdownIt-Anchor" href="#nfs目录挂载"></a> NFS目录挂载</h1>
+<h1 id="nfs-目录挂载"><a class="markdownIt-Anchor" href="#nfs-目录挂载"></a> NFS 目录挂载</h1>
 <p>可以使用 <code>showmount</code> 来查询 NFS 服务器共享目录情况：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ showmount <span class="token parameter variable">-e</span> <span class="token number">10.1</span>.1.1
 Export list <span class="token keyword">for</span> <span class="token number">127.0</span>.0.1:
@@ -484,13 +484,13 @@ Filesystem              1K-blocks    Used Available Use% Mounted on
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">121k</span>
+    <span title="站点总字数">125k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">6:43</span>
+    <span title="站点阅读时长">6:57</span>
   </span>
 </div>
 <div class="busuanzi-count">
