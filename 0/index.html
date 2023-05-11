@@ -22,28 +22,28 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
 
-    <meta name="description" content="工作控制 工作控制是一种由内核支持、shell 实现的功能，允许用户同时运行多个进程，其中一个进程在前台（foreground），其他进程在后台（background）运行。用户可以在前台和后台之间切换、挂起和显示进程状态。 将一个进程放入后台运行，该进程必须不需要与用户交互，且不能使用 Ctrl+c 来终止运行。  后台运行 在命令后加入空格和&amp;符号即可将进程放入后台运行，这也被称为异">
+    <meta name="description" content="NTP服务  NTP通信协议 NTP是网络校时协议(Network Time Protocol).为了修正因为BIOS内部芯片问题导致与标准时间(UTC, Coordinated Universal Time)存在的偏差,而通过网络进行时间同步(Synchronize).此外DTSS(Digital Time Synchronization Protocol)也可实现同样的功能. Linux系统">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux 进程前后台切换">
-<meta property="og:url" content="https://blog.x2b.net/517799084/index.html">
+<meta property="og:title" content="X to Bytes">
+<meta property="og:url" content="https://blog.x2b.net/0/index.html">
 <meta property="og:site_name" content="X to Bytes">
-<meta property="og:description" content="工作控制 工作控制是一种由内核支持、shell 实现的功能，允许用户同时运行多个进程，其中一个进程在前台（foreground），其他进程在后台（background）运行。用户可以在前台和后台之间切换、挂起和显示进程状态。 将一个进程放入后台运行，该进程必须不需要与用户交互，且不能使用 Ctrl+c 来终止运行。  后台运行 在命令后加入空格和&amp;符号即可将进程放入后台运行，这也被称为异">
+<meta property="og:description" content="NTP服务  NTP通信协议 NTP是网络校时协议(Network Time Protocol).为了修正因为BIOS内部芯片问题导致与标准时间(UTC, Coordinated Universal Time)存在的偏差,而通过网络进行时间同步(Synchronize).此外DTSS(Digital Time Synchronization Protocol)也可实现同样的功能. Linux系统">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-09-18T05:56:41.000Z">
-<meta property="article:modified_time" content="2023-05-07T12:19:35.832Z">
+<meta property="article:published_time" content="2022-03-20T01:01:17.000Z">
+<meta property="article:modified_time" content="2023-04-26T09:07:57.619Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://blog.x2b.net/517799084/">
+<link rel="canonical" href="https://blog.x2b.net/0/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/517799084/","path":"517799084/","title":"Linux 进程前后台切换"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/0/","path":"0/","title":""}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Linux 进程前后台切换 | X to Bytes</title>
+<title> | X to Bytes</title>
   
 
   <script src="../js/third-party/analytics/baidu-analytics.js"></script>
@@ -145,7 +145,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E6%8E%A7%E5%88%B6"><span class="nav-number">1.</span> <span class="nav-text"> 工作控制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C"><span class="nav-number">2.</span> <span class="nav-text"> 后台运行</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8E%E5%8F%B0%E6%9A%82%E5%81%9C"><span class="nav-number">3.</span> <span class="nav-text"> 后台暂停</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8E%E5%8F%B0%E7%8A%B6%E6%80%81"><span class="nav-number">4.</span> <span class="nav-text"> 后台状态</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8E%E5%8F%B0%E8%BD%AC%E5%89%8D%E5%8F%B0"><span class="nav-number">5.</span> <span class="nav-text"> 后台转前台</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8E%E5%8F%B0%E8%BD%AC%E8%BF%90%E8%A1%8C"><span class="nav-number">6.</span> <span class="nav-text"> 后台转运行</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%84%B1%E6%9C%BA%E8%BF%90%E8%A1%8C"><span class="nav-number">7.</span> <span class="nav-text"> 脱机运行</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ntp%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.</span> <span class="nav-text"> NTP服务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ntp%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.1.</span> <span class="nav-text"> NTP通信协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ntp%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%B1%82%E6%AC%A1"><span class="nav-number">1.2.</span> <span class="nav-text"> NTP服务器层次</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.3.</span> <span class="nav-text"> 服务器设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AE%A1%E7%90%86"><span class="nav-number">1.4.</span> <span class="nav-text"> 服务器管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.5.</span> <span class="nav-text"> 客户端设置</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -222,7 +222,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/517799084/">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="../images/avatar.jpg">
@@ -235,12 +235,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Linux 进程前后台切换 | X to Bytes">
+      <meta itemprop="name" content=" | X to Bytes">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Linux 进程前后台切换
+          
         </h1>
 
         <div class="post-meta-container">
@@ -251,27 +251,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2021-09-18 13:56:41" itemprop="dateCreated datePublished" datetime="2021-09-18T13:56:41+08:00">2021-09-18</time>
+      <time title="创建时间：2022-03-20 09:01:17" itemprop="dateCreated datePublished" datetime="2022-03-20T09:01:17+08:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-07 20:19:35" itemprop="dateModified" datetime="2023-05-07T20:19:35+08:00">2023-05-07</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../categories/Linux/1-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">1.基本操作</span></a>
-        </span>
+      <time title="修改时间：2023-04-26 17:07:57" itemprop="dateModified" datetime="2023-04-26T17:07:57+08:00">2023-04-26</time>
     </span>
 
   
@@ -288,14 +275,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>822</span>
+      <span>1.3k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>3 分钟</span>
+      <span>4 分钟</span>
     </span>
 </div>
 
@@ -306,75 +293,99 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="工作控制"><a class="markdownIt-Anchor" href="#工作控制"></a> 工作控制</h1>
-<p>工作控制是一种由内核支持、shell 实现的功能，允许用户同时运行多个进程，其中一个进程在前台（foreground），其他进程在后台（background）运行。用户可以在前台和后台之间切换、挂起和显示进程状态。</p>
-<p>将一个进程放入后台运行，该进程必须不需要与用户交互，且不能使用 Ctrl+c 来终止运行。</p>
-<h1 id="后台运行"><a class="markdownIt-Anchor" href="#后台运行"></a> 后台运行</h1>
-<p>在命令后加入空格和&amp;符号即可将进程放入后台运行，这也被称为异步进程（Asynchronous Process）运行程序：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ <span class="token function">tar</span> <span class="token parameter variable">-zxvf</span> <span class="token number">1</span>.iso <span class="token parameter variable">-C</span> lost+found/ <span class="token operator">&amp;</span>
-<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token number">36961</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>中括号内的数字为工作号码（job number），后续数字为工作在系统中的 PID。</p>
-<p>后台工作完成后会给前台发信息：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>+  Done                    <span class="token function">cp</span> <span class="token parameter variable">-i</span> <span class="token number">1</span>.iso <span class="token number">1</span>.copy<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>后台运行的工作如果有标准输出（stdout）和标准错误输出（stderr），依然会实时输出到屏幕。可以在执行时将这些数据重定向，以免影响前台工作。</p>
-<h1 id="后台暂停"><a class="markdownIt-Anchor" href="#后台暂停"></a> 后台暂停</h1>
-<p>使用 Ctrl+z 把当前的前台工作停止放到后台：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">tail</span> <span class="token parameter variable">-f</span> root.txt 
--rw-r--r--.  <span class="token number">1</span> root root         <span class="token number">0</span> Sep <span class="token number">11</span> <span class="token number">10</span>:11 list_error.txt
--rw-r--r--.  <span class="token number">1</span> root root        <span class="token number">54</span> Sep <span class="token number">11</span> <span class="token number">10</span>:16 list.txt
-^Z
-<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span>+  Stopped                 <span class="token function">tail</span> <span class="token parameter variable">-f</span> root.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>数字 2 表示这是后台中的第 2 个工作，加号 + 代表最近一个被丢进后台的工作。</p>
-<h1 id="后台状态"><a class="markdownIt-Anchor" href="#后台状态"></a> 后台状态</h1>
-<p>使用 <code>jobs</code> 命令查看当前后台工作状态。可用参数如下：</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>-l</td>
-<td>除了列出 job number 与命令外，同时列出 PID</td>
-</tr>
-<tr>
-<td>-r</td>
-<td>仅列出后台运行的工作</td>
-</tr>
-<tr>
-<td>-s</td>
-<td>仅列出后台暂停的工作</td>
-</tr>
-</tbody>
-</table>
-<p>使用 <code>-l</code> 参数查看当前后台工作状态与工作 PID：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">jobs</span> <span class="token parameter variable">-l</span>
-<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>- <span class="token number">37687</span> Stopped                 <span class="token function">tail</span> <span class="token parameter variable">-f</span> root1.txt
-<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span>+ <span class="token number">37698</span> Stopped                 <span class="token function">tail</span> <span class="token parameter variable">-f</span> root.txt
-<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span>  <span class="token number">37916</span> Running                 <span class="token function">tail</span> <span class="token parameter variable">-f</span> list_error.txt <span class="token operator">&amp;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>加号 <code>+</code> 代表最近一个被放置到后台的工作，减号 <code>-</code> 代表倒数第二个被放置到后台中的工作，其他工作没有符号。</p>
-<h1 id="后台转前台"><a class="markdownIt-Anchor" href="#后台转前台"></a> 后台转前台</h1>
-<p>使用 <code>fg</code> 命令将后台工作转到前台处理。例如将 3 号工作取出到前台：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">fg</span> %3
-<span class="token function">tail</span> <span class="token parameter variable">-f</span> list_error.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h1 id="后台转运行"><a class="markdownIt-Anchor" href="#后台转运行"></a> 后台转运行</h1>
-<p>使用 <code>bg</code> 命令启动后台暂停中工作为后台运行。例如将后台暂停的 3 号工作转为后台运行：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">bg</span> <span class="token variable">$3</span>
-<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span>+ <span class="token function">tail</span> <span class="token parameter variable">-f</span> list_error.txt <span class="token operator">&amp;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h1 id="脱机运行"><a class="markdownIt-Anchor" href="#脱机运行"></a> 脱机运行</h1>
-<p>由于登陆后在 shell 中运行的命令父进程是 bash，所以当 shell 会话中断时，后台的程序也会跟着被中断。</p>
-<p>想要保持程序一直运行与终端状态脱离关系，可以使用 <code>nohup</code> 命令来处理。命令格式为：<code>nohup [命令与参数] &amp;</code></p>
-<p>例如保持 <code>sh13.sh</code> 脚本脱机运行：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">nohup</span> ./sh13.sh <span class="token operator">&amp;</span>
-<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token number">40062</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>注销用户后重新登录，使用<code>ps</code>命令查询：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">ps</span> aux <span class="token operator">|</span> <span class="token function">grep</span> sh13
-root      <span class="token number">40062</span>  <span class="token number">0.0</span>  <span class="token number">0.0</span> <span class="token number">113284</span>  <span class="token number">1184</span> ?        S    03:53   <span class="token number">0</span>:00 /bin/bash ./sh13.sh
-root      <span class="token number">40219</span>  <span class="token number">0.0</span>  <span class="token number">0.0</span> <span class="token number">112812</span>   <span class="token number">968</span> pts/0    S+   03:55   <span class="token number">0</span>:00 <span class="token function">grep</span> <span class="token parameter variable">--color</span><span class="token operator">=</span>auto sh13<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>可以看到程序（PID=40062）依然在运行中，可以使用 <code>kill</code> 命令来终止运行。</p>
-<p>程序的输出会被重定向到 <code>~/nohup.out</code> 文件。也可以手动指定 <code>1&gt;</code> 和 <code>2&gt;</code> 到其他文件。</p>
+        <h1 id="ntp服务"><a class="markdownIt-Anchor" href="#ntp服务"></a> NTP服务</h1>
+<h2 id="ntp通信协议"><a class="markdownIt-Anchor" href="#ntp通信协议"></a> NTP通信协议</h2>
+<p>NTP是网络校时协议(Network Time Protocol).为了修正因为BIOS内部芯片问题导致与标准时间(UTC, Coordinated Universal Time)存在的偏差,而通过网络进行时间同步(Synchronize).此外DTSS(Digital Time Synchronization Protocol)也可实现同样的功能.</p>
+<p>Linux系统中有两个时间:</p>
+<ul>
+<li>软件时钟: Linux自己的系统时间,从1970.1.1开始记录的时间参数.</li>
+<li>硬件时钟: 计算机在BIOS记录的实际时间(UTC),通过硬件记录.写入硬件时钟使用hwclock命令.</li>
+</ul>
+<p>NTP服务器使用的端口为123,通过UDP数据包传输.</p>
+<p>我国授时中心服务器的IP地址为210.72.145.44.</p>
+<h2 id="ntp服务器层次"><a class="markdownIt-Anchor" href="#ntp服务器层次"></a> NTP服务器层次</h2>
+<p>NTP时间服务器采用类似分级构架(Stratum)来处理时间的同步化,并且采用Server/Client的主从构架.网络上会提供一些主要与次要时间服务器,均属于第一级(stratum-1)与第二级(stratum-2)的时间服务器.</p>
+<p>如果我们的NTP服务器向二级时间服务器要求时间同步,那么我们的NTP服务器即为三级(stratum-3)时间服务器.依此传递下去,最多可达15个阶层.</p>
+<p>一般在进行NTP主机的设置时,会选择多台上层的Time Server来作为我们的NTP服务器校时用,这样可以避免某台时间服务器下线造成无法更新.</p>
+<h2 id="服务器设置"><a class="markdownIt-Anchor" href="#服务器设置"></a> 服务器设置</h2>
+<p>启动NTP服务器需要安装ntp软件:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ yum <span class="token parameter variable">-y</span> <span class="token function">install</span> ntp ntpdate<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>修改时区可以使用timedatectl命令.例如修改成上海时间:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ timedatectl set-timezone <span class="token string">"Asia/Shanghai"</span>
+<span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ timedatectl
+      Local time: Mon <span class="token number">2021</span>-10-11 05:07:51 CST
+  Universal time: Sun <span class="token number">2021</span>-10-10 <span class="token number">21</span>:07:51 UTC
+        RTC time: Sun <span class="token number">2021</span>-10-10 <span class="token number">21</span>:07:51
+       Time zone: Asia/Shanghai <span class="token punctuation">(</span>CST, +0800<span class="token punctuation">)</span>
+     NTP enabled: <span class="token function">yes</span>
+NTP synchronized: <span class="token function">yes</span>
+ RTC <span class="token keyword">in</span> <span class="token builtin class-name">local</span> TZ: no
+      DST active: n/a<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>服务器配置文件位于/etc/ntp.conf,其内容修改部分如下:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/ntp.conf
+restrict <span class="token number">210.72</span>.145.44
+restrict <span class="token number">192.168</span>.2.0 mask <span class="token number">255.255</span>.255.0 nomodify
+server <span class="token number">210.72</span>.145.44
+server cn.pool.ntp.org
+driftfile /var/lib/ntp/drift
+keys /etc/ntp/keys<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中restrict行用来控制权限,上面运行局域网内主机通过这部主机来进行网络校时.其他可用参数有:</p>
+<ul>
+<li>ignore: 拒绝所有类型的NTP连接.</li>
+<li>nomodify: 客户端不能使用ntpc和ntpq来修改服务器的时间参数,但可以通过这部主机来进行网络校时.</li>
+<li>noquery: 客户端不能使用ntpq和ntpc等命令来查询时间服务器,不提供NTP的网络校时.</li>
+<li>notrap: 不提供trap这个远程时间登录(remote event logging)的功能.</li>
+<li>notrust: 拒绝没有认证的客户端.</li>
+</ul>
+<p>server行用来设置上层NTP服务器地址,可以设置多个.</p>
+<p>driftfile行指定的文件用来记录本机与上层Time Server之间振荡周期频率误差.</p>
+<p>keys行指定用来认证的密钥文件.</p>
+<h2 id="服务器管理"><a class="markdownIt-Anchor" href="#服务器管理"></a> 服务器管理</h2>
+<p>配置修改完毕后,可以通过systemctl来启动ntpd服务:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ systemctl <span class="token builtin class-name">enable</span> <span class="token parameter variable">--now</span> ntpd
+<span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token function">netstat</span> <span class="token parameter variable">-ntulp</span> <span class="token operator">|</span> <span class="token function">grep</span> ntpd
+udp     <span class="token number">0</span>      <span class="token number">0</span> <span class="token number">10.1</span>.1.1:123            <span class="token number">0.0</span>.0.0:*                           <span class="token number">30097</span>/ntpd 
+udp     <span class="token number">0</span>      <span class="token number">0</span> <span class="token number">192.168</span>.2.254:123       <span class="token number">0.0</span>.0.0:*                           <span class="token number">30097</span>/ntpd  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>通常NTP启动后需要十五分钟内才会和上层NTP服务器连接上.可以使用ntpstat命令查询:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ ntpstat
+synchronised to NTP server <span class="token punctuation">(</span><span class="token number">111.230</span>.189.174<span class="token punctuation">)</span> at stratum <span class="token number">3</span>
+   <span class="token function">time</span> correct to within <span class="token number">212</span> ms
+   polling server every <span class="token number">64</span> s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上面结果显示时间矫正了212ms,并且每隔64秒会主动去更新时间.</p>
+<p>使用ntpq可以查询我们的NTP与相关上层NTP的状态:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ ntpq <span class="token parameter variable">-p</span>
+     remote           refid      st t when poll reach   delay   offset  jitter
+<span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span>
+ <span class="token number">210.72</span>.145.44   .INIT.          <span class="token number">16</span> u    -   <span class="token number">64</span>    <span class="token number">0</span>    <span class="token number">0.000</span>    <span class="token number">0.000</span>   <span class="token number">0.000</span>
+ ntp.wdc1.us.lea <span class="token number">130.133</span>.1.10     <span class="token number">2</span> u    <span class="token number">9</span>   <span class="token number">64</span>   <span class="token number">37</span>  <span class="token number">251.796</span>   <span class="token parameter variable">-4.729</span>   <span class="token number">0.252</span>
+*111.230.189.174 <span class="token number">100.122</span>.36.4     <span class="token number">2</span> u   <span class="token number">65</span>   <span class="token number">64</span>   <span class="token number">17</span>   <span class="token number">21.948</span>   <span class="token parameter variable">-6.164</span>   <span class="token number">0.297</span>
++ntp6.flashdance <span class="token number">194.58</span>.202.20    <span class="token number">2</span> u   <span class="token number">66</span>   <span class="token number">64</span>   <span class="token number">17</span>  <span class="token number">237.552</span>   <span class="token parameter variable">-6.099</span>   <span class="token number">5.726</span>
++2402:f000:1:416 <span class="token number">186.195</span>.4.16     <span class="token number">2</span> u   <span class="token number">62</span>   <span class="token number">64</span>   <span class="token number">17</span>   <span class="token number">33.758</span>   <span class="token parameter variable">-3.033</span>   <span class="token number">0.306</span>
+<span class="token parameter variable">-sv1.ggsrv.de</span>    <span class="token number">205.46</span>.178.169   <span class="token number">2</span> u   <span class="token number">65</span>   <span class="token number">64</span>   <span class="token number">17</span>  <span class="token number">280.605</span>   <span class="token number">10.958</span>   <span class="token number">2.962</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>各字段意义如下:</p>
+<ul>
+<li>remote: NTP主机的IP或主机名.最左边符号*代表目前使用的NTP,符号+表示已连接的备选NTP.</li>
+<li>refid: 参考的上层NTP主机地址.</li>
+<li>st: stratum阶层等级.</li>
+<li>when: 上次时间同步操作后的时间间隔.</li>
+<li>poll: 下次时间同步更新操作的时间间隔.</li>
+<li>reach: 已经向上层NTP服务器要求更新的次数.</li>
+<li>delay: 网络传输过程当中的延迟,单位为微秒.</li>
+<li>offset: 时间补偿结果,单位为毫秒.</li>
+<li>jitter: Linux系统时间与BIOS硬件时间的差异时间,单位为微秒.</li>
+</ul>
+<h2 id="客户端设置"><a class="markdownIt-Anchor" href="#客户端设置"></a> 客户端设置</h2>
+<p>客户端可以使用ntpdate命令来与服务器同步时间:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ ntpdate <span class="token number">192.168</span>.2.254
+<span class="token number">11</span> Oct <span class="token number">15</span>:54:26 ntpdate<span class="token punctuation">[</span><span class="token number">125764</span><span class="token punctuation">]</span>: adjust <span class="token function">time</span> server <span class="token number">192.168</span>.2.254 offset <span class="token parameter variable">-0.002236</span> sec
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">date</span><span class="token punctuation">;</span>hwclock <span class="token parameter variable">-r</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>同步之后使用hwclock写入到硬件.ntpd服务端和客户端之间时间误差不允许超过1000秒.</p>
+<p>服务端配置也是修改/etc/ntp.conf文件:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/ntp.conf 
+restrict <span class="token number">192.168</span>.2.254
+server <span class="token number">192.168</span>.2.254<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>之后启动ntpd服务,客户端就会自动到服务端同步时间:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ systemctl start ntpd<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
     </div>
 
@@ -406,7 +417,7 @@ root      <span class="token number">40219</span>  <span class="token number">0.
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://blog.x2b.net/517799084/" title="Linux 进程前后台切换">https://blog.x2b.net/517799084/</a>
+      <a href="https://blog.x2b.net/0/" title="">https://blog.x2b.net/0/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
@@ -436,13 +447,13 @@ root      <span class="token number">40219</span>  <span class="token number">0.
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="../630034191/" rel="prev" title="Linux 中程序与进程关系">
-                  <i class="fa fa-chevron-left"></i> Linux 中程序与进程关系
+                <a href="../4291230975/" rel="prev" title="Linux 中引导与启动流程">
+                  <i class="fa fa-chevron-left"></i> Linux 中引导与启动流程
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="../1804980384/" rel="next" title="Linux 进程查询与管理">
-                  Linux 进程查询与管理 <i class="fa fa-chevron-right"></i>
+                <a href="../735422586/" rel="next" title="Linux 基本目录操作">
+                  Linux 基本目录操作 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -552,7 +563,7 @@ root      <span class="token number">40219</span>  <span class="token number">0.
 
 
   <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
-  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/517799084/"}</script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/0/"}</script>
   <script src="../js/third-party/quicklink.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
