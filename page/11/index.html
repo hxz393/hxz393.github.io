@@ -92,7 +92,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="../../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">55</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="../../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">56</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -157,7 +157,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="../../archives/">
-          <span class="site-state-item-count">55</span>
+          <span class="site-state-item-count">56</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -206,6 +206,131 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/3491093041/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="../../3491093041/" class="post-title-link" itemprop="url">Linux 磁盘管理</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-09-18 11:57:47" itemprop="dateCreated datePublished" datetime="2021-09-18T11:57:47+08:00">2021-09-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-03 22:42:31" itemprop="dateModified" datetime="2023-05-03T22:42:31+08:00">2023-05-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../../categories/Linux/2-%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">2.系统管理</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>7.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>24 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="磁盘查询"><a class="markdownIt-Anchor" href="#磁盘查询"></a> 磁盘查询</h1>
+<p>主要是 <code>df</code> 这个命令，经常用来查询系统中磁盘剩余空间。比如发现根目录 <code>/</code> 满了，说明系统危险了。</p>
+<h2 id="查询磁盘容量"><a class="markdownIt-Anchor" href="#查询磁盘容量"></a> 查询磁盘容量</h2>
+<p>使用 <code>df</code> 查看磁盘使用量，<code>df</code> 读取的是在 Superblock 内的信息。</p>
+<p>例如查看系统内所有的文件系统：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 /<span class="token punctuation">]</span>$ <span class="token function">df</span> <span class="token parameter variable">-h</span>
+Filesystem               Size  Used Avail Use% Mounted on
+devtmpfs                 <span class="token number">1</span>.9G     <span class="token number">0</span>  <span class="token number">1</span>.9G   <span class="token number">0</span>% /dev
+tmpfs                    <span class="token number">1</span>.9G     <span class="token number">0</span>  <span class="token number">1</span>.9G   <span class="token number">0</span>% /dev/shm
+tmpfs                    <span class="token number">1</span>.9G   12M  <span class="token number">1</span>.9G   <span class="token number">1</span>% /run
+tmpfs                    <span class="token number">1</span>.9G     <span class="token number">0</span>  <span class="token number">1</span>.9G   <span class="token number">0</span>% /sys/fs/cgroup
+/dev/mapper/centos-root   17G  <span class="token number">2</span>.1G   15G  <span class="token number">13</span>% /
+/dev/sda1               1014M  187M  828M  <span class="token number">19</span>% /boot
+tmpfs                    378M     <span class="token number">0</span>  378M   <span class="token number">0</span>% /run/user/0
+/dev/sdb1                991M  <span class="token number">1</span>.3M  939M   <span class="token number">1</span>% /ext333<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="../../3491093041/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -458,6 +583,129 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/1256157642/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="../../1256157642/" class="post-title-link" itemprop="url">脚本范例</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-09-18 11:57:47" itemprop="dateCreated datePublished" datetime="2021-09-18T11:57:47+08:00">2021-09-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-11 21:56:35" itemprop="dateModified" datetime="2023-05-11T21:56:35+08:00">2023-05-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../../categories/Linux/3-%E8%84%9A%E6%9C%AC%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">3.脚本编程</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>879</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="输出消息"><a class="markdownIt-Anchor" href="#输出消息"></a> 输出消息</h1>
+<p>在 <code>echo</code> 命令使用 <code>-n</code> 参数可以让输出不换行:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#!/bin/bash</span>
+<span class="token assign-left variable">fruite</span><span class="token operator">=</span>orange
+<span class="token assign-left variable">count</span><span class="token operator">=</span><span class="token number">110</span>
+<span class="token builtin class-name">echo</span> <span class="token parameter variable">-n</span> <span class="token string">"We have <span class="token variable">$&#123;count&#125;</span> <span class="token variable">$&#123;fruite&#125;</span>s"</span>
+<span class="token builtin class-name">echo</span> <span class="token string">"??"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="交互式脚本"><a class="markdownIt-Anchor" href="#交互式脚本"></a> 交互式脚本</h1>
+<p>使用 <code>read</code> 来读取用户输入保存到变量中:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#!/bin/bash</span>
+<span class="token builtin class-name">read</span> <span class="token parameter variable">-r</span> <span class="token parameter variable">-p</span> <span class="token string">"Set Username: "</span> newuser
+<span class="token builtin class-name">read</span> <span class="token parameter variable">-r</span> <span class="token parameter variable">-p</span> <span class="token string">"Set Password: "</span> newpass
+<span class="token builtin class-name">echo</span> <span class="token parameter variable">-e</span> <span class="token string">"<span class="token entity" title="\n">\n</span> Your user:pass is: <span class="token variable">$newuser</span>:<span class="token variable">$newpass</span>"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="../../1256157642/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/17877528/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -579,250 +827,8 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/794273428/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="../../images/avatar.jpg">
-      <meta itemprop="name" content="assassing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="X to Bytes">
-      <meta itemprop="description" content="技术分享">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | X to Bytes">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="../../794273428/" class="post-title-link" itemprop="url">正则表达式</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-09-18 11:57:47" itemprop="dateCreated datePublished" datetime="2021-09-18T11:57:47+08:00">2021-09-18</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-09 01:28:32" itemprop="dateModified" datetime="2023-05-09T01:28:32+08:00">2023-05-09</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Linux/3-%E8%84%9A%E6%9C%AC%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">3.脚本编程</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>3k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>10 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="基本定义"><a class="markdownIt-Anchor" href="#基本定义"></a> 基本定义</h1>
-<p>正则表达式是一种处理字符串的方法，以行为单位来进行字符串的处理行为。通过一些特殊符号的辅助，让用户轻松（？）达到查找、删除、替换某特定字符串的处理程序。</p>
-<p>基础正则表达式（BRE）和扩展正则表达式（ERE）的区别在于支持的元字符不同：</p>
-<ul>
-<li><strong>BRE 支持的元字符</strong>：^ $ . * [ ]</li>
-<li><strong>ERE 支持的元字符</strong>：^ $ . * [ ] + ( ) { } ? |</li>
-</ul>
-<h2 id="元字符"><a class="markdownIt-Anchor" href="#元字符"></a> 元字符</h2>
-<p>元字符要代表字符串意思时必须用转义字符<code>\</code>转义，把元字符变成普通字符。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="../../794273428/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/1256157642/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="../../images/avatar.jpg">
-      <meta itemprop="name" content="assassing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="X to Bytes">
-      <meta itemprop="description" content="技术分享">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | X to Bytes">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="../../1256157642/" class="post-title-link" itemprop="url">脚本范例</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-09-18 11:57:47" itemprop="dateCreated datePublished" datetime="2021-09-18T11:57:47+08:00">2021-09-18</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-11 21:56:35" itemprop="dateModified" datetime="2023-05-11T21:56:35+08:00">2023-05-11</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Linux/3-%E8%84%9A%E6%9C%AC%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">3.脚本编程</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>879</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>3 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="输出消息"><a class="markdownIt-Anchor" href="#输出消息"></a> 输出消息</h1>
-<p>在 <code>echo</code> 命令使用 <code>-n</code> 参数可以让输出不换行:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#!/bin/bash</span>
-<span class="token assign-left variable">fruite</span><span class="token operator">=</span>orange
-<span class="token assign-left variable">count</span><span class="token operator">=</span><span class="token number">110</span>
-<span class="token builtin class-name">echo</span> <span class="token parameter variable">-n</span> <span class="token string">"We have <span class="token variable">$&#123;count&#125;</span> <span class="token variable">$&#123;fruite&#125;</span>s"</span>
-<span class="token builtin class-name">echo</span> <span class="token string">"??"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="交互式脚本"><a class="markdownIt-Anchor" href="#交互式脚本"></a> 交互式脚本</h1>
-<p>使用 <code>read</code> 来读取用户输入保存到变量中:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#!/bin/bash</span>
-<span class="token builtin class-name">read</span> <span class="token parameter variable">-r</span> <span class="token parameter variable">-p</span> <span class="token string">"Set Username: "</span> newuser
-<span class="token builtin class-name">read</span> <span class="token parameter variable">-r</span> <span class="token parameter variable">-p</span> <span class="token string">"Set Password: "</span> newpass
-<span class="token builtin class-name">echo</span> <span class="token parameter variable">-e</span> <span class="token string">"<span class="token entity" title="\n">\n</span> Your user:pass is: <span class="token variable">$newuser</span>:<span class="token variable">$newpass</span>"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="../../1256157642/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="../10/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="../../">1</a><span class="space">&hellip;</span><a class="page-number" href="../10/">10</a><span class="page-number current">11</span>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="../10/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="../../">1</a><span class="space">&hellip;</span><a class="page-number" href="../10/">10</a><span class="page-number current">11</span><a class="page-number" href="../12/">12</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="../12/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
@@ -845,13 +851,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">137k</span>
+    <span title="站点总字数">142k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">7:38</span>
+    <span title="站点阅读时长">7:53</span>
   </span>
 </div>
 <div class="busuanzi-count">
