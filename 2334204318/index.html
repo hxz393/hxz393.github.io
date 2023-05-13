@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="URL 网址 浏览器中使用网址（URL，Uniform Resource Locator）来定位服务器中数据存放的位置并访问。URL 格式如下：&lt;协议&gt;:&#x2F;&#x2F;&lt;主机地址或主机名&gt;[:port]&#x2F;&lt;目录资源&gt;。以斜线作为分段，各段解释如下：   协议 浏览器支持比较常见的协议有 http、https、ftp、telnet 等，还有不太常见的 news、gophe">
+<meta property="og:type" content="article">
+<meta property="og:title" content="httpd 服务">
+<meta property="og:url" content="https://blog.x2b.net/2334204318/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="URL 网址 浏览器中使用网址（URL，Uniform Resource Locator）来定位服务器中数据存放的位置并访问。URL 格式如下：&lt;协议&gt;:&#x2F;&#x2F;&lt;主机地址或主机名&gt;[:port]&#x2F;&lt;目录资源&gt;。以斜线作为分段，各段解释如下：   协议 浏览器支持比较常见的协议有 http、https、ftp、telnet 等，还有不太常见的 news、gophe">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-10-15T11:14:17.000Z">
+<meta property="article:modified_time" content="2023-05-13T08:13:26.072Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/2334204318/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/2334204318/","path":"2334204318/","title":"httpd 服务"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>httpd 服务 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">54</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#url-%E7%BD%91%E5%9D%80"><span class="nav-number">1.</span> <span class="nav-text"> URL 网址</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE%E6%96%B9%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text"> 传输数据方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ssl-%E8%AF%81%E4%B9%A6"><span class="nav-number">3.</span> <span class="nav-text"> SSL 证书</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#lamp-%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%89%E8%A3%85"><span class="nav-number">4.</span> <span class="nav-text"> LAMP 服务器安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E9%85%8D%E7%BD%AE%E7%9B%AE%E5%BD%95"><span class="nav-number">5.</span> <span class="nav-text"> 相关配置目录</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#apache"><span class="nav-number">5.1.</span> <span class="nav-text"> Apache</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mysql"><span class="nav-number">5.2.</span> <span class="nav-text"> MySQL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#php"><span class="nav-number">5.3.</span> <span class="nav-text"> PHP</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#apache-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">6.</span> <span class="nav-text"> Apache 配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%8E%AF%E5%A2%83%E8%AE%BE%E7%BD%AE"><span class="nav-number">6.1.</span> <span class="nav-text"> 服务器环境设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95%E7%9B%B8%E5%85%B3%E8%AE%BE%E7%BD%AE"><span class="nav-number">6.2.</span> <span class="nav-text"> 目录相关设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#php-%E6%A8%A1%E5%9D%97%E5%8F%82%E6%95%B0%E4%BF%AE%E6%94%B9"><span class="nav-number">6.3.</span> <span class="nav-text"> PHP 模块参数修改</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1"><span class="nav-number">7.</span> <span class="nav-text"> 启动服务</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%98%B2%E7%81%AB%E5%A2%99%E8%AE%BE%E7%BD%AE"><span class="nav-number">8.</span> <span class="nav-text"> 防火墙设置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81"><span class="nav-number">9.</span> <span class="nav-text"> 基本身份认证</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E4%B8%BB%E6%9C%BA%E8%AE%BE%E7%BD%AE"><span class="nav-number">10.</span> <span class="nav-text"> 虚拟主机设置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%B5%8B%E8%AF%95"><span class="nav-number">11.</span> <span class="nav-text"> 服务器测试</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90"><span class="nav-number">12.</span> <span class="nav-text"> 日志分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#https-%E5%8A%A0%E5%AF%86"><span class="nav-number">13.</span> <span class="nav-text"> HTTPS 加密</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/2334204318/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="httpd 服务 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          httpd 服务
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-10-15 19:14:17" itemprop="dateCreated datePublished" datetime="2021-10-15T19:14:17+08:00">2021-10-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-13 16:13:26" itemprop="dateModified" datetime="2023-05-13T16:13:26+08:00">2023-05-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/4-%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1/" itemprop="url" rel="index"><span itemprop="name">4.网络服务</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>11 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="url-网址"><a class="markdownIt-Anchor" href="#url-网址"></a> URL 网址</h1>
+<p>浏览器中使用网址（URL，Uniform Resource Locator）来定位服务器中数据存放的位置并访问。URL 格式如下：<code>&lt;协议&gt;://&lt;主机地址或主机名&gt;[:port]/&lt;目录资源&gt;</code>。以斜线作为分段，各段解释如下：</p>
+<ul>
+<li>
+<p><strong>协议</strong></p>
+<p>浏览器支持比较常见的协议有 http、https、ftp、telnet 等，还有不太常见的 news、gopher 等。如果服务器启用的是非标准端口，必须在主机地址后面写明。</p>
+</li>
+<li>
+<p><strong>主机地址或主机名</strong></p>
+<p>主机地址是服务器的 IP 地址，主机名是域名，通过 DNS 来解析成 IP。</p>
+</li>
+<li>
+<p><strong>目录资源</strong></p>
+<p>在 Apache 中默认将 html 文件存放在 <code>/var/www/html/</code> 目录内。</p>
+</li>
+</ul>
+<h1 id="传输数据方法"><a class="markdownIt-Anchor" href="#传输数据方法"></a> 传输数据方法</h1>
+<p>在 http 的服务端和客户端之间数据传递的基本方法有下面几种：</p>
+<ul>
+<li>
+<p><strong>GET</strong></p>
+<p>最常用的方法，浏览器直接向服务器请求网址上面的资源。使用 GET 方式可以直接在 URL 中输入变量。</p>
+</li>
+<li>
+<p><strong>POST</strong></p>
+<p>客户端向服务端发送请求的方法。</p>
+</li>
+<li>
+<p><strong>HEAD</strong></p>
+<p>服务端响应给客户端的一些数据头文件。</p>
+</li>
+<li>
+<p><strong>OPTIONS</strong></p>
+<p>服务端响应给客户端一些允许的功能与方法。</p>
+</li>
+<li>
+<p><strong>DELETE</strong></p>
+<p>删除某些资源的方法。</p>
+</li>
+</ul>
+<h1 id="ssl-证书"><a class="markdownIt-Anchor" href="#ssl-证书"></a> SSL 证书</h1>
+<p>SSL（Secure Socket Layer）是 HTTPS 使用的加密方式之一，和 SSH 一样使用非对称的密钥对，用对方的公钥加密数据后传输，以此保证数据在传输过程中的安全。</p>
+<p>为了加强网络安全，提高网站信任等级，网站可以把生成的密钥通过第三方公证单位（CA，Certificate Authorities）注册，客户端的浏览器访问时可以自动比对 CA 单位注册时信息，确认证书是否正确有效。</p>
+<h1 id="lamp-服务器安装"><a class="markdownIt-Anchor" href="#lamp-服务器安装"></a> LAMP 服务器安装</h1>
+<p>由于 Linux 上面 Apache 仅能提供最基本的静态网站支持，要想实现动态网站需要 PHP 和 MySQL 的支持。整个 LAMP 环境总共需要安装以下软件与模块：</p>
+<ul>
+<li>httpd：提供 Apache 主程序。</li>
+<li>mysql：MySQL 客户端程序。</li>
+<li>mysql-server：MySQL 服务端程序。</li>
+<li>php：PHP 主程序，包含给 Apache 使用的模块。</li>
+<li>php-devel：PHP 开发工具，与 PHP 外挂的加速软件有关。</li>
+<li>php-mysql：提供 PHP 程序读取 MySQL 数据库的模块。</li>
+</ul>
+<p>整合安装如下：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ yum <span class="token function">install</span> <span class="token parameter variable">-y</span> httpd mysql mysql-server php php-mysql<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="相关配置目录"><a class="markdownIt-Anchor" href="#相关配置目录"></a> 相关配置目录</h1>
+<p>三个软件主要的配置文件路径。</p>
+<h2 id="apache"><a class="markdownIt-Anchor" href="#apache"></a> Apache</h2>
+<p>在 Apache 中主要的配置文件或目录如下：</p>
+<ul>
+<li>
+<p><strong>/etc/httpd/conf/httpd.conf</strong></p>
+<p>httpd 最主要的配置文件，有时也会被拆成数个小文件分别管理不同参数。</p>
+</li>
+<li>
+<p><strong>/etc/httpd/conf.d/*.conf</strong></p>
+<p>可以将自定义额外参数单独写成配置文件，放到 <code>/etc/httpd/conf.d</code> 目录下。在 httpd 启动时，这个文件内容就会被读入主要配置文件当中。</p>
+</li>
+<li>
+<p><strong>/usr/lib64/httpd/modules/，/etc/httpd/modules/</strong></p>
+<p>Apache 支持很多外挂模块，PHP 和 SSL 都是 Apache 外挂的一种。所有要使用的模块文件默认放到以上目录中。</p>
+</li>
+<li>
+<p><strong>/var/www/html/</strong></p>
+<p>默认存放 html 数据文件位置。</p>
+</li>
+<li>
+<p><strong>/var/www/error/</strong></p>
+<p>当服务器设置错误或客户端请求的数据错误时，在浏览器上显示此目录下对应的错误页面。</p>
+</li>
+<li>
+<p><strong>/var/www/icons/</strong></p>
+<p>存放一些 Apache 提供的小 icon 文件。</p>
+</li>
+<li>
+<p><strong>/var/www/cgi-bin/</strong></p>
+<p>给一些可执行的 CGI 程序放置的目录。</p>
+</li>
+<li>
+<p><strong>/var/log/httpd/</strong></p>
+<p>默认的 Apache 日志文件存放目录，需要注意用量大小。</p>
+</li>
+</ul>
+<h2 id="mysql"><a class="markdownIt-Anchor" href="#mysql"></a> MySQL</h2>
+<p>MySQL 相关的配置文件和目录有：</p>
+<ul>
+<li>
+<p><strong>/etc/my.cnf</strong></p>
+<p>MySQL 的配置文件，可以对 MySQL 数据库进行优化或指定额外的运行参数。</p>
+</li>
+<li>
+<p><strong>/var/lib/mysql/</strong></p>
+<p>MySQL 数据库文件存放位置。</p>
+</li>
+</ul>
+<h2 id="php"><a class="markdownIt-Anchor" href="#php"></a> PHP</h2>
+<p>在 LAMP 环境中和 PHP 有关的配置和目录有：</p>
+<ul>
+<li>
+<p><strong>/etc/httpd/conf.d/php.conf</strong></p>
+<p>PHP 设置参数存放此文件中，在 Apache 重新启动时会被读取，因此不需要手动将 php 模块写入 httpd.conf 中。</p>
+</li>
+<li>
+<p><strong>/etc/php.ini</strong></p>
+<p>PHP 的主要配置文件，包括是否允许用户上传，能否允许某些低安全性的标志等。</p>
+</li>
+<li>
+<p><strong>/usr/lib64/httpd/modules/libphp5.so</strong></p>
+<p>PHP 提供给 Apache 使用的模块。</p>
+</li>
+<li>
+<p><strong>/etc/php.d/mysql.ini，/usr/lib64/php/modules/mysql.so</strong></p>
+<p>PHP 操作 MySQL 使用的模块。</p>
+</li>
+<li>
+<p><strong>/usr/bin/phpize，/usr/include/php/</strong></p>
+<p>安装 PHP 加速器所需文件。</p>
+</li>
+</ul>
+<h1 id="apache-配置文件"><a class="markdownIt-Anchor" href="#apache-配置文件"></a> Apache 配置文件</h1>
+<p>Apache 配置文件 <code>/etc/httpd/conf/httpd.conf</code> 中分以下几个部分。</p>
+<h2 id="服务器环境设置"><a class="markdownIt-Anchor" href="#服务器环境设置"></a> 服务器环境设置</h2>
+<p>针对服务器环境设置方面，包括主机名，服务器配置文件顶层目录等：</p>
+<ul>
+<li>
+<p><strong>ServerRoot “/etc/httpd”</strong></p>
+<p>服务器设置的最顶层目录，包括日志，模块等数据都放于此处（链接文件）。</p>
+</li>
+<li>
+<p><strong>ServerTokens OS</strong></p>
+<p>告知客户端服务器的版本和操作系统，一般不需要设置。</p>
+</li>
+<li>
+<p><strong>PidFile run/httpd.pid</strong></p>
+<p>设置 PID 文件路径。</p>
+</li>
+<li>
+<p><strong>Timeout 60</strong></p>
+<p>发送或接受数据时的等待超时时间，一般不需要设置。</p>
+</li>
+<li>
+<p><strong>KeepAlive On</strong></p>
+<p>是否允许持续性的连接，也就是一个 TCP 连接可以有多个文件传送请求，默认为 Off。</p>
+</li>
+<li>
+<p><strong>MaxKeepAliveRequests 500</strong></p>
+<p>设置能够传输的最大传输数量，0 代表不限制。</p>
+</li>
+<li>
+<p><strong>KeepAliveTimeout 15</strong></p>
+<p>在设置保持连接的条件下，连接在最后一次传输后等待延迟的秒数。</p>
+</li>
+<li>
+<p><strong>Listen 80</strong></p>
+<p>默认监听 80 端口，也可以修改绑定网口或端口。</p>
+</li>
+<li>
+<p><strong>User apache，Group apache</strong></p>
+<p>设置 httpd 进程启动的属主和属组。</p>
+</li>
+<li>
+<p><strong>ServerAdmin root@localhost</strong></p>
+<p>设置管理员邮箱。</p>
+</li>
+<li>
+<p><strong>ServerName <a target="_blank" rel="noopener external nofollow noreferrer" href="http://www1.example.com:80">www1.example.com:80</a></strong></p>
+<p>设置主机名。</p>
+</li>
+</ul>
+<h2 id="目录相关设置"><a class="markdownIt-Anchor" href="#目录相关设置"></a> 目录相关设置</h2>
+<p>默认网页存放目录 <code>/var/www/html</code> 由 DocumentRoot 设置。需要注意 SELinux 相关规则和类型的正确性。</p>
+<p>首页文件名由 <code>&lt;IfModule dir_module&gt;</code> 内的 DirectoryIndex 设置。文件读取由文件名参数顺序决定。</p>
+<p>和目录有关的设置写在 <code>&lt;Directory&gt;</code> 段落内，主要有下面一些设置：</p>
+<ul>
+<li>
+<p><strong>Options</strong>（目录参数）</p>
+<p>此设置值表示这个目录内能让 Apache 进行的操作，也就是震度 Apache 的程序权限设置。主要参数有：</p>
+<ul>
+<li>Indexes: 如果找不到首页文件，便显示整个目录下的文件名。</li>
+<li>FollowSymLinks: 让连接文件可以生效。</li>
+<li>ExecCGI: 让此目录具有执行 CGI 程序的权限。</li>
+<li>Includes: 让一些 Server-Side Include 程序可以运行。</li>
+<li>MultiViews: 与多语言支持有关。</li>
+</ul>
+</li>
+<li>
+<p><strong>AllowOverride</strong>（允许覆盖参数）</p>
+<p>表示是否允许额外配置文件 .htaccess 的某些参数覆盖。常见参数有：</p>
+<ul>
+<li>ALL: 所有权限均可被覆盖。</li>
+<li>AuthConfig: 仅有网页认证账号可覆盖。</li>
+<li>Indexes: 仅允许 Indexes 方面的覆盖。</li>
+<li>Limits: 允许用户利用 Allow，Deny 与 Order 管理可浏览的权限。</li>
+<li>None: 不可覆盖。</li>
+</ul>
+</li>
+</ul>
+<h2 id="php-模块参数修改"><a class="markdownIt-Anchor" href="#php-模块参数修改"></a> PHP 模块参数修改</h2>
+<p>PHP 模块配置文件位于 <code>/etc/httpd/conf.d/php.conf</code>，其内容不需要有任何修改，主要修改的是 PHP 配置文件 <code>/etc/php.ini</code>：</p>
+<ul>
+<li>
+<p>log_errors = On, ignore_repeated_errors = Off, ignore_repeated_source = Off</p>
+<p>设置记录日志，忽略重复错误记录默认为 Off，可以设置为 On。</p>
+</li>
+<li>
+<p>display_errors = Off, display_startup_errors = Off</p>
+<p>设置出现错误时，是否在浏览器上显示相关错误信息。debug 时可以设置为 On。</p>
+</li>
+<li>
+<p>post_max_size = 8M, file_uploads = On, upload_max_filesize = 2M, memory_limit = 128M</p>
+<p>设置 PHP 程序上传文件大小限制和内存占用数值。</p>
+</li>
+</ul>
+<h1 id="启动服务"><a class="markdownIt-Anchor" href="#启动服务"></a> 启动服务</h1>
+<p>使用 <code>systemctl</code> 直接启动 <code>httpd</code>，或者可以用 <code>apache</code> 自带的 <code>apachectl</code> 命令操作：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ systemctl <span class="token builtin class-name">enable</span> <span class="token parameter variable">--now</span> httpd
+<span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ apachectl status<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>测试 PHP 模块是否驱动，可以建立一个 <code>phpinfo.php</code> 文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token string">'&lt;?php phpinfo (); ?>'</span> <span class="token operator">></span> /var/www/html/phpinfo.php<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>在浏览器中使用 <code>http://192.168.2.254/phpinfo.php</code> 地址访问，可以看到 PHP 版本等信息。</p>
+<p><code>MySQL</code> 需要手动启动，使用 <code>mysql</code> 命令测试连接：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ systemctl start mysqld
+<span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ mysqladmin <span class="token parameter variable">-u</span> root pass <span class="token string">'mypass'</span>
+<span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ mysql <span class="token parameter variable">-u</span> root <span class="token parameter variable">-p</span> mypass<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h1 id="防火墙设置"><a class="markdownIt-Anchor" href="#防火墙设置"></a> 防火墙设置</h1>
+<p><code>iptables</code> 放行 80 和 443 端口设置如下：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ iptables <span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-p</span> TCP <span class="token parameter variable">-i</span> ens33 <span class="token parameter variable">--dport</span> <span class="token number">80</span> <span class="token parameter variable">--sport</span> <span class="token number">1024</span>:65534 <span class="token parameter variable">-j</span> ACCEPT
+<span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ iptables <span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-p</span> TCP <span class="token parameter variable">-i</span> ens33 <span class="token parameter variable">--dport</span> <span class="token number">443</span> <span class="token parameter variable">--sport</span> <span class="token number">1024</span>:65534 <span class="token parameter variable">-j</span> ACCEPT<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>设置 <code>SELinux</code> 的放行规则：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ setsebool <span class="token parameter variable">-P</span> <span class="token assign-left variable">httpd_can_network_connect</span><span class="token operator">=</span><span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>新建一个网页文件后需要恢复 <code>SELinux</code> 类型：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token string">"HOME"</span> <span class="token operator">></span> index.html
+<span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token function">mv</span> index.html /var/www/html
+<span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ ll <span class="token parameter variable">-Z</span> /var/www/html/
+-rw-r--r--. root root unconfined_u:object_r:admin_home_t:s0 index.html
+-rw-r--r--. root root unconfined_u:object_r:httpd_sys_content_t:s0 phpinfo.php
+<span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ restorecon <span class="token parameter variable">-Rv</span> /var/www/html/<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="基本身份认证"><a class="markdownIt-Anchor" href="#基本身份认证"></a> 基本身份认证</h1>
+<p><code>Apache</code> 可以通过目录下的 <code>.htaccess</code> 文件来设置保护目录。首先建立目录和文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> /var/www/html/pro
+<span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token string">'PROTECT!'</span> <span class="token operator">></span> /var/www/html/pro/index.html<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>在主配置文件 <code>/etc/httpd/conf/httpd.conf</code> 中，增加一段配置：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/httpd/conf/httpd.conf
+<span class="token operator">&lt;</span>Directory <span class="token string">"/var/www/html/pro"</span><span class="token operator">></span>
+    AllowOverride AuthConfig
+    Require all granted
+<span class="token operator">&lt;</span>/Directory<span class="token operator">></span>
+<span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ apachectl restart<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在 <code>/var/www/html/pro</code> 目录下建立 <code>.htaccess</code> 文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 httpd<span class="token punctuation">]</span>$ <span class="token function">vi</span> /var/www/html/pro/.htaccess
+AuthName        <span class="token string">"protect test"</span>
+Authtype        Basic
+AuthUserFile    /var/www/apache.passwd
+require user user11<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>文件配置选项说明如下：</p>
+<ul>
+<li><code>AuthName</code>：出现在账号密码提示对话框中的内容。</li>
+<li><code>AuthType</code>：认证类型。</li>
+<li><code>AuthUserFile</code>：账号密码配置文件。</li>
+<li><code>require</code>：设置通行账号。可以设为 <code>valid-user</code>，即所有在 <code>apache.passwd</code> 内定义的用户都可以访问。</li>
+</ul>
+<p>下面是建立账号密码文件。使用 <code>htpasswd</code> 命令加入账号 <code>user11</code> 和 <code>user12</code>，密码为 <code>passwd</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ htpasswd <span class="token parameter variable">-c</span> /var/www/apache.passwd user11
+New password: 
+Re-type new password: 
+Adding password <span class="token keyword">for</span> user user11
+<span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ htpasswd /var/www/apache.passwd user12
+New password: 
+Re-type new password: 
+Adding password <span class="token keyword">for</span> user user12<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在浏览器中输入地址 <code>http://192.168.2.254/pro/</code> 测试。</p>
+<h1 id="虚拟主机设置"><a class="markdownIt-Anchor" href="#虚拟主机设置"></a> 虚拟主机设置</h1>
+<p>虚拟主机就是让多个主机名对应到不同的主网页目录（<code>DocumentRoot</code> 参数）。例如 <code>ftp.hxz.ass</code> 和 <code>www.hxz.ass</code> 都指向 <code>192.168.2.254</code>，需要在 <code>DNS</code> 服务商网页设置好对应关系。</p>
+<p>这里新建一个 <code>ftp</code> 目录，来对应 <code>ftp.hxz.ass</code> 域名：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> /var/www/ftp
+<span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token string">"FTPftp"</span> <span class="token operator">></span> /var/www/ftp/index.html<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>配置对应的虚拟主机设置文件，然后重启 <code>httpd</code> 服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/httpd/conf.d/virtual.conf
+<span class="token operator">&lt;</span>Directory <span class="token string">"/var/www/ftp"</span><span class="token operator">></span>
+    AllowOverride None
+    Require all granted
+<span class="token operator">&lt;</span>/Directory<span class="token operator">></span>
+
+<span class="token operator">&lt;</span>VirtualHost *:8<span class="token operator"><span class="token file-descriptor important">0</span>></span>
+    ServerName www.hxz.ass
+    DocumentRoot /var/www/html
+<span class="token operator">&lt;</span>/VirtualHost<span class="token operator">></span>
+<span class="token operator">&lt;</span>VirtualHost *:8<span class="token operator"><span class="token file-descriptor important">0</span>></span>
+    ServerName ftp.hxz.ass
+    DocumentRoot /var/www/ftp
+    CustomLog /var/log/httpd/ftp.acess_log combined
+<span class="token operator">&lt;</span>/VirtualHost<span class="token operator">></span>
+<span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ systemctl restart httpd<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上面使用 <code>CustomLog</code> 来指定写入日志的路径，这样可以更方便管理。</p>
+<p>在客户端测试一下：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> www.hxz.ass
+<span class="token environment constant">HOME</span>
+<span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span>$ <span class="token function">wget</span> ftp.hxz.ass
+--2021-10-16 <span class="token number">23</span>:22:07--  http://ftp.hxz.ass/
+Resolving ftp.hxz.ass <span class="token punctuation">(</span>ftp.hxz.ass<span class="token punctuation">)</span><span class="token punctuation">..</span>. <span class="token number">10.1</span>.1.1
+Connecting to ftp.hxz.ass <span class="token punctuation">(</span>ftp.hxz.ass<span class="token punctuation">)</span><span class="token operator">|</span><span class="token number">10.1</span>.1.1<span class="token operator">|</span>:80<span class="token punctuation">..</span>. connected.
+HTTP request sent, awaiting response<span class="token punctuation">..</span>. <span class="token number">200</span> OK
+Length: <span class="token number">7</span> <span class="token punctuation">[</span>text/html<span class="token punctuation">]</span>
+Saving to: <span class="token string">'index.html'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="服务器测试"><a class="markdownIt-Anchor" href="#服务器测试"></a> 服务器测试</h1>
+<p><code>Apache</code> 提供了一个叫做 <code>ab</code> 的程序来测试网站效率。例如指定 110 个同时连接，200 个每连接线程测试 <code>phpinfo.php</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ ab <span class="token parameter variable">-dkS</span> <span class="token parameter variable">-c110</span> <span class="token parameter variable">-n200</span> http://127.0.0.1/phpinfo.php
+This is ApacheBench, Version <span class="token number">2.3</span> <span class="token operator">&lt;</span><span class="token variable">$Revision</span><span class="token builtin class-name">:</span> <span class="token number">1430300</span> $<span class="token operator">></span>
+Copyright <span class="token number">1996</span> Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking <span class="token number">127.0</span>.0.1 <span class="token punctuation">(</span>be patient<span class="token punctuation">)</span>
+Completed <span class="token number">100</span> requests
+Completed <span class="token number">200</span> requests
+Finished <span class="token number">200</span> requests
+
+
+Server Software:        Apache/2.4.6
+Server Hostname:        <span class="token number">127.0</span>.0.1
+Server Port:            <span class="token number">80</span>
+
+Document Path:          /phpinfo.php
+Document Length:        <span class="token number">47649</span> bytes
+
+Concurrency Level:      <span class="token number">110</span>
+Time taken <span class="token keyword">for</span> tests:   <span class="token number">0.070</span> seconds
+Complete requests:      <span class="token number">200</span>
+Failed requests:        <span class="token number">17</span>
+   <span class="token punctuation">(</span>Connect: <span class="token number">0</span>, Receive: <span class="token number">0</span>, Length: <span class="token number">17</span>, Exceptions: <span class="token number">0</span><span class="token punctuation">)</span>
+Write errors:           <span class="token number">0</span>
+Keep-Alive requests:    <span class="token number">0</span>
+Total transferred:      <span class="token number">9566380</span> bytes
+HTML transferred:       <span class="token number">9529780</span> bytes
+Requests per second:    <span class="token number">2863.57</span> <span class="token punctuation">[</span><span class="token comment">#/sec] (mean)</span>
+Time per request:       <span class="token number">38.414</span> <span class="token punctuation">[</span>ms<span class="token punctuation">]</span> <span class="token punctuation">(</span>mean<span class="token punctuation">)</span>
+Time per request:       <span class="token number">0.349</span> <span class="token punctuation">[</span>ms<span class="token punctuation">]</span> <span class="token punctuation">(</span>mean, across all concurrent requests<span class="token punctuation">)</span>
+Transfer rate:          <span class="token number">133759.55</span> <span class="token punctuation">[</span>Kbytes/sec<span class="token punctuation">]</span> received
+
+Connection Times <span class="token punctuation">(</span>ms<span class="token punctuation">)</span>
+              min   avg   max
+Connect:        <span class="token number">0</span>     <span class="token number">3</span>    <span class="token number">8</span>
+Processing:    <span class="token number">12</span>    <span class="token number">22</span>   <span class="token number">25</span>
+Total:         <span class="token number">12</span>    <span class="token number">25</span>   <span class="token number">33</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="日志分析"><a class="markdownIt-Anchor" href="#日志分析"></a> 日志分析</h1>
+<p><code>Apache</code> 日志文件有两个：<code>/var/log/httpd/access_log</code> 和 <code>/var/log/httpd/error_log</code>。</p>
+<p>由于日志文件增速很快，所以需要修改 <code>logrotate</code> 的 <code>httpd</code> 配置文件，加入压缩功能：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/logrotate.d/httpd
+/var/log/httpd/*log <span class="token punctuation">&#123;</span>
+    missingok
+    notifempty
+    sharedscripts
+    compress
+    delaycompress
+    postrotate
+        /bin/systemctl reload httpd.service <span class="token operator">></span> /dev/null <span class="token operator"><span class="token file-descriptor important">2</span>></span>/dev/null <span class="token operator">||</span> <span class="token boolean">true</span>
+    endscript
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>日志文件分析软件可以使用 <code>webalizer</code>，软件配置文件位于 <code>/etc/webalizer.conf</code>，生成的图标位于 <code>/var/www/usage</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ yum <span class="token function">install</span> <span class="token parameter variable">-y</span> webalizer
+<span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/webalizer.conf
+OutputDir      /var/www/html/pro/
+<span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ webalizer
+Warning: Truncating oversized <span class="token function">hostname</span>
+Skipping bad record <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>之后就可以通过 <code>http://192.168.2.254/pro/</code> 来访问了。</p>
+<p>另外一个日志文件分析软件是 <code>awstats</code>，它采用 Perl 语言编写，所以需要 <code>mod_perl</code> 的支持：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ yum <span class="token function">install</span> <span class="token parameter variable">-y</span> awstats
+<span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/httpd/conf.d/awstats.conf 
+<span class="token operator">&lt;</span>Directory <span class="token string">"/usr/share/awstats/wwwroot"</span><span class="token operator">></span>
+    Options None
+    AllowOverride AuthConfig
+    <span class="token operator">&lt;</span>IfModule mod_authz_core.c<span class="token operator">></span>
+        <span class="token comment"># Apache 2.4</span>
+        Require all granted
+    <span class="token operator">&lt;</span>/IfModule<span class="token operator">></span>
+    <span class="token operator">&lt;</span>IfModule <span class="token operator">!</span>mod_authz_core.c<span class="token operator">></span>
+        <span class="token comment"># Apache 2.2</span>
+        Order allow,deny
+        Allow from all
+        Allow from ::1
+    <span class="token operator">&lt;</span>/IfModule<span class="token operator">></span>
+<span class="token operator">&lt;</span>/Directory<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>配置文件中修改了 CGI 运行方式，网页认证，允许访问的客户端地址。另外还需要配置针对域名的配置文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token function">cp</span> /etc/awstats/awstats.model.conf /etc/awstats/awstats.www.conf
+<span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/awstats/awstats.www.conf
+<span class="token assign-left variable">SiteDomain</span><span class="token operator">=</span><span class="token string">"www.hxz.ass"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>测试生成分析资料与访问账号：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">cd</span> /usr/share/awstats/wwwroot/cgi-bin/
+<span class="token punctuation">[</span>root@server2 cgi-bin<span class="token punctuation">]</span>$ ./awstats.pl now
+<span class="token punctuation">[</span>root@server2 wwwroot<span class="token punctuation">]</span>$ <span class="token function">vi</span> /usr/share/awstats/wwwroot/.htaccess
+AuthName        <span class="token string">"awstats test"</span>
+Authtype        Basic
+AuthUserFile    /var/www/apache.passwd
+require         valid-user<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>之后浏览器通过 <code>http://192.168.2.254/awstats/awstats.pl?config=www</code> 并输入账号密码之后，就可以访问 <code>awstats</code> 的报表了。</p>
+<h1 id="https-加密"><a class="markdownIt-Anchor" href="#https-加密"></a> HTTPS 加密</h1>
+<p>加密需要通过 <code>mod_ssl</code> 来进行，可以使用 <code>yum</code> 安装：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ yum <span class="token function">install</span> <span class="token parameter variable">-y</span> mod_ssl<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>安装好以后就可以通过浏览器访问 <code>https://192.168.2.254/</code> 了。和 SSL 加密有关的文件如下：</p>
+<ul>
+<li><code>/etc/httpd/conf.d/ssl.conf</code>：软件 <code>mode_ssl</code> 提供的 <code>Apache</code> 配置文件。</li>
+<li><code>/etc/pki/tls/private/localhost.key</code>：系统私钥文件，可以用来制作证书。</li>
+<li><code>/etc/pki/tls/certs/localhost.crt</code>：加密过的证书文件。</li>
+</ul>
+<p>如果要自建证书，例如建立一个名为 <code>hxz.ass</code> 的证书，步骤如下：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">cd</span> /etc/pki/tls/certs/
+<span class="token punctuation">[</span>root@server2 certs<span class="token punctuation">]</span>$ <span class="token function">make</span> my.key
+<span class="token punctuation">[</span>root@server2 certs<span class="token punctuation">]</span>$ openssl rsa <span class="token parameter variable">-in</span> my.key <span class="token parameter variable">-out</span> hxz.ass.key
+Enter pass phrase <span class="token keyword">for</span> my.key:
+writing RSA key
+<span class="token punctuation">[</span>root@server2 certs<span class="token punctuation">]</span>$ <span class="token function">rm</span> <span class="token parameter variable">-rf</span> my.key
+<span class="token punctuation">[</span>root@server2 certs<span class="token punctuation">]</span>$ <span class="token function">chmod</span> <span class="token number">400</span> hxz.ass.key 
+<span class="token punctuation">[</span>root@server2 certs<span class="token punctuation">]</span>$ <span class="token function">make</span> hxz.ass.crt <span class="token assign-left variable">SERIAL</span><span class="token operator">=</span><span class="token number">20210101</span>
+Country Name <span class="token punctuation">(</span><span class="token number">2</span> letter code<span class="token punctuation">)</span> <span class="token punctuation">[</span>XX<span class="token punctuation">]</span>:CN
+State or Province Name <span class="token punctuation">(</span>full name<span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>:CN
+Locality Name <span class="token punctuation">(</span>eg, city<span class="token punctuation">)</span> <span class="token punctuation">[</span>Default City<span class="token punctuation">]</span>:CN
+Organization Name <span class="token punctuation">(</span>eg, company<span class="token punctuation">)</span> <span class="token punctuation">[</span>Default Company Ltd<span class="token punctuation">]</span>:CN
+Organizational Unit Name <span class="token punctuation">(</span>eg, section<span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>:CN
+Common Name <span class="token punctuation">(</span>eg, your name or your server's <span class="token function">hostname</span><span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>:www.hxz.ass
+Email Address <span class="token punctuation">[</span><span class="token punctuation">]</span>:admin@hxz.ass
+<span class="token punctuation">[</span>root@server2 certs<span class="token punctuation">]</span>$ ll hxz*
+-rw-------. <span class="token number">1</span> root root <span class="token number">1379</span> Oct <span class="token number">17</span> 04:08 hxz.ass.crt
+-r--------. <span class="token number">1</span> root root <span class="token number">1679</span> Oct <span class="token number">17</span> 04:06 hxz.ass.key<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最终生成的证书是 <code>hxz.ass.crt</code>，对应私钥为 <code>hxz.ass.key</code>。其有效期为一年，如果想要十年，可以修改 <code>make</code> 脚本中的内容。</p>
+<p>修改 <code>ssl.conf</code> 中证书和私钥的位置：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 certs<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/httpd/conf.d/ssl.conf 
+SSLCertificateFile /etc/pki/tls/certs/hxz.ass.crt
+SSLCertificateKeyFile /etc/pki/tls/certs/hxz.ass.key<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>之后重启 <code>httpd</code> 服务，并在浏览器中刷新查看新的证书。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/2334204318/" title="httpd 服务">https://blog.x2b.net/2334204318/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../3959662341/" rel="prev" title="iSCSI 服务">
+                  <i class="fa fa-chevron-left"></i> iSCSI 服务
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../1853961938/" rel="next" title="vsftpd 服务">
+                  vsftpd 服务 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">135k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">7:28</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@next-theme/pjax@0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://unpkg.com/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://unpkg.com/katex@0.16.4/dist/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/2334204318/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://unpkg.com/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'blog.x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>

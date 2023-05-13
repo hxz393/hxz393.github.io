@@ -332,92 +332,6 @@ total &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;
   </entry>
   
   <entry>
-    <title>Bash 变量</title>
-    <link href="https://blog.x2b.net/2082872357/"/>
-    <id>https://blog.x2b.net/2082872357/</id>
-    <published>2022-03-20T01:01:17.000Z</published>
-    <updated>2023-05-10T18:31:39.997Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;变量定义&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#变量定义&quot;&gt;&lt;/a&gt; 变量定义&lt;/h1&gt;
-&lt;p&gt;变量简单定义就是让某一个特定字符串代表不固定内容。&lt;/p&gt;
-&lt;p&gt;在 Bash 中变量分为环境变量和 shell 变量。&lt;/p&gt;
-&lt;h1 id=&quot;显示变量&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#显示变量&quot;&gt;&lt;/a&gt; 显示变量&lt;/h1&gt;
-&lt;p&gt;可以使用 &lt;code&gt;echo $变量名&lt;/code&gt; 来查看变量。将变量加上 &lt;code&gt;&amp;#123;&amp;#125;&lt;/code&gt; 效果是一样的：&lt;/p&gt;
-&lt;pre class=&quot;line-numbers language-bash&quot; data-language=&quot;bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;root@101c7 &lt;span class=&quot;token number&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;$ &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;&amp;#123;&lt;/span&gt;&lt;span class=&quot;token environment constant&quot;&gt;$PATH&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;#125;&lt;/span&gt;
-&lt;span class=&quot;token punctuation&quot;&gt;&amp;#123;&lt;/span&gt;/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin&lt;span class=&quot;token punctuation&quot;&gt;&amp;#125;&lt;/span&gt;&lt;span aria-hidden=&quot;true&quot; class=&quot;line-numbers-rows&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;</summary>
-    
-    
-    
-    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
-    
-    <category term="3.脚本编程" scheme="https://blog.x2b.net/categories/Linux/3-%E8%84%9A%E6%9C%AC%E7%BC%96%E7%A8%8B/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Bash 基础</title>
-    <link href="https://blog.x2b.net/1325555629/"/>
-    <id>https://blog.x2b.net/1325555629/</id>
-    <published>2022-03-20T01:01:17.000Z</published>
-    <updated>2023-05-10T18:25:04.074Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;shell-的定义&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#shell-的定义&quot;&gt;&lt;/a&gt; Shell 的定义&lt;/h1&gt;
-&lt;p&gt;Shell 是一个命令行解释器，其功能是提供用户操作系统的一个接口，因此 shell 需要可以调用其他软件，用户通过 shell 来操作这些应用程序。也就是只要能够操作应用程序的接口都能够称为 shell。&lt;/p&gt;
-&lt;p&gt;可以通过检查 &lt;code&gt;/etc/shells&lt;/code&gt; 来得知当前系统可用的 shell：&lt;/p&gt;
-&lt;pre class=&quot;line-numbers language-bash&quot; data-language=&quot;bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;root@101c7 &lt;span class=&quot;token number&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;$ &lt;span class=&quot;token function&quot;&gt;cat&lt;/span&gt; /etc/shells 
-/bin/sh
-/bin/bash
-/usr/bin/sh
-/usr/bin/bash&lt;span aria-hidden=&quot;true&quot; class=&quot;line-numbers-rows&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;文件 &lt;code&gt;passwd&lt;/code&gt; 里记录了用户能使用的 shell：&lt;/p&gt;
-&lt;pre class=&quot;line-numbers language-bash&quot; data-language=&quot;bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;root@101c7 &lt;span class=&quot;token number&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;$ &lt;span class=&quot;token function&quot;&gt;cat&lt;/span&gt; /etc/passwd &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;grep&lt;/span&gt; root
-root:x:0:0:root:/root:/bin/bash
-operator:x:11:0:operator:/root:/sbin/nologin&lt;span aria-hidden=&quot;true&quot; class=&quot;line-numbers-rows&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;</summary>
-    
-    
-    
-    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
-    
-    <category term="3.脚本编程" scheme="https://blog.x2b.net/categories/Linux/3-%E8%84%9A%E6%9C%AC%E7%BC%96%E7%A8%8B/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Shell 脚本基础</title>
-    <link href="https://blog.x2b.net/2734315757/"/>
-    <id>https://blog.x2b.net/2734315757/</id>
-    <published>2022-03-20T01:01:17.000Z</published>
-    <updated>2023-05-09T17:10:31.775Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;shell-script-定义&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#shell-script-定义&quot;&gt;&lt;/a&gt; Shell Script 定义&lt;/h1&gt;
-&lt;p&gt;Shell Script 就是利用 shell 的功能所写的一个程序，这个程序使用纯文本文件，将一些 shell 的语法与命令写在里面，搭配正则表达式、管道命令与数据流重定向等功能达到所想要的处理目的。&lt;/p&gt;
-&lt;p&gt;脚本编写注意事项：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;命令执行时从上而下，从左到右地分析与执行；&lt;/li&gt;
-&lt;li&gt;命令参数之间的多个空白都会被忽略掉；&lt;/li&gt;
-&lt;li&gt;空白行会被忽略掉，包括 &lt;code&gt;[tab]&lt;/code&gt; 也被视为空格；&lt;/li&gt;
-&lt;li&gt;如果读到一个 &lt;code&gt;[Enter]&lt;/code&gt;(CR)，就尝试开始执行该命令；&lt;/li&gt;
-&lt;li&gt;一行内容太多，可使用 &lt;code&gt;&#92;&lt;/code&gt;+ &lt;code&gt;[Enter]&lt;/code&gt; 来扩展至下一行；&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;#&lt;/code&gt; 可以作为批注，任何 &lt;code&gt;#&lt;/code&gt; 后面的内容都会被注释掉。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h1 id=&quot;编写脚本&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#编写脚本&quot;&gt;&lt;/a&gt; 编写脚本&lt;/h1&gt;
-&lt;p&gt;先以一个最简单的脚本作为范例：&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
-    
-    <category term="3.脚本编程" scheme="https://blog.x2b.net/categories/Linux/3-%E8%84%9A%E6%9C%AC%E7%BC%96%E7%A8%8B/"/>
-    
-    
-  </entry>
-  
-  <entry>
     <title>Linux 备份与刻录工具</title>
     <link href="https://blog.x2b.net/3733482185/"/>
     <id>https://blog.x2b.net/3733482185/</id>
@@ -527,6 +441,92 @@ operator:x:11:0:operator:/root:/sbin/nologin&lt;span aria-hidden=&quot;true&quot
   </entry>
   
   <entry>
+    <title>Bash 变量</title>
+    <link href="https://blog.x2b.net/2082872357/"/>
+    <id>https://blog.x2b.net/2082872357/</id>
+    <published>2022-03-20T01:01:17.000Z</published>
+    <updated>2023-05-10T18:31:39.997Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;变量定义&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#变量定义&quot;&gt;&lt;/a&gt; 变量定义&lt;/h1&gt;
+&lt;p&gt;变量简单定义就是让某一个特定字符串代表不固定内容。&lt;/p&gt;
+&lt;p&gt;在 Bash 中变量分为环境变量和 shell 变量。&lt;/p&gt;
+&lt;h1 id=&quot;显示变量&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#显示变量&quot;&gt;&lt;/a&gt; 显示变量&lt;/h1&gt;
+&lt;p&gt;可以使用 &lt;code&gt;echo $变量名&lt;/code&gt; 来查看变量。将变量加上 &lt;code&gt;&amp;#123;&amp;#125;&lt;/code&gt; 效果是一样的：&lt;/p&gt;
+&lt;pre class=&quot;line-numbers language-bash&quot; data-language=&quot;bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;root@101c7 &lt;span class=&quot;token number&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;$ &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;&amp;#123;&lt;/span&gt;&lt;span class=&quot;token environment constant&quot;&gt;$PATH&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;#125;&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;&amp;#123;&lt;/span&gt;/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin&lt;span class=&quot;token punctuation&quot;&gt;&amp;#125;&lt;/span&gt;&lt;span aria-hidden=&quot;true&quot; class=&quot;line-numbers-rows&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;</summary>
+    
+    
+    
+    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
+    
+    <category term="3.脚本编程" scheme="https://blog.x2b.net/categories/Linux/3-%E8%84%9A%E6%9C%AC%E7%BC%96%E7%A8%8B/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Bash 基础</title>
+    <link href="https://blog.x2b.net/1325555629/"/>
+    <id>https://blog.x2b.net/1325555629/</id>
+    <published>2022-03-20T01:01:17.000Z</published>
+    <updated>2023-05-10T18:25:04.074Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;shell-的定义&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#shell-的定义&quot;&gt;&lt;/a&gt; Shell 的定义&lt;/h1&gt;
+&lt;p&gt;Shell 是一个命令行解释器，其功能是提供用户操作系统的一个接口，因此 shell 需要可以调用其他软件，用户通过 shell 来操作这些应用程序。也就是只要能够操作应用程序的接口都能够称为 shell。&lt;/p&gt;
+&lt;p&gt;可以通过检查 &lt;code&gt;/etc/shells&lt;/code&gt; 来得知当前系统可用的 shell：&lt;/p&gt;
+&lt;pre class=&quot;line-numbers language-bash&quot; data-language=&quot;bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;root@101c7 &lt;span class=&quot;token number&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;$ &lt;span class=&quot;token function&quot;&gt;cat&lt;/span&gt; /etc/shells 
+/bin/sh
+/bin/bash
+/usr/bin/sh
+/usr/bin/bash&lt;span aria-hidden=&quot;true&quot; class=&quot;line-numbers-rows&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;文件 &lt;code&gt;passwd&lt;/code&gt; 里记录了用户能使用的 shell：&lt;/p&gt;
+&lt;pre class=&quot;line-numbers language-bash&quot; data-language=&quot;bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;root@101c7 &lt;span class=&quot;token number&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;$ &lt;span class=&quot;token function&quot;&gt;cat&lt;/span&gt; /etc/passwd &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;grep&lt;/span&gt; root
+root:x:0:0:root:/root:/bin/bash
+operator:x:11:0:operator:/root:/sbin/nologin&lt;span aria-hidden=&quot;true&quot; class=&quot;line-numbers-rows&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;</summary>
+    
+    
+    
+    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
+    
+    <category term="3.脚本编程" scheme="https://blog.x2b.net/categories/Linux/3-%E8%84%9A%E6%9C%AC%E7%BC%96%E7%A8%8B/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Shell 脚本基础</title>
+    <link href="https://blog.x2b.net/2734315757/"/>
+    <id>https://blog.x2b.net/2734315757/</id>
+    <published>2022-03-20T01:01:17.000Z</published>
+    <updated>2023-05-09T17:10:31.775Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;shell-script-定义&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#shell-script-定义&quot;&gt;&lt;/a&gt; Shell Script 定义&lt;/h1&gt;
+&lt;p&gt;Shell Script 就是利用 shell 的功能所写的一个程序，这个程序使用纯文本文件，将一些 shell 的语法与命令写在里面，搭配正则表达式、管道命令与数据流重定向等功能达到所想要的处理目的。&lt;/p&gt;
+&lt;p&gt;脚本编写注意事项：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;命令执行时从上而下，从左到右地分析与执行；&lt;/li&gt;
+&lt;li&gt;命令参数之间的多个空白都会被忽略掉；&lt;/li&gt;
+&lt;li&gt;空白行会被忽略掉，包括 &lt;code&gt;[tab]&lt;/code&gt; 也被视为空格；&lt;/li&gt;
+&lt;li&gt;如果读到一个 &lt;code&gt;[Enter]&lt;/code&gt;(CR)，就尝试开始执行该命令；&lt;/li&gt;
+&lt;li&gt;一行内容太多，可使用 &lt;code&gt;&#92;&lt;/code&gt;+ &lt;code&gt;[Enter]&lt;/code&gt; 来扩展至下一行；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;#&lt;/code&gt; 可以作为批注，任何 &lt;code&gt;#&lt;/code&gt; 后面的内容都会被注释掉。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&quot;编写脚本&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#编写脚本&quot;&gt;&lt;/a&gt; 编写脚本&lt;/h1&gt;
+&lt;p&gt;先以一个最简单的脚本作为范例：&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
+    
+    <category term="3.脚本编程" scheme="https://blog.x2b.net/categories/Linux/3-%E8%84%9A%E6%9C%AC%E7%BC%96%E7%A8%8B/"/>
+    
+    
+  </entry>
+  
+  <entry>
     <title>Postfix 服务</title>
     <link href="https://blog.x2b.net/1516343977/"/>
     <id>https://blog.x2b.net/1516343977/</id>
@@ -601,6 +601,64 @@ operator:x:11:0:operator:/root:/sbin/nologin&lt;span aria-hidden=&quot;true&quot
   </entry>
   
   <entry>
+    <title>httpd 服务</title>
+    <link href="https://blog.x2b.net/2334204318/"/>
+    <id>https://blog.x2b.net/2334204318/</id>
+    <published>2021-10-15T11:14:17.000Z</published>
+    <updated>2023-05-13T08:13:26.072Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;url-网址&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#url-网址&quot;&gt;&lt;/a&gt; URL 网址&lt;/h1&gt;
+&lt;p&gt;浏览器中使用网址（URL，Uniform Resource Locator）来定位服务器中数据存放的位置并访问。URL 格式如下：&lt;code&gt;&amp;lt;协议&amp;gt;://&amp;lt;主机地址或主机名&amp;gt;[:port]/&amp;lt;目录资源&amp;gt;&lt;/code&gt;。以斜线作为分段，各段解释如下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;协议&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;浏览器支持比较常见的协议有 http、https、ftp、telnet 等，还有不太常见的 news、gopher 等。如果服务器启用的是非标准端口，必须在主机地址后面写明。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;主机地址或主机名&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;主机地址是服务器的 IP 地址，主机名是域名，通过 DNS 来解析成 IP。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;目录资源&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;在 Apache 中默认将 html 文件存放在 &lt;code&gt;/var/www/html/&lt;/code&gt; 目录内。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&quot;传输数据方法&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#传输数据方法&quot;&gt;&lt;/a&gt; 传输数据方法&lt;/h1&gt;
+&lt;p&gt;在 http 的服务端和客户端之间数据传递的基本方法有下面几种：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;GET&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;最常用的方法，浏览器直接向服务器请求网址上面的资源。使用 GET 方式可以直接在 URL 中输入变量。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;POST&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;客户端向服务端发送请求的方法。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;HEAD&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;服务端响应给客户端的一些数据头文件。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;OPTIONS&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;服务端响应给客户端一些允许的功能与方法。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;DELETE&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;删除某些资源的方法。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
+    
+    <category term="4.网络服务" scheme="https://blog.x2b.net/categories/Linux/4-%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1/"/>
+    
+    
+  </entry>
+  
+  <entry>
     <title>iSCSI 服务</title>
     <link href="https://blog.x2b.net/3959662341/"/>
     <id>https://blog.x2b.net/3959662341/</id>
@@ -652,55 +710,24 @@ operator:x:11:0:operator:/root:/sbin/nologin&lt;span aria-hidden=&quot;true&quot
   </entry>
   
   <entry>
-    <title>Linux 中引导与启动流程</title>
-    <link href="https://blog.x2b.net/4291230975/"/>
-    <id>https://blog.x2b.net/4291230975/</id>
-    <published>2021-10-10T12:54:21.000Z</published>
-    <updated>2023-05-07T09:40:20.110Z</updated>
+    <title>SAMBA 服务</title>
+    <link href="https://blog.x2b.net/1516343977/"/>
+    <id>https://blog.x2b.net/1516343977/</id>
+    <published>2021-10-11T08:05:19.000Z</published>
+    <updated>2023-05-13T07:54:59.784Z</updated>
     
     
-    <summary type="html">&lt;h1 id=&quot;bios-启动流程&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#bios-启动流程&quot;&gt;&lt;/a&gt; BIOS 启动流程&lt;/h1&gt;
-&lt;p&gt;目前，主机系统在载入硬件驱动方面的程序有两种：使用 BIOS 和 UEFI。简单的开机流程分为以下步骤：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;载入 BIOS 或 UEFI 的硬件信息与自测（POST，Power-On Self-Test），并根据设置取得第一个可开机的设备；&lt;/li&gt;
-&lt;li&gt;对于 BIOS，通过硬件的 INT 13 中断功能，读取并执行第一个可开机设备内 MBR 的引导加载程序（Boot Loader）；对于 UEFI，读取并执行第一个可开机设备内 EFI 分区的引导加载程序；&lt;/li&gt;
-&lt;li&gt;依据引导加载程序的设置，识别文件系统格式，加载核心文件。由内核开始检测硬件与驱动；&lt;/li&gt;
-&lt;li&gt;启动初始进程管理程序（systemd 或 System V），最终目的都是启动基础服务和用户设置的开机启动程序。&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;在使用 BIOS 时，通常搭配 MBR（Master Boot Record）分区表。而在使用 UEFI 时，通常搭配 GPT（GUID Partition Table）分区表。GPT 格式启动过程与 MBR 类似，差异在于开机管理程序是否支持 GPT。&lt;/p&gt;
-&lt;p&gt;在引导加载程序读取到内核文件后，Linux 会将内核解压到内存中，由内核开始测试与驱动硬件。此时 Linux 内核会以自己检测结果为准，而不理会 BIOS 的硬件检测结果。也就是说内核此时开始接管 BIOS 后的工作了。&lt;/p&gt;
-&lt;h1 id=&quot;多系统引导&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#多系统引导&quot;&gt;&lt;/a&gt; 多系统引导&lt;/h1&gt;</summary>
-    
-    
-    
-    <category term="Linux" scheme="https://blog.x2b.net/categories/Linux/"/>
-    
-    <category term="0.基础概论" scheme="https://blog.x2b.net/categories/Linux/0-%E5%9F%BA%E7%A1%80%E6%A6%82%E8%AE%BA/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>NIS 服务</title>
-    <link href="https://blog.x2b.net/26249757/"/>
-    <id>https://blog.x2b.net/26249757/</id>
-    <published>2021-10-10T10:33:13.000Z</published>
-    <updated>2023-05-11T15:10:01.424Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;nis-服务器&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#nis-服务器&quot;&gt;&lt;/a&gt; NIS 服务器&lt;/h1&gt;
-&lt;p&gt;NIS 是 Network Information Services 的缩写，也称为 Sun Yellow Pages。NIS 服务器主要提供用户的账号，密码，主目录，UID 等信息给客户端主机用来查询之用。&lt;/p&gt;
-&lt;p&gt;NIS 服务器使用 RPC 协议传输数据，并且可以使用 Master/Slave 构架。整个运行流程如下：&lt;/p&gt;
+    <summary type="html">&lt;h1 id=&quot;samba-简介&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#samba-简介&quot;&gt;&lt;/a&gt; SAMBA 简介&lt;/h1&gt;
+&lt;p&gt;Linux 上面使用 NFS 服务器来共享文件，Windows 上使用的是 CIFS（Common Internet File System）服务（网上邻居）来共享文件。这两种服务都不能跨系统共享文件，SAMBA 就是为了解决这一问题而存在。&lt;/p&gt;
+&lt;p&gt;SAMBA（Server Message Block）服务的主要功能：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;NIS Master 先将账号密码相关文件制作成数据库格式。&lt;/li&gt;
-&lt;li&gt;NIS Slave 连接 Master 同步数据。&lt;/li&gt;
-&lt;li&gt;如果账号密码有变动会重新制作数据库并同步。&lt;/li&gt;
-&lt;li&gt;当 NIS Client 有登录需求时会先查询本机 passwd, shadow 等文件。&lt;/li&gt;
-&lt;li&gt;若找不到相关账号数据，则向整个 NIS 网络的主机广播查询。&lt;/li&gt;
-&lt;li&gt;由 NIS Server 响应 Client 的请求。&lt;/li&gt;
+&lt;li&gt;共享文件与打印机服务。&lt;/li&gt;
+&lt;li&gt;提供用户登录 SAMBA 主机时的身份认证。&lt;/li&gt;
+&lt;li&gt;可以进行 Windows 网络上的主机名解析（NetBIOS Name）。&lt;/li&gt;
+&lt;li&gt;可以进行设备的共享（例如 CD-ROM）。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1 id=&quot;服务端配置&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#服务端配置&quot;&gt;&lt;/a&gt; 服务端配置&lt;/h1&gt;
-&lt;p&gt;NIS 服务器同时也可以被当作客户端，它依赖的软件有下面一些：&lt;/p&gt;</summary>
+&lt;h1 id=&quot;netbios-协议&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#netbios-协议&quot;&gt;&lt;/a&gt; NetBIOS 协议&lt;/h1&gt;
+&lt;p&gt;SAMBA 构架在 NetBIOS（Network Basic Input/Output System）通信协议上。&lt;/p&gt;</summary>
     
     
     
