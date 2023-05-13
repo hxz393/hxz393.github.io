@@ -92,7 +92,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="../../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">54</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="../../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">55</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -157,7 +157,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="../../archives/">
-          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-count">55</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -206,125 +206,6 @@
     </div>
 
     <div class="main-inner index posts-expand">
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/3532663001/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="../../images/avatar.jpg">
-      <meta itemprop="name" content="assassing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="X to Bytes">
-      <meta itemprop="description" content="技术分享">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | X to Bytes">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="../../3532663001/" class="post-title-link" itemprop="url">NTP 服务</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-03-20 09:01:17" itemprop="dateCreated datePublished" datetime="2022-03-20T09:01:17+08:00">2022-03-20</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-11 22:13:39" itemprop="dateModified" datetime="2023-05-11T22:13:39+08:00">2023-05-11</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Linux/4-%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1/" itemprop="url" rel="index"><span itemprop="name">4.网络服务</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>1.3k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>4 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="ntp-通信协议"><a class="markdownIt-Anchor" href="#ntp-通信协议"></a> NTP 通信协议</h1>
-<p>NTP 是网络校时协议（Network Time Protocol）。为了修正因为 BIOS 内部芯片问题导致与标准时间（UTC, Coordinated Universal Time）存在的偏差，而通过网络进行时间同步（Synchronize）。此外，DTSS（Digital Time Synchronization Protocol）也可实现同样的功能。</p>
-<p>Linux 系统中有两个时间：</p>
-<ul>
-<li>软件时钟：Linux 自己的系统时间，从 1970.1.1 开始记录的时间参数。</li>
-<li>硬件时钟：计算机在 BIOS 记录的实际时间（UTC），通过硬件记录。写入硬件时钟使用 <code>hwclock</code> 命令。</li>
-</ul>
-<p>NTP 服务器使用的端口为 123，通过 UDP 数据包传输。</p>
-<p>我国授时中心服务器的 IP 地址为 210.72.145.44。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="../../3532663001/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
 
     
 
@@ -696,6 +577,125 @@ operator:x:11:0:operator:/root:/sbin/nologin<span aria-hidden="true" class="line
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/3532663001/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="../../3532663001/" class="post-title-link" itemprop="url">NTP 服务</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-03-20 09:01:17" itemprop="dateCreated datePublished" datetime="2022-03-20T09:01:17+08:00">2022-03-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-11 22:13:39" itemprop="dateModified" datetime="2023-05-11T22:13:39+08:00">2023-05-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../../categories/Linux/4-%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1/" itemprop="url" rel="index"><span itemprop="name">4.网络服务</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="ntp-通信协议"><a class="markdownIt-Anchor" href="#ntp-通信协议"></a> NTP 通信协议</h1>
+<p>NTP 是网络校时协议（Network Time Protocol）。为了修正因为 BIOS 内部芯片问题导致与标准时间（UTC, Coordinated Universal Time）存在的偏差，而通过网络进行时间同步（Synchronize）。此外，DTSS（Digital Time Synchronization Protocol）也可实现同样的功能。</p>
+<p>Linux 系统中有两个时间：</p>
+<ul>
+<li>软件时钟：Linux 自己的系统时间，从 1970.1.1 开始记录的时间参数。</li>
+<li>硬件时钟：计算机在 BIOS 记录的实际时间（UTC），通过硬件记录。写入硬件时钟使用 <code>hwclock</code> 命令。</li>
+</ul>
+<p>NTP 服务器使用的端口为 123，通过 UDP 数据包传输。</p>
+<p>我国授时中心服务器的 IP 地址为 210.72.145.44。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="../../3532663001/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/1516343977/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -850,13 +850,13 @@ operator:x:11:0:operator:/root:/sbin/nologin<span aria-hidden="true" class="line
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">135k</span>
+    <span title="站点总字数">137k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">7:28</span>
+    <span title="站点阅读时长">7:38</span>
   </span>
 </div>
 <div class="busuanzi-count">
