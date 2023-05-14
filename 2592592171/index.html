@@ -30,7 +30,7 @@
 <meta property="og:description" content="用户标识符 每个用户至少都有两个 ID，用户 ID（UID，User ID）和用户组 ID（GID，Group ID）。 当显示文件属性时，系统会根据 &#x2F;etc&#x2F;passwd 与 &#x2F;etc&#x2F;group 文件的内容找到 UID&#x2F;GID 对应的账号与组名再显示出来。  用户账号 用户通过终端或 SSH 登录时，系统的处理过程如下：  首先在 &#x2F;etc&#x2F;passwd 中查找是否存在输入的账户，如果存在">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-03-20T01:01:17.000Z">
-<meta property="article:modified_time" content="2023-05-07T09:32:36.735Z">
+<meta property="article:modified_time" content="2023-05-13T15:34:08.256Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python">
 <meta name="twitter:card" content="summary">
@@ -94,7 +94,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">56</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">58</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -160,7 +160,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="../archives/">
-          <span class="site-state-item-count">56</span>
+          <span class="site-state-item-count">58</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -255,7 +255,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-07 17:32:36" itemprop="dateModified" datetime="2023-05-07T17:32:36+08:00">2023-05-07</time>
+      <time title="修改时间：2023-05-13 23:34:08" itemprop="dateModified" datetime="2023-05-13T23:34:08+08:00">2023-05-13</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -285,14 +285,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>3.1k</span>
+      <span>3.2k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>10 分钟</span>
+      <span>11 分钟</span>
     </span>
 </div>
 
@@ -314,7 +314,7 @@
 <li>如果账户和密码都正确，就可以进入 shell。</li>
 </ol>
 <h2 id="etcpasswd-文件结构"><a class="markdownIt-Anchor" href="#etcpasswd-文件结构"></a> /etc/passwd 文件结构</h2>
-<p>passwd 中以行为单位记录系统中所有账号，各字段之间用冒号分隔开：</p>
+<p><code>passwd</code> 文件中以行为单位记录系统中所有账号，各字段之间用冒号分隔开：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">head</span> <span class="token parameter variable">-4</span> /etc/passwd
 root:x:0:0:root:/root:/bin/bash
 bin:x:1:1:bin:/bin:/sbin/nologin
@@ -368,7 +368,7 @@ adm:x:3:4:adm:/var/adm:/sbin/nologin<span aria-hidden="true" class="line-numbers
 </tbody>
 </table>
 <h2 id="etcshadow-文件结构"><a class="markdownIt-Anchor" href="#etcshadow-文件结构"></a> /etc/shadow 文件结构</h2>
-<p>shadow 文件中保存了密码和相关限制设置：</p>
+<p><code>shadow</code> 文件中保存了密码和相关限制设置：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/shadow
 root:<span class="token variable">$6</span><span class="token variable">$A7YdIFXQJ47yq0</span>::0:99999:7:::
 bin:*:17632:0:99999:7:::<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
@@ -432,7 +432,7 @@ bin:*:17632:0:99999:7:::<span aria-hidden="true" class="line-numbers-rows"><span
 <h1 id="用户组"><a class="markdownIt-Anchor" href="#用户组"></a> 用户组</h1>
 <p>用户组可以将账户集中在一起组成一个逻辑排列，从而简化特权管理。和用户组有关的文件记录在 <code>/etc/group</code> 与 <code>/etc/gshadow</code> 中。</p>
 <h2 id="etcgroup-文件结构"><a class="markdownIt-Anchor" href="#etcgroup-文件结构"></a> /etc/group 文件结构</h2>
-<p>group 文件记录 GID 与组名的对应：</p>
+<p><code>group</code> 文件记录 GID 与组名的对应：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/group
 root:x:0:
 bin:x:1:
@@ -471,36 +471,36 @@ daemon:x:2:<span aria-hidden="true" class="line-numbers-rows"><span></span><span
 </table>
 <p>初始用户组（initial group）与有效用户组（effective group）：</p>
 <ul>
-<li>保存在 <code>/etc/passwd</code> 中的用户对应 GID 就是初始用户组；</li>
+<li>保存在 <code>/etc/passwd</code> 中的用户对应 GID 就是初始用户组。</li>
 <li>保存在 <code>/etc/group</code> 中的用户名说明用户在此组中，该组是组内用户的有效用户组。</li>
 </ul>
 <h2 id="etcgshadow-文件结构"><a class="markdownIt-Anchor" href="#etcgshadow-文件结构"></a> /etc/gshadow 文件结构</h2>
-<p>gshadow 用来设定组密码：</p>
+<p><code>gshadow</code> 文件用来设定组密码：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/gshadow
 root:::
 bin:::<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>文件内容和 <code>/etc/group</code> 差不多，除了第二列用来记录组密码。</p>
 <h2 id="两种群组机制"><a class="markdownIt-Anchor" href="#两种群组机制"></a> 两种群组机制</h2>
-<p>针对创建用户时会不会创建私有组的策略有两种机制：</p>
+<p>针对创建用户时是否创建私有组的策略有两种机制：</p>
 <ul>
 <li>
 <p><strong>私有群组机制</strong></p>
-<p>系统会创建一个与账号同名的群组给使用者作为初始群组，且主文件夹权限设置为 700，这样对用户来说保密性较好。使用这一机制的代表有 RHEL、Fedora、CentOS 等。</p>
+<p>系统会创建一个与账号同名的群组作为初始群组，且主文件夹权限设置为 700，这样对用户来说保密性较好。使用这一机制的代表有 RHEL、Fedora、CentOS 等。</p>
 </li>
 <li>
 <p><strong>公共群组机制</strong></p>
-<p>新建账户时若没指定组，自动把 GID=100 分配给使用者作为初始群组。此组为 users 公共组，主文件夹权限是 755，同一组内的用户可以共享主文件夹内数据。代表有 SuSE 等。</p>
+<p>新建账户时若未指定组，系统会自动将 GID=100 分配给用户作为初始群组。此组为 users 公共组，主文件夹权限为 755，同一组内的用户可以共享主文件夹内的数据。SuSE 等发行版使用这一机制。</p>
 </li>
 </ul>
 <h1 id="新增用户"><a class="markdownIt-Anchor" href="#新增用户"></a> 新增用户</h1>
-<p>使用默认设置新建用户时，系统所作的工作：</p>
+<p>使用默认设置新建用户时，系统所进行的操作如下：</p>
 <ol>
-<li>在 <code>/etc/passwd</code> 中创建一行与账号相关的数据，包括创建 UID/GID/主文件夹等；</li>
+<li>在 <code>/etc/passwd</code> 中创建一行与账号相关的数据，包括创建 UID、GID、主文件夹等；</li>
 <li>在 <code>/etc/shadow</code> 中将账号密码相关参数填入，默认无密码；</li>
-<li>在 <code>/etc/group</code> 中加入一个与账户名一样的组名；</li>
-<li>在 <code>/home</code> 下面创建与账户同名的目录作为用户主文件夹，权限为 700。</li>
+<li>在 <code>/etc/group</code> 中加入一个与账户名相同的组名；</li>
+<li>在 <code>/home</code> 目录下创建与账户同名的目录作为用户主文件夹，权限设置为 700。</li>
 </ol>
-<p>可以通过<code>useradd -D</code>查看创建用户时使用的默认值：</p>
+<p>可以通过 <code>useradd -D</code> 命令查看创建用户时使用的默认值：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">useradd</span> <span class="token parameter variable">-D</span>
 <span class="token assign-left variable">GROUP</span><span class="token operator">=</span><span class="token number">100</span>
 <span class="token assign-left variable"><span class="token environment constant">HOME</span></span><span class="token operator">=</span>/home
@@ -509,7 +509,7 @@ bin:::<span aria-hidden="true" class="line-numbers-rows"><span></span><span></sp
 <span class="token assign-left variable"><span class="token environment constant">SHELL</span></span><span class="token operator">=</span>/bin/bash
 <span class="token assign-left variable">SKEL</span><span class="token operator">=</span>/etc/skel
 <span class="token assign-left variable">CREATE_MAIL_SPOOL</span><span class="token operator">=</span>yes<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>其实调用的就是 <code>/etc/default/useradd</code> 文件内容。变量说明如下：</p>
+<p>实际上，这是调用了 <code>/etc/default/useradd</code> 文件的内容。各变量的说明如下：</p>
 <table>
 <thead>
 <tr>
@@ -522,46 +522,46 @@ bin:::<span aria-hidden="true" class="line-numbers-rows"><span></span><span></sp
 <tr>
 <td>1</td>
 <td>GROUP=100</td>
-<td>设置新用户初始组为 users，在 CentOS 中不适用</td>
+<td>设置新用户的初始组为 users，在 CentOS 中不适用。</td>
 </tr>
 <tr>
 <td>2</td>
 <td>HOME=/home</td>
-<td>用户主文件夹的基准目录（basedir）</td>
+<td>用户主文件夹的基准目录（basedir）。</td>
 </tr>
 <tr>
 <td>3</td>
 <td>INACTIVE=-1</td>
-<td>密码过期后是否会失效的设置值</td>
+<td>密码过期后是否会失效的设置值。</td>
 </tr>
 <tr>
 <td>4</td>
 <td>EXPIRE=</td>
-<td>账号失效的日期，YYYY-MM-DD 格式</td>
+<td>账号失效的日期，YYYY-MM-DD 格式。</td>
 </tr>
 <tr>
 <td>5</td>
 <td>SHELL=/bin/bash</td>
-<td>新用户默认 shell 的路径</td>
+<td>新用户默认的 shell 路径。</td>
 </tr>
 <tr>
 <td>6</td>
 <td>SKEL=/etc/skel</td>
-<td>新用户主目录里默认的内容参考来源</td>
+<td>新用户主目录里默认的内容参考来源。</td>
 </tr>
 <tr>
 <td>7</td>
 <td>CREATE_MAIL_SPOOL=yes</td>
-<td>创建用户邮件信箱</td>
+<td>创建用户的邮件信箱。</td>
 </tr>
 </tbody>
 </table>
-<p>其他一些设置，如密码策略、邮箱目录等，存放在 <code>/etc/login.defs</code> 文件下：</p>
+<p>其他一些设置，如密码策略、邮箱目录等，存放在 <code>/etc/login.defs</code> 文件中：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/login.defs <span class="token operator">|</span> <span class="token function">grep</span> <span class="token parameter variable">-v</span> <span class="token parameter variable">-E</span> <span class="token string">"^$|^#"</span>
 MAIL_DIR        /var/spool/mail
 PASS_MAX_DAYS   <span class="token number">99999</span>
 PASS_MIN_DAYS   <span class="token number">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>在 <code>/etc/login.defs</code> 文件内一些重要参数说明：</p>
+<p>在 <code>/etc/login.defs</code> 文件中，一些重要参数的说明如下：</p>
 <table>
 <thead>
 <tr>
@@ -594,12 +594,12 @@ PASS_MIN_DAYS   <span class="token number">0</span><span aria-hidden="true" clas
 <tr>
 <td>16</td>
 <td>UMASK</td>
-<td>用户主文件的权限设置</td>
+<td>用户主文件夹的权限设置</td>
 </tr>
 <tr>
 <td>17</td>
 <td>USERGROUPS_ENAB</td>
-<td>删掉用户时，如果同名组是空组，也一并删除</td>
+<td>删除用户时，如果同名组是空组，也一并删除</td>
 </tr>
 <tr>
 <td>18</td>
@@ -609,9 +609,9 @@ PASS_MIN_DAYS   <span class="token number">0</span><span aria-hidden="true" clas
 </tbody>
 </table>
 <h1 id="修改密码"><a class="markdownIt-Anchor" href="#修改密码"></a> 修改密码</h1>
-<p>root 修改密码时不需要旧密码，可以忽略密码规则。一般账号改密码需要输入旧密码，密码需要符合复杂性要求。</p>
-<p>密码管理机制由 <code>/etc/pam.d/passwd</code> 控制，密码测试模块使用 pam_cracklib.so。</p>
-<p>可以通过 <code>authconfig</code> 命令来查看密码哈希使用算法:</p>
+<p>root 在修改密码时不需要输入旧密码，可以忽略密码规则。通常，普通用户在修改密码时需要输入旧密码，且密码需要符合复杂性要求。</p>
+<p>密码管理机制由 <code>/etc/pam.d/passwd</code> 控制，密码测试模块使用 <code>pam_cracklib.so</code>。</p>
+<p>可以使用 <code>authconfig</code> 命令查看密码哈希使用的算法：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ authconfig <span class="token parameter variable">--test</span> <span class="token operator">|</span> <span class="token function">grep</span> hashing
 password hashing algorithm is sha512<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>假设作为一般用户，原始密码为 A2345678b，则修改密码时的错误示例如下：</p>
@@ -628,7 +628,7 @@ password hashing algorithm is sha512<span aria-hidden="true" class="line-numbers
 <td>b2345C</td>
 </tr>
 <tr>
-<td>不是回文(即上次密码的倒置)</td>
+<td>不是回文（即上次密码的倒置）</td>
 <td>b8765432A</td>
 </tr>
 <tr>
@@ -636,7 +636,7 @@ password hashing algorithm is sha512<span aria-hidden="true" class="line-numbers
 <td>a2345678B</td>
 </tr>
 <tr>
-<td>至少有字母+数字</td>
+<td>至少包含字母和数字</td>
 <td>abababab</td>
 </tr>
 <tr>
@@ -646,16 +646,16 @@ password hashing algorithm is sha512<span aria-hidden="true" class="line-numbers
 </tbody>
 </table>
 <h1 id="pam-模块"><a class="markdownIt-Anchor" href="#pam-模块"></a> PAM 模块</h1>
-<p>PAM（可插拔身份验证模块）是一套应用程序编程接口（API）, 它提供一系列验证机制。只要用户将验证阶段的需求告诉 PAM，PAM 就能够回报用户验证的结果（成功或失败）。</p>
-<p>由于 PAM 仅是一套验证机制，又可以提供给其他程序调用，因此无论使用什么程序都可以使用 PAM 进行身份验证。</p>
-<p>例如，<code>passwd</code> 命令调用 PAM 的流程如下：</p>
+<p>PAM（可插拔身份验证模块）是一套应用程序编程接口（API），用于提供一系列身份验证机制。通过告知 PAM 验证阶段的要求，PAM 能够返回验证结果（成功或失败）给用户。</p>
+<p>PAM 只是一套验证机制，并可供其他程序调用，因此无论使用哪个程序，都可以使用 PAM 进行身份验证。</p>
+<p>例如，<code>passwd</code> 命令调用 PAM 的过程如下：</p>
 <ol>
-<li>用户执行 <code>/usr/bin/passwd</code> 程序，并输入密码;</li>
-<li>passwd 调用 PAM 模块进行验证;</li>
-<li>PAM 模块会到 <code>/etc/pam.d/</code> 中查找与程序 passwd 同名的配置文件;</li>
-<li>根据 <code>/etc/pam.d/passwd</code> 内的设置，引用相关的 PAM 模块逐步进行验证分析;</li>
-<li>将验证结果回传给 passwd 程序;</li>
-<li>passwd 根据 PAM 回传结果决定下一个操作（通过或要求重试）。</li>
+<li>用户执行 <code>/usr/bin/passwd</code> 程序并输入密码；</li>
+<li><code>passwd</code> 调用 PAM 模块进行验证；</li>
+<li>PAM 模块在 <code>/etc/pam.d/</code> 中查找与 <code>passwd</code> 程序同名的配置文件；</li>
+<li>根据 <code>/etc/pam.d/passwd</code> 中的设置，逐步引用相关的 PAM 模块进行验证分析；</li>
+<li>将验证结果返回给 <code>passwd</code> 程序；</li>
+<li><code>passwd</code> 根据 PAM 返回的结果决定下一步操作（通过或要求重试）。</li>
 </ol>
 <p>查看 <code>/etc/pam.d/passwd</code> 文件内容如下:</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/pam.d/passwd
@@ -665,49 +665,49 @@ account    include      system-auth
 password   substack     system-auth
 <span class="token parameter variable">-password</span>   optional    pam_gnome_keyring.so use_authtok
 password   substack     postlogin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>每一行分为三个字段，分别是：验证类别（type）、控制标志（flag）、PAM 模块与该模块的参数。</p>
+<p>每一行都包含三个字段，分别是验证类别（type）、控制标志（flag）以及相应的 PAM 模块及其参数。</p>
 <h2 id="验证类型"><a class="markdownIt-Anchor" href="#验证类型"></a> 验证类型</h2>
-<p>验证类型(Type)有四种，分别为：</p>
+<p>验证类型（Type）有四种，分别为：</p>
 <ul>
 <li>
 <p><strong>auth</strong></p>
-<p>authentication（认证）的缩写，主要用来检验用户的身份信息，通常需要密码来检验，因此后续接的模块是用来验证使用者的身份。</p>
+<p>authentication（认证）的缩写，主要用于检验用户的身份信息，通常需要密码来进行验证，因此后续接的模块用于验证用户的身份。</p>
 </li>
 <li>
 <p><strong>account</strong></p>
-<p>account（账号）则大部分用于进行授权，主要在检验用户是否具有正确的授权。例如使用一个过期的密码登录时，无法正确登录。</p>
+<p>account（账号）主要用于授权，用于检验用户是否具有正确的授权。例如，在使用一个过期的密码进行登录时，将无法成功登录。</p>
 </li>
 <li>
 <p><strong>session</strong></p>
-<p>session（会话）管理的是用户在这次登录（或使用这个命令）期间 PAM 所给予的环境设置。这个类型通常用于记录用户登录和注销时的信息。例如使用 <code>sudo</code> 命令，会在安全日志里出现很多关于 PAM 的行，记录 session open、session close 等信息。</p>
+<p>session（会话）管理用户在登录期间（或使用特定命令期间）PAM 提供的环境设置。该类型通常用于记录用户登录和注销的信息。例如，在使用 <code>sudo</code> 命令时，会在安全日志中记录与 PAM 相关的信息，如 session open、session close 等信息。</p>
 </li>
 <li>
 <p><strong>password</strong></p>
-<p>password 就是密码，所以这种类别主要用于提供验证的修订工作，例如修改密码。</p>
+<p>password（密码）用于进行密码验证和修改密码等相关操作。</p>
 </li>
 </ul>
-<p>这四个验证的类型通常有顺序。先进行身份验证（auth），系统给予授权（account），登记登录信息（session），最后是需要更改密码（password）时才给予的 password 类型。</p>
+<p>这四种验证类型通常按照顺序进行。首先进行身份验证（auth），然后进行授权（account），接着记录会话信息（session），最后进行密码相关的操作（password）。</p>
 <h2 id="控制标志"><a class="markdownIt-Anchor" href="#控制标志"></a> 控制标志</h2>
-<p>控制标志(Control Flag)是验证通过的标准，这个字段在控制该验证的放行方式，也分为四种控制方式：</p>
+<p>控制标志（Control Flag）用于控制验证的方式。该字段指定了验证的通过标准，有以下四种控制标志：</p>
 <ul>
 <li>
 <p><strong>required</strong></p>
-<p>此验证若成功带有 success 的标志，失败带有 failure 的标志，无论成功与失败都会继续后续的验证流程。由于后续的验证流程可以继续进行，因此相当有利于记录日志(log)，这是 PAM 最常使用的标志。</p>
+<p>若验证成功，则返回 success 标志；若验证失败，则返回 failure 标志。无论成功或失败，都将继续后续的验证流程。由于后续的验证流程可以继续进行，因此这是最常用的标志之一，也方便记录日志。</p>
 </li>
 <li>
 <p><strong>requisite</strong></p>
-<p>验证失败立刻回报原程序 failure 的标志，并终止后续的验证流程。成功则带有 success 的标志并继续后续的验证流程。与 required 最大的区别是遇到失败立马终止，因此失败所产生的 PAM 信息无法记录。</p>
+<p>验证失败会立即返回原始程序，并带有 failure 标志，同时终止后续的验证流程。验证成功则带有 success 标志，并继续后续的验证流程。与 required 标志的最大区别在于，遇到失败时立即终止验证流程，因此无法记录失败产生的 PAM 信息。</p>
 </li>
 <li>
 <p><strong>sufficient</strong></p>
-<p>若验证成功则立刻回传 success 给原程序，并终止后续的验证流程，失败则带有 failure 标志并继续后续的验证流程，与 requisite 刚好相反。</p>
+<p>若验证成功，则立即返回 success 给原始程序，并终止后续的验证流程。验证失败则带有 failure 标志，并继续后续的验证流程。与 requisite 标志正好相反。</p>
 </li>
 <li>
 <p><strong>optional</strong></p>
-<p>这个模块控制目的大多是在显示信息，并不是用在验证方面。</p>
+<p>optional 标志通常用于显示信息，而不是用于验证。</p>
 </li>
 </ul>
-<p>如果控制标志出现的是 include，代表的是调用后面的文件作为这个类别的验证。</p>
+<p>如果控制标志字段中出现 include，表示调用后面的文件作为该类别的验证配置。</p>
 <h2 id="模块"><a class="markdownIt-Anchor" href="#模块"></a> 模块</h2>
 <p>模块存放路径：</p>
 <table>
@@ -783,7 +783,7 @@ password   substack     postlogin<span aria-hidden="true" class="line-numbers-ro
 </tr>
 <tr>
 <td>pam_limits.so</td>
-<td>ulimit 命令用到了这个模块。</td>
+<td><code>ulimit</code> 命令用到了这个模块。</td>
 </tr>
 </tbody>
 </table>
@@ -876,11 +876,14 @@ File size limit exceeded
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="../4087499240/" rel="prev" title="Linux 目录配置标准与结构">
-                  <i class="fa fa-chevron-left"></i> Linux 目录配置标准与结构
+                <a href="../2759544459/" rel="prev" title="计算机软件基础">
+                  <i class="fa fa-chevron-left"></i> 计算机软件基础
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="../4087499240/" rel="next" title="Linux 目录配置标准与结构">
+                  Linux 目录配置标准与结构 <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
     </footer>
@@ -913,13 +916,13 @@ File size limit exceeded
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">142k</span>
+    <span title="站点总字数">155k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">7:53</span>
+    <span title="站点阅读时长">8:38</span>
   </span>
 </div>
 <div class="busuanzi-count">

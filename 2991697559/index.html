@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="网络设置 虽然现在网络设置可以通过 nmcli 来完成，但旧的命令仍然可用。  ifconfig ifconfig 命令可以手动启动、查看和修改网络接口的参数，语法如下：ifconfig interface [选项] 其中，interface 为网卡接口名称，例如 eth0、ens34 等。选项可以使用以下参数：    参数 说明     up, down 启用或禁用接口   mtu 设置 MT">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 网络命令">
+<meta property="og:url" content="https://blog.x2b.net/2991697559/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="网络设置 虽然现在网络设置可以通过 nmcli 来完成，但旧的命令仍然可用。  ifconfig ifconfig 命令可以手动启动、查看和修改网络接口的参数，语法如下：ifconfig interface [选项] 其中，interface 为网卡接口名称，例如 eth0、ens34 等。选项可以使用以下参数：    参数 说明     up, down 启用或禁用接口   mtu 设置 MT">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-09-23T05:36:26.000Z">
+<meta property="article:modified_time" content="2023-05-14T10:58:26.094Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/2991697559/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/2991697559/","path":"2991697559/","title":"Linux 网络命令"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Linux 网络命令 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">58</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text"> 网络设置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ifconfig"><span class="nav-number">1.1.</span> <span class="nav-text"> ifconfig</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#route"><span class="nav-number">1.2.</span> <span class="nav-text"> route</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ip"><span class="nav-number">1.3.</span> <span class="nav-text"> ip</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%AF%8A%E6%96%AD"><span class="nav-number">2.</span> <span class="nav-text"> 网络诊断</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ping"><span class="nav-number">2.1.</span> <span class="nav-text"> ping</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#traceroute"><span class="nav-number">2.2.</span> <span class="nav-text"> traceroute</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#netstat"><span class="nav-number">2.3.</span> <span class="nav-text"> netstat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nmap"><span class="nav-number">2.4.</span> <span class="nav-text"> nmap</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5"><span class="nav-number">3.</span> <span class="nav-text"> 远程连接</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#telnet"><span class="nav-number">3.1.</span> <span class="nav-text"> telnet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ftp"><span class="nav-number">3.2.</span> <span class="nav-text"> ftp</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lftp"><span class="nav-number">3.3.</span> <span class="nav-text"> lftp</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%8A%93%E5%8C%85"><span class="nav-number">4.</span> <span class="nav-text"> 网络抓包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#tcpdump"><span class="nav-number">4.1.</span> <span class="nav-text"> tcpdump</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nc"><span class="nav-number">4.2.</span> <span class="nav-text"> nc</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">58</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/2991697559/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Linux 网络命令 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux 网络命令
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-09-23 13:36:26" itemprop="dateCreated datePublished" datetime="2021-09-23T13:36:26+08:00">2021-09-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-14 18:58:26" itemprop="dateModified" datetime="2023-05-14T18:58:26+08:00">2023-05-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/4-%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1/" itemprop="url" rel="index"><span itemprop="name">4.网络服务</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>14 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="网络设置"><a class="markdownIt-Anchor" href="#网络设置"></a> 网络设置</h1>
+<p>虽然现在网络设置可以通过 <code>nmcli</code> 来完成，但旧的命令仍然可用。</p>
+<h2 id="ifconfig"><a class="markdownIt-Anchor" href="#ifconfig"></a> ifconfig</h2>
+<p><code>ifconfig</code> 命令可以手动启动、查看和修改网络接口的参数，语法如下：<code>ifconfig interface [选项]</code></p>
+<p>其中，<code>interface</code> 为网卡接口名称，例如 <code>eth0</code>、<code>ens34</code> 等。选项可以使用以下参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>up, down</td>
+<td>启用或禁用接口</td>
+</tr>
+<tr>
+<td>mtu</td>
+<td>设置 MTU 数值，单位为字节</td>
+</tr>
+<tr>
+<td>netmask</td>
+<td>设置子网掩码</td>
+</tr>
+<tr>
+<td>broadcast</td>
+<td>设置广播地址</td>
+</tr>
+</tbody>
+</table>
+<p>例如，要查询 <code>ens33</code> 网卡的信息，可以运行以下命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ <span class="token function">ifconfig</span> ens33
+ens33: <span class="token assign-left variable">flags</span><span class="token operator">=</span><span class="token number">416</span><span class="token operator"><span class="token file-descriptor important">3</span>&lt;</span>UP,BROADCAST,RUNNING,MULTICAST<span class="token operator">></span>  mtu <span class="token number">1500</span>
+        inet <span class="token number">192.168</span>.2.201  netmask <span class="token number">255.255</span>.0.0  broadcast <span class="token number">192.168</span>.255.255
+        inet6 fe80::df56:57bc:63b:6ccd  prefixlen <span class="token number">64</span>  scopeid 0x2<span class="token operator"><span class="token file-descriptor important">0</span>&lt;</span>link<span class="token operator">></span>
+        inet6 240e:383:406:ac00:3d71:87ed:5f5:fde  prefixlen <span class="token number">64</span>  scopeid 0x<span class="token operator"><span class="token file-descriptor important">0</span>&lt;</span>global<span class="token operator">></span>
+        inet6 fe80::6216:718c:bab2:a10d  prefixlen <span class="token number">64</span>  scopeid 0x2<span class="token operator"><span class="token file-descriptor important">0</span>&lt;</span>link<span class="token operator">></span>
+        ether 00:0c:29:da:7d:5c  txqueuelen <span class="token number">1000</span>  <span class="token punctuation">(</span>Ethernet<span class="token punctuation">)</span>
+        RX packets <span class="token number">444049</span>  bytes <span class="token number">506386469</span> <span class="token punctuation">(</span><span class="token number">482.9</span> MiB<span class="token punctuation">)</span>
+        RX errors <span class="token number">0</span>  dropped <span class="token number">64242</span>  overruns <span class="token number">0</span>  frame <span class="token number">0</span>
+        TX packets <span class="token number">42962</span>  bytes <span class="token number">7774934</span> <span class="token punctuation">(</span><span class="token number">7.4</span> MiB<span class="token punctuation">)</span>
+        TX errors <span class="token number">0</span>  dropped <span class="token number">0</span> overruns <span class="token number">0</span>  carrier <span class="token number">0</span>  collisions <span class="token number">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在输出中，RX 表示接收的数据包情况，TX 表示发送的数据包情况。注意，其中的 collisions 数值表示冲突次数。</p>
+<p>还可以设置虚拟接口。例如，将 <code>ens33</code> 设置为 192.168.3.201，可以运行以下命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ <span class="token function">ifconfig</span> ens33:0 <span class="token number">192.168</span>.3.201
+<span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ <span class="token function">ifconfig</span> ens33:0
+ens33:0: <span class="token assign-left variable">flags</span><span class="token operator">=</span><span class="token number">416</span><span class="token operator"><span class="token file-descriptor important">3</span>&lt;</span>UP,BROADCAST,RUNNING,MULTICAST<span class="token operator">></span>  mtu <span class="token number">1500</span>
+        inet <span class="token number">192.168</span>.3.201  netmask <span class="token number">255.255</span>.255.0  broadcast <span class="token number">192.168</span>.3.255
+        ether 00:0c:29:da:7d:5c  txqueuelen <span class="token number">1000</span>  <span class="token punctuation">(</span>Ethernet<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>需要注意的是，使用 <code>ifconfig</code> 设置的临时网络参数在重新启动网络服务后会重置并消失。为了永久保留设置，可以修改网络配置文件。</p>
+<h2 id="route"><a class="markdownIt-Anchor" href="#route"></a> route</h2>
+<p><code>route</code> 命令用来修改本机的路由表，命令用法如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">route [-nee]
+route add [-net|-host] [网络或主机] netmask [mask] [gw|dev]
+route del [-net|-host] [网络或主机] netmask [mask] [gw|dev]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>参数说明：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-n</code></td>
+<td>直接显示 IP 和端口，而不是通信协议或主机名。</td>
+</tr>
+<tr>
+<td><code>-ee</code></td>
+<td>显示更详细的信息。</td>
+</tr>
+<tr>
+<td><code>-net</code></td>
+<td>表示后面接的路由指向一个网络。</td>
+</tr>
+<tr>
+<td><code>-host</code></td>
+<td>表示后面接的路由指向单个主机。</td>
+</tr>
+<tr>
+<td><code>netmask</code></td>
+<td>可以设置 netmask 决定网络的大小。</td>
+</tr>
+<tr>
+<td><code>gw</code></td>
+<td>gateway 的缩写，后面接网关 IP。</td>
+</tr>
+<tr>
+<td><code>dev</code></td>
+<td>指定工作网卡，后面接 ens33 等。</td>
+</tr>
+</tbody>
+</table>
+<p>查询下本机路由表：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ route
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+default         gateway         <span class="token number">0.0</span>.0.0         UG    <span class="token number">102</span>    <span class="token number">0</span>        <span class="token number">0</span> ens33
+<span class="token number">192.168</span>.0.0     <span class="token number">0.0</span>.0.0         <span class="token number">255.255</span>.0.0     U     <span class="token number">102</span>    <span class="token number">0</span>        <span class="token number">0</span> ens33
+<span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ route <span class="token parameter variable">-nee</span>
+Kernel IP routing table
+Destination   Gateway       Genmask     Flags Metric Ref    Use Iface   MSS   Window irtt
+<span class="token number">0.0</span>.0.0       <span class="token number">192.168</span>.2.1   <span class="token number">0.0</span>.0.0     UG    <span class="token number">102</span>    <span class="token number">0</span>        <span class="token number">0</span> ens33   <span class="token number">0</span>     <span class="token number">0</span>      <span class="token number">0</span>
+<span class="token number">192.168</span>.0.0   <span class="token number">0.0</span>.0.0       <span class="token number">255.255</span>.0.0 U     <span class="token number">102</span>    <span class="token number">0</span>        <span class="token number">0</span> ens33   <span class="token number">0</span>     <span class="token number">0</span>      <span class="token number">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>第一行表达去往任何地址（0.0.0.0）都要通过网口 <code>ens33</code> 转向网关 192.168.2.1。</p>
+<p>第二行表示去往 192.168.0.0/16 网段地址不需要经过网关（0.0.0.0），直接通过网口 <code>ens33</code> 出去。</p>
+<p>其中 Flags 标志有多种值：</p>
+<ul>
+<li>U（route is up）：表示该路由已启用。</li>
+<li>H（target is a host）：表示该路由的目标是一个主机。</li>
+<li>G（use gateway）：表示数据包需要经过网关进行处理和传递。</li>
+<li>R（reinstate route for dynamic routing）：表示在使用动态路由时，恢复路由信息的标志。</li>
+<li>D（dynamically installed by daemon or redirect）：表示动态路由。</li>
+<li>M（modified from routing daemon or redirect）：表示路由已被修改。</li>
+<li>!（reject route）：表示此路由被阻止。</li>
+</ul>
+<p>路由按照路由表的顺序进行匹配和执行。例如，在上述路由表中，原本发送到 192.168.2.100 的局域网数据包也会通过 192.168.2.1 进行处理，因为后面的路由设置不起作用。</p>
+<p>因此，可以尝试调整顺序，首先删除默认路由，然后重新添加默认路由：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ route del <span class="token parameter variable">-net</span> <span class="token number">0.0</span>.0.0 netmask <span class="token number">0.0</span>.0.0 gw <span class="token number">192.168</span>.2.1
+<span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ route
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+<span class="token number">192.168</span>.0.0     <span class="token number">0.0</span>.0.0         <span class="token number">255.255</span>.0.0     U     <span class="token number">102</span>    <span class="token number">0</span>        <span class="token number">0</span> ens33
+<span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ route <span class="token function">add</span> <span class="token parameter variable">-net</span> <span class="token number">0.0</span>.0.0 netmask <span class="token number">0.0</span>.0.0 gw <span class="token number">192.168</span>.2.1
+<span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ route <span class="token parameter variable">-n</span>
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+<span class="token number">0.0</span>.0.0         <span class="token number">192.168</span>.2.1     <span class="token number">0.0</span>.0.0         UG    <span class="token number">0</span>      <span class="token number">0</span>        <span class="token number">0</span> ens33
+<span class="token number">192.168</span>.0.0     <span class="token number">0.0</span>.0.0         <span class="token number">255.255</span>.0.0     U     <span class="token number">102</span>    <span class="token number">0</span>        <span class="token number">0</span> ens33<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>结果并没有变化，因为路由的优先级是由 Metric 定义的。</p>
+<p>一般情况下，修改路由用于指定不同的端口以访问不同的网络段。在重新启动网络服务后，路由表将被还原。</p>
+<h2 id="ip"><a class="markdownIt-Anchor" href="#ip"></a> ip</h2>
+<p><code>ip</code> 命令综合了 <code>ifconfig</code> 与 <code>route</code> 命令的功能，命令语法：<code>ip [选项] [动作] [命令]</code>。</p>
+<p>例如，查看网卡 <code>ens33</code> 的信息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ <span class="token function">ip</span> <span class="token parameter variable">-s</span> <span class="token function">link</span> show ens33
+<span class="token number">2</span>: ens33: <span class="token operator">&lt;</span>BROADCAST,MULTICAST,UP,LOWER_UP<span class="token operator">></span> mtu <span class="token number">1500</span> qdisc pfifo_fast state UP mode DEFAULT group default qlen <span class="token number">1000</span>
+    link/ether 00:0c:29:da:7d:5c brd ff:ff:ff:ff:ff:ff
+    RX: bytes  packets  errors  dropped overrun mcast   
+    <span class="token number">506917745</span>  <span class="token number">449906</span>   <span class="token number">0</span>       <span class="token number">66383</span>   <span class="token number">0</span>       <span class="token number">0</span>       
+    TX: bytes  packets  errors  dropped carrier collsns 
+    <span class="token number">7955626</span>    <span class="token number">44475</span>    <span class="token number">0</span>       <span class="token number">0</span>       <span class="token number">0</span>       <span class="token number">0</span>  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果不加 <code>-s</code> 参数，可以得到简略的结果。如果要修改网卡信息，可以使用 <code>set</code> 命令。例如，修改 <code>ens33</code> 的 MAC 地址：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ <span class="token function">ip</span> <span class="token function">link</span> <span class="token builtin class-name">set</span> ens33 address 00:0c:29:da:7d:5c<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>要修改与网卡 IP 地址相关的参数，可以使用 <code>address</code> 动作。例如，给 <code>ens33</code> 增加一个虚拟接口，并配置 IP：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ <span class="token function">ip</span> address <span class="token function">add</span> <span class="token number">192.168</span>.3.101/24 broadcast <span class="token number">192.168</span>.3.255 dev ens33 label ens33:new3
+<span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ <span class="token function">ip</span> address show ens33
+<span class="token number">2</span>: ens33: <span class="token operator">&lt;</span>BROADCAST,MULTICAST,UP,LOWER_UP<span class="token operator">></span> mtu <span class="token number">1500</span> qdisc pfifo_fast state UP group default qlen <span class="token number">1000</span>
+    link/ether 00:0c:29:da:7d:5c brd ff:ff:ff:ff:ff:ff
+    inet <span class="token number">192.168</span>.2.201/16 brd <span class="token number">192.168</span>.255.255 scope global noprefixroute ens33
+       valid_lft forever preferred_lft forever
+    inet <span class="token number">192.168</span>.3.101/24 brd <span class="token number">192.168</span>.3.255 scope global ens33:new3
+       valid_lft forever preferred_lft forever
+    inet6 240e:383:406:ac00:3d71:87ed:5f5:fde/64 scope global noprefixroute dynamic 
+       valid_lft 3600sec preferred_lft 3600sec
+    inet6 fe80::df56:57bc:63b:6ccd/64 scope <span class="token function">link</span> noprefixroute 
+       valid_lft forever preferred_lft forever
+<span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ <span class="token function">ip</span> address del <span class="token number">192.168</span>.3.101/24 dev ens33<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>要修改路由相关的设定，可以使用 <code>route</code> 动作，用法和 <code>route</code> 命令类似。首先使用 <code>ip route show</code> 查看当前的路由表：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ <span class="token function">ip</span> route show
+default via <span class="token number">192.168</span>.2.1 dev ens33 
+<span class="token number">192.168</span>.0.0/16 dev ens33 proto kernel scope <span class="token function">link</span> src <span class="token number">192.168</span>.2.201 metric <span class="token number">102</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>结果中多了两个字段：<code>proto</code> 指示路由的路由协议，<code>scope</code> 指示路由的范围。</p>
+<p>下面是添加一条路由到 <code>192.168.3.0/24</code> 网段，通过 <code>ens37</code> 端口进出：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ <span class="token function">ip</span> route <span class="token function">add</span> <span class="token number">192.168</span>.3.0/24 dev ens37
+<span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ <span class="token function">ip</span> route show
+default via <span class="token number">192.168</span>.2.1 dev ens33 
+<span class="token number">192.168</span>.0.0/16 dev ens33 proto kernel scope <span class="token function">link</span> src <span class="token number">192.168</span>.2.201 metric <span class="token number">102</span> 
+<span class="token number">192.168</span>.3.0/24 dev ens37 scope <span class="token function">link</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>添加默认路由和删除路由的示例：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ <span class="token function">ip</span> route <span class="token function">add</span> default via <span class="token number">192.168</span>.2.1 dev ens33
+RTNETLINK answers: File exists
+<span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ <span class="token function">ip</span> route del <span class="token number">192.168</span>.3.0/24<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h1 id="网络诊断"><a class="markdownIt-Anchor" href="#网络诊断"></a> 网络诊断</h1>
+<p>用于在网络出现故障时跟踪可能的错误原因。</p>
+<h2 id="ping"><a class="markdownIt-Anchor" href="#ping"></a> ping</h2>
+<p><code>ping</code> 命令通过 ICMP 数据包来进行整个网络的状态报告。常用参数有：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-c 数值</td>
+<td>可以定义 <code>ping</code> 的次数。</td>
+</tr>
+<tr>
+<td>-n</td>
+<td>不进行 IP 与主机名的解析，只用 IP 显示。</td>
+</tr>
+<tr>
+<td>-s 数值</td>
+<td>发送出去的 ICMP 数据包大小，默认为 56 Bytes。</td>
+</tr>
+<tr>
+<td>-t 数值</td>
+<td>TTL 的数值，默认是 255。如果在同一网络内，TTL 默认 64。</td>
+</tr>
+<tr>
+<td>-W 数值</td>
+<td>等待相应超时秒数。</td>
+</tr>
+<tr>
+<td>-M [do|dont]</td>
+<td>主要用来检测网络 MTU 数值大小，do 表示不拆分数据包，dont 表示可以拆分。</td>
+</tr>
+</tbody>
+</table>
+<p>直接 <code>ping baidu.com</code> 看看：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ <span class="token function">ping</span> baidu.com <span class="token parameter variable">-c</span> <span class="token number">3</span>
+PING baidu.com <span class="token punctuation">(</span><span class="token number">220.181</span>.38.251<span class="token punctuation">)</span> <span class="token number">56</span><span class="token punctuation">(</span><span class="token number">84</span><span class="token punctuation">)</span> bytes of data.
+<span class="token number">64</span> bytes from baidu.com <span class="token punctuation">(</span><span class="token number">220.181</span>.38.251<span class="token punctuation">)</span>: <span class="token assign-left variable">icmp_seq</span><span class="token operator">=</span><span class="token number">1</span> <span class="token assign-left variable">ttl</span><span class="token operator">=</span><span class="token number">52</span> <span class="token assign-left variable">time</span><span class="token operator">=</span><span class="token number">39.0</span> ms
+<span class="token number">64</span> bytes from baidu.com <span class="token punctuation">(</span><span class="token number">220.181</span>.38.251<span class="token punctuation">)</span>: <span class="token assign-left variable">icmp_seq</span><span class="token operator">=</span><span class="token number">1</span> <span class="token assign-left variable">ttl</span><span class="token operator">=</span><span class="token number">51</span> <span class="token assign-left variable">time</span><span class="token operator">=</span><span class="token number">39.1</span> ms <span class="token punctuation">(</span>DUP<span class="token operator">!</span><span class="token punctuation">)</span>
+<span class="token number">64</span> bytes from baidu.com <span class="token punctuation">(</span><span class="token number">220.181</span>.38.251<span class="token punctuation">)</span>: <span class="token assign-left variable">icmp_seq</span><span class="token operator">=</span><span class="token number">1</span> <span class="token assign-left variable">ttl</span><span class="token operator">=</span><span class="token number">52</span> <span class="token assign-left variable">time</span><span class="token operator">=</span><span class="token number">39.6</span> ms <span class="token punctuation">(</span>DUP<span class="token operator">!</span><span class="token punctuation">)</span>
+<span class="token number">64</span> bytes from baidu.com <span class="token punctuation">(</span><span class="token number">220.181</span>.38.251<span class="token punctuation">)</span>: <span class="token assign-left variable">icmp_seq</span><span class="token operator">=</span><span class="token number">1</span> <span class="token assign-left variable">ttl</span><span class="token operator">=</span><span class="token number">51</span> <span class="token assign-left variable">time</span><span class="token operator">=</span><span class="token number">39.6</span> ms <span class="token punctuation">(</span>DUP<span class="token operator">!</span><span class="token punctuation">)</span>
+From <span class="token number">192.168</span>.2.102 <span class="token punctuation">(</span><span class="token number">192.168</span>.2.102<span class="token punctuation">)</span> <span class="token assign-left variable">icmp_seq</span><span class="token operator">=</span><span class="token number">2</span> Redirect Network<span class="token punctuation">(</span>New nexthop: gateway <span class="token punctuation">(</span><span class="token number">192.168</span>.2.1<span class="token punctuation">))</span>
+From <span class="token number">192.168</span>.2.102 <span class="token punctuation">(</span><span class="token number">192.168</span>.2.102<span class="token punctuation">)</span>: <span class="token assign-left variable">icmp_seq</span><span class="token operator">=</span><span class="token number">2</span> Redirect Network<span class="token punctuation">(</span>New nexthop: gateway <span class="token punctuation">(</span><span class="token number">192.168</span>.2.1<span class="token punctuation">))</span>
+<span class="token number">64</span> bytes from baidu.com <span class="token punctuation">(</span><span class="token number">220.181</span>.38.251<span class="token punctuation">)</span>: <span class="token assign-left variable">icmp_seq</span><span class="token operator">=</span><span class="token number">2</span> <span class="token assign-left variable">ttl</span><span class="token operator">=</span><span class="token number">52</span> <span class="token assign-left variable">time</span><span class="token operator">=</span><span class="token number">39.5</span> ms
+
+--- baidu.com <span class="token function">ping</span> statistics ---
+<span class="token number">2</span> packets transmitted, <span class="token number">2</span> received, +3 duplicates, +1 errors, <span class="token number">0</span>% packet loss, <span class="token function">time</span> 1002ms
+rtt min/avg/max/mdev <span class="token operator">=</span> <span class="token number">39.099</span>/39.392/39.611/0.257 ms<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>结果可得下面这些信息：</p>
+<ul>
+<li>64 bytes：表示发送 ICMP 数据包大小，最大可以设置 <code>-s 65507</code>。</li>
+<li>icmp_seq=1：ICMP 的检测次数，第一次为 1。</li>
+<li>ttl=52：TTL 与 IP 数据包内的 TTL 相同，每经过一个带有 MAC 的节点时 TTL 减 1，默认 TTL 为 255。</li>
+<li>time=39.1ms：响应时间，越短越好。</li>
+</ul>
+<p>下面这样可以检测 MTU：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ <span class="token function">ping</span> <span class="token parameter variable">-s</span> <span class="token number">9000</span> <span class="token parameter variable">-M</span> <span class="token keyword">do</span> <span class="token number">192.168</span>.2.101 
+PING <span class="token number">192.168</span>.2.101 <span class="token punctuation">(</span><span class="token number">192.168</span>.2.101<span class="token punctuation">)</span> <span class="token number">9000</span><span class="token punctuation">(</span><span class="token number">9028</span><span class="token punctuation">)</span> bytes of data.
+ping: <span class="token builtin class-name">local</span> error: Message too long, <span class="token assign-left variable">mtu</span><span class="token operator">=</span><span class="token number">1500</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>注意，本地网卡和设备的 MTU 值也会影响到检测。</p>
+<h2 id="traceroute"><a class="markdownIt-Anchor" href="#traceroute"></a> traceroute</h2>
+<p><code>traceroute</code> 命令用于跟踪两台主机之间通过的各个节点的通信状态。常用参数如下：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-n</td>
+<td>不解析域名，只使用 IP。</td>
+</tr>
+<tr>
+<td>-U</td>
+<td>使用 UDP 的端口 33434 来检测，默认选项。</td>
+</tr>
+<tr>
+<td>-I</td>
+<td>使用 ICMP 的方式来检测。</td>
+</tr>
+<tr>
+<td>-T</td>
+<td>使用 TCP 来检测，一般测试 80 端口。</td>
+</tr>
+<tr>
+<td>-w</td>
+<td>设置超时时间。</td>
+</tr>
+<tr>
+<td>-p 端口号</td>
+<td>可以自定义检测端口号。</td>
+</tr>
+<tr>
+<td>-i 设备</td>
+<td>指定检测时使用的网卡。</td>
+</tr>
+<tr>
+<td>-g 路由</td>
+<td>与 -i 作用相似，指定网关 IP。</td>
+</tr>
+</tbody>
+</table>
+<p>查看连接到 <code>baidu.com</code> 的各个节点状态：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ <span class="token function">traceroute</span> <span class="token parameter variable">-n</span> baidu.com
+<span class="token function">traceroute</span> to baidu.com <span class="token punctuation">(</span><span class="token number">220.181</span>.38.148<span class="token punctuation">)</span>, <span class="token number">30</span> hops max, <span class="token number">60</span> byte packets
+ <span class="token number">1</span>  <span class="token number">192.168</span>.2.1  <span class="token number">0.739</span> ms  <span class="token number">0.547</span> ms  <span class="token number">0.519</span> ms
+ <span class="token number">2</span>  <span class="token number">192.168</span>.2.1  <span class="token number">0.536</span> ms  <span class="token number">1.052</span> ms  <span class="token number">1.181</span> ms
+ <span class="token number">3</span>  <span class="token number">100.84</span>.64.1  <span class="token number">8.648</span> ms  <span class="token number">8.486</span> ms  <span class="token number">8.444</span> ms
+ <span class="token number">4</span>  <span class="token number">61.137</span>.11.165  <span class="token number">8.412</span> ms  <span class="token number">8.325</span> ms  <span class="token number">8.214</span> ms
+ <span class="token number">5</span>  <span class="token number">61.137</span>.11.165  <span class="token number">8.128</span> ms  <span class="token number">8.016</span> ms  <span class="token number">7.998</span> ms
+ <span class="token number">6</span>  <span class="token number">202.97</span>.18.73  <span class="token number">18.533</span> ms <span class="token number">202.97</span>.18.105  <span class="token number">18.318</span> ms <span class="token number">202.97</span>.18.101  <span class="token number">18.384</span> ms
+ <span class="token number">7</span>  <span class="token number">202.97</span>.122.237  <span class="token number">35.134</span> ms <span class="token number">202.97</span>.79.225  <span class="token number">49.466</span> ms <span class="token number">202.97</span>.40.49  <span class="token number">30.696</span> ms
+ <span class="token number">8</span>  <span class="token number">36.110</span>.245.174  <span class="token number">49.776</span> ms <span class="token number">36.110</span>.247.54  <span class="token number">27.887</span> ms <span class="token number">36.110</span>.246.134  <span class="token number">27.632</span> ms
+ <span class="token number">9</span>  <span class="token number">218.30</span>.104.177  <span class="token number">27.365</span> ms <span class="token number">106.38</span>.244.130  <span class="token number">41.744</span> ms *
+<span class="token number">10</span>  <span class="token number">106.38</span>.244.130  <span class="token number">41.509</span> ms <span class="token number">106.38</span>.244.150  <span class="token number">41.990</span> ms <span class="token number">220.181</span>.17.146  <span class="token number">41.979</span> ms
+<span class="token number">11</span>  <span class="token number">106.38</span>.244.166  <span class="token number">41.818</span> ms * *
+<span class="token number">12</span>  * * *
+<span class="token number">13</span>  * * *
+<span class="token number">14</span>  * * *<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上面显示的三个时间是每个节点检测的三次数据，而显示 <code>* * *</code> 的行表示该节点可能有某些防护措施，导致发送的 UDP 数据包被丢弃。可以尝试使用 <code>-I</code> 或 <code>-T</code> 参数来更换检测方式。</p>
+<h2 id="netstat"><a class="markdownIt-Anchor" href="#netstat"></a> netstat</h2>
+<p><code>netstat</code> 命令一般用于检测网络端口的状态。固定用法 <code>netstat -nutlp</code> 表示列出监听中的 TCP 和 UDP 数据包连接：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ <span class="token function">netstat</span> <span class="token parameter variable">-nutlp</span>
+Active Internet connections <span class="token punctuation">(</span>only servers<span class="token punctuation">)</span>
+Proto Recv-Q Send-Q Local Address           Foreign Address  State       PID/Program name 
+tcp        <span class="token number">0</span>      <span class="token number">0</span> <span class="token number">0.0</span>.0.0:22              <span class="token number">0.0</span>.0.0:*        LISTEN      <span class="token number">8173</span>/sshd     
+tcp        <span class="token number">0</span>      <span class="token number">0</span> <span class="token number">127.0</span>.0.1:25            <span class="token number">0.0</span>.0.0:*        LISTEN      <span class="token number">8359</span>/master   
+tcp6       <span class="token number">0</span>      <span class="token number">0</span> :::22                   :::*             LISTEN      <span class="token number">8173</span>/sshd     
+tcp6       <span class="token number">0</span>      <span class="token number">0</span> ::1:25                  :::*             LISTEN      <span class="token number">8359</span>/master   
+udp        <span class="token number">0</span>      <span class="token number">0</span> <span class="token number">127.0</span>.0.1:323           <span class="token number">0.0</span>.0.0:*                    <span class="token number">15767</span>/chronyd 
+udp        <span class="token number">0</span>      <span class="token number">0</span> <span class="token number">0.0</span>.0.0:68              <span class="token number">0.0</span>.0.0:*                    <span class="token number">58762</span>/dhclient 
+udp6       <span class="token number">0</span>      <span class="token number">0</span> ::1:323                 :::*                         <span class="token number">15767</span>/chronyd 
+udp6       <span class="token number">0</span>      <span class="token number">0</span> fe80::df56:57bc:63b:546 :::*                         <span class="token number">59548</span>/dhclient <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>结果显示表头部分说明如下：</p>
+<ul>
+<li>Proto：该连接的数据包协议，主要是 TCP 和 UDP。</li>
+<li>Recv-Q：由非用户程序连接所复制而来的总字节数。</li>
+<li>Send-Q：由远程主机发送而来，但没有 ACK 标志的总字节数。</li>
+<li>Local Address：本地端的地址和端口。其中，端口 25 固定为 lo 口。</li>
+<li>Foreign Address：远程主机的 IP 和端口。</li>
+<li>State：状态栏，主要包含以下状态：
+<ul>
+<li>ESTABLISHED：已建立连接状态。</li>
+<li>SYN_SENT：发出主动连接（带有 SYN 标志）的连接数据包。</li>
+<li>SYN_RECV：接收到一个请求连接的主动连接数据包。</li>
+<li>FIN_WAIT1：该套接字服务已中断，连接正在断开。</li>
+<li>FIN_WAIT2：该连接已挂断，但等待对方主机响应断线确认的数据包。</li>
+<li>TIME_WAIT：该连接已挂断，但 socket 还在网络上等待结束。</li>
+<li>LISTEN：通常用于服务的监听端口。</li>
+</ul>
+</li>
+<li>PID/Program name：由 <code>-p</code> 参数指定显示的端口对应程序。</li>
+</ul>
+<p>如果要查询已经建立的连接端口，使用 <code>-nutp</code> 参数即可：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ <span class="token function">netstat</span> <span class="token parameter variable">-nutp</span>
+Active Internet connections <span class="token punctuation">(</span>w/o servers<span class="token punctuation">)</span>
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
+tcp        <span class="token number">0</span>      <span class="token number">0</span> <span class="token number">192.168</span>.2.201:22        <span class="token number">192.168</span>.2.101:64456     ESTABLISHED <span class="token number">61123</span>/sshd: root@pt <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="nmap"><a class="markdownIt-Anchor" href="#nmap"></a> nmap</h2>
+<p>nmap 软件全称为 Network exploration tool and security/port scanner，顾名思义是用于管理系统安全性检查的工具。基本用法：<code>nmap [扫描类型] [扫描参数] [hosts 地址与范围]</code>。</p>
+<p>其中，扫描类型有下面几种：</p>
+<ul>
+<li>-sT：扫描已建立的 TCP 连接的数据包（connect）。</li>
+<li>-sS：扫描带有 SYN 标志的 TCP 数据包。</li>
+<li>-sP：以 ping 的方式进行扫描。</li>
+<li>-sU：以 UDP 数据包格式进行扫描。</li>
+<li>-sO：以 IP 协议进行主机扫描。</li>
+</ul>
+<p>扫描参数有下面几种：</p>
+<ul>
+<li>-PT：使用 TCP 的 ping 方式进行扫描，可以获知当前存在的计算机数目。</li>
+<li>-PI：使用实际的 ping（带有 ICMP 数据包）进行扫描。</li>
+<li>-P：端口范围，例如 1024-、3000-40000 等方式。</li>
+</ul>
+<p>hosts 地址与范围的指定方式有：</p>
+<ul>
+<li>192.168.1.101：直接指定主机的 IP，只检查一台主机。</li>
+<li>192.168.1.0/24：扫描整个网段。</li>
+<li>192.168.<em>.</em>：扫描更大范围。</li>
+<li>192.168.1.0-50,60-100,103,204：指定间隔的范围。</li>
+</ul>
+<p>首先进行本机扫描的测试结果：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ nmap localhost
+
+Starting Nmap <span class="token number">6.40</span> <span class="token punctuation">(</span> http://nmap.org <span class="token punctuation">)</span> at <span class="token number">2021</span>-09-23 <span class="token number">22</span>:49 CST
+Nmap scan report <span class="token keyword">for</span> localhost <span class="token punctuation">(</span><span class="token number">127.0</span>.0.1<span class="token punctuation">)</span>
+Host is up <span class="token punctuation">(</span><span class="token number">0</span>.000017s latency<span class="token punctuation">)</span>.
+Other addresses <span class="token keyword">for</span> localhost <span class="token punctuation">(</span>not scanned<span class="token punctuation">)</span>: <span class="token number">127.0</span>.0.1
+Not shown: <span class="token number">998</span> closed ports
+PORT   STATE SERVICE
+<span class="token number">22</span>/tcp <span class="token function">open</span>  <span class="token function">ssh</span>
+<span class="token number">25</span>/tcp <span class="token function">open</span>  smtp
+
+Nmap done: <span class="token number">1</span> IP address <span class="token punctuation">(</span><span class="token number">1</span> <span class="token function">host</span> up<span class="token punctuation">)</span> scanned <span class="token keyword">in</span> <span class="token number">1.64</span> seconds<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到扫描速度非常快。默认情况下，只会扫描 TCP 协议。如果想同时扫描 UDP 协议，可以使用 <code>-sTU</code> 参数：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ nmap <span class="token parameter variable">-sTU</span> localhost
+
+Starting Nmap <span class="token number">6.40</span> <span class="token punctuation">(</span> http://nmap.org <span class="token punctuation">)</span> at <span class="token number">2021</span>-09-23 <span class="token number">22</span>:51 CST
+Nmap scan report <span class="token keyword">for</span> localhost <span class="token punctuation">(</span><span class="token number">127.0</span>.0.1<span class="token punctuation">)</span>
+Host is up <span class="token punctuation">(</span><span class="token number">0</span>.0021s latency<span class="token punctuation">)</span>.
+Other addresses <span class="token keyword">for</span> localhost <span class="token punctuation">(</span>not scanned<span class="token punctuation">)</span>: <span class="token number">127.0</span>.0.1
+Not shown: <span class="token number">1997</span> closed ports
+PORT   STATE         SERVICE
+<span class="token number">22</span>/tcp <span class="token function">open</span>          <span class="token function">ssh</span>
+<span class="token number">25</span>/tcp <span class="token function">open</span>          smtp
+<span class="token number">68</span>/udp <span class="token function">open</span><span class="token operator">|</span>filtered dhcpc
+
+Nmap done: <span class="token number">1</span> IP address <span class="token punctuation">(</span><span class="token number">1</span> <span class="token function">host</span> up<span class="token punctuation">)</span> scanned <span class="token keyword">in</span> <span class="token number">2.84</span> seconds<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>通过 ICMP 扫描局域网中有多少台主机：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ nmap <span class="token parameter variable">-sP</span> <span class="token number">192.168</span>.2.0/24
+
+Starting Nmap <span class="token number">6.40</span> <span class="token punctuation">(</span> http://nmap.org <span class="token punctuation">)</span> at <span class="token number">2021</span>-09-23 <span class="token number">22</span>:53 CST
+Nmap scan report <span class="token keyword">for</span> <span class="token number">192.168</span>.2.101
+Host is up <span class="token punctuation">(</span>-0.10s latency<span class="token punctuation">)</span>.
+MAC Address: 0C:9D:92:83:DB:35 <span class="token punctuation">(</span>Unknown
+Nmap scan report <span class="token keyword">for</span> <span class="token number">192.168</span>.2.201
+Host is up.
+Nmap done: <span class="token number">256</span> IP addresses <span class="token punctuation">(</span><span class="token number">2</span> hosts up<span class="token punctuation">)</span> scanned <span class="token keyword">in</span> <span class="token number">2.08</span> seconds<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>结果会列出目标 IP 地址和 MAC 地址。</p>
+<h1 id="远程连接"><a class="markdownIt-Anchor" href="#远程连接"></a> 远程连接</h1>
+<p>远程连接主要指的是远程工具与即时通信软件。</p>
+<h2 id="telnet"><a class="markdownIt-Anchor" href="#telnet"></a> telnet</h2>
+<p>telnet 是早期用得很广泛的远程连接工具，但使用 telnet 传输的数据是明文的，因此现在已被支持加密的 ssh 取代。命令格式：<code>telnet [主机|IP [端口]]</code>。</p>
+<p>例如，使用 telnet 连接 192.168.2.101 的 2201 端口：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ telnet <span class="token number">192.168</span>.2.101 <span class="token number">2201</span>
+Trying <span class="token number">192.168</span>.2.101<span class="token punctuation">..</span>.
+telnet: connect to address <span class="token number">192.168</span>.2.101: Connection refused<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>现在经常被用来检测目标 IP 地址特定端口是否打开。</p>
+<h2 id="ftp"><a class="markdownIt-Anchor" href="#ftp"></a> ftp</h2>
+<p>文字接口的 ftp 软件主要有 ftp、lftp、gftp。</p>
+<p>例如，使用 ftp 连接 <code>ftp.vim.org</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ <span class="token function">ftp</span> ftp.vim.org
+Trying <span class="token number">2001</span>:67c:6ec:221:145:220:21:40<span class="token punctuation">..</span>.
+Connected to ftp.vim.org <span class="token punctuation">(</span><span class="token number">2001</span>:67c:6ec:221:145:220:21:40<span class="token punctuation">)</span>.
+<span class="token number">220</span>-Welcome to the FTP archive of 
+<span class="token number">220</span>-The Netherlands Unix Users Group <span class="token punctuation">(</span>NLUUG<span class="token punctuation">)</span>.
+<span class="token number">220</span>-You may login as <span class="token string">"ftp"</span> or <span class="token string">"anonymous"</span><span class="token builtin class-name">.</span>
+Name <span class="token punctuation">(</span>ftp.vim.org:root<span class="token punctuation">)</span>: <span class="token function">ftp</span>
+<span class="token number">331</span> Please specify the password.
+Password:
+<span class="token number">230</span> Login successful.
+Remote system <span class="token builtin class-name">type</span> is UNIX.
+Using binary mode to transfer files.
+ftp<span class="token operator">></span> <span class="token builtin class-name">help</span>
+ftp<span class="token operator">></span> ? recv
+recv            receive <span class="token function">file</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>输入 <code>help</code> 可以查看说明，输入 <code>bye</code> 退出 ftp。</p>
+<h2 id="lftp"><a class="markdownIt-Anchor" href="#lftp"></a> lftp</h2>
+<p>lftp 默认使用匿名登录 FTP 服务器，也可以在命令行输入账号密码，可以在脚本中使用。</p>
+<p>例如，使用 ftp 用户登录 <code>ftp.vim.org</code>，用法和功能与 ftp 类似，可以使用 <code>help</code> 查询：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ lftp <span class="token parameter variable">-u</span> ftp,  ftp.vim.org
+lftp ftp@ftp.vim.org:~<span class="token operator">></span>     <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>使用 <code>-f</code> 参数来载入脚本，脚本内容为在 ftp 中实际操作的命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> ftp.sh
+<span class="token function">open</span> ftp.vim.org
+<span class="token builtin class-name">cd</span> pub
+get WhereToFindWhat.txt
+bye
+<span class="token string">"ftp.sh"</span> 4L, 52C written  
+<span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ lftp <span class="token parameter variable">-f</span> ftp.sh 
+<span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ ll WhereToFindWhat.txt                 
+-rw-r--r--. <span class="token number">1</span> root root <span class="token number">2023</span> May  <span class="token number">4</span>  <span class="token number">2005</span> WhereToFindWhat.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="网络抓包"><a class="markdownIt-Anchor" href="#网络抓包"></a> 网络抓包</h1>
+<p>命令模式下可用的抓包工具为 <code>tcpdump</code>，图形界面可以使用 <code>Wireshark</code>。</p>
+<h2 id="tcpdump"><a class="markdownIt-Anchor" href="#tcpdump"></a> tcpdump</h2>
+<p><code>tcpdump</code> 命令用法：</p>
+<p><code>tcpdump [-AennqX] [-i 接口] [-w 储存文件名] [-c 次数] [-r 文件] [要抓取的数据包数据格式]</code></p>
+<p>参数如下：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-A</td>
+<td>数据包的内容以 ASCII 显示，通常用来抓取 WWW 的网页数据包数据</td>
+</tr>
+<tr>
+<td>-e</td>
+<td>使用数据链路层的 MAC 数据包数据来显示</td>
+</tr>
+<tr>
+<td>-nn</td>
+<td>直接以 IP 和端口显示</td>
+</tr>
+<tr>
+<td>-q</td>
+<td>仅列出较为简短的数据包信息，每一行的内容比较精简</td>
+</tr>
+<tr>
+<td>-X</td>
+<td>可以列出十六进制（hex）以及 ASCII 的数据包内容，对于监听数据包内容很有用</td>
+</tr>
+<tr>
+<td>-i</td>
+<td>后面接要监听的网络接口，例如 eth0、lo、ppp0 等的界面</td>
+</tr>
+<tr>
+<td>-w</td>
+<td>将监听的数据包数据保存到文件</td>
+</tr>
+<tr>
+<td>-r</td>
+<td>从已存在的文件中读取数据</td>
+</tr>
+<tr>
+<td>-c</td>
+<td>监听的数据包数，如果不指定，<code>tcpdump</code> 会一直监听下去</td>
+</tr>
+</tbody>
+</table>
+<p>其中最后一个要抓取的数据包数据格式可以用以下方法表示：</p>
+<ul>
+<li>‘host server201’，‘host 192.168.2.101’：针对单台主机进行数据包抓取；</li>
+<li>‘net 192.168’：针对某个网络来进行数据包捕获；</li>
+<li>‘src host 127.0.0.1’，‘dst net 192.168’：同时加上来源与目标地址限制；</li>
+<li>‘tcp port 21’：针对通信协议检测，如 TCP、UDP、ARP 等；</li>
+<li>还可以利用 and 与 or 来进行数据包整合显示。</li>
+</ul>
+<p>例如抓取 <code>ens33</code> 网口上的数据包：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ tcpdump <span class="token parameter variable">-i</span> ens33 <span class="token parameter variable">-nn</span>
+<span class="token number">19</span>:45:37.349993 IP <span class="token number">192.168</span>.2.101.64456 <span class="token operator">></span> <span class="token number">192.168</span>.2.201.22: Flags <span class="token punctuation">[</span>.<span class="token punctuation">]</span>, ack <span class="token number">682480</span>, win <span class="token number">8212</span>, options <span class="token punctuation">[</span>nop,nop,sack <span class="token number">1</span> <span class="token punctuation">&#123;</span><span class="token number">681424</span>:682480<span class="token punctuation">&#125;</span><span class="token punctuation">]</span>, length <span class="token number">0</span>
+<span class="token number">19</span>:45:37.350036 IP <span class="token number">192.168</span>.2.101.64456 <span class="token operator">></span> <span class="token number">192.168</span>.2.201.22: Flags <span class="token punctuation">[</span>.<span class="token punctuation">]</span>, ack <span class="token number">682480</span>, win <span class="token number">8212</span>, options <span class="token punctuation">[</span>nop,nop,sack <span class="token number">1</span> <span class="token punctuation">&#123;</span><span class="token number">681424</span>:682480<span class="token punctuation">&#125;</span><span class="token punctuation">]</span>, length <span class="token number">0</span>
+<span class="token number">4472</span> packets captured
+<span class="token number">4480</span> packets received by filter
+<span class="token number">0</span> packets dropped by kernel<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>短短 1 秒钟就抓取到了 4472 个数据包。以第一条数据来说明：</p>
+<ul>
+<li>19:45:37.349993：数据包被捕获的时间。</li>
+<li>IP：通过的通信协议是 IP。</li>
+<li>192.168.2.101.64456 &gt;：传送端的 IP 和端口。</li>
+<li>192.168.2.201.22：接收端的 IP 和端口。</li>
+<li>Flags [.], ack 682480…：传输内容。</li>
+</ul>
+<h2 id="nc"><a class="markdownIt-Anchor" href="#nc"></a> nc</h2>
+<p><code>nc</code> 命令可以用于作为某些服务的检测，因为它可以连接到某个端口进行通信。此外，还可以自行启动一个端口来监听其他用户的连接。</p>
+<p>例如，检测本机的 22 号端口：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ <span class="token function">nc</span> localhost <span class="token number">22</span>
+SSH-2.0-OpenSSH_7.4<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>测试 192.168.2.113 上的 10002 端口的联通性，超时时间为 2 秒：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ <span class="token function">nc</span> <span class="token parameter variable">-vz</span> <span class="token parameter variable">-w</span> <span class="token number">2</span> <span class="token number">192.168</span>.2.113 <span class="token number">10002</span>
+Ncat: Version <span class="token number">7.70</span> <span class="token punctuation">(</span> https://nmap.org/ncat <span class="token punctuation">)</span>
+Ncat: Connected to <span class="token number">192.168</span>.2.113:10002.
+Ncat: <span class="token number">0</span> bytes sent, <span class="token number">0</span> bytes received <span class="token keyword">in</span> <span class="token number">0.01</span> seconds.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>还可以使用 <code>nc</code> 来启动监听端口号，例如启动 19999 号作为监听端口：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ <span class="token function">nc</span> <span class="token parameter variable">-l</span> localhost <span class="token number">19999</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>然后，在另一个终端中查询端口和连接：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ <span class="token function">netstat</span> <span class="token parameter variable">-ntulp</span> <span class="token operator">|</span> <span class="token function">grep</span> <span class="token number">19999</span>
+tcp6       <span class="token number">0</span>      <span class="token number">0</span> ::1:19999               :::*                    LISTEN      <span class="token number">61792</span>/nc
+<span class="token punctuation">[</span>root@server201 ~<span class="token punctuation">]</span>$ <span class="token function">nc</span> localhost <span class="token number">19999</span>
+a
+f <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/2991697559/" title="Linux 网络命令">https://blog.x2b.net/2991697559/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../3262096821/" rel="prev" title="Linux 内核编译">
+                  <i class="fa fa-chevron-left"></i> Linux 内核编译
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../1926461212/" rel="next" title="DNS 服务">
+                  DNS 服务 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">155k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">8:38</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@next-theme/pjax@0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://unpkg.com/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://unpkg.com/katex@0.16.4/dist/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/2991697559/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://unpkg.com/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'blog.x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>
