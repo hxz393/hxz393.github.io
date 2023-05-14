@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="前置条件 由于 Docker 运行于 Linux 内核中，因此对于系统要求如下：  系统必须为 64 位操作系统。 系统内核版本需要大于 3.10。 硬盘空间推荐为 100 GB 以上。  可以使用以下命令查询系统位数和内核版本： [root@server3 ~]$ uname -r 3.10.0-1160.42.2.el7.x86_64 Docker 引擎分为两个版本，社区版本（CE，Comm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker 安装与配置">
+<meta property="og:url" content="https://blog.x2b.net/4130112682/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="前置条件 由于 Docker 运行于 Linux 内核中，因此对于系统要求如下：  系统必须为 64 位操作系统。 系统内核版本需要大于 3.10。 硬盘空间推荐为 100 GB 以上。  可以使用以下命令查询系统位数和内核版本： [root@server3 ~]$ uname -r 3.10.0-1160.42.2.el7.x86_64 Docker 引擎分为两个版本，社区版本（CE，Comm">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-10-19T20:09:50.000Z">
+<meta property="article:modified_time" content="2023-05-14T13:48:46.520Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/4130112682/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/4130112682/","path":"4130112682/","title":"Docker 安装与配置"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Docker 安装与配置 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">63</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E6%9D%A1%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text"> 前置条件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-docker"><span class="nav-number">2.</span> <span class="nav-text"> 安装 Docker</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0-docker"><span class="nav-number">3.</span> <span class="nav-text"> 更新 Docker</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%B8%E8%BD%BD-docker"><span class="nav-number">4.</span> <span class="nav-text"> 卸载 Docker</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8-docker"><span class="nav-number">5.</span> <span class="nav-text"> 启动 Docker</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2-docker-%E7%89%88%E6%9C%AC"><span class="nav-number">6.</span> <span class="nav-text"> 查询 Docker 版本</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B-docker-%E4%BF%A1%E6%81%AF"><span class="nav-number">7.</span> <span class="nav-text"> 查看 Docker 信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B8%85%E7%90%86%E6%95%B0%E6%8D%AE"><span class="nav-number">8.</span> <span class="nav-text"> 清理数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E5%8F%82%E6%95%B0"><span class="nav-number">9.</span> <span class="nav-text"> 启动参数</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/4130112682/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Docker 安装与配置 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Docker 安装与配置
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-10-20 04:09:50" itemprop="dateCreated datePublished" datetime="2021-10-20T04:09:50+08:00">2021-10-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-14 21:48:46" itemprop="dateModified" datetime="2023-05-14T21:48:46+08:00">2023-05-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Docker/1-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">1.基本操作</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>7 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="前置条件"><a class="markdownIt-Anchor" href="#前置条件"></a> 前置条件</h1>
+<p>由于 Docker 运行于 Linux 内核中，因此对于系统要求如下：</p>
+<ul>
+<li>系统必须为 64 位操作系统。</li>
+<li>系统内核版本需要大于 3.10。</li>
+<li>硬盘空间推荐为 100 GB 以上。</li>
+</ul>
+<p>可以使用以下命令查询系统位数和内核版本：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span>$ <span class="token function">uname</span> <span class="token parameter variable">-r</span>
+<span class="token number">3.10</span>.0-1160.42.2.el7.x86_64<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>Docker 引擎分为两个版本，社区版本（CE，Community Edition）和企业版本（EE，Enterprise Edition）。通常安装社区稳定版。</p>
+<h1 id="安装-docker"><a class="markdownIt-Anchor" href="#安装-docker"></a> 安装 Docker</h1>
+<p>对于之前安装过 Docker 的主机，需要先卸载干净后再进行安装。</p>
+<p>在全新安装时，需要先修改仓库配置，增加 Docker CE 的安装源：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ yum <span class="token function">install</span> <span class="token parameter variable">-y</span> yum-utils
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+Loaded plugins: fastestmirror
+adding repo from: https://download.docker.com/linux/centos/docker-ce.repo
+grabbing <span class="token function">file</span> https://download.docker.com/linux/centos/docker-ce.repo to /etc/yum.repos.d/docker-ce.repo
+repo saved to /etc/yum.repos.d/docker-ce.repo<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果要安装 Nightly 或 Test 版本，可以使用以下命令启用相应的仓库。要关闭，使用 <code>--disable</code> 参数。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ yum-config-manager <span class="token parameter variable">--enable</span> docker-ce-nightly
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ yum-config-manager <span class="token parameter variable">--enable</span> docker-ce-test<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>安装最新版 Docker CE：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ yum <span class="token function">install</span> <span class="token parameter variable">-y</span> docker-ce docker-ce-cli containerd.io<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>要安装特定版本，可以使用 <code>yum list</code> 命令进行查询：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ yum list docker-ce <span class="token parameter variable">--showduplicates</span> <span class="token operator">|</span> <span class="token function">sort</span> <span class="token parameter variable">-r</span>
+docker-ce.x86_64            <span class="token number">3</span>:20.10.9-3.el7                    docker-ce-stable 
+docker-ce.x86_64            <span class="token number">3</span>:20.10.9-3.el7                    @docker-ce-stable
+docker-ce.x86_64            <span class="token number">3</span>:20.10.8-3.el7                    docker-ce-stable <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>例如，安装 20.10.10 版本：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ yum <span class="token function">install</span> <span class="token parameter variable">-y</span> docker-ce-20.10.10 docker-ce-cli-20.10.10 containerd.io<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>Docker 安装完成后会创建一个 Docker 组，可以将普通用户加入该组，这样普通用户就可以直接运行 Docker 命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">useradd</span> <span class="token parameter variable">-p</span> user10 user10
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">su</span> <span class="token parameter variable">-l</span> user10
+<span class="token punctuation">[</span>user10@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> image <span class="token function">ls</span>
+Got permission denied <span class="token keyword">while</span> trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get <span class="token string">"http://%2Fvar%2Frun%2Fdocker.sock/v1.24/images/json"</span><span class="token builtin class-name">:</span> dial unix /var/run/docker.sock: connect: permission denied
+<span class="token punctuation">[</span>user10@server4 ~<span class="token punctuation">]</span>$ <span class="token function">su</span> <span class="token parameter variable">-c</span> <span class="token string">'usermod -G docker user10'</span>
+<span class="token punctuation">[</span>user10@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> image <span class="token function">ls</span>
+REPOSITORY    TAG       IMAGE ID       CREATED       SIZE
+hello-world   latest    feb5d9fea6a5   <span class="token number">3</span> weeks ago   <span class="token number">13</span>.3kB<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="更新-docker"><a class="markdownIt-Anchor" href="#更新-docker"></a> 更新 Docker</h1>
+<p>在 Docker 仓库源已启用的情况下，可以使用 <code>yum upgrade</code> 命令来更新 Docker：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ yum upgrade<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="卸载-docker"><a class="markdownIt-Anchor" href="#卸载-docker"></a> 卸载 Docker</h1>
+<p>使用以下命令完全卸载旧版本的 Docker 及相关程序：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ yum remove <span class="token function">docker</span> docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-engine<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>删除新版 Docker 引擎：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user10@server4 ~<span class="token punctuation">]</span>$ yum remove docker-ce docker-ce-cli containerd.io<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>删除 Docker 使用的库、镜像和容器等数据：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">rm</span> <span class="token parameter variable">-rf</span> /var/lib/docker
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">rm</span> <span class="token parameter variable">-rf</span> /var/lib/containerd<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h1 id="启动-docker"><a class="markdownIt-Anchor" href="#启动-docker"></a> 启动 Docker</h1>
+<p>启动服务并设置开机启动：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ systemctl <span class="token builtin class-name">enable</span> <span class="token parameter variable">--now</span> <span class="token function">docker</span>
+Created symlink from /etc/systemd/system/multi-user.target.wants/docker.service to /usr/lib/systemd/system/docker.service.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>启动之后，可以使用 <code>hello-world</code> 镜像来测试 Docker 功能是否正常：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> run hello-world
+Unable to <span class="token function">find</span> image <span class="token string">'hello-world:latest'</span> locally
+latest: Pulling from library/hello-world<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h1 id="查询-docker-版本"><a class="markdownIt-Anchor" href="#查询-docker-版本"></a> 查询 Docker 版本</h1>
+<p>使用 <code>docker version</code> 命令来查询 Docker 服务端和客户端的版本：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> version
+Client: Docker Engine - Community
+ Version:           <span class="token number">20.10</span>.9
+ API version:       <span class="token number">1.41</span>
+ Go version:        go1.16.8
+ Git commit:        c2ea9bc
+ Built:             Mon Oct  <span class="token number">4</span> <span class="token number">16</span>:08:14 <span class="token number">2021</span>
+ OS/Arch:           linux/amd64
+ Context:           default
+ Experimental:      <span class="token boolean">true</span>
+
+Server: Docker Engine - Community
+ Engine:
+  Version:          <span class="token number">20.10</span>.9
+  API version:      <span class="token number">1.41</span> <span class="token punctuation">(</span>minimum version <span class="token number">1.12</span><span class="token punctuation">)</span>
+  Go version:       go1.16.8
+  Git commit:       79ea9d3
+  Built:            Mon Oct  <span class="token number">4</span> <span class="token number">16</span>:06:37 <span class="token number">2021</span>
+  OS/Arch:          linux/amd64
+  Experimental:     <span class="token boolean">false</span>
+ containerd:
+  Version:          <span class="token number">1.4</span>.11
+  GitCommit:        5b46e404f6b9f661a205e28d59c982d3634148f8
+ runc:
+  Version:          <span class="token number">1.0</span>.2
+  GitCommit:        v1.0.2-0-g52b36a2
+ docker-init:
+  Version:          <span class="token number">0.19</span>.0
+  GitCommit:        de40ad0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="查看-docker-信息"><a class="markdownIt-Anchor" href="#查看-docker-信息"></a> 查看 Docker 信息</h1>
+<p>可以使用 <code>docker info</code> 命令来查看 Docker 的运行状态：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> info
+Client:
+ Context:    default
+ Debug Mode: <span class="token boolean">false</span>
+ Plugins:
+  app: Docker App <span class="token punctuation">(</span>Docker Inc., v0.9.1-beta3<span class="token punctuation">)</span>
+  buildx: Build with BuildKit <span class="token punctuation">(</span>Docker Inc., v0.6.3-docker<span class="token punctuation">)</span>
+  scan: Docker Scan <span class="token punctuation">(</span>Docker Inc., v0.8.0<span class="token punctuation">)</span>
+
+Server:
+ Containers: <span class="token number">1</span>
+  Running: <span class="token number">0</span>
+  Paused: <span class="token number">0</span>
+  Stopped: <span class="token number">1</span>
+ Images: <span class="token number">5</span>
+ Server Version: <span class="token number">20.10</span>.9
+ Storage Driver: overlay2
+  Backing Filesystem: xfs
+  Supports d_type: <span class="token boolean">true</span>
+  Native Overlay Diff: <span class="token boolean">true</span>
+  userxattr: <span class="token boolean">false</span>
+ Logging Driver: json-file
+ Cgroup Driver: cgroupfs
+ Cgroup Version: <span class="token number">1</span>
+ Plugins:
+  Volume: <span class="token builtin class-name">local</span>
+  Network: bridge <span class="token function">host</span> ipvlan macvlan null overlay
+  Log: awslogs fluentd gcplogs gelf journald json-file <span class="token builtin class-name">local</span> logentries splunk syslog
+ Swarm: inactive
+ Runtimes: io.containerd.runc.v2 io.containerd.runtime.v1.linux runc
+ Default Runtime: runc
+ Init Binary: docker-init
+ containerd version: 5b46e404f6b9f661a205e28d59c982d3634148f8
+ runc version: v1.0.2-0-g52b36a2
+ init version: de40ad0
+ Security Options:
+  seccomp
+   Profile: default
+ Kernel Version: <span class="token number">3.10</span>.0-1160.42.2.el7.x86_64
+ Operating System: CentOS Linux <span class="token number">7</span> <span class="token punctuation">(</span>Core<span class="token punctuation">)</span>
+ OSType: linux
+ Architecture: x86_64
+ CPUs: <span class="token number">16</span>
+ Total Memory: <span class="token number">3</span>.682GiB
+ Name: server4
+ ID: 7YVL:YG7U:BI3Q:BOVZ:XRWD:7BQO:6H3R:2BUW:OCQO:7JKZ:2OWC:UL2Q
+ Docker Root Dir: /var/lib/docker
+ Debug Mode: <span class="token boolean">false</span>
+ Registry: https://index.docker.io/v1/
+ Labels:
+ Experimental: <span class="token boolean">false</span>
+ Insecure Registries:
+  <span class="token number">127.0</span>.0.0/8
+ Registry Mirrors:
+  https://mirror.ccs.tencentyun.com/
+ Live Restore Enabled: <span class="token boolean">false</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 <code>docker system df</code> 命令来查询 Docker 的磁盘空间使用情况：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@UAT1542 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> system <span class="token function">df</span>
+TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          <span class="token number">21</span>        <span class="token number">8</span>         <span class="token number">7</span>.737GB   <span class="token number">3</span>.526GB <span class="token punctuation">(</span><span class="token number">45</span>%<span class="token punctuation">)</span>
+Containers      <span class="token number">10</span>        <span class="token number">9</span>         <span class="token number">18</span>.21GB   175B <span class="token punctuation">(</span><span class="token number">0</span>%<span class="token punctuation">)</span>
+Local Volumes   <span class="token number">10</span>        <span class="token number">3</span>         <span class="token number">135</span>.9kB   <span class="token number">101</span>.9kB <span class="token punctuation">(</span><span class="token number">74</span>%<span class="token punctuation">)</span>
+Build Cache     <span class="token number">0</span>         <span class="token number">0</span>         0B        0B<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 <code>docker stats</code> 命令来查询 Docker 容器资源占用情况：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@UAT1542 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> stats
+CONTAINER ID   NAME          CPU %     MEM USAGE / LIMIT     MEM %     NET I/O           BLOCK I/O         PIDS
+9f544067b7f2   <span class="token function">git</span>           <span class="token number">0.00</span>%     <span class="token number">35</span>.34MiB / <span class="token number">5</span>.633GiB   <span class="token number">0.61</span>%     <span class="token number">64</span>.1MB / <span class="token number">57</span>.5MB   <span class="token number">1</span>.58MB / 442MB    <span class="token number">2</span>
+82a67254b917   wordpress     <span class="token number">0.01</span>%     237MiB / <span class="token number">5</span>.633GiB     <span class="token number">4.11</span>%     <span class="token number">36</span>.9MB / 14MB     148MB / <span class="token number">43</span>.1MB    <span class="token number">11</span>
+4fa335a71060   mysql         <span class="token number">0.19</span>%     <span class="token number">247</span>.3MiB / <span class="token number">5</span>.633GiB   <span class="token number">4.29</span>%     <span class="token number">5</span>.55MB / <span class="token number">31</span>.3MB   <span class="token number">98</span>.3MB / 688MB    <span class="token number">33</span>
+964f87408dde   mongo         <span class="token number">0.82</span>%     <span class="token number">204</span>.2MiB / <span class="token number">5</span>.633GiB   <span class="token number">3.54</span>%     <span class="token number">1</span>.8MB / 869kB     129MB / <span class="token number">3</span>.8GB     <span class="token number">33</span>
+ded30f2db48b   tinyproxy     <span class="token number">0.02</span>%     <span class="token number">14</span>.36MiB / <span class="token number">5</span>.633GiB   <span class="token number">0.25</span>%     0B / 0B           <span class="token number">5</span>.82MB / <span class="token number">77</span>.1MB   <span class="token number">24</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="清理数据"><a class="markdownIt-Anchor" href="#清理数据"></a> 清理数据</h1>
+<p>使用 <code>docker system prune</code> 命令来安全清理没用到的数据，比如停止状态的容器、没有被使用的中间镜像层、没被使用的 Docker 虚拟网络：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@UAT1542 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> system prune
+WARNING<span class="token operator">!</span> This will remove:
+  - all stopped containers
+  - all networks not used by at least one container
+  - all dangling images
+  - all dangling build cache
+
+Are you sure you want to continue? <span class="token punctuation">[</span>y/N<span class="token punctuation">]</span> y
+Deleted Containers:
+5c6cdebbb209507a4886debe278f59cdf1dbebd6a8cfbf3b1ea32828cf3adbfa
+
+Total reclaimed space: 175B<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>还能加入 <code>-a</code> 参数进一步删除没有被使用的镜像（不包括被停止状态容器使用的镜像）：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">root@k8s-204:~<span class="token comment"># docker system prune -a</span>
+WARNING<span class="token operator">!</span> This will remove:
+  - all stopped containers
+  - all networks not used by at least one container
+  - all images without at least one container associated to them
+  - all build cache
+
+Are you sure you want to continue? <span class="token punctuation">[</span>y/N<span class="token punctuation">]</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="启动参数"><a class="markdownIt-Anchor" href="#启动参数"></a> 启动参数</h1>
+<p>Docker 服务启动实际上是调用了 <code>dockerd</code> 命令，Docker Daemon 常用启动参数如下：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>–api-cors-header=“”</td>
+<td>设定远程访问 API 所需的 cors-header。</td>
+</tr>
+<tr>
+<td>–authorization-plugin=[]</td>
+<td>设置认证插件列表。</td>
+</tr>
+<tr>
+<td>-b, --bridge=“”</td>
+<td>设置容器使用的网桥。</td>
+</tr>
+<tr>
+<td>–bip=“”</td>
+<td>设定网络桥 IP 和子网掩码。</td>
+</tr>
+<tr>
+<td>-D, --debug=false</td>
+<td>启动 Debug 模式。</td>
+</tr>
+<tr>
+<td>-d, --daemon=false</td>
+<td>启动守护进程模式。</td>
+</tr>
+<tr>
+<td>–default-gateway=“”</td>
+<td>设置容器使用的 IPv4 网关。</td>
+</tr>
+<tr>
+<td>–dns=[]</td>
+<td>设置容器使用的 DNS 服务器列表。</td>
+</tr>
+<tr>
+<td>–default-ulimit=[]</td>
+<td>设定容器默认的 <code>ulimit</code> 参数。</td>
+</tr>
+<tr>
+<td>-exec-opt=[]</td>
+<td>设定管理容器使用的参数。</td>
+</tr>
+<tr>
+<td>–exec-root=“/var/run/docker”</td>
+<td>设定 <code>exec-driver</code> 默认根目录地址。</td>
+</tr>
+<tr>
+<td>–fixed-cidr=“”</td>
+<td>设定容器使用的 IPv4 子网段。</td>
+</tr>
+<tr>
+<td>-G, --group=“docker”</td>
+<td>设定 UNIX Socket 文件用户所属组。</td>
+</tr>
+<tr>
+<td>-g, --graph=“/var/lib/docker”</td>
+<td>设定 Docker 服务运行时的根目录。</td>
+</tr>
+<tr>
+<td>-H, --host=[]</td>
+<td>设定 Docker 服务监听地址。</td>
+</tr>
+<tr>
+<td>–icc=true</td>
+<td>允许容器之间互相通信。</td>
+</tr>
+<tr>
+<td>–insecure-registry=[]</td>
+<td>设定可信任仓库地址。</td>
+</tr>
+<tr>
+<td>–ip=0.0.0.0</td>
+<td>设定绑定容器端口信息时的默认 IP。</td>
+</tr>
+<tr>
+<td>–ip-forward=true</td>
+<td>允许转发 IPv4 数据包。</td>
+</tr>
+<tr>
+<td>–ip-masq=true</td>
+<td>允许 IP 伪装。</td>
+</tr>
+<tr>
+<td>–iptables=true</td>
+<td>允许修改 iptables 规则。</td>
+</tr>
+<tr>
+<td>–ipv6=true</td>
+<td>允许使用 IPv6 网络。</td>
+</tr>
+<tr>
+<td>-l, --log-level=“info”</td>
+<td>设定日志输出等级。</td>
+</tr>
+<tr>
+<td>–label=[]</td>
+<td>按照 Key=Value 设定 Daemon 标签。</td>
+</tr>
+<tr>
+<td>–log-driver=“json-file”</td>
+<td>设定日志驱动格式。</td>
+</tr>
+<tr>
+<td>–log-opt=[]</td>
+<td>设定日志记录驱动参数。</td>
+</tr>
+<tr>
+<td>–mtu=0</td>
+<td>设定容器 MTU 值。</td>
+</tr>
+<tr>
+<td>-p, --pidfile=“/var/run/docker.pid”</td>
+<td>设定 <code>Docker.pid</code> 文件路径。</td>
+</tr>
+<tr>
+<td>–registry-mirror=[]</td>
+<td>设定优先访问的仓库镜像地址。</td>
+</tr>
+<tr>
+<td>-s, --storage-driver=“”</td>
+<td>设定数据储存驱动方式。</td>
+</tr>
+<tr>
+<td>–selinux-enabled=false</td>
+<td>启用或禁用 SELinux</td>
+</tr>
+<tr>
+<td>–storage-opt=[]</td>
+<td>设置数据存储驱动的参数</td>
+</tr>
+<tr>
+<td>–tls=false</td>
+<td>启用或禁用 TLS，但不启用客户端认证</td>
+</tr>
+<tr>
+<td>–tlscacert=“~/.docker/ca.pem”</td>
+<td>设置 CA 证书的位置</td>
+</tr>
+<tr>
+<td>–tlscert=“~/.docker/cert.pem”</td>
+<td>设置 TLS 证书的位置</td>
+</tr>
+<tr>
+<td>–tlskey=“~/.docker/key.pem”</td>
+<td>设置 TLS 密钥的位置</td>
+</tr>
+<tr>
+<td>–tlsverify=false</td>
+<td>启用或禁用 TLS 验证远程访问请求</td>
+</tr>
+<tr>
+<td>–userland-proxy=true</td>
+<td>启用或禁用用户空间代理</td>
+</tr>
+<tr>
+<td>-v, --version=false</td>
+<td>输出 Docker 版本信息</td>
+</tr>
+</tbody>
+</table>
+<p>如果参数后面有 <code>[] </code>标记，表示该参数可以多次使用。例如，要启用 Debug 模式并监听本地 2376 端口：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ dockerd <span class="token parameter variable">-D</span> <span class="token parameter variable">-H</span> tcp:/127.0.0.1:2376<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>可以将启动参数写入 <code>/etc/docker/daemon.json</code> 文件中，在 dockerd 服务启动时读取该文件。请注意，该配置文件中不能有与启动参数重复的配置项，否则会导致启动错误：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/docker/daemon.json
+<span class="token punctuation">&#123;</span>
+        <span class="token string">"debug"</span><span class="token builtin class-name">:</span> true,
+        <span class="token string">"hosts"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span><span class="token string">"tcp://127.0.0.1:2376"</span><span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>也可以修改 <code>/usr/lib/systemd/system/docker.service</code> 文件中 <code>ExecStart</code> 后面的参数来配置启动参数：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /usr/lib/systemd/system/docker.service 
+<span class="token assign-left variable">ExecStart</span><span class="token operator">=</span>/usr/bin/dockerd <span class="token parameter variable">-H</span> fd:// <span class="token parameter variable">--containerd</span><span class="token operator">=</span>/run/containerd/containerd.sock <span class="token parameter variable">-H</span> tcp://192.168.2.234:5999
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ systemctl daemon-reload
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ systemctl restart <span class="token function">docker</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/4130112682/" title="Docker 安装与配置">https://blog.x2b.net/4130112682/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../1516343977/" rel="prev" title="Postfix 服务">
+                  <i class="fa fa-chevron-left"></i> Postfix 服务
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../3229018848/" rel="next" title="Docker 仓库操作">
+                  Docker 仓库操作 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">173k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">9:36</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@next-theme/pjax@0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://unpkg.com/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://unpkg.com/katex@0.16.4/dist/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/4130112682/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://unpkg.com/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'blog.x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>

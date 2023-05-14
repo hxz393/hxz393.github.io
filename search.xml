@@ -332,7 +332,7 @@ root       <span class="token number">4297</span>  <span class="token number">0.
 <li>Docker 为容器分配一个虚拟网络接口，并通过网桥的方式将该网络接口桥接到宿主机上去。然后从网桥地址池取出一个 IP 地址分配给容器虚拟网络接口。</li>
 <li>Docker 在新容器中运行指定的命令或程序，执行完毕后被自动终止。</li>
 </ol>
-<h1 id="docker仓库"><a class="markdownIt-Anchor" href="#docker仓库"></a> Docker仓库</h1>
+<h1 id="docker-仓库"><a class="markdownIt-Anchor" href="#docker-仓库"></a> Docker 仓库</h1>
 <p>Docker 仓库是集中存放镜像文件的场所。</p>
 <p>仓库注册服务器（Registry）是存放仓库的地方，往往有多个仓库地址，用来存放不同类型的资源。</p>
 <h2 id="仓库分类"><a class="markdownIt-Anchor" href="#仓库分类"></a> 仓库分类</h2>
@@ -357,7 +357,7 @@ root       <span class="token number">4297</span>  <span class="token number">0.
 <li>客户端向 Index 发送下载某个镜像的请求。</li>
 <li>Index 返回三个信息：镜像位置、镜像所有层的校验信息、授权令牌。</li>
 <li>用户使用授权 token 向目标 Registry 发出请求。</li>
-<li>Registry 向 Index 核实 token是否授权。</li>
+<li>Registry 向 Index 核实 token 是否授权。</li>
 <li>Index 返回授权验证结果，如果合法，则通过下载请求。</li>
 </ol>
 <h2 id="上传流程"><a class="markdownIt-Anchor" href="#上传流程"></a> 上传流程</h2>
@@ -1538,6 +1538,250 @@ File size limit exceeded
       </categories>
   </entry>
   <entry>
+    <title>Linux 下搜索文件</title>
+    <url>/3570307132/</url>
+    <content><![CDATA[<h1 id="通配符"><a class="markdownIt-Anchor" href="#通配符"></a> 通配符</h1>
+<p>通配符（wildcard）是 Bash 操作接口的一个功能。常用的通配符如下表：</p>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>*</td>
+<td>代表 0 到无穷多个任意字符。</td>
+</tr>
+<tr>
+<td>?</td>
+<td>代表一定有一个任意字符。</td>
+</tr>
+<tr>
+<td>[]</td>
+<td>代表一定有一个括号内的字符，例如 [xgw] 代表可能是 xgw 其中一个。</td>
+</tr>
+<tr>
+<td>[-]</td>
+<td>代表在编码顺序内的所有字符，例如 [0-9] 代表 0 到 9 之间的所有数字。</td>
+</tr>
+<tr>
+<td>[^]</td>
+<td>第一个字符为 ^ 代表反向选择，例如 [^xpw]代表任意一个非 xpw 的字符。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="快速搜索"><a class="markdownIt-Anchor" href="#快速搜索"></a> 快速搜索</h1>
+<p>在 Linux 中，可以使用不同的命令进行快速搜索，以下是一些常用命令。</p>
+<p>使用 <code>which</code> 命令来查找命令所在路径。这个命令根据的是$PATH 环境变量所指定的路径去查询：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">which</span> <span class="token function">ls</span>
+<span class="token builtin class-name">alias</span> <span class="token assign-left variable">ls</span><span class="token operator">=</span><span class="token string">'ls --color=auto'</span>
+        /usr/bin/ls<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><code>whereis</code> 命令会在指定的几个常用目录中搜索文件，使用 <code>-l</code> 参数可以查看可搜索的目录。</p>
+<p><code>whereis</code> 命令可以搜索以下类型的文件：二进制文件（<code>-b</code>）、说明文件（<code>-m</code>）、源代码（<code>-s</code>）和其他特殊文件（<code>-u</code>）。</p>
+<p>例如搜索和 <code>ifconfig</code> 有关的说明文档：</p>
+ <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">whereis</span> <span class="token parameter variable">-m</span> <span class="token function">ifconfig</span>
+ifconfig: /usr/share/man/man8/ifconfig.8.gz<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p><code>locate</code> 命令使用数据库来查找文件。数据库存放在 <code>/var/lib/mlocate/</code> 目录下，每天会更新一次。若需要手动更新数据库，可以使用 <code>updatedb</code> 命令。</p>
+<p>例如忽略大小写搜索与 <code>passwd</code> 有关的文件，并列出前四个结果：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">locate</span> <span class="token parameter variable">-i</span> <span class="token parameter variable">-l</span> <span class="token number">4</span> <span class="token function">passwd</span>
+/etc/passwd
+/etc/passwd-
+/etc/pam.d/passwd
+/etc/security/opasswd<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="精确搜索"><a class="markdownIt-Anchor" href="#精确搜索"></a> 精确搜索</h1>
+<p>精确搜索指使用<code>find</code>命令执行的搜索。</p>
+<h2 id="按时间搜索文件"><a class="markdownIt-Anchor" href="#按时间搜索文件"></a> 按时间搜索文件</h2>
+<p>与时间有关的参数有<code>-atime</code>，<code>-ctime</code>和<code>-mtime</code>：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-mtime n</code></td>
+<td>表示在 n 天之前那天内被更改过的文件；</td>
+</tr>
+<tr>
+<td><code>-mtime +n</code></td>
+<td>列出在 n 天之前（不含 n）被更改过的文件，文件修改日期大于等于 n+1 天；</td>
+</tr>
+<tr>
+<td><code>-mtime -n</code></td>
+<td>列出在 n 天之内（包含 n）被更改过的文件，文件修改日期小于等于 n 天；</td>
+</tr>
+<tr>
+<td><code>-newer file</code></td>
+<td>列出比<code>file</code>还要新的文件名。</td>
+</tr>
+</tbody>
+</table>
+<p>例如，搜索过去系统上 24 小时内有更改过的文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> / <span class="token parameter variable">-mtime</span> <span class="token number">0</span>
+/dev/char
+/dev/char/189:132<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>查找当前目录下修改时间在 5 分钟到 24 小时之间的文件：</p>
+ <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token parameter variable">-mtime</span> <span class="token number">0</span> <span class="token parameter variable">-mmin</span> +5
+<span class="token builtin class-name">.</span>
+./.bash_history
+./audit<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>寻找<code>/etc</code>目录下比<code>/etc/passwd</code>文件日期新的文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> /etc <span class="token parameter variable">-newer</span> /etc/passwd <span class="token operator">|</span> <span class="token function">tail</span> 
+/etc/audit/audit.rules
+/etc/postfix
+/etc/kernel<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>查找<code>/root</code>目录下更改时间在 5 天前的文件并删除：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">find</span> /root <span class="token parameter variable">-type</span> f <span class="token parameter variable">-mtime</span> +5 <span class="token parameter variable">-ok</span> rm<span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>删除当前目录中访问时间在 7 天以前，含有数字后缀的<code>admin.log</code>文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-name</span> <span class="token string">"admin.log[0-9][0-9][0-9]"</span> <span class="token parameter variable">-atime</span> <span class="token parameter variable">-7</span> <span class="token parameter variable">-exec</span> <span class="token function">rm</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="按用户名及组名搜索"><a class="markdownIt-Anchor" href="#按用户名及组名搜索"></a> 按用户名及组名搜索</h2>
+<p>可以使用 <code>find</code> 命令按照文件的所有者和用户组来搜索文件，常用参数如下：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-uid n</code></td>
+<td>按照用户 UID 来搜索</td>
+</tr>
+<tr>
+<td><code>-gid n</code></td>
+<td>按用户组 GID 来搜索</td>
+</tr>
+<tr>
+<td><code>-user name</code></td>
+<td>按用户名来搜索</td>
+</tr>
+<tr>
+<td><code>-group name</code></td>
+<td>按用户组名来搜索</td>
+</tr>
+<tr>
+<td><code>-nouser</code></td>
+<td>搜索文件的所有者不存在 <code>/etc/passwd</code> 的人</td>
+</tr>
+<tr>
+<td><code>-nogroup</code></td>
+<td>搜索所有用户组不存在 <code>/etc/group</code> 中的文件</td>
+</tr>
+</tbody>
+</table>
+<p>例如查找 <code>/home</code> 目录下属于用户 abc 的文件:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> /home <span class="token parameter variable">-user</span> abc<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>查找系统中不属于任何人的文件:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> / <span class="token parameter variable">-nouser</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="按文件名及属性搜索"><a class="markdownIt-Anchor" href="#按文件名及属性搜索"></a> 按文件名及属性搜索</h2>
+<p>主要参数:</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-name filename</td>
+<td>搜索文件名为 filename 的文件</td>
+</tr>
+<tr>
+<td>-iname filename</td>
+<td>忽略大小写，搜索文件名为 filename 的文件</td>
+</tr>
+<tr>
+<td>-size [±]SIZE</td>
+<td>搜索大小比 SIZE 大（+）或小（-）的文件，大小单位有 c、k、m、g 等</td>
+</tr>
+<tr>
+<td>-type TYPE</td>
+<td>搜索文件类型为 TYPE 的文件，如一般文件（f）、设备文件（b、c）、目录（d）、连接（l）、socket（s）等</td>
+</tr>
+<tr>
+<td>-perm mode</td>
+<td>搜索权限刚好等于 mode 的文件，如 mode 为 4775</td>
+</tr>
+<tr>
+<td>-perm -mode</td>
+<td>搜索权限必须全部包括 mode 的权限，如 mode 为 0744，会找到权限为 4775 的文件</td>
+</tr>
+<tr>
+<td>-perm +mode</td>
+<td>搜索权限包含任一 mode 的权限，如 mode 为 755 时，会找到权限为 101 的文件</td>
+</tr>
+</tbody>
+</table>
+<p>例如，在当前目录中查找文件 redis-3.2.6.tar.gz 并删除：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token parameter variable">-name</span> redis-3.2.6.tar.gz <span class="token parameter variable">-delete</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>忽略大小写，在 <code>/etc</code> 目录下搜索 ssh 文件或目录：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">find</span> /etc <span class="token parameter variable">-iname</span> <span class="token function">ssh</span>
+/etc/ssh
+/etc/selinux/targeted/active/modules/100/ssh<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>在 <code>/etc</code> 目录中查找以 rc 开头的文件，并以列表形式显示：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">find</span> /etc <span class="token parameter variable">-name</span> rc* <span class="token parameter variable">-ls</span>
+<span class="token number">50332831</span>    <span class="token number">0</span> drwxr-xr-x  <span class="token number">10</span> root     root          <span class="token number">127</span> Sep  <span class="token number">7</span> 05:53 /etc/rc.d
+<span class="token number">16781412</span>    <span class="token number">0</span> drwxr-xr-x   <span class="token number">2</span> root     root           <span class="token number">45</span> Oct <span class="token number">13</span>  <span class="token number">2020</span> /etc/rc.d/rc0.d
+<span class="token number">33644238</span>    <span class="token number">0</span> drwxr-xr-x   <span class="token number">2</span> root     root           <span class="token number">45</span> Oct <span class="token number">13</span>  <span class="token number">2020</span> /etc/rc.d/rc1.d
+<span class="token number">50332832</span>    <span class="token number">0</span> drwxr-xr-x   <span class="token number">2</span> root     root           <span class="token number">45</span> Oct <span class="token number">13</span>  <span class="token number">2020</span> /etc/rc.d/rc2.d<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在 <code>/root</code> 目录下搜索所有小于 1MB 的文件，用 <code>-size -1M</code> 参数等同于 <code>-size 0M</code>，需要注意。这是个 ChatGPT 都会答错的问题：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">find</span> /root <span class="token parameter variable">-size</span> <span class="token parameter variable">-1M</span>
+/root/audit/a.log
+/root/3/3<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>查找 <code>/root</code> 目录下大于 10KB 并且（<code>-a</code> 表示“与”）小于 2M 的普通文件，并以列表形式显示：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> /root <span class="token parameter variable">-type</span> f <span class="token parameter variable">-size</span> +10k <span class="token parameter variable">-a</span> <span class="token parameter variable">-size</span> <span class="token parameter variable">-2M</span> <span class="token parameter variable">-exec</span> <span class="token function">ls</span> <span class="token parameter variable">-lh</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span>
+-rw-------. <span class="token number">1</span> root root 17K Sep <span class="token number">16</span> 03:15 /root/.bash_history
+-rw-------. <span class="token number">1</span> root root 178K Sep  <span class="token number">9</span> 05:48 /root/audit/b.log
+-rw-r--r--. <span class="token number">1</span> root root 30K Sep <span class="token number">10</span> <span class="token number">15</span>:05 /root/backup/sdb4.dump
+-rw-r--r--. <span class="token number">1</span> root root 11K Sep <span class="token number">10</span> <span class="token number">14</span>:39 /root/backup/lost.dump.bz2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>查找当前目录中的所有目录并排序：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-type</span> d <span class="token operator">|</span> <span class="token function">sort</span>
+<span class="token builtin class-name">.</span>
+./3
+./audit<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在当前目录下查找除普通文件以外的所有类型的文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token operator">!</span> <span class="token parameter variable">-type</span> f <span class="token parameter variable">-print</span>
+<span class="token builtin class-name">.</span>
+./.pki
+./.pki/nssdb<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>查找 <code>/bin</code> 和 <code>/sbin</code> 目录下中含有 SGID, SUID 或 SBIT 属性的文件:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> /bin /sbin <span class="token parameter variable">-perm</span> +7000<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="处理搜索结果"><a class="markdownIt-Anchor" href="#处理搜索结果"></a> 处理搜索结果</h2>
+<p><code>find</code> 命令可以接受表达式，表达式可能由下列成份组成：操作符、选项、测试表达式以及动作。</p>
+<p>常见动作有 <code>-print</code>（打印输出，默认动作）、<code>-ls</code>（显示长目录列表）、<code>-delete</code>（删除文件）。</p>
+<p><code>-exec</code> 选项后面跟命令（不支持别名）或脚本，然后是大括号 <code>&#123;&#125;</code> 表示由 <code>find</code> 找到的路径名，一个空格，接 <code>\</code> 用来转义分号；表示命令结束。相应命令的形式为 <code>command &#123;&#125; \</code>；</p>
+<p><code>-ok</code> 和 <code>-exec</code> 的作用相同，只不过在执行每一个命令之前都会给出提示，让用户来确定是否执行。</p>
+<p>例如在 <code>/etc</code> 目录中搜索 <code>passwd</code> 文件并从中找 <code>root</code> 相关信息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">find</span> /etc <span class="token parameter variable">-name</span> <span class="token string">"passwd*"</span> <span class="token parameter variable">-exec</span> <span class="token function">grep</span> <span class="token string">"root"</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span>
+root:x:0:0:root:/root:/bin/bash
+operator:x:11:0:operator:/root:/sbin/nologin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>在 <code>/usr/sam</code> 目录下查找不在 <code>dir1</code> 子目录之内的所有文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> /usr/sam <span class="token parameter variable">-path</span> <span class="token string">"/usr/sam/dir1"</span> <span class="token parameter variable">-prune</span> <span class="token parameter variable">-o</span> <span class="token parameter variable">-print</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>复制搜索到的文件到 <code>backup</code> 目录下：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-type</span> f <span class="token parameter variable">-exec</span> <span class="token function">cp</span> <span class="token parameter variable">--parents</span>  <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> ./backup/ <span class="token punctuation">\</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><code>-exec</code> 为每个文件生成一条单独的命令，例如搜索到 57 个文件，那么将生成 57 条单独命令。如果想要提高效率，可以使用 <code>xargs</code> 运行任何使用参数指定的命令，参数通过标准输入传递给程序。</p>
+<p>例如配合 <code>grep</code> 在 <code>find</code> 找到的文件中搜寻特定内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> /var <span class="token parameter variable">-name</span> *.log <span class="token operator">|</span> <span class="token function">xargs</span> <span class="token function">grep</span> <span class="token string">"notice"</span>
+/var/log/anaconda/X.log:        <span class="token punctuation">(</span>++<span class="token punctuation">)</span> from <span class="token builtin class-name">command</span> line, <span class="token punctuation">(</span><span class="token operator">!</span><span class="token operator">!</span><span class="token punctuation">)</span> notice, <span class="token punctuation">(</span>II<span class="token punctuation">)</span> informational,
+/var/log/anaconda/journal.log:Sep <span class="token number">22</span> <span class="token number">13</span>:09:41 localhost kernel: <span class="token assign-left variable">type</span><span class="token operator">=</span><span class="token number">1107</span> audit<span class="token punctuation">(</span><span class="token number">1632316181.830</span>:44<span class="token punctuation">)</span>: <span class="token assign-left variable">pid</span><span class="token operator">=</span><span class="token number">1577</span> <span class="token assign-left variable">uid</span><span class="token operator">=</span><span class="token number">0</span> <span class="token assign-left variable">auid</span><span class="token operator">=</span><span class="token number">4294967295</span> <span class="token assign-left variable">ses</span><span class="token operator">=</span><span class="token number">4294967295</span> <span class="token assign-left variable">subj</span><span class="token operator">=</span>system_u:system_r:system_dbusd_t:s0-s0:c0.c1023 <span class="token assign-left variable">msg</span><span class="token operator">=</span>'avc:  received policyload notice <span class="token punctuation">(</span>seqno<span class="token operator">=</span><span class="token number">2</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>将搜索到的文件重命名，可以在 <code>xargs</code> 中使用 <code>&#123;&#125;</code> 占位符来代表搜索结果：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-name</span> <span class="token string">"back.sh*"</span> <span class="token operator">|</span> <span class="token function">xargs</span> <span class="token parameter variable">-i</span> <span class="token function">mv</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>.dele
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ ll back*
+-rwxr--r--. <span class="token number">1</span> root root <span class="token number">52</span> Oct  <span class="token number">7</span> 06:15 back.sh1.dele
+-rwxr--r--. <span class="token number">2</span> root root <span class="token number">52</span> Sep <span class="token number">23</span> <span class="token number">19</span>:18 back.sh.dele<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>1.基本操作</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Linux 基本文件操作</title>
     <url>/3891118029/</url>
     <content><![CDATA[<h1 id="文件和目录查询"><a class="markdownIt-Anchor" href="#文件和目录查询"></a> 文件和目录查询</h1>
@@ -2017,250 +2261,6 @@ Vim: Finished.<span aria-hidden="true" class="line-numbers-rows"><span></span><s
 00000060  <span class="token number">74</span> <span class="token number">65</span> 6d <span class="token number">70</span> <span class="token number">65</span> <span class="token number">72</span> <span class="token number">61</span> <span class="token number">74</span>  <span class="token number">75</span> <span class="token number">72</span> <span class="token number">65</span> <span class="token number">20</span> 6f <span class="token number">66</span> <span class="token number">20</span> <span class="token number">74</span>  <span class="token operator">|</span>temperature of t<span class="token operator">|</span>
 00000070  <span class="token number">68</span> <span class="token number">65</span> <span class="token number">20</span> <span class="token number">67</span> <span class="token number">69</span> <span class="token number">76</span> <span class="token number">65</span> 6e  <span class="token number">20</span> <span class="token number">53</span> <span class="token number">43</span> <span class="token number">53</span> <span class="token number">49</span> <span class="token number">20</span> <span class="token number">64</span> <span class="token number">65</span>  <span class="token operator">|</span>he given SCSI de<span class="token operator">|</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>上面二进制数据显示方式叫规范格式（Canonical Format）。每行最左边是十六进制表示的偏移，中间 16 个字节是实际数据，右边为相应 ASCII 字符。</p>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>1.基本操作</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>Linux 下搜索文件</title>
-    <url>/3570307132/</url>
-    <content><![CDATA[<h1 id="通配符"><a class="markdownIt-Anchor" href="#通配符"></a> 通配符</h1>
-<p>通配符（wildcard）是 Bash 操作接口的一个功能。常用的通配符如下表：</p>
-<table>
-<thead>
-<tr>
-<th>符号</th>
-<th>意义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>*</td>
-<td>代表 0 到无穷多个任意字符。</td>
-</tr>
-<tr>
-<td>?</td>
-<td>代表一定有一个任意字符。</td>
-</tr>
-<tr>
-<td>[]</td>
-<td>代表一定有一个括号内的字符，例如 [xgw] 代表可能是 xgw 其中一个。</td>
-</tr>
-<tr>
-<td>[-]</td>
-<td>代表在编码顺序内的所有字符，例如 [0-9] 代表 0 到 9 之间的所有数字。</td>
-</tr>
-<tr>
-<td>[^]</td>
-<td>第一个字符为 ^ 代表反向选择，例如 [^xpw]代表任意一个非 xpw 的字符。</td>
-</tr>
-</tbody>
-</table>
-<h1 id="快速搜索"><a class="markdownIt-Anchor" href="#快速搜索"></a> 快速搜索</h1>
-<p>在 Linux 中，可以使用不同的命令进行快速搜索，以下是一些常用命令。</p>
-<p>使用 <code>which</code> 命令来查找命令所在路径。这个命令根据的是$PATH 环境变量所指定的路径去查询：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">which</span> <span class="token function">ls</span>
-<span class="token builtin class-name">alias</span> <span class="token assign-left variable">ls</span><span class="token operator">=</span><span class="token string">'ls --color=auto'</span>
-        /usr/bin/ls<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p><code>whereis</code> 命令会在指定的几个常用目录中搜索文件，使用 <code>-l</code> 参数可以查看可搜索的目录。</p>
-<p><code>whereis</code> 命令可以搜索以下类型的文件：二进制文件（<code>-b</code>）、说明文件（<code>-m</code>）、源代码（<code>-s</code>）和其他特殊文件（<code>-u</code>）。</p>
-<p>例如搜索和 <code>ifconfig</code> 有关的说明文档：</p>
- <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">whereis</span> <span class="token parameter variable">-m</span> <span class="token function">ifconfig</span>
-ifconfig: /usr/share/man/man8/ifconfig.8.gz<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p><code>locate</code> 命令使用数据库来查找文件。数据库存放在 <code>/var/lib/mlocate/</code> 目录下，每天会更新一次。若需要手动更新数据库，可以使用 <code>updatedb</code> 命令。</p>
-<p>例如忽略大小写搜索与 <code>passwd</code> 有关的文件，并列出前四个结果：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">locate</span> <span class="token parameter variable">-i</span> <span class="token parameter variable">-l</span> <span class="token number">4</span> <span class="token function">passwd</span>
-/etc/passwd
-/etc/passwd-
-/etc/pam.d/passwd
-/etc/security/opasswd<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="精确搜索"><a class="markdownIt-Anchor" href="#精确搜索"></a> 精确搜索</h1>
-<p>精确搜索指使用<code>find</code>命令执行的搜索。</p>
-<h2 id="按时间搜索文件"><a class="markdownIt-Anchor" href="#按时间搜索文件"></a> 按时间搜索文件</h2>
-<p>与时间有关的参数有<code>-atime</code>，<code>-ctime</code>和<code>-mtime</code>：</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>-mtime n</code></td>
-<td>表示在 n 天之前那天内被更改过的文件；</td>
-</tr>
-<tr>
-<td><code>-mtime +n</code></td>
-<td>列出在 n 天之前（不含 n）被更改过的文件，文件修改日期大于等于 n+1 天；</td>
-</tr>
-<tr>
-<td><code>-mtime -n</code></td>
-<td>列出在 n 天之内（包含 n）被更改过的文件，文件修改日期小于等于 n 天；</td>
-</tr>
-<tr>
-<td><code>-newer file</code></td>
-<td>列出比<code>file</code>还要新的文件名。</td>
-</tr>
-</tbody>
-</table>
-<p>例如，搜索过去系统上 24 小时内有更改过的文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> / <span class="token parameter variable">-mtime</span> <span class="token number">0</span>
-/dev/char
-/dev/char/189:132<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>查找当前目录下修改时间在 5 分钟到 24 小时之间的文件：</p>
- <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token parameter variable">-mtime</span> <span class="token number">0</span> <span class="token parameter variable">-mmin</span> +5
-<span class="token builtin class-name">.</span>
-./.bash_history
-./audit<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>寻找<code>/etc</code>目录下比<code>/etc/passwd</code>文件日期新的文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> /etc <span class="token parameter variable">-newer</span> /etc/passwd <span class="token operator">|</span> <span class="token function">tail</span> 
-/etc/audit/audit.rules
-/etc/postfix
-/etc/kernel<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>查找<code>/root</code>目录下更改时间在 5 天前的文件并删除：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">find</span> /root <span class="token parameter variable">-type</span> f <span class="token parameter variable">-mtime</span> +5 <span class="token parameter variable">-ok</span> rm<span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>删除当前目录中访问时间在 7 天以前，含有数字后缀的<code>admin.log</code>文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-name</span> <span class="token string">"admin.log[0-9][0-9][0-9]"</span> <span class="token parameter variable">-atime</span> <span class="token parameter variable">-7</span> <span class="token parameter variable">-exec</span> <span class="token function">rm</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="按用户名及组名搜索"><a class="markdownIt-Anchor" href="#按用户名及组名搜索"></a> 按用户名及组名搜索</h2>
-<p>可以使用 <code>find</code> 命令按照文件的所有者和用户组来搜索文件，常用参数如下：</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>-uid n</code></td>
-<td>按照用户 UID 来搜索</td>
-</tr>
-<tr>
-<td><code>-gid n</code></td>
-<td>按用户组 GID 来搜索</td>
-</tr>
-<tr>
-<td><code>-user name</code></td>
-<td>按用户名来搜索</td>
-</tr>
-<tr>
-<td><code>-group name</code></td>
-<td>按用户组名来搜索</td>
-</tr>
-<tr>
-<td><code>-nouser</code></td>
-<td>搜索文件的所有者不存在 <code>/etc/passwd</code> 的人</td>
-</tr>
-<tr>
-<td><code>-nogroup</code></td>
-<td>搜索所有用户组不存在 <code>/etc/group</code> 中的文件</td>
-</tr>
-</tbody>
-</table>
-<p>例如查找 <code>/home</code> 目录下属于用户 abc 的文件:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> /home <span class="token parameter variable">-user</span> abc<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>查找系统中不属于任何人的文件:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> / <span class="token parameter variable">-nouser</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="按文件名及属性搜索"><a class="markdownIt-Anchor" href="#按文件名及属性搜索"></a> 按文件名及属性搜索</h2>
-<p>主要参数:</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>-name filename</td>
-<td>搜索文件名为 filename 的文件</td>
-</tr>
-<tr>
-<td>-iname filename</td>
-<td>忽略大小写，搜索文件名为 filename 的文件</td>
-</tr>
-<tr>
-<td>-size [±]SIZE</td>
-<td>搜索大小比 SIZE 大（+）或小（-）的文件，大小单位有 c、k、m、g 等</td>
-</tr>
-<tr>
-<td>-type TYPE</td>
-<td>搜索文件类型为 TYPE 的文件，如一般文件（f）、设备文件（b、c）、目录（d）、连接（l）、socket（s）等</td>
-</tr>
-<tr>
-<td>-perm mode</td>
-<td>搜索权限刚好等于 mode 的文件，如 mode 为 4775</td>
-</tr>
-<tr>
-<td>-perm -mode</td>
-<td>搜索权限必须全部包括 mode 的权限，如 mode 为 0744，会找到权限为 4775 的文件</td>
-</tr>
-<tr>
-<td>-perm +mode</td>
-<td>搜索权限包含任一 mode 的权限，如 mode 为 755 时，会找到权限为 101 的文件</td>
-</tr>
-</tbody>
-</table>
-<p>例如，在当前目录中查找文件 redis-3.2.6.tar.gz 并删除：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token parameter variable">-name</span> redis-3.2.6.tar.gz <span class="token parameter variable">-delete</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>忽略大小写，在 <code>/etc</code> 目录下搜索 ssh 文件或目录：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">find</span> /etc <span class="token parameter variable">-iname</span> <span class="token function">ssh</span>
-/etc/ssh
-/etc/selinux/targeted/active/modules/100/ssh<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>在 <code>/etc</code> 目录中查找以 rc 开头的文件，并以列表形式显示：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">find</span> /etc <span class="token parameter variable">-name</span> rc* <span class="token parameter variable">-ls</span>
-<span class="token number">50332831</span>    <span class="token number">0</span> drwxr-xr-x  <span class="token number">10</span> root     root          <span class="token number">127</span> Sep  <span class="token number">7</span> 05:53 /etc/rc.d
-<span class="token number">16781412</span>    <span class="token number">0</span> drwxr-xr-x   <span class="token number">2</span> root     root           <span class="token number">45</span> Oct <span class="token number">13</span>  <span class="token number">2020</span> /etc/rc.d/rc0.d
-<span class="token number">33644238</span>    <span class="token number">0</span> drwxr-xr-x   <span class="token number">2</span> root     root           <span class="token number">45</span> Oct <span class="token number">13</span>  <span class="token number">2020</span> /etc/rc.d/rc1.d
-<span class="token number">50332832</span>    <span class="token number">0</span> drwxr-xr-x   <span class="token number">2</span> root     root           <span class="token number">45</span> Oct <span class="token number">13</span>  <span class="token number">2020</span> /etc/rc.d/rc2.d<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>在 <code>/root</code> 目录下搜索所有小于 1MB 的文件，用 <code>-size -1M</code> 参数等同于 <code>-size 0M</code>，需要注意。这是个 ChatGPT 都会答错的问题：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">find</span> /root <span class="token parameter variable">-size</span> <span class="token parameter variable">-1M</span>
-/root/audit/a.log
-/root/3/3<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>查找 <code>/root</code> 目录下大于 10KB 并且（<code>-a</code> 表示“与”）小于 2M 的普通文件，并以列表形式显示：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> /root <span class="token parameter variable">-type</span> f <span class="token parameter variable">-size</span> +10k <span class="token parameter variable">-a</span> <span class="token parameter variable">-size</span> <span class="token parameter variable">-2M</span> <span class="token parameter variable">-exec</span> <span class="token function">ls</span> <span class="token parameter variable">-lh</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span>
--rw-------. <span class="token number">1</span> root root 17K Sep <span class="token number">16</span> 03:15 /root/.bash_history
--rw-------. <span class="token number">1</span> root root 178K Sep  <span class="token number">9</span> 05:48 /root/audit/b.log
--rw-r--r--. <span class="token number">1</span> root root 30K Sep <span class="token number">10</span> <span class="token number">15</span>:05 /root/backup/sdb4.dump
--rw-r--r--. <span class="token number">1</span> root root 11K Sep <span class="token number">10</span> <span class="token number">14</span>:39 /root/backup/lost.dump.bz2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>查找当前目录中的所有目录并排序：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-type</span> d <span class="token operator">|</span> <span class="token function">sort</span>
-<span class="token builtin class-name">.</span>
-./3
-./audit<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>在当前目录下查找除普通文件以外的所有类型的文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token operator">!</span> <span class="token parameter variable">-type</span> f <span class="token parameter variable">-print</span>
-<span class="token builtin class-name">.</span>
-./.pki
-./.pki/nssdb<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>查找 <code>/bin</code> 和 <code>/sbin</code> 目录下中含有 SGID, SUID 或 SBIT 属性的文件:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> /bin /sbin <span class="token parameter variable">-perm</span> +7000<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="处理搜索结果"><a class="markdownIt-Anchor" href="#处理搜索结果"></a> 处理搜索结果</h2>
-<p><code>find</code> 命令可以接受表达式，表达式可能由下列成份组成：操作符、选项、测试表达式以及动作。</p>
-<p>常见动作有 <code>-print</code>（打印输出，默认动作）、<code>-ls</code>（显示长目录列表）、<code>-delete</code>（删除文件）。</p>
-<p><code>-exec</code> 选项后面跟命令（不支持别名）或脚本，然后是大括号 <code>&#123;&#125;</code> 表示由 <code>find</code> 找到的路径名，一个空格，接 <code>\</code> 用来转义分号；表示命令结束。相应命令的形式为 <code>command &#123;&#125; \</code>；</p>
-<p><code>-ok</code> 和 <code>-exec</code> 的作用相同，只不过在执行每一个命令之前都会给出提示，让用户来确定是否执行。</p>
-<p>例如在 <code>/etc</code> 目录中搜索 <code>passwd</code> 文件并从中找 <code>root</code> 相关信息：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">find</span> /etc <span class="token parameter variable">-name</span> <span class="token string">"passwd*"</span> <span class="token parameter variable">-exec</span> <span class="token function">grep</span> <span class="token string">"root"</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span>
-root:x:0:0:root:/root:/bin/bash
-operator:x:11:0:operator:/root:/sbin/nologin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>在 <code>/usr/sam</code> 目录下查找不在 <code>dir1</code> 子目录之内的所有文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> /usr/sam <span class="token parameter variable">-path</span> <span class="token string">"/usr/sam/dir1"</span> <span class="token parameter variable">-prune</span> <span class="token parameter variable">-o</span> <span class="token parameter variable">-print</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>复制搜索到的文件到 <code>backup</code> 目录下：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-type</span> f <span class="token parameter variable">-exec</span> <span class="token function">cp</span> <span class="token parameter variable">--parents</span>  <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> ./backup/ <span class="token punctuation">\</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p><code>-exec</code> 为每个文件生成一条单独的命令，例如搜索到 57 个文件，那么将生成 57 条单独命令。如果想要提高效率，可以使用 <code>xargs</code> 运行任何使用参数指定的命令，参数通过标准输入传递给程序。</p>
-<p>例如配合 <code>grep</code> 在 <code>find</code> 找到的文件中搜寻特定内容：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> /var <span class="token parameter variable">-name</span> *.log <span class="token operator">|</span> <span class="token function">xargs</span> <span class="token function">grep</span> <span class="token string">"notice"</span>
-/var/log/anaconda/X.log:        <span class="token punctuation">(</span>++<span class="token punctuation">)</span> from <span class="token builtin class-name">command</span> line, <span class="token punctuation">(</span><span class="token operator">!</span><span class="token operator">!</span><span class="token punctuation">)</span> notice, <span class="token punctuation">(</span>II<span class="token punctuation">)</span> informational,
-/var/log/anaconda/journal.log:Sep <span class="token number">22</span> <span class="token number">13</span>:09:41 localhost kernel: <span class="token assign-left variable">type</span><span class="token operator">=</span><span class="token number">1107</span> audit<span class="token punctuation">(</span><span class="token number">1632316181.830</span>:44<span class="token punctuation">)</span>: <span class="token assign-left variable">pid</span><span class="token operator">=</span><span class="token number">1577</span> <span class="token assign-left variable">uid</span><span class="token operator">=</span><span class="token number">0</span> <span class="token assign-left variable">auid</span><span class="token operator">=</span><span class="token number">4294967295</span> <span class="token assign-left variable">ses</span><span class="token operator">=</span><span class="token number">4294967295</span> <span class="token assign-left variable">subj</span><span class="token operator">=</span>system_u:system_r:system_dbusd_t:s0-s0:c0.c1023 <span class="token assign-left variable">msg</span><span class="token operator">=</span>'avc:  received policyload notice <span class="token punctuation">(</span>seqno<span class="token operator">=</span><span class="token number">2</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>将搜索到的文件重命名，可以在 <code>xargs</code> 中使用 <code>&#123;&#125;</code> 占位符来代表搜索结果：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-name</span> <span class="token string">"back.sh*"</span> <span class="token operator">|</span> <span class="token function">xargs</span> <span class="token parameter variable">-i</span> <span class="token function">mv</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>.dele
-<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ ll back*
--rwxr--r--. <span class="token number">1</span> root root <span class="token number">52</span> Oct  <span class="token number">7</span> 06:15 back.sh1.dele
--rwxr--r--. <span class="token number">2</span> root root <span class="token number">52</span> Sep <span class="token number">23</span> <span class="token number">19</span>:18 back.sh.dele<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 ]]></content>
       <categories>
         <category>Linux</category>
@@ -5973,6 +5973,383 @@ REPOSITORY                   TAG       IMAGE ID       CREATED       SIZE
 </tr>
 </tbody>
 </table>
+]]></content>
+      <categories>
+        <category>Docker</category>
+        <category>1.基本操作</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Docker 安装与配置</title>
+    <url>/4130112682/</url>
+    <content><![CDATA[<h1 id="前置条件"><a class="markdownIt-Anchor" href="#前置条件"></a> 前置条件</h1>
+<p>由于 Docker 运行于 Linux 内核中，因此对于系统要求如下：</p>
+<ul>
+<li>系统必须为 64 位操作系统。</li>
+<li>系统内核版本需要大于 3.10。</li>
+<li>硬盘空间推荐为 100 GB 以上。</li>
+</ul>
+<p>可以使用以下命令查询系统位数和内核版本：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span>$ <span class="token function">uname</span> <span class="token parameter variable">-r</span>
+<span class="token number">3.10</span>.0-1160.42.2.el7.x86_64<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>Docker 引擎分为两个版本，社区版本（CE，Community Edition）和企业版本（EE，Enterprise Edition）。通常安装社区稳定版。</p>
+<h1 id="安装-docker"><a class="markdownIt-Anchor" href="#安装-docker"></a> 安装 Docker</h1>
+<p>对于之前安装过 Docker 的主机，需要先卸载干净后再进行安装。</p>
+<p>在全新安装时，需要先修改仓库配置，增加 Docker CE 的安装源：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ yum <span class="token function">install</span> <span class="token parameter variable">-y</span> yum-utils
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+Loaded plugins: fastestmirror
+adding repo from: https://download.docker.com/linux/centos/docker-ce.repo
+grabbing <span class="token function">file</span> https://download.docker.com/linux/centos/docker-ce.repo to /etc/yum.repos.d/docker-ce.repo
+repo saved to /etc/yum.repos.d/docker-ce.repo<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果要安装 Nightly 或 Test 版本，可以使用以下命令启用相应的仓库。要关闭，使用 <code>--disable</code> 参数。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ yum-config-manager <span class="token parameter variable">--enable</span> docker-ce-nightly
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ yum-config-manager <span class="token parameter variable">--enable</span> docker-ce-test<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>安装最新版 Docker CE：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ yum <span class="token function">install</span> <span class="token parameter variable">-y</span> docker-ce docker-ce-cli containerd.io<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>要安装特定版本，可以使用 <code>yum list</code> 命令进行查询：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ yum list docker-ce <span class="token parameter variable">--showduplicates</span> <span class="token operator">|</span> <span class="token function">sort</span> <span class="token parameter variable">-r</span>
+docker-ce.x86_64            <span class="token number">3</span>:20.10.9-3.el7                    docker-ce-stable 
+docker-ce.x86_64            <span class="token number">3</span>:20.10.9-3.el7                    @docker-ce-stable
+docker-ce.x86_64            <span class="token number">3</span>:20.10.8-3.el7                    docker-ce-stable <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>例如，安装 20.10.10 版本：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ yum <span class="token function">install</span> <span class="token parameter variable">-y</span> docker-ce-20.10.10 docker-ce-cli-20.10.10 containerd.io<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>Docker 安装完成后会创建一个 Docker 组，可以将普通用户加入该组，这样普通用户就可以直接运行 Docker 命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">useradd</span> <span class="token parameter variable">-p</span> user10 user10
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">su</span> <span class="token parameter variable">-l</span> user10
+<span class="token punctuation">[</span>user10@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> image <span class="token function">ls</span>
+Got permission denied <span class="token keyword">while</span> trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get <span class="token string">"http://%2Fvar%2Frun%2Fdocker.sock/v1.24/images/json"</span><span class="token builtin class-name">:</span> dial unix /var/run/docker.sock: connect: permission denied
+<span class="token punctuation">[</span>user10@server4 ~<span class="token punctuation">]</span>$ <span class="token function">su</span> <span class="token parameter variable">-c</span> <span class="token string">'usermod -G docker user10'</span>
+<span class="token punctuation">[</span>user10@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> image <span class="token function">ls</span>
+REPOSITORY    TAG       IMAGE ID       CREATED       SIZE
+hello-world   latest    feb5d9fea6a5   <span class="token number">3</span> weeks ago   <span class="token number">13</span>.3kB<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="更新-docker"><a class="markdownIt-Anchor" href="#更新-docker"></a> 更新 Docker</h1>
+<p>在 Docker 仓库源已启用的情况下，可以使用 <code>yum upgrade</code> 命令来更新 Docker：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ yum upgrade<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="卸载-docker"><a class="markdownIt-Anchor" href="#卸载-docker"></a> 卸载 Docker</h1>
+<p>使用以下命令完全卸载旧版本的 Docker 及相关程序：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ yum remove <span class="token function">docker</span> docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-engine<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>删除新版 Docker 引擎：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user10@server4 ~<span class="token punctuation">]</span>$ yum remove docker-ce docker-ce-cli containerd.io<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>删除 Docker 使用的库、镜像和容器等数据：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">rm</span> <span class="token parameter variable">-rf</span> /var/lib/docker
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">rm</span> <span class="token parameter variable">-rf</span> /var/lib/containerd<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h1 id="启动-docker"><a class="markdownIt-Anchor" href="#启动-docker"></a> 启动 Docker</h1>
+<p>启动服务并设置开机启动：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ systemctl <span class="token builtin class-name">enable</span> <span class="token parameter variable">--now</span> <span class="token function">docker</span>
+Created symlink from /etc/systemd/system/multi-user.target.wants/docker.service to /usr/lib/systemd/system/docker.service.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>启动之后，可以使用 <code>hello-world</code> 镜像来测试 Docker 功能是否正常：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> run hello-world
+Unable to <span class="token function">find</span> image <span class="token string">'hello-world:latest'</span> locally
+latest: Pulling from library/hello-world<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h1 id="查询-docker-版本"><a class="markdownIt-Anchor" href="#查询-docker-版本"></a> 查询 Docker 版本</h1>
+<p>使用 <code>docker version</code> 命令来查询 Docker 服务端和客户端的版本：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> version
+Client: Docker Engine - Community
+ Version:           <span class="token number">20.10</span>.9
+ API version:       <span class="token number">1.41</span>
+ Go version:        go1.16.8
+ Git commit:        c2ea9bc
+ Built:             Mon Oct  <span class="token number">4</span> <span class="token number">16</span>:08:14 <span class="token number">2021</span>
+ OS/Arch:           linux/amd64
+ Context:           default
+ Experimental:      <span class="token boolean">true</span>
+
+Server: Docker Engine - Community
+ Engine:
+  Version:          <span class="token number">20.10</span>.9
+  API version:      <span class="token number">1.41</span> <span class="token punctuation">(</span>minimum version <span class="token number">1.12</span><span class="token punctuation">)</span>
+  Go version:       go1.16.8
+  Git commit:       79ea9d3
+  Built:            Mon Oct  <span class="token number">4</span> <span class="token number">16</span>:06:37 <span class="token number">2021</span>
+  OS/Arch:          linux/amd64
+  Experimental:     <span class="token boolean">false</span>
+ containerd:
+  Version:          <span class="token number">1.4</span>.11
+  GitCommit:        5b46e404f6b9f661a205e28d59c982d3634148f8
+ runc:
+  Version:          <span class="token number">1.0</span>.2
+  GitCommit:        v1.0.2-0-g52b36a2
+ docker-init:
+  Version:          <span class="token number">0.19</span>.0
+  GitCommit:        de40ad0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="查看-docker-信息"><a class="markdownIt-Anchor" href="#查看-docker-信息"></a> 查看 Docker 信息</h1>
+<p>可以使用 <code>docker info</code> 命令来查看 Docker 的运行状态：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> info
+Client:
+ Context:    default
+ Debug Mode: <span class="token boolean">false</span>
+ Plugins:
+  app: Docker App <span class="token punctuation">(</span>Docker Inc., v0.9.1-beta3<span class="token punctuation">)</span>
+  buildx: Build with BuildKit <span class="token punctuation">(</span>Docker Inc., v0.6.3-docker<span class="token punctuation">)</span>
+  scan: Docker Scan <span class="token punctuation">(</span>Docker Inc., v0.8.0<span class="token punctuation">)</span>
+
+Server:
+ Containers: <span class="token number">1</span>
+  Running: <span class="token number">0</span>
+  Paused: <span class="token number">0</span>
+  Stopped: <span class="token number">1</span>
+ Images: <span class="token number">5</span>
+ Server Version: <span class="token number">20.10</span>.9
+ Storage Driver: overlay2
+  Backing Filesystem: xfs
+  Supports d_type: <span class="token boolean">true</span>
+  Native Overlay Diff: <span class="token boolean">true</span>
+  userxattr: <span class="token boolean">false</span>
+ Logging Driver: json-file
+ Cgroup Driver: cgroupfs
+ Cgroup Version: <span class="token number">1</span>
+ Plugins:
+  Volume: <span class="token builtin class-name">local</span>
+  Network: bridge <span class="token function">host</span> ipvlan macvlan null overlay
+  Log: awslogs fluentd gcplogs gelf journald json-file <span class="token builtin class-name">local</span> logentries splunk syslog
+ Swarm: inactive
+ Runtimes: io.containerd.runc.v2 io.containerd.runtime.v1.linux runc
+ Default Runtime: runc
+ Init Binary: docker-init
+ containerd version: 5b46e404f6b9f661a205e28d59c982d3634148f8
+ runc version: v1.0.2-0-g52b36a2
+ init version: de40ad0
+ Security Options:
+  seccomp
+   Profile: default
+ Kernel Version: <span class="token number">3.10</span>.0-1160.42.2.el7.x86_64
+ Operating System: CentOS Linux <span class="token number">7</span> <span class="token punctuation">(</span>Core<span class="token punctuation">)</span>
+ OSType: linux
+ Architecture: x86_64
+ CPUs: <span class="token number">16</span>
+ Total Memory: <span class="token number">3</span>.682GiB
+ Name: server4
+ ID: 7YVL:YG7U:BI3Q:BOVZ:XRWD:7BQO:6H3R:2BUW:OCQO:7JKZ:2OWC:UL2Q
+ Docker Root Dir: /var/lib/docker
+ Debug Mode: <span class="token boolean">false</span>
+ Registry: https://index.docker.io/v1/
+ Labels:
+ Experimental: <span class="token boolean">false</span>
+ Insecure Registries:
+  <span class="token number">127.0</span>.0.0/8
+ Registry Mirrors:
+  https://mirror.ccs.tencentyun.com/
+ Live Restore Enabled: <span class="token boolean">false</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 <code>docker system df</code> 命令来查询 Docker 的磁盘空间使用情况：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@UAT1542 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> system <span class="token function">df</span>
+TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          <span class="token number">21</span>        <span class="token number">8</span>         <span class="token number">7</span>.737GB   <span class="token number">3</span>.526GB <span class="token punctuation">(</span><span class="token number">45</span>%<span class="token punctuation">)</span>
+Containers      <span class="token number">10</span>        <span class="token number">9</span>         <span class="token number">18</span>.21GB   175B <span class="token punctuation">(</span><span class="token number">0</span>%<span class="token punctuation">)</span>
+Local Volumes   <span class="token number">10</span>        <span class="token number">3</span>         <span class="token number">135</span>.9kB   <span class="token number">101</span>.9kB <span class="token punctuation">(</span><span class="token number">74</span>%<span class="token punctuation">)</span>
+Build Cache     <span class="token number">0</span>         <span class="token number">0</span>         0B        0B<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 <code>docker stats</code> 命令来查询 Docker 容器资源占用情况：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@UAT1542 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> stats
+CONTAINER ID   NAME          CPU %     MEM USAGE / LIMIT     MEM %     NET I/O           BLOCK I/O         PIDS
+9f544067b7f2   <span class="token function">git</span>           <span class="token number">0.00</span>%     <span class="token number">35</span>.34MiB / <span class="token number">5</span>.633GiB   <span class="token number">0.61</span>%     <span class="token number">64</span>.1MB / <span class="token number">57</span>.5MB   <span class="token number">1</span>.58MB / 442MB    <span class="token number">2</span>
+82a67254b917   wordpress     <span class="token number">0.01</span>%     237MiB / <span class="token number">5</span>.633GiB     <span class="token number">4.11</span>%     <span class="token number">36</span>.9MB / 14MB     148MB / <span class="token number">43</span>.1MB    <span class="token number">11</span>
+4fa335a71060   mysql         <span class="token number">0.19</span>%     <span class="token number">247</span>.3MiB / <span class="token number">5</span>.633GiB   <span class="token number">4.29</span>%     <span class="token number">5</span>.55MB / <span class="token number">31</span>.3MB   <span class="token number">98</span>.3MB / 688MB    <span class="token number">33</span>
+964f87408dde   mongo         <span class="token number">0.82</span>%     <span class="token number">204</span>.2MiB / <span class="token number">5</span>.633GiB   <span class="token number">3.54</span>%     <span class="token number">1</span>.8MB / 869kB     129MB / <span class="token number">3</span>.8GB     <span class="token number">33</span>
+ded30f2db48b   tinyproxy     <span class="token number">0.02</span>%     <span class="token number">14</span>.36MiB / <span class="token number">5</span>.633GiB   <span class="token number">0.25</span>%     0B / 0B           <span class="token number">5</span>.82MB / <span class="token number">77</span>.1MB   <span class="token number">24</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="清理数据"><a class="markdownIt-Anchor" href="#清理数据"></a> 清理数据</h1>
+<p>使用 <code>docker system prune</code> 命令来安全清理没用到的数据，比如停止状态的容器、没有被使用的中间镜像层、没被使用的 Docker 虚拟网络：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@UAT1542 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> system prune
+WARNING<span class="token operator">!</span> This will remove:
+  - all stopped containers
+  - all networks not used by at least one container
+  - all dangling images
+  - all dangling build cache
+
+Are you sure you want to continue? <span class="token punctuation">[</span>y/N<span class="token punctuation">]</span> y
+Deleted Containers:
+5c6cdebbb209507a4886debe278f59cdf1dbebd6a8cfbf3b1ea32828cf3adbfa
+
+Total reclaimed space: 175B<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>还能加入 <code>-a</code> 参数进一步删除没有被使用的镜像（不包括被停止状态容器使用的镜像）：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">root@k8s-204:~<span class="token comment"># docker system prune -a</span>
+WARNING<span class="token operator">!</span> This will remove:
+  - all stopped containers
+  - all networks not used by at least one container
+  - all images without at least one container associated to them
+  - all build cache
+
+Are you sure you want to continue? <span class="token punctuation">[</span>y/N<span class="token punctuation">]</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="启动参数"><a class="markdownIt-Anchor" href="#启动参数"></a> 启动参数</h1>
+<p>Docker 服务启动实际上是调用了 <code>dockerd</code> 命令，Docker Daemon 常用启动参数如下：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>–api-cors-header=“”</td>
+<td>设定远程访问 API 所需的 cors-header。</td>
+</tr>
+<tr>
+<td>–authorization-plugin=[]</td>
+<td>设置认证插件列表。</td>
+</tr>
+<tr>
+<td>-b, --bridge=“”</td>
+<td>设置容器使用的网桥。</td>
+</tr>
+<tr>
+<td>–bip=“”</td>
+<td>设定网络桥 IP 和子网掩码。</td>
+</tr>
+<tr>
+<td>-D, --debug=false</td>
+<td>启动 Debug 模式。</td>
+</tr>
+<tr>
+<td>-d, --daemon=false</td>
+<td>启动守护进程模式。</td>
+</tr>
+<tr>
+<td>–default-gateway=“”</td>
+<td>设置容器使用的 IPv4 网关。</td>
+</tr>
+<tr>
+<td>–dns=[]</td>
+<td>设置容器使用的 DNS 服务器列表。</td>
+</tr>
+<tr>
+<td>–default-ulimit=[]</td>
+<td>设定容器默认的 <code>ulimit</code> 参数。</td>
+</tr>
+<tr>
+<td>-exec-opt=[]</td>
+<td>设定管理容器使用的参数。</td>
+</tr>
+<tr>
+<td>–exec-root=“/var/run/docker”</td>
+<td>设定 <code>exec-driver</code> 默认根目录地址。</td>
+</tr>
+<tr>
+<td>–fixed-cidr=“”</td>
+<td>设定容器使用的 IPv4 子网段。</td>
+</tr>
+<tr>
+<td>-G, --group=“docker”</td>
+<td>设定 UNIX Socket 文件用户所属组。</td>
+</tr>
+<tr>
+<td>-g, --graph=“/var/lib/docker”</td>
+<td>设定 Docker 服务运行时的根目录。</td>
+</tr>
+<tr>
+<td>-H, --host=[]</td>
+<td>设定 Docker 服务监听地址。</td>
+</tr>
+<tr>
+<td>–icc=true</td>
+<td>允许容器之间互相通信。</td>
+</tr>
+<tr>
+<td>–insecure-registry=[]</td>
+<td>设定可信任仓库地址。</td>
+</tr>
+<tr>
+<td>–ip=0.0.0.0</td>
+<td>设定绑定容器端口信息时的默认 IP。</td>
+</tr>
+<tr>
+<td>–ip-forward=true</td>
+<td>允许转发 IPv4 数据包。</td>
+</tr>
+<tr>
+<td>–ip-masq=true</td>
+<td>允许 IP 伪装。</td>
+</tr>
+<tr>
+<td>–iptables=true</td>
+<td>允许修改 iptables 规则。</td>
+</tr>
+<tr>
+<td>–ipv6=true</td>
+<td>允许使用 IPv6 网络。</td>
+</tr>
+<tr>
+<td>-l, --log-level=“info”</td>
+<td>设定日志输出等级。</td>
+</tr>
+<tr>
+<td>–label=[]</td>
+<td>按照 Key=Value 设定 Daemon 标签。</td>
+</tr>
+<tr>
+<td>–log-driver=“json-file”</td>
+<td>设定日志驱动格式。</td>
+</tr>
+<tr>
+<td>–log-opt=[]</td>
+<td>设定日志记录驱动参数。</td>
+</tr>
+<tr>
+<td>–mtu=0</td>
+<td>设定容器 MTU 值。</td>
+</tr>
+<tr>
+<td>-p, --pidfile=“/var/run/docker.pid”</td>
+<td>设定 <code>Docker.pid</code> 文件路径。</td>
+</tr>
+<tr>
+<td>–registry-mirror=[]</td>
+<td>设定优先访问的仓库镜像地址。</td>
+</tr>
+<tr>
+<td>-s, --storage-driver=“”</td>
+<td>设定数据储存驱动方式。</td>
+</tr>
+<tr>
+<td>–selinux-enabled=false</td>
+<td>启用或禁用 SELinux</td>
+</tr>
+<tr>
+<td>–storage-opt=[]</td>
+<td>设置数据存储驱动的参数</td>
+</tr>
+<tr>
+<td>–tls=false</td>
+<td>启用或禁用 TLS，但不启用客户端认证</td>
+</tr>
+<tr>
+<td>–tlscacert=“~/.docker/ca.pem”</td>
+<td>设置 CA 证书的位置</td>
+</tr>
+<tr>
+<td>–tlscert=“~/.docker/cert.pem”</td>
+<td>设置 TLS 证书的位置</td>
+</tr>
+<tr>
+<td>–tlskey=“~/.docker/key.pem”</td>
+<td>设置 TLS 密钥的位置</td>
+</tr>
+<tr>
+<td>–tlsverify=false</td>
+<td>启用或禁用 TLS 验证远程访问请求</td>
+</tr>
+<tr>
+<td>–userland-proxy=true</td>
+<td>启用或禁用用户空间代理</td>
+</tr>
+<tr>
+<td>-v, --version=false</td>
+<td>输出 Docker 版本信息</td>
+</tr>
+</tbody>
+</table>
+<p>如果参数后面有 <code>[] </code>标记，表示该参数可以多次使用。例如，要启用 Debug 模式并监听本地 2376 端口：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ dockerd <span class="token parameter variable">-D</span> <span class="token parameter variable">-H</span> tcp:/127.0.0.1:2376<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>可以将启动参数写入 <code>/etc/docker/daemon.json</code> 文件中，在 dockerd 服务启动时读取该文件。请注意，该配置文件中不能有与启动参数重复的配置项，否则会导致启动错误：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/docker/daemon.json
+<span class="token punctuation">&#123;</span>
+        <span class="token string">"debug"</span><span class="token builtin class-name">:</span> true,
+        <span class="token string">"hosts"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span><span class="token string">"tcp://127.0.0.1:2376"</span><span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>也可以修改 <code>/usr/lib/systemd/system/docker.service</code> 文件中 <code>ExecStart</code> 后面的参数来配置启动参数：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /usr/lib/systemd/system/docker.service 
+<span class="token assign-left variable">ExecStart</span><span class="token operator">=</span>/usr/bin/dockerd <span class="token parameter variable">-H</span> fd:// <span class="token parameter variable">--containerd</span><span class="token operator">=</span>/run/containerd/containerd.sock <span class="token parameter variable">-H</span> tcp://192.168.2.234:5999
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ systemctl daemon-reload
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ systemctl restart <span class="token function">docker</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 ]]></content>
       <categories>
         <category>Docker</category>
@@ -14543,6 +14920,135 @@ drwxr-----.  <span class="token number">3</span> root root   <span class="token 
       </categories>
   </entry>
   <entry>
+    <title>Linux 文件与目录权限</title>
+    <url>/46662635/</url>
+    <content><![CDATA[<h1 id="基本权限"><a class="markdownIt-Anchor" href="#基本权限"></a> 基本权限</h1>
+<p>基本权限有三种，分别是：读（r，Read）、写（w，Write）、执行（x，eXecute）。</p>
+<p>同样的权限标记对于文件和目录代表不同的意义。</p>
+<h2 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h2>
+<p>文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。</p>
+<table>
+<thead>
+<tr>
+<th>数字</th>
+<th>字符</th>
+<th>权限</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td>r</td>
+<td>读取文件内容。例如使用 <code>cat</code> 命令查看，使用 <code>vim</code> 以只读方式打开。</td>
+</tr>
+<tr>
+<td>2</td>
+<td>w</td>
+<td>编辑修改文件内容，但不包括删除文件。例如使用 <code>vim</code>、<code>sed</code> 等对文件内容进行修改并保存。</td>
+</tr>
+<tr>
+<td>1</td>
+<td>x</td>
+<td>文件具有可以被系统执行的权限。例如命令和脚本必须拥有此权限才能直接执行。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="目录权限"><a class="markdownIt-Anchor" href="#目录权限"></a> 目录权限</h2>
+<p>目录主要的内容是记录文件名清单，所以目录权限实际关联的是目录下文件属性查看与更改。</p>
+<table>
+<thead>
+<tr>
+<th>数字</th>
+<th>字符</th>
+<th>权限</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td>r</td>
+<td>仅查询目录下的文件或目录名称，无法看到属性，相当于执行不加参数的 <code>ls</code> 命令。</td>
+</tr>
+<tr>
+<td>2</td>
+<td>w</td>
+<td>改变目录结构清单权限，也就是在目录下新建、删除、重命名文件或目录。</td>
+</tr>
+<tr>
+<td>1</td>
+<td>x</td>
+<td>进入目录的权限，查询目录下的文件属性。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="权限参考"><a class="markdownIt-Anchor" href="#权限参考"></a> 权限参考</h1>
+<p>根据使用场景来配置权限。</p>
+<p><strong>用户进入目录所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限，来运行 <code>cd</code> 切换目录。</li>
+<li>目录需要 r 权限，来使用 <code>ls</code> 命令查看目录中文件列表。</li>
+</ul>
+<p><strong>用户读取目录内文件所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 r 权限来运行 <code>cat</code>、<code>more</code> 等读取文件命令。</li>
+</ul>
+<p><strong>用户修改目录内文件所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 r 和 w 权限来使用 <code>vi</code> 等工具进行文件读写。</li>
+</ul>
+<p><strong>用户创建一个文件所需权限</strong>：</p>
+<ul>
+<li>目录需要 w 和 x 权限来创建文件。</li>
+</ul>
+<p><strong>用户执行目录下的命令所需权限</strong>：</p>
+<ul>
+<li>目录需要 x 权限来进入目录。</li>
+<li>文件需要 x 权限来运行命令。</li>
+</ul>
+<h1 id="特殊权限"><a class="markdownIt-Anchor" href="#特殊权限"></a> 特殊权限</h1>
+<p>在 Linux 系统中，还有一些特殊权限。</p>
+<h2 id="suid"><a class="markdownIt-Anchor" href="#suid"></a> SUID</h2>
+<p>当 s 标志出现在文件所有者的 x 权限上时，被称为 Set UID，其含义为：</p>
+<ul>
+<li>SUID 权限仅对二进制程序有效，不能用在脚本上；</li>
+<li>执行者对该程序需要具有 x 的可执行权限；</li>
+<li>本权限仅在执行该程序的过程中（run-time）有效；</li>
+<li>执行者将具有该程序所有者的权限。</li>
+</ul>
+<p>例如一般用户运行 <code>passwd</code> 命令修改密码，需要修改 <code>/etc/shadow</code> 文件。但是该文件的权限只有 root 可读写，而用户运行 passwd 程序时，会暂时获得 passwd 程序的 root 权限，从而可以通过 <code>passwd</code> 命令修改 <code>/etc/shadow</code> 文件。</p>
+<p>这是因为运行 <code>passwd</code> 后会启动一个新的进程，该进程会产生一个新的 PID。在该 PID 产生时，SUID 会给予该 PID 特殊的权限设置，使得执行者在该进程中具有该程序所有者的权限。</p>
+<h2 id="sgid"><a class="markdownIt-Anchor" href="#sgid"></a> SGID</h2>
+<p>当 s 标志出现在文件所属组的 x 权限上时，被称为 Set GID。SGID 可以针对文件或目录来设置。</p>
+<p>针对文件，SGID 有以下功能：</p>
+<ul>
+<li>SGID 对二进制程序有效；</li>
+<li>程序执行者对该程序来说，需要具备 x 的权限；</li>
+<li>执行者在执行的过程中将会获得该程序所属组的权限。</li>
+</ul>
+<p>例如，一般用户使用 <code>locate</code> 这个程序可以查询 <code>/var/lib/mlocate/mlocate.db</code> 文件的内容，会暂时获得 slocate 用户组的权限。</p>
+<p>针对目录，SGID 有以下功能：</p>
+<ul>
+<li>用户若对此目录具有 r 和 x 的权限时，该用户能够进入此目录；</li>
+<li>用户在此目录下的有效用户组将会变成该目录的用户组；</li>
+<li>若用户在此目录下具有 w 的权限，则用户所创建的新文件的所属组与此目录的所属组相同。</li>
+</ul>
+<h2 id="sbit"><a class="markdownIt-Anchor" href="#sbit"></a> SBIT</h2>
+<p>当 t 出现在文件所有者的其他用户 x 权限上时，被称为 Sticky Bit。其含义为：</p>
+<ul>
+<li>SBIT 权限仅对目录有效；</li>
+<li>当用户对该目录具有 w 和 x 权限时，即具有写入权限时；</li>
+<li>当用户在该目录下创建文件或目录时，仅有自己与 root 才有权力删除该文件。</li>
+</ul>
+<p>例如，用户 1 对目录 A 具有 w 的权限，里面还有其他用户的文件。此时，目录 A 加上了 SBIT 权限时，用户 1 只能修改自己创建的文件，无法删除他人文件。</p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>0.基础概论</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Linux 主流文件系统</title>
     <url>/2794564793/</url>
     <content><![CDATA[<h1 id="查看文件系统支持"><a class="markdownIt-Anchor" href="#查看文件系统支持"></a> 查看文件系统支持</h1>
@@ -15018,135 +15524,6 @@ drwx------. <span class="token number">2</span> root root  16K Sep  <span class=
 <p>Btrfs 文件系统也被称为 B 树文件系统，它稳定且易用，能够动态调整已挂载文件系统的大小。目前，OpenSUSE Linux 将 Btrfs 作为其默认文件系统。</p>
 </li>
 </ul>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>0.基础概论</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>Linux 文件与目录权限</title>
-    <url>/46662635/</url>
-    <content><![CDATA[<h1 id="基本权限"><a class="markdownIt-Anchor" href="#基本权限"></a> 基本权限</h1>
-<p>基本权限有三种，分别是：读（r，Read）、写（w，Write）、执行（x，eXecute）。</p>
-<p>同样的权限标记对于文件和目录代表不同的意义。</p>
-<h2 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h2>
-<p>文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。</p>
-<table>
-<thead>
-<tr>
-<th>数字</th>
-<th>字符</th>
-<th>权限</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>4</td>
-<td>r</td>
-<td>读取文件内容。例如使用 <code>cat</code> 命令查看，使用 <code>vim</code> 以只读方式打开。</td>
-</tr>
-<tr>
-<td>2</td>
-<td>w</td>
-<td>编辑修改文件内容，但不包括删除文件。例如使用 <code>vim</code>、<code>sed</code> 等对文件内容进行修改并保存。</td>
-</tr>
-<tr>
-<td>1</td>
-<td>x</td>
-<td>文件具有可以被系统执行的权限。例如命令和脚本必须拥有此权限才能直接执行。</td>
-</tr>
-</tbody>
-</table>
-<h2 id="目录权限"><a class="markdownIt-Anchor" href="#目录权限"></a> 目录权限</h2>
-<p>目录主要的内容是记录文件名清单，所以目录权限实际关联的是目录下文件属性查看与更改。</p>
-<table>
-<thead>
-<tr>
-<th>数字</th>
-<th>字符</th>
-<th>权限</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>4</td>
-<td>r</td>
-<td>仅查询目录下的文件或目录名称，无法看到属性，相当于执行不加参数的 <code>ls</code> 命令。</td>
-</tr>
-<tr>
-<td>2</td>
-<td>w</td>
-<td>改变目录结构清单权限，也就是在目录下新建、删除、重命名文件或目录。</td>
-</tr>
-<tr>
-<td>1</td>
-<td>x</td>
-<td>进入目录的权限，查询目录下的文件属性。</td>
-</tr>
-</tbody>
-</table>
-<h1 id="权限参考"><a class="markdownIt-Anchor" href="#权限参考"></a> 权限参考</h1>
-<p>根据使用场景来配置权限。</p>
-<p><strong>用户进入目录所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限，来运行 <code>cd</code> 切换目录。</li>
-<li>目录需要 r 权限，来使用 <code>ls</code> 命令查看目录中文件列表。</li>
-</ul>
-<p><strong>用户读取目录内文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 r 权限来运行 <code>cat</code>、<code>more</code> 等读取文件命令。</li>
-</ul>
-<p><strong>用户修改目录内文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 r 和 w 权限来使用 <code>vi</code> 等工具进行文件读写。</li>
-</ul>
-<p><strong>用户创建一个文件所需权限</strong>：</p>
-<ul>
-<li>目录需要 w 和 x 权限来创建文件。</li>
-</ul>
-<p><strong>用户执行目录下的命令所需权限</strong>：</p>
-<ul>
-<li>目录需要 x 权限来进入目录。</li>
-<li>文件需要 x 权限来运行命令。</li>
-</ul>
-<h1 id="特殊权限"><a class="markdownIt-Anchor" href="#特殊权限"></a> 特殊权限</h1>
-<p>在 Linux 系统中，还有一些特殊权限。</p>
-<h2 id="suid"><a class="markdownIt-Anchor" href="#suid"></a> SUID</h2>
-<p>当 s 标志出现在文件所有者的 x 权限上时，被称为 Set UID，其含义为：</p>
-<ul>
-<li>SUID 权限仅对二进制程序有效，不能用在脚本上；</li>
-<li>执行者对该程序需要具有 x 的可执行权限；</li>
-<li>本权限仅在执行该程序的过程中（run-time）有效；</li>
-<li>执行者将具有该程序所有者的权限。</li>
-</ul>
-<p>例如一般用户运行 <code>passwd</code> 命令修改密码，需要修改 <code>/etc/shadow</code> 文件。但是该文件的权限只有 root 可读写，而用户运行 passwd 程序时，会暂时获得 passwd 程序的 root 权限，从而可以通过 <code>passwd</code> 命令修改 <code>/etc/shadow</code> 文件。</p>
-<p>这是因为运行 <code>passwd</code> 后会启动一个新的进程，该进程会产生一个新的 PID。在该 PID 产生时，SUID 会给予该 PID 特殊的权限设置，使得执行者在该进程中具有该程序所有者的权限。</p>
-<h2 id="sgid"><a class="markdownIt-Anchor" href="#sgid"></a> SGID</h2>
-<p>当 s 标志出现在文件所属组的 x 权限上时，被称为 Set GID。SGID 可以针对文件或目录来设置。</p>
-<p>针对文件，SGID 有以下功能：</p>
-<ul>
-<li>SGID 对二进制程序有效；</li>
-<li>程序执行者对该程序来说，需要具备 x 的权限；</li>
-<li>执行者在执行的过程中将会获得该程序所属组的权限。</li>
-</ul>
-<p>例如，一般用户使用 <code>locate</code> 这个程序可以查询 <code>/var/lib/mlocate/mlocate.db</code> 文件的内容，会暂时获得 slocate 用户组的权限。</p>
-<p>针对目录，SGID 有以下功能：</p>
-<ul>
-<li>用户若对此目录具有 r 和 x 的权限时，该用户能够进入此目录；</li>
-<li>用户在此目录下的有效用户组将会变成该目录的用户组；</li>
-<li>若用户在此目录下具有 w 的权限，则用户所创建的新文件的所属组与此目录的所属组相同。</li>
-</ul>
-<h2 id="sbit"><a class="markdownIt-Anchor" href="#sbit"></a> SBIT</h2>
-<p>当 t 出现在文件所有者的其他用户 x 权限上时，被称为 Sticky Bit。其含义为：</p>
-<ul>
-<li>SBIT 权限仅对目录有效；</li>
-<li>当用户对该目录具有 w 和 x 权限时，即具有写入权限时；</li>
-<li>当用户在该目录下创建文件或目录时，仅有自己与 root 才有权力删除该文件。</li>
-</ul>
-<p>例如，用户 1 对目录 A 具有 w 的权限，里面还有其他用户的文件。此时，目录 A 加上了 SBIT 权限时，用户 1 只能修改自己创建的文件，无法删除他人文件。</p>
 ]]></content>
       <categories>
         <category>Linux</category>
@@ -19328,6 +19705,279 @@ operator        <span class="token number">11</span><span aria-hidden="true" cla
       </categories>
   </entry>
   <entry>
+    <title>Vim 工具基本使用</title>
+    <url>/17877528/</url>
+    <content><![CDATA[<h1 id="vim-基础知识"><a class="markdownIt-Anchor" href="#vim-基础知识"></a> Vim 基础知识</h1>
+<p>Vim（Vi IMproved）是一款强大的文本编辑器，是 Linux 和其他类 Unix 系统中最常用的编辑器之一。它不仅支持简单的文本编辑，还有许多高级功能，例如自动完成、宏录制、拼写检查和代码高亮等。Vim 是一个模式化编辑器，有多种不同的模式，其中最常用的是命令模式、插入模式和可视模式。</p>
+<h2 id="vim-模式"><a class="markdownIt-Anchor" href="#vim-模式"></a> Vim 模式</h2>
+<p>vi 分为三种模式，一般模式、编辑模式与命令行模式：</p>
+<ul>
+<li>
+<p>一般指令模式（Command Mode）</p>
+<p>用 vi 打开一个文件就进入一般模式，可以使用方向键来移动光标，删除，复制与粘贴。</p>
+</li>
+<li>
+<p>编辑模式（Insert Mode）</p>
+<p>在一般模式中，按下 “i o a r” 任何一个按键之后才会进入编辑模式，左下角会显示 INSERT 或 REPLACE 等字样。按 Esc 键可以返回一般模式。</p>
+</li>
+<li>
+<p>命令行模式（Command-line Mode）</p>
+<p>在一般模式下，输入 “: / ?” 三个中的任何一个按键，可以将光标移动到最下面一行，在此模式可以查找数据，读取保存，大量替换等操作。</p>
+</li>
+</ul>
+<h2 id="界面介绍"><a class="markdownIt-Anchor" href="#界面介绍"></a> 界面介绍</h2>
+<p>使用 <code>vi</code> 打开一个已存在的文件后，显示如下所示：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> anaconda-ks.cfg 
+<span class="token comment">#version=DEVEL</span>
+<span class="token comment"># System authorization information</span>
+auth <span class="token parameter variable">--enableshadow</span> <span class="token parameter variable">--passalgo</span><span class="token operator">=</span>sha512
+<span class="token comment"># Use CDROM installation media</span>
+cdrom
+<span class="token comment"># Use graphical install</span>
+graphical
+<span class="token comment"># Run the Setup Agent on first boot</span>
+<span class="token string">"anaconda-ks.cfg"</span> 48L, 1260C<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最下面一行分别展示了：</p>
+<ul>
+<li>“anaconda-ks.cfg”：文件名；</li>
+<li>48L：文件有 48 行；</li>
+<li>1260C：文件有 1260 个字符，也就是 1260B 大小。</li>
+</ul>
+<p>按下 <code>i</code> 键后，进入到编辑模式，最左下角显示：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">-- INSERT --<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>此时可以自由输入文字。按下 <code>Esc</code> 键退回到一般模式，再输入 <code>:wq</code> 按回车可以保存并离开 <code>vi</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">:wq
+<span class="token string">"anaconda-ks.cfg"</span> 48L, 1260C written<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>如果文件权限只读，可以使用 <code>:wq!</code> 来强制写入。</p>
+<h2 id="恢复功能"><a class="markdownIt-Anchor" href="#恢复功能"></a> 恢复功能</h2>
+<p>恢复功能是指，当因为某些原因导致死机的情况下，能通过一些方法将之前未保存的数据找回来。</p>
+<p>在使用 <code>vim</code> 编辑文件时，<code>vim</code> 会在被编辑文件同目录下新建一个名为 <code>.filename.swp</code> 的交换文件。每当键入 200 个字符或有 4 秒没有键入内容时，交换文件都会自动地更新。</p>
+<p>例如用 <code>vi</code> 新建打开一个文件，在命令模式下按 <code>Ctrl+z</code> 中断，再查看 <code>.swp</code> 文件内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">vi</span> <span class="token number">1</span>.txt
+a
+b
+~
+
+<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>+  Stopped                 <span class="token function">vi</span> <span class="token number">1</span>.txt
+<span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">cat</span> .1.txt.swp 
+U3210<span class="token comment">#"! Utpad???</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到 <code>swp</code> 实时保存了我们输入的内容。</p>
+<p>再次打开文件时，会提示有 <code>swp</code> 临时文件存在：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">vim</span> <span class="token number">1</span>.txt 
+
+E325: ATTENTION
+Found a swap <span class="token function">file</span> by the name <span class="token string">".1.txt.swp"</span>
+          owned by: root   dated: Sat Sep <span class="token number">11</span> 03:44:17 <span class="token number">2021</span>
+         <span class="token function">file</span> name: ~root/4/1.txt
+          modified: YES
+         user name: root   <span class="token function">host</span> name: 101c7
+        process ID: <span class="token number">87510</span> <span class="token punctuation">(</span>still running<span class="token punctuation">)</span>
+While opening <span class="token function">file</span> <span class="token string">"1.txt"</span>
+             dated: Sat Sep <span class="token number">11</span> 03:44:11 <span class="token number">2021</span>
+
+<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> Another program may be editing the same file.  If this is the case,
+    be careful not to end up with two different instances of the same
+    <span class="token function">file</span> when making changes.  Quit, or <span class="token builtin class-name">continue</span> with caution.
+<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span> An edit session <span class="token keyword">for</span> this <span class="token function">file</span> crashed.
+    If this is the case, use <span class="token string">":recover"</span> or <span class="token string">"vim -r 1.txt"</span>
+    to recover the changes <span class="token punctuation">(</span>see <span class="token string">":help recovery"</span><span class="token punctuation">)</span>.
+    If you did this already, delete the swap <span class="token function">file</span> <span class="token string">".1.txt.swp"</span>
+    to avoid this message.
+
+Swap <span class="token function">file</span> <span class="token string">".1.txt.swp"</span> already exists<span class="token operator">!</span>
+<span class="token punctuation">[</span>O<span class="token punctuation">]</span>pen Read-Only, <span class="token punctuation">(</span>E<span class="token punctuation">)</span>dit anyway, <span class="token punctuation">(</span>R<span class="token punctuation">)</span>ecover, <span class="token punctuation">(</span>Q<span class="token punctuation">)</span>uit, <span class="token punctuation">(</span>A<span class="token punctuation">)</span>bort:<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>提示会说明出现这一情况的两种原因：</p>
+<ul>
+<li>此文件正被另一个程序所使用；</li>
+<li>文件在编辑过程中非正常退出。</li>
+</ul>
+<p>此时可以选择以哪种模式来打开：</p>
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>O</td>
+<td>以只读模式打开，显示内容为没有保存的内容；</td>
+</tr>
+<tr>
+<td>E</td>
+<td>以正常模式编辑文件，不会载入暂存文件内容；</td>
+</tr>
+<tr>
+<td>R</td>
+<td>加载暂存文件内容，恢复之前的作业。修改完毕后需要手动删除 <code>.swp</code> 文件；</td>
+</tr>
+<tr>
+<td>Q</td>
+<td>直接退出不进行操作；</td>
+</tr>
+<tr>
+<td>A</td>
+<td>等同于 Q，直接退出。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="环境设置"><a class="markdownIt-Anchor" href="#环境设置"></a> 环境设置</h2>
+<p>在使用 <code>vim</code> 编辑文件时，文件会继承上一次编辑时的状态，比如光标出现在最后一行。这个记录操作文件保存在 <code>~/.viminfo</code> 里面。</p>
+<p>在命令模式下用 <code>set</code> 修改的设置值保存在 <code>/etc/vimrc</code> 这个文件中，不建议动它。需要自定义设置可以新建 <code>~/.vimrc</code> 这个文件将希望设置的值写入。</p>
+<p>例如设置自动缩进和行号功能：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vim</span> ~/.vimrc
+<span class="token builtin class-name">set</span> nu          <span class="token string">"hanghao
+set autoindent  "</span>suojin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>再次打开 <code>vim</code> 即可生效：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vim</span> ~/.vimrc
+  <span class="token number">1</span> <span class="token builtin class-name">set</span> nu          <span class="token string">"hanghao
+  2 set autoindent  "</span>suojin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h1 id="vim-基本操作"><a class="markdownIt-Anchor" href="#vim-基本操作"></a> Vim 基本操作</h1>
+<p>下面记录一些 Vim 的基本操作。</p>
+<h2 id="一般模式"><a class="markdownIt-Anchor" href="#一般模式"></a> 一般模式</h2>
+<p>光标移动针对的是在一般模式下快速浏览/定位文件。</p>
+<h3 id="移动"><a class="markdownIt-Anchor" href="#移动"></a> 移动</h3>
+<p>可以使用方向键 <code>←</code> <code>↓</code> <code>↑</code> <code>→</code> 或 <code>h</code> <code>j</code> <code>k</code> <code>l</code> 操作光标左/右/下/上移一个字符。</p>
+<p>可使用数字组合，例如 <code>30k</code> 代表光标向上移 30 行。</p>
+<h3 id="翻页"><a class="markdownIt-Anchor" href="#翻页"></a> 翻页</h3>
+<p>使用快捷键 <code>Ctrl+f</code>/<code>Ctrl+b</code> 来控制屏幕向下/上移动一页，相当于 <code>PageDown</code>/<code>PageUp</code>。</p>
+<h3 id="跳转"><a class="markdownIt-Anchor" href="#跳转"></a> 跳转</h3>
+<p>输入 <code>nG</code>（n 为数字）将光标移动到第 n 行位置。</p>
+<h3 id="删除"><a class="markdownIt-Anchor" href="#删除"></a> 删除</h3>
+<p>使用 <code>x</code>/<code>X</code> 来删除当前光标后/前个字符。</p>
+<p>可以使用数字组合，例如 <code>9x</code> 代表删除光标后连续 9 个字符。</p>
+<h3 id="剪切"><a class="markdownIt-Anchor" href="#剪切"></a> 剪切</h3>
+<p>使用 <code>dd</code> 剪切光标所在行。</p>
+<p>可以使用数字组合，例如 <code>9dd</code> 代表向下删除 9 行。</p>
+<h3 id="复制"><a class="markdownIt-Anchor" href="#复制"></a> 复制</h3>
+<p>使用 <code>yy</code> 复制光标所在行。</p>
+<p>可以使用数字组合，例如 <code>9yy</code> 代表复制向下 9 行。</p>
+<p>按 <code>v</code> 键进入复制可视模式，在移动光标时高亮显示文本，选择完毕后按 <code>y</code> 复制选择内容。</p>
+<h3 id="粘贴"><a class="markdownIt-Anchor" href="#粘贴"></a> 粘贴</h3>
+<p>使用 <code>p</code>/<code>P</code> 来将剪贴板数据粘贴到光标下/上一行。</p>
+<h3 id="撤销"><a class="markdownIt-Anchor" href="#撤销"></a> 撤销</h3>
+<p>使用 <code>u</code> 来撤销上一次操作。</p>
+<h3 id="重做"><a class="markdownIt-Anchor" href="#重做"></a> 重做</h3>
+<p>使用 <code>Ctrl+r</code> 快捷键来反撤销操作。</p>
+<h3 id="块选择模式"><a class="markdownIt-Anchor" href="#块选择模式"></a> 块选择模式</h3>
+<p>按下<code>Ctrl+v</code>进入块选择模式，之后用方向键操作光标选择块：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">vi</span> c.log 
+c1  ass
+c2  bss
+c3  css
+~
+-- VISUAL BLOCK --  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>此模式下按<code>y</code>复制，按<code>d</code>删除。</p>
+<h2 id="编辑模式"><a class="markdownIt-Anchor" href="#编辑模式"></a> 编辑模式</h2>
+<p>进入编辑模式有两个方式：</p>
+<ul>
+<li>
+<p>按 i：进入到插入模式（Insert Mode）。</p>
+</li>
+<li>
+<p>按 r/R：进入到替换/连续替换模式（Replace Mode）。</p>
+</li>
+</ul>
+<p>在编辑模式中主要执行文本插入和修改操作。</p>
+<h2 id="命令模式"><a class="markdownIt-Anchor" href="#命令模式"></a> 命令模式</h2>
+<p>在命令行模式下，可以进行文件读写、保存、退出、搜索、替换等操作，按下冒号(:)即可进入命令行模式。</p>
+<h3 id="搜索"><a class="markdownIt-Anchor" href="#搜索"></a> 搜索</h3>
+<p>搜索功能在命令模式下完成：</p>
+<ul>
+<li>
+<p>/word：向下搜索字符串 <code>word</code>。</p>
+</li>
+<li>
+<p>?word：向上搜索字符串 <code>word</code>。</p>
+</li>
+</ul>
+<p>对搜索结果按键 <code>n/N</code> 进行向下/向上跳转。</p>
+<h3 id="替换"><a class="markdownIt-Anchor" href="#替换"></a> 替换</h3>
+<ul>
+<li>
+<p>替换表达式：<code>:&#123;作用范围&#125;s/&#123;搜索关键词&#125;/&#123;替换成关键词&#125;/&#123;替换标志&#125;</code></p>
+</li>
+<li>
+<p>作用范围：n1,n2：n1 和 n2 为数字，表示在 n1 和 n2 行之间搜寻关键词并替换。例如在 100 到 200 行之间搜索：<code>100,200s/XS/xs/g</code></p>
+<p>1,&amp;s：表示从第 1 行到最后一行。</p>
+</li>
+<li>
+<p>替换标志</p>
+<p>g：表示全部替换，否则只会替换找到的第一个结果。</p>
+<p>i/I：表示搜索不区分/区分大小写，默认是区分大小写。</p>
+<p>c：表示替换前提示确认。</p>
+</li>
+</ul>
+<h3 id="保存"><a class="markdownIt-Anchor" href="#保存"></a> 保存</h3>
+<p>:w 直接保存文件。</p>
+<p>:w! 强制保存文件，针对某些设为只读权限的文件可以强制写入。</p>
+<p>:w file2 另存为当前编辑的文件为<code>file2</code>。</p>
+<h3 id="读取"><a class="markdownIt-Anchor" href="#读取"></a> 读取</h3>
+<p>:r file1 读取文件<code>file1</code>，并将内容加到光标所在行后面。</p>
+<h3 id="退出"><a class="markdownIt-Anchor" href="#退出"></a> 退出</h3>
+<p>:q 直接退出。</p>
+<p>:q! 强制退出，针对修改了文件内容不想保存情况下退出。</p>
+<p>:wq! 强制保存并退出。</p>
+<p><code>ZZ</code> 保存后退出，等同于<code>:wq</code>。</p>
+<h3 id="设置"><a class="markdownIt-Anchor" href="#设置"></a> 设置</h3>
+<p>使用 :set all 查看所有配置。使用 :set 查看有更改过的参数。</p>
+<ul>
+<li>
+<p>行号：set nu 设置行号，默认设置 nonu 没有行号。</p>
+</li>
+<li>
+<p>自动缩进：set autoindent 设置自动缩进，默认设置 noautoindent 没有自动缩进。</p>
+</li>
+<li>
+<p>设置备份：set backup 设置自动保存备份文件，默认设置 nobackup 没有备份。</p>
+</li>
+<li>
+<p>语法高亮：syntax on 依据语法来显示不同颜色。默认设置 syntax off。</p>
+</li>
+<li>
+<p>跳转：输入数字 n 直接跳转到第 n 行。</p>
+</li>
+<li>
+<p>显示文件名：f 显示正在编辑的文件名等信息。</p>
+</li>
+<li>
+<p>执行命令：! command 暂时离开 vim 到命令行模式下执行命令并展示结果。</p>
+</li>
+</ul>
+<h3 id="多窗口模式"><a class="markdownIt-Anchor" href="#多窗口模式"></a> 多窗口模式</h3>
+<p>在命令模式下输入<code>:sp</code>可对当前文件切割成上下两个窗口显示：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token number">111</span>
+<span class="token number">11</span>
+<span class="token number">1</span>
+~
+~
+<span class="token number">1</span>.txt                                                                                    <span class="token number">3,1</span>            All
+<span class="token number">111</span>
+<span class="token number">11</span>
+<span class="token number">1</span>
+~
+<span class="token number">1</span>.txt                                                                                    <span class="token number">1,1</span>            All
+:sp<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>通过按键<code>Ctrl+w</code>来切换窗口。</p>
+<p>也可以用<code>:sp</code>指定文件名，这样上下窗口分别显示两个不同文件内容。</p>
+<h3 id="同时编辑模式"><a class="markdownIt-Anchor" href="#同时编辑模式"></a> 同时编辑模式</h3>
+<p>可以同时用<code>vim</code>打开多个文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">vi</span> <span class="token number">1</span>.txt <span class="token number">2</span>.txt
+<span class="token number">2</span> files to edit
+
+~
+~
+<span class="token string">"1.txt"</span> 0L, 0C                                                                           <span class="token number">0,0</span>-1         All<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>输入命令<code>:n</code>或<code>:N</code>来编辑下一个或上一个文件。</p>
+<p>输入命令<code>:files</code>列出目前打开的所有文件。</p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>3.脚本编程</category>
+      </categories>
+  </entry>
+  <entry>
     <title>正则表达式</title>
     <url>/794273428/</url>
     <content><![CDATA[<h1 id="基本定义"><a class="markdownIt-Anchor" href="#基本定义"></a> 基本定义</h1>
@@ -20008,279 +20658,6 @@ pwpolicy user <span class="token parameter variable">--minlen</span><span class=
 <h2 id="匹配数字千位"><a class="markdownIt-Anchor" href="#匹配数字千位"></a> 匹配数字千位</h2>
 <p>即在每三个数字后面添加一个逗号，例如将 1234567 匹配为 1,234,567。这个正则表达式使用了正向肯定零宽断言和正向零宽断言两个技巧。其中 <code>(?&lt;=\d)</code> 表示匹配前面是数字的位置，<code>(?=(\d\d\d)+$)</code> 表示匹配后面是 3 个数字的倍数并且后面没有其他字符的位置。这样，正则表达式会在满足这两个条件的位置上添加逗号。</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">(</span>?<span class="token operator">&lt;=</span><span class="token punctuation">\</span>d<span class="token punctuation">)</span><span class="token punctuation">(</span>?<span class="token operator">=</span><span class="token punctuation">(</span><span class="token punctuation">\</span>d<span class="token punctuation">\</span>d<span class="token punctuation">\</span>d<span class="token punctuation">)</span>+$<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>3.脚本编程</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>Vim 工具基本使用</title>
-    <url>/17877528/</url>
-    <content><![CDATA[<h1 id="vim-基础知识"><a class="markdownIt-Anchor" href="#vim-基础知识"></a> Vim 基础知识</h1>
-<p>Vim（Vi IMproved）是一款强大的文本编辑器，是 Linux 和其他类 Unix 系统中最常用的编辑器之一。它不仅支持简单的文本编辑，还有许多高级功能，例如自动完成、宏录制、拼写检查和代码高亮等。Vim 是一个模式化编辑器，有多种不同的模式，其中最常用的是命令模式、插入模式和可视模式。</p>
-<h2 id="vim-模式"><a class="markdownIt-Anchor" href="#vim-模式"></a> Vim 模式</h2>
-<p>vi 分为三种模式，一般模式、编辑模式与命令行模式：</p>
-<ul>
-<li>
-<p>一般指令模式（Command Mode）</p>
-<p>用 vi 打开一个文件就进入一般模式，可以使用方向键来移动光标，删除，复制与粘贴。</p>
-</li>
-<li>
-<p>编辑模式（Insert Mode）</p>
-<p>在一般模式中，按下 “i o a r” 任何一个按键之后才会进入编辑模式，左下角会显示 INSERT 或 REPLACE 等字样。按 Esc 键可以返回一般模式。</p>
-</li>
-<li>
-<p>命令行模式（Command-line Mode）</p>
-<p>在一般模式下，输入 “: / ?” 三个中的任何一个按键，可以将光标移动到最下面一行，在此模式可以查找数据，读取保存，大量替换等操作。</p>
-</li>
-</ul>
-<h2 id="界面介绍"><a class="markdownIt-Anchor" href="#界面介绍"></a> 界面介绍</h2>
-<p>使用 <code>vi</code> 打开一个已存在的文件后，显示如下所示：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> anaconda-ks.cfg 
-<span class="token comment">#version=DEVEL</span>
-<span class="token comment"># System authorization information</span>
-auth <span class="token parameter variable">--enableshadow</span> <span class="token parameter variable">--passalgo</span><span class="token operator">=</span>sha512
-<span class="token comment"># Use CDROM installation media</span>
-cdrom
-<span class="token comment"># Use graphical install</span>
-graphical
-<span class="token comment"># Run the Setup Agent on first boot</span>
-<span class="token string">"anaconda-ks.cfg"</span> 48L, 1260C<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>最下面一行分别展示了：</p>
-<ul>
-<li>“anaconda-ks.cfg”：文件名；</li>
-<li>48L：文件有 48 行；</li>
-<li>1260C：文件有 1260 个字符，也就是 1260B 大小。</li>
-</ul>
-<p>按下 <code>i</code> 键后，进入到编辑模式，最左下角显示：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">-- INSERT --<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>此时可以自由输入文字。按下 <code>Esc</code> 键退回到一般模式，再输入 <code>:wq</code> 按回车可以保存并离开 <code>vi</code>：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">:wq
-<span class="token string">"anaconda-ks.cfg"</span> 48L, 1260C written<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>如果文件权限只读，可以使用 <code>:wq!</code> 来强制写入。</p>
-<h2 id="恢复功能"><a class="markdownIt-Anchor" href="#恢复功能"></a> 恢复功能</h2>
-<p>恢复功能是指，当因为某些原因导致死机的情况下，能通过一些方法将之前未保存的数据找回来。</p>
-<p>在使用 <code>vim</code> 编辑文件时，<code>vim</code> 会在被编辑文件同目录下新建一个名为 <code>.filename.swp</code> 的交换文件。每当键入 200 个字符或有 4 秒没有键入内容时，交换文件都会自动地更新。</p>
-<p>例如用 <code>vi</code> 新建打开一个文件，在命令模式下按 <code>Ctrl+z</code> 中断，再查看 <code>.swp</code> 文件内容：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">vi</span> <span class="token number">1</span>.txt
-a
-b
-~
-
-<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>+  Stopped                 <span class="token function">vi</span> <span class="token number">1</span>.txt
-<span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">cat</span> .1.txt.swp 
-U3210<span class="token comment">#"! Utpad???</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以看到 <code>swp</code> 实时保存了我们输入的内容。</p>
-<p>再次打开文件时，会提示有 <code>swp</code> 临时文件存在：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">vim</span> <span class="token number">1</span>.txt 
-
-E325: ATTENTION
-Found a swap <span class="token function">file</span> by the name <span class="token string">".1.txt.swp"</span>
-          owned by: root   dated: Sat Sep <span class="token number">11</span> 03:44:17 <span class="token number">2021</span>
-         <span class="token function">file</span> name: ~root/4/1.txt
-          modified: YES
-         user name: root   <span class="token function">host</span> name: 101c7
-        process ID: <span class="token number">87510</span> <span class="token punctuation">(</span>still running<span class="token punctuation">)</span>
-While opening <span class="token function">file</span> <span class="token string">"1.txt"</span>
-             dated: Sat Sep <span class="token number">11</span> 03:44:11 <span class="token number">2021</span>
-
-<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> Another program may be editing the same file.  If this is the case,
-    be careful not to end up with two different instances of the same
-    <span class="token function">file</span> when making changes.  Quit, or <span class="token builtin class-name">continue</span> with caution.
-<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span> An edit session <span class="token keyword">for</span> this <span class="token function">file</span> crashed.
-    If this is the case, use <span class="token string">":recover"</span> or <span class="token string">"vim -r 1.txt"</span>
-    to recover the changes <span class="token punctuation">(</span>see <span class="token string">":help recovery"</span><span class="token punctuation">)</span>.
-    If you did this already, delete the swap <span class="token function">file</span> <span class="token string">".1.txt.swp"</span>
-    to avoid this message.
-
-Swap <span class="token function">file</span> <span class="token string">".1.txt.swp"</span> already exists<span class="token operator">!</span>
-<span class="token punctuation">[</span>O<span class="token punctuation">]</span>pen Read-Only, <span class="token punctuation">(</span>E<span class="token punctuation">)</span>dit anyway, <span class="token punctuation">(</span>R<span class="token punctuation">)</span>ecover, <span class="token punctuation">(</span>Q<span class="token punctuation">)</span>uit, <span class="token punctuation">(</span>A<span class="token punctuation">)</span>bort:<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>提示会说明出现这一情况的两种原因：</p>
-<ul>
-<li>此文件正被另一个程序所使用；</li>
-<li>文件在编辑过程中非正常退出。</li>
-</ul>
-<p>此时可以选择以哪种模式来打开：</p>
-<table>
-<thead>
-<tr>
-<th>按键</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>O</td>
-<td>以只读模式打开，显示内容为没有保存的内容；</td>
-</tr>
-<tr>
-<td>E</td>
-<td>以正常模式编辑文件，不会载入暂存文件内容；</td>
-</tr>
-<tr>
-<td>R</td>
-<td>加载暂存文件内容，恢复之前的作业。修改完毕后需要手动删除 <code>.swp</code> 文件；</td>
-</tr>
-<tr>
-<td>Q</td>
-<td>直接退出不进行操作；</td>
-</tr>
-<tr>
-<td>A</td>
-<td>等同于 Q，直接退出。</td>
-</tr>
-</tbody>
-</table>
-<h2 id="环境设置"><a class="markdownIt-Anchor" href="#环境设置"></a> 环境设置</h2>
-<p>在使用 <code>vim</code> 编辑文件时，文件会继承上一次编辑时的状态，比如光标出现在最后一行。这个记录操作文件保存在 <code>~/.viminfo</code> 里面。</p>
-<p>在命令模式下用 <code>set</code> 修改的设置值保存在 <code>/etc/vimrc</code> 这个文件中，不建议动它。需要自定义设置可以新建 <code>~/.vimrc</code> 这个文件将希望设置的值写入。</p>
-<p>例如设置自动缩进和行号功能：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vim</span> ~/.vimrc
-<span class="token builtin class-name">set</span> nu          <span class="token string">"hanghao
-set autoindent  "</span>suojin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>再次打开 <code>vim</code> 即可生效：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vim</span> ~/.vimrc
-  <span class="token number">1</span> <span class="token builtin class-name">set</span> nu          <span class="token string">"hanghao
-  2 set autoindent  "</span>suojin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h1 id="vim-基本操作"><a class="markdownIt-Anchor" href="#vim-基本操作"></a> Vim 基本操作</h1>
-<p>下面记录一些 Vim 的基本操作。</p>
-<h2 id="一般模式"><a class="markdownIt-Anchor" href="#一般模式"></a> 一般模式</h2>
-<p>光标移动针对的是在一般模式下快速浏览/定位文件。</p>
-<h3 id="移动"><a class="markdownIt-Anchor" href="#移动"></a> 移动</h3>
-<p>可以使用方向键 <code>←</code> <code>↓</code> <code>↑</code> <code>→</code> 或 <code>h</code> <code>j</code> <code>k</code> <code>l</code> 操作光标左/右/下/上移一个字符。</p>
-<p>可使用数字组合，例如 <code>30k</code> 代表光标向上移 30 行。</p>
-<h3 id="翻页"><a class="markdownIt-Anchor" href="#翻页"></a> 翻页</h3>
-<p>使用快捷键 <code>Ctrl+f</code>/<code>Ctrl+b</code> 来控制屏幕向下/上移动一页，相当于 <code>PageDown</code>/<code>PageUp</code>。</p>
-<h3 id="跳转"><a class="markdownIt-Anchor" href="#跳转"></a> 跳转</h3>
-<p>输入 <code>nG</code>（n 为数字）将光标移动到第 n 行位置。</p>
-<h3 id="删除"><a class="markdownIt-Anchor" href="#删除"></a> 删除</h3>
-<p>使用 <code>x</code>/<code>X</code> 来删除当前光标后/前个字符。</p>
-<p>可以使用数字组合，例如 <code>9x</code> 代表删除光标后连续 9 个字符。</p>
-<h3 id="剪切"><a class="markdownIt-Anchor" href="#剪切"></a> 剪切</h3>
-<p>使用 <code>dd</code> 剪切光标所在行。</p>
-<p>可以使用数字组合，例如 <code>9dd</code> 代表向下删除 9 行。</p>
-<h3 id="复制"><a class="markdownIt-Anchor" href="#复制"></a> 复制</h3>
-<p>使用 <code>yy</code> 复制光标所在行。</p>
-<p>可以使用数字组合，例如 <code>9yy</code> 代表复制向下 9 行。</p>
-<p>按 <code>v</code> 键进入复制可视模式，在移动光标时高亮显示文本，选择完毕后按 <code>y</code> 复制选择内容。</p>
-<h3 id="粘贴"><a class="markdownIt-Anchor" href="#粘贴"></a> 粘贴</h3>
-<p>使用 <code>p</code>/<code>P</code> 来将剪贴板数据粘贴到光标下/上一行。</p>
-<h3 id="撤销"><a class="markdownIt-Anchor" href="#撤销"></a> 撤销</h3>
-<p>使用 <code>u</code> 来撤销上一次操作。</p>
-<h3 id="重做"><a class="markdownIt-Anchor" href="#重做"></a> 重做</h3>
-<p>使用 <code>Ctrl+r</code> 快捷键来反撤销操作。</p>
-<h3 id="块选择模式"><a class="markdownIt-Anchor" href="#块选择模式"></a> 块选择模式</h3>
-<p>按下<code>Ctrl+v</code>进入块选择模式，之后用方向键操作光标选择块：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">vi</span> c.log 
-c1  ass
-c2  bss
-c3  css
-~
--- VISUAL BLOCK --  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>此模式下按<code>y</code>复制，按<code>d</code>删除。</p>
-<h2 id="编辑模式"><a class="markdownIt-Anchor" href="#编辑模式"></a> 编辑模式</h2>
-<p>进入编辑模式有两个方式：</p>
-<ul>
-<li>
-<p>按 i：进入到插入模式（Insert Mode）。</p>
-</li>
-<li>
-<p>按 r/R：进入到替换/连续替换模式（Replace Mode）。</p>
-</li>
-</ul>
-<p>在编辑模式中主要执行文本插入和修改操作。</p>
-<h2 id="命令模式"><a class="markdownIt-Anchor" href="#命令模式"></a> 命令模式</h2>
-<p>在命令行模式下，可以进行文件读写、保存、退出、搜索、替换等操作，按下冒号(:)即可进入命令行模式。</p>
-<h3 id="搜索"><a class="markdownIt-Anchor" href="#搜索"></a> 搜索</h3>
-<p>搜索功能在命令模式下完成：</p>
-<ul>
-<li>
-<p>/word：向下搜索字符串 <code>word</code>。</p>
-</li>
-<li>
-<p>?word：向上搜索字符串 <code>word</code>。</p>
-</li>
-</ul>
-<p>对搜索结果按键 <code>n/N</code> 进行向下/向上跳转。</p>
-<h3 id="替换"><a class="markdownIt-Anchor" href="#替换"></a> 替换</h3>
-<ul>
-<li>
-<p>替换表达式：<code>:&#123;作用范围&#125;s/&#123;搜索关键词&#125;/&#123;替换成关键词&#125;/&#123;替换标志&#125;</code></p>
-</li>
-<li>
-<p>作用范围：n1,n2：n1 和 n2 为数字，表示在 n1 和 n2 行之间搜寻关键词并替换。例如在 100 到 200 行之间搜索：<code>100,200s/XS/xs/g</code></p>
-<p>1,&amp;s：表示从第 1 行到最后一行。</p>
-</li>
-<li>
-<p>替换标志</p>
-<p>g：表示全部替换，否则只会替换找到的第一个结果。</p>
-<p>i/I：表示搜索不区分/区分大小写，默认是区分大小写。</p>
-<p>c：表示替换前提示确认。</p>
-</li>
-</ul>
-<h3 id="保存"><a class="markdownIt-Anchor" href="#保存"></a> 保存</h3>
-<p>:w 直接保存文件。</p>
-<p>:w! 强制保存文件，针对某些设为只读权限的文件可以强制写入。</p>
-<p>:w file2 另存为当前编辑的文件为<code>file2</code>。</p>
-<h3 id="读取"><a class="markdownIt-Anchor" href="#读取"></a> 读取</h3>
-<p>:r file1 读取文件<code>file1</code>，并将内容加到光标所在行后面。</p>
-<h3 id="退出"><a class="markdownIt-Anchor" href="#退出"></a> 退出</h3>
-<p>:q 直接退出。</p>
-<p>:q! 强制退出，针对修改了文件内容不想保存情况下退出。</p>
-<p>:wq! 强制保存并退出。</p>
-<p><code>ZZ</code> 保存后退出，等同于<code>:wq</code>。</p>
-<h3 id="设置"><a class="markdownIt-Anchor" href="#设置"></a> 设置</h3>
-<p>使用 :set all 查看所有配置。使用 :set 查看有更改过的参数。</p>
-<ul>
-<li>
-<p>行号：set nu 设置行号，默认设置 nonu 没有行号。</p>
-</li>
-<li>
-<p>自动缩进：set autoindent 设置自动缩进，默认设置 noautoindent 没有自动缩进。</p>
-</li>
-<li>
-<p>设置备份：set backup 设置自动保存备份文件，默认设置 nobackup 没有备份。</p>
-</li>
-<li>
-<p>语法高亮：syntax on 依据语法来显示不同颜色。默认设置 syntax off。</p>
-</li>
-<li>
-<p>跳转：输入数字 n 直接跳转到第 n 行。</p>
-</li>
-<li>
-<p>显示文件名：f 显示正在编辑的文件名等信息。</p>
-</li>
-<li>
-<p>执行命令：! command 暂时离开 vim 到命令行模式下执行命令并展示结果。</p>
-</li>
-</ul>
-<h3 id="多窗口模式"><a class="markdownIt-Anchor" href="#多窗口模式"></a> 多窗口模式</h3>
-<p>在命令模式下输入<code>:sp</code>可对当前文件切割成上下两个窗口显示：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token number">111</span>
-<span class="token number">11</span>
-<span class="token number">1</span>
-~
-~
-<span class="token number">1</span>.txt                                                                                    <span class="token number">3,1</span>            All
-<span class="token number">111</span>
-<span class="token number">11</span>
-<span class="token number">1</span>
-~
-<span class="token number">1</span>.txt                                                                                    <span class="token number">1,1</span>            All
-:sp<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>通过按键<code>Ctrl+w</code>来切换窗口。</p>
-<p>也可以用<code>:sp</code>指定文件名，这样上下窗口分别显示两个不同文件内容。</p>
-<h3 id="同时编辑模式"><a class="markdownIt-Anchor" href="#同时编辑模式"></a> 同时编辑模式</h3>
-<p>可以同时用<code>vim</code>打开多个文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">vi</span> <span class="token number">1</span>.txt <span class="token number">2</span>.txt
-<span class="token number">2</span> files to edit
-
-~
-~
-<span class="token string">"1.txt"</span> 0L, 0C                                                                           <span class="token number">0,0</span>-1         All<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>输入命令<code>:n</code>或<code>:N</code>来编辑下一个或上一个文件。</p>
-<p>输入命令<code>:files</code>列出目前打开的所有文件。</p>
 ]]></content>
       <categories>
         <category>Linux</category>
