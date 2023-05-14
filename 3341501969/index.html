@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="虚拟化技术 虚拟化技术是一种计算机资源管理技术，它控制计算机硬件资源并将其抽象化，以统一的形式呈现给应用程序。对于用户而言，虚拟化只是定义了隐藏真实环境的方式，而要实现虚拟化，还需要具体执行虚拟化过程的程序。 虚拟化技术可分为基于硬件的虚拟化和基于软件的虚拟化。   硬件虚拟化需要使用专门的硬件平台，与普通硬件设备存在兼容性问题，但其优点是可以更高效地利用硬件资源。   软件虚拟化通常在应用程序">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker 基础概念">
+<meta property="og:url" content="https://blog.x2b.net/3341501969/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="虚拟化技术 虚拟化技术是一种计算机资源管理技术，它控制计算机硬件资源并将其抽象化，以统一的形式呈现给应用程序。对于用户而言，虚拟化只是定义了隐藏真实环境的方式，而要实现虚拟化，还需要具体执行虚拟化过程的程序。 虚拟化技术可分为基于硬件的虚拟化和基于软件的虚拟化。   硬件虚拟化需要使用专门的硬件平台，与普通硬件设备存在兼容性问题，但其优点是可以更高效地利用硬件资源。   软件虚拟化通常在应用程序">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-20T01:01:17.000Z">
+<meta property="article:modified_time" content="2023-05-14T12:57:49.082Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/3341501969/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/3341501969/","path":"3341501969/","title":"Docker 基础概念"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Docker 基础概念 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">62</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF"><span class="nav-number">1.</span> <span class="nav-text"> 虚拟化技术</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%91%E6%9C%8D%E5%8A%A1%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text"> 云服务类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-%E8%BF%90%E8%A1%8C%E5%9F%BA%E7%A1%80"><span class="nav-number">3.</span> <span class="nav-text"> Docker 运行基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#namespaces"><span class="nav-number">3.1.</span> <span class="nav-text"> Namespaces</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cgroups"><span class="nav-number">3.2.</span> <span class="nav-text"> CGroups</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lxc"><span class="nav-number">3.3.</span> <span class="nav-text"> LXC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#libcontainer"><span class="nav-number">3.4.</span> <span class="nav-text"> Libcontainer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ufs"><span class="nav-number">3.5.</span> <span class="nav-text"> UFS</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-%E5%BA%94%E7%94%A8%E8%8C%83%E5%9B%B4"><span class="nav-number">4.</span> <span class="nav-text"> Docker 应用范围</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%91%E5%B9%B3%E5%8F%B0"><span class="nav-number">4.1.</span> <span class="nav-text"> 云平台</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#devops"><span class="nav-number">4.2.</span> <span class="nav-text"> Devops</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="nav-number">5.</span> <span class="nav-text"> Docker 优缺点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E7%82%B9"><span class="nav-number">5.1.</span> <span class="nav-text"> 优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%BA%E7%82%B9"><span class="nav-number">5.2.</span> <span class="nav-text"> 缺点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-%E6%9E%84%E6%9E%B6"><span class="nav-number">6.</span> <span class="nav-text"> Docker 构架</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="nav-number">6.1.</span> <span class="nav-text"> 服务端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">6.2.</span> <span class="nav-text"> 客户端</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-%E5%82%A8%E5%AD%98"><span class="nav-number">7.</span> <span class="nav-text"> Docker 储存</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#aufs"><span class="nav-number">7.1.</span> <span class="nav-text"> AUFS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#device-mapper"><span class="nav-number">7.2.</span> <span class="nav-text"> Device Mapper</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#btrfs"><span class="nav-number">7.3.</span> <span class="nav-text"> Btrfs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zfs"><span class="nav-number">7.4.</span> <span class="nav-text"> ZFS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#overlayoverlay2"><span class="nav-number">7.5.</span> <span class="nav-text"> Overlay&#x2F;Overlay2</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-%E7%BD%91%E7%BB%9C"><span class="nav-number">8.</span> <span class="nav-text"> Docker 网络</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B"><span class="nav-number">8.1.</span> <span class="nav-text"> 网络模型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-%E9%95%9C%E5%83%8F"><span class="nav-number">9.</span> <span class="nav-text"> Docker 镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E5%90%8D%E7%A7%B0"><span class="nav-number">9.1.</span> <span class="nav-text"> 镜像名称</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E5%88%86%E5%B1%82"><span class="nav-number">9.2.</span> <span class="nav-text"> 镜像分层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%99%E6%97%B6%E5%A4%8D%E5%88%B6"><span class="nav-number">9.3.</span> <span class="nav-text"> 写时复制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-%E5%AE%B9%E5%99%A8"><span class="nav-number">10.</span> <span class="nav-text"> Docker 容器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%E8%AE%BE%E8%AE%A1"><span class="nav-number">10.1.</span> <span class="nav-text"> 容器设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B"><span class="nav-number">10.2.</span> <span class="nav-text"> 启动流程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker%E4%BB%93%E5%BA%93"><span class="nav-number">11.</span> <span class="nav-text"> Docker仓库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%93%E5%BA%93%E5%88%86%E7%B1%BB"><span class="nav-number">11.1.</span> <span class="nav-text"> 仓库分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%93%E5%BA%93%E7%BB%84%E6%88%90"><span class="nav-number">11.2.</span> <span class="nav-text"> 仓库组成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%93%E5%BA%93%E8%A7%92%E8%89%B2"><span class="nav-number">11.3.</span> <span class="nav-text"> 仓库角色</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E6%B5%81%E7%A8%8B"><span class="nav-number">11.4.</span> <span class="nav-text"> 下载流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8A%E4%BC%A0%E6%B5%81%E7%A8%8B"><span class="nav-number">11.5.</span> <span class="nav-text"> 上传流程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E9%93%BE%E6%8E%A5"><span class="nav-number">12.</span> <span class="nav-text"> 相关链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/3341501969/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Docker 基础概念 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Docker 基础概念
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-03-20 09:01:17" itemprop="dateCreated datePublished" datetime="2022-03-20T09:01:17+08:00">2022-03-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-14 20:57:49" itemprop="dateModified" datetime="2023-05-14T20:57:49+08:00">2023-05-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Docker/1-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">1.基本操作</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>7.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>24 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="虚拟化技术"><a class="markdownIt-Anchor" href="#虚拟化技术"></a> 虚拟化技术</h1>
+<p>虚拟化技术是一种计算机资源管理技术，它控制计算机硬件资源并将其抽象化，以统一的形式呈现给应用程序。对于用户而言，虚拟化只是定义了隐藏真实环境的方式，而要实现虚拟化，还需要具体执行虚拟化过程的程序。</p>
+<p>虚拟化技术可分为基于硬件的虚拟化和基于软件的虚拟化。</p>
+<ul>
+<li>
+<p>硬件虚拟化需要使用专门的硬件平台，与普通硬件设备存在兼容性问题，但其优点是可以更高效地利用硬件资源。</p>
+</li>
+<li>
+<p>软件虚拟化通常在应用程序和硬件资源之间建立一个 Hypervisor 层，应用程序通过该虚拟化环境中提供的调用接口来操作资源。例如，Java 虚拟机（JVM，Java Virtual Machine）通过这种方式实现了跨平台运行。</p>
+</li>
+</ul>
+<p>从对象所在的层次来看，软件虚拟化又可分为应用虚拟化（如手机模拟器、Wine 等）和平台虚拟化。常见的平台虚拟化包括以下几类：</p>
+<ul>
+<li>
+<p>完全虚拟化</p>
+<p>虚拟机模拟了完整的底层硬件环境和特权指令的执行过程，例如 VMware Workstation、VirtualBox、QEMU 等。</p>
+</li>
+<li>
+<p>硬件辅助虚拟化</p>
+<p>利用 CPU 的辅助支持（如 Intel-VT、AMD-V）来处理敏感指令，实现完全虚拟化的功能，例如 VMware、Xen、KVM 等。</p>
+</li>
+<li>
+<p>部分虚拟化</p>
+<p>只对部分硬件资源进行虚拟化，需要修改客户操作系统。</p>
+</li>
+<li>
+<p>超虚拟化（Paravirtualization）</p>
+<p>以软件形式提供部分硬件接口给客户机操作系统，例如早期的 Xen。</p>
+</li>
+<li>
+<p>操作系统级虚拟化</p>
+<p>通过创建多个虚拟的操作系统实例来隔离不同的进程，例如容器相关技术。</p>
+</li>
+</ul>
+<p>传统基于硬件层实现的虚拟化需要额外的虚拟机管理应用和虚拟机操作系统层。而 Docker 容器是在操作系统层面上实现虚拟化，直接复用本地主机的操作系统，因此被称为轻量级虚拟化。</p>
+<h1 id="云服务类型"><a class="markdownIt-Anchor" href="#云服务类型"></a> 云服务类型</h1>
+<p>提供云服务的公司总体可以归为以下几大类的一种或多种：</p>
+<ul>
+<li>
+<p>IaaS</p>
+<p>基础设施即服务（IaaS，Infrastructure as a Service）指在云端为用户提供基础设施，如虚拟机、服务器、存储、负载均衡和网络等，代表有 AWS 和阿里云。</p>
+</li>
+<li>
+<p>PaaS</p>
+<p>平台即服务（PaaS，Platform as a Service）指在云端为用户提供可执行环境、数据库、网站服务器和开发工具等，代表有 OpenShift、Google App Engine、dotCloud 等。</p>
+</li>
+<li>
+<p>SaaS</p>
+<p>软件即服务（SaaS，Software as a Service）指在云端为用户提供软件，如 CRM 系统、邮件系统、在线办公等。代表有微软 Office 365、有道、Tower 等。</p>
+</li>
+<li>
+<p>CaaS</p>
+<p>容器即服务（CaaS，Container as a Service）是虚拟云主机的升级版，使用容器替代虚拟机的服务模式。</p>
+</li>
+</ul>
+<p>IaaS、PaaS 和 SaaS 是云计算最基本的三种服务模式，客户通过云客户端来访问上述服务。</p>
+<h1 id="docker-运行基础"><a class="markdownIt-Anchor" href="#docker-运行基础"></a> Docker 运行基础</h1>
+<p>Docker 主要使用的技术有 Libcontainer、Namespaces、CGroups 和 AUFS。</p>
+<h2 id="namespaces"><a class="markdownIt-Anchor" href="#namespaces"></a> Namespaces</h2>
+<p>内核命名空间（Namespaces）是 Linux 下的资源隔离机制。它从内核层面将进程、进程组、IPC、网络、内存等资源分属于某个特定的命名空间，不同命名空间之间的资源相互隔离且不可见。</p>
+<p>Docker 使用以下 6 种类型的命名空间：</p>
+<ul>
+<li>PID Namespace：用于进程隔离，使容器具有独立的一套 PID。在宿主机上可以看到容器中的进程。</li>
+<li>NET Namespace：用于虚拟网络环境，使容器拥有自己独立的网络协议栈视图，包括网卡、IP、路由、防火墙规则和套接字等。</li>
+<li>IPC Namespace：用于隔离进程间的通信资源，使容器拥有自己的共享内存和 semaphore。</li>
+<li>MNT Namespace：用于管理挂载点，使容器看起来拥有整个文件系统，类似于 chroot。</li>
+<li>UTS Namespace：用于隔离主机名和域名，使容器拥有独立的主机名。</li>
+<li>USER Namespace：用于隔离用户和组，使容器拥有独立于宿主机的用户和组。</li>
+</ul>
+<p>被隔离在命名空间中的程序虽然无法感知命名空间外的程序的存在，但仍可以直接访问宿主机系统内核的功能和部分内核文件，只是在程序看来自己是独占系统的。</p>
+<h2 id="cgroups"><a class="markdownIt-Anchor" href="#cgroups"></a> CGroups</h2>
+<p>控制组（CGroups, Control Groups）可以限制、记录和调整进程组所使用的物理资源，例如给某个进程分配更多的 CPU 资源或限制内存使用上限。它能确保各个容器可以公平地共享主机的物理资源，并在容器内部资源使用紧张时不会影响到宿主机。</p>
+<p>控制组提供以下功能：</p>
+<ul>
+<li>资源限制（Resource Limiting）：可以为组设置一定的内存使用上限，超过限制时可能会出现 OOM（Out of Memory）。</li>
+<li>优先级（Prioritization）：通过调整组的优先级来分配 CPU 资源。</li>
+<li>资源审计（Accounting）：统计系统资源的使用情况。</li>
+<li>隔离（Isolation）：为组隔离命名空间。</li>
+<li>控制（Control）：执行挂起、恢复和重启等操作。</li>
+</ul>
+<p>Docker 中的控制组相关配置保存在 <code>/sys/fs/cgroup/</code> 目录下，该目录下有许多子目录，也称为子系统，如 <code>cpu</code>、<code>memory</code>、<code>blkio</code> 等。这些子系统是可以通过控制组进行资源限制的种类。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> /sys/fs/cgroup/
+blkio/            cpu,cpuacct/      freezer/          net_cls/          perf_event/       
+cpu/              cpuset/           hugetlb/          net_cls,net_prio/ pids/             
+cpuacct/          devices/          memory/           net_prio/         systemd/ <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>每个子系统对应的资源种类下，可以查看这些资源的具体限制方法：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> /sys/fs/cgroup/cpu/
+cgroup.clone_children  cpuacct.usage          cpu.rt_runtime_us      system.slice/
+cgroup.event_control   cpuacct.usage_percpu   cpu.shares             tasks
+cgroup.procs           cpu.cfs_period_us      cpu.stat               user.slice/
+cgroup.sane_behavior   cpu.cfs_quota_us       notify_on_release      
+cpuacct.stat           cpu.rt_period_us       release_agent  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在 <code>cpu</code> 子系统下创建一个目录进行测试：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> /sys/fs/cgroup/cpu/mytest
+<span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> /sys/fs/cgroup/cpu/mytest
+cgroup.clone_children  cpuacct.stat          cpu.cfs_period_us  cpu.rt_runtime_us  notify_on_release
+cgroup.event_control   cpuacct.usage         cpu.cfs_quota_us   cpu.shares         tasks
+cgroup.procs           cpuacct.usage_percpu  cpu.rt_period_us   cpu.stat<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到目录中自动生成了一些资源限制文件，该目录也被称为一个控制组。</p>
+<p>接下来，在后台执行一个会占满 CPU 的脚本：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token keyword">while</span> <span class="token builtin class-name">:</span> <span class="token punctuation">;</span> <span class="token keyword">do</span> <span class="token builtin class-name">:</span> <span class="token punctuation">;</span> <span class="token keyword">done</span> <span class="token operator">&amp;</span>
+<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token number">4195</span>
+<span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">top</span>
+   PID <span class="token environment constant">USER</span>      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND             
+  <span class="token number">4195</span> root      <span class="token number">20</span>   <span class="token number">0</span>  <span class="token number">116208</span>   <span class="token number">1260</span>    <span class="token number">152</span> R  <span class="token number">92.3</span>  <span class="token number">0.0</span>   <span class="token number">0</span>:31.78 <span class="token function">bash</span>  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>此时系统已经负载满，因为默认情况下 CPU 的 quota（配额）没有任何限制，而 CPU 的 period（周期）默认为 100ms。它们组合起来用来限制进程可以分配到的 CPU 时间：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /sys/fs/cgroup/cpu/mytest/cpu.cfs_quota_us 
+<span class="token parameter variable">-1</span>
+<span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /sys/fs/cgroup/cpu/mytest/cpu.cfs_period_us 
+<span class="token number">100000</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>手动将 <code>cpu.cfs_quota_us</code> 参数改为 20000（20ms）。这意味着在每个 100ms 的时间内，被该控制组限制的进程只能使用 20ms 的 CPU 时间，相当于 20% 的 CPU 使用率：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token number">20000</span> <span class="token operator">></span> /sys/fs/cgroup/cpu/mytest/cpu.cfs_quota_us <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>接下来，将被限制的进程的 PID 写入 <code>tasks</code> 文件来生效：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token number">4195</span> <span class="token operator">></span> /sys/fs/cgroup/cpu/mytest/tasks
+<span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">top</span>
+   PID <span class="token environment constant">USER</span>      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND             
+  <span class="token number">4195</span> root      <span class="token number">20</span>   <span class="token number">0</span>  <span class="token number">116208</span>   <span class="token number">1260</span>    <span class="token number">152</span> R  <span class="token number">20.0</span>  <span class="token number">0.0</span>   <span class="token number">9</span>:06.83 <span class="token function">bash</span>  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>此时再次使用 <code>top</code> 命令查看，可以看到进程的 CPU 使用率被限制在预期的范围内。</p>
+<p>简而言之，控制组就是一个子系统目录加上一组资源限制文件的组合。Docker 在每个子系统下为每个容器创建一个控制组（即创建新目录），然后在启动容器进程后，将进程的 PID 写入相应控制组的 <code>tasks</code> 文件中，以实现资源的限制：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> run <span class="token parameter variable">-it</span> --cpu-period<span class="token operator">=</span><span class="token number">100000</span> --cpu-quota<span class="token operator">=</span><span class="token number">20000</span> ubuntu /bin/bash
+<span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">ps</span> aux <span class="token operator">|</span> <span class="token function">grep</span> ubuntu
+root       <span class="token number">4297</span>  <span class="token number">0.0</span>  <span class="token number">0.5</span> <span class="token number">1359472</span> <span class="token number">46268</span> pts/1   Sl+  <span class="token number">14</span>:41   <span class="token number">0</span>:00 <span class="token function">docker</span> run <span class="token parameter variable">-it</span> --cpu-period<span class="token operator">=</span><span class="token number">100000</span> --cpu-quota<span class="token operator">=</span><span class="token number">20000</span> ubuntu /bin/bash
+<span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /sys/fs/cgroup/cpu/docker/9c8d7b7f5f71198e07/cpu.cfs_period_us 
+<span class="token number">100000</span>
+<span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /sys/fs/cgroup/cpu/docker/9c8d7b7f5f71198e07/cpu.cfs_quota_us 
+<span class="token number">20000</span>
+<span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /sys/fs/cgroup/cpu/docker/9c8d7b7f5f71198e07/tasks 
+<span class="token number">4379</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="lxc"><a class="markdownIt-Anchor" href="#lxc"></a> LXC</h2>
+<p>Linux 容器 (LXC, Linux Containers) 就是基于 Linux 内核通过调用 CGroups 和 Namespaces 来实现容器轻量级虚拟化的技术。同时，LXC 也是一组面向 Linux 内核容器的用户态 API 接口。用户通过 LXC 提供的功能可以创建一套完整且互相隔离的虚拟应用运行环境。</p>
+<p>在 LXC 的实现中，运行在容器中的程序访问的是真实物理机系统，与通过虚拟机实现的虚拟化比，消除了 Hypervisor 层，大大提高了运行效率。</p>
+<h2 id="libcontainer"><a class="markdownIt-Anchor" href="#libcontainer"></a> Libcontainer</h2>
+<p>Docker 采用 libcontainer 作为默认容器，取代了之前的 LXC。libcontainer 的隔离性主要是内核的命名空间来实现的，具体有 pid、net、ipc、mnt 和 uts 等命名空间，它们将容器的进程、网络、消息、文件系统和主机名进行隔离。</p>
+<h2 id="ufs"><a class="markdownIt-Anchor" href="#ufs"></a> UFS</h2>
+<p>UnionFS（Union File System）是一个堆栈式的联合文件系统，能够把多个目录挂载成同一个目录的文件系统。</p>
+<h1 id="docker-应用范围"><a class="markdownIt-Anchor" href="#docker-应用范围"></a> Docker 应用范围</h1>
+<p>Docker 是基于 Go 语言实现的容器项目，由 dotCloud 于 2013 年正式开源，2015 年开始大规模应用。</p>
+<h2 id="云平台"><a class="markdownIt-Anchor" href="#云平台"></a> 云平台</h2>
+<p>目前，Docker 主要应用于云平台。在 Docker 出现之前，各个云平台之间存在不兼容性，而 Docker 则屏蔽了硬件层的差异，提供了统一的用户应用层。因此，企业产品可以自由迁移至各种云平台。</p>
+<h2 id="devops"><a class="markdownIt-Anchor" href="#devops"></a> Devops</h2>
+<p>Docker 的另一个应用领域是 DevOps。只需使用相同的数据镜像，就不需要考虑环境问题，减少了代码运行的差异，使开发团队能够专注于产品开发，而无需关注流程。</p>
+<p>Docker 的标准化规范弥补了开发、业务和运维之间的需求差异，可以无缝地将产品在开发、测试和生产环境之间自由移动。</p>
+<h1 id="docker-优缺点"><a class="markdownIt-Anchor" href="#docker-优缺点"></a> Docker 优缺点</h1>
+<p>总的来看，Docker 的缺点暂不构成问题，可以放心使用。</p>
+<h2 id="优点"><a class="markdownIt-Anchor" href="#优点"></a> 优点</h2>
+<p>使用 Docker 的优点有：</p>
+<ul>
+<li>
+<p><strong>高资源利用率</strong></p>
+<p>传统虚拟机的硬件资源独立不共享，而 Docker 中所有容器共享同一个系统内核和硬件资源，对资源的利用率比虚拟机高得多。在 Docker 容器中，CPU 的损耗为 0%，磁盘 IO 的损耗小于 5%，网络在使用桥接模式时损耗为 15%。</p>
+</li>
+<li>
+<p><strong>支持跨节点部署</strong></p>
+<p>借助 Docker 定义的标准镜像数据格式，可以在不同操作系统和物理硬件环境中使用。</p>
+</li>
+<li>
+<p><strong>版本可控，组件可复用</strong></p>
+<p>Docker 利用 AUFS 文件系统的特性，使得镜像与镜像之间可以互相借用组合，产生不同的镜像。并借助标签功能对镜像进行标注，实现版本控制。</p>
+</li>
+<li>
+<p><strong>共享镜像</strong></p>
+<p>Docker 作为开源软件，构建出的镜像可以自由分发和共享（主要通过 Docker Hub）。</p>
+</li>
+<li>
+<p><strong>轻量级，易维护</strong></p>
+<p>Docker 在 Linux 系统中表现为一个普通的进程，因此管理非常容易。</p>
+</li>
+</ul>
+<h2 id="缺点"><a class="markdownIt-Anchor" href="#缺点"></a> 缺点</h2>
+<p>Docker 的缺点有：</p>
+<ul>
+<li>
+<p><strong>宿主资源没有完全做到隔离</strong></p>
+<p>虽然容器使用的系统资源相互隔离，但仍有一些内核资源未被隔离开。例如 <code>/proc</code>、<code>/sys</code> 这些目录以及 SELinux、syslog 这些内核功能。因此，容器与宿主机共用内核版本，容器内无法升级内核，对内核版本有要求的应用可能与 Docker 不兼容。</p>
+</li>
+<li>
+<p><strong>Go 语言尚不成熟</strong></p>
+<p>由于 Docker 全部采用 Go 语言编写，而 Go 语言还比较年轻，难保不会发生大的变动。这可能对 Docker 产生连带影响。</p>
+</li>
+<li>
+<p><strong>控制权问题</strong></p>
+<p>虽然 Docker 现在是开源的，但实际上被一家公司所控制，并不像其他大型开源项目那样由公共基金会管理。因此，后续可能变为收费闭源项目。</p>
+</li>
+</ul>
+<h1 id="docker-构架"><a class="markdownIt-Anchor" href="#docker-构架"></a> Docker 构架</h1>
+<p>Docker 是一个客户端/服务器 (C/S) 架构的程序。客户端只需要通过 Socket 向服务器或守护进程（Docker 引擎）发送请求，服务器或守护进程将完成所有工作并返回结果。</p>
+<p>Docker 提供了一个命令行工具 <code>docker</code> 以及一套 RESTful API 来与守护进程交互。用户可以在一台主机上运行 Docker 守护进程和客户端，也可以从本地 Docker 客户端连接到运行在另一台主机上的远程 Docker 守护进程。</p>
+<h2 id="服务端"><a class="markdownIt-Anchor" href="#服务端"></a> 服务端</h2>
+<p>Docker 服务端一般在宿主机后台运行，<code>dockerd</code> 作为服务端接收来自客户端的请求，并通过 <code>containerd</code> 具体处理与容器相关的请求。服务端主要包括四个组件：</p>
+<ul>
+<li>
+<p><code>dockerd</code></p>
+<p>为客户端提供 RESTful API，响应来自客户端的请求。采用模块化的架构，通过专门的 Engine 模块来分发管理各个来自客户端的任务。</p>
+</li>
+<li>
+<p><code>docker-proxy</code></p>
+<p><code>dockerd</code> 的子进程，配置容器端口映射功能。</p>
+</li>
+<li>
+<p><code>containerd</code></p>
+<p><code>dockerd</code> 的子进程，提供 gRPC 接口响应来自 <code>dockerd</code> 的请求，对底层管理 <code>runC</code> 镜像和容器环境。</p>
+</li>
+<li>
+<p><code>containerd-shim</code></p>
+<p><code>containerd</code> 的子进程，为 <code>runC</code> 容器提供支持，同时作为容器内进程的根进程。</p>
+</li>
+</ul>
+<h2 id="客户端"><a class="markdownIt-Anchor" href="#客户端"></a> 客户端</h2>
+<p>用户使用 Docker 可执行命令即为客户端程序，<code>docker</code> 程序能将命令转为 API 请求再发送到服务端。客户端在命令执行结束后会立即退出。</p>
+<p>可以通过 <code>-H</code> 参数显式指定服务端地址，例如：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> <span class="token parameter variable">-H</span> tcp:192.168.2.241:5999 info<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="docker-储存"><a class="markdownIt-Anchor" href="#docker-储存"></a> Docker 储存</h1>
+<p>Docker 支持的存储文件系统如下：</p>
+<ul>
+<li>AUFS：最早支持的文件系统，对 Debian/Ubuntu 支持度好。</li>
+<li>Btrfs：参考 ZFS 等特性设计的文件系统，试图用来取代 Device Mapper。</li>
+<li>Device Mapper：RHEL 用来支持 Docker 开发的文件系统。</li>
+<li>Overlay：类似 AUFS 的分层文件系统，性能更好。</li>
+<li>Overlay 2：原生支持 128 层，效率比 Overlay 高。</li>
+<li>VFS：基于普通文件系统（ext、nfs 等）的中间层抽象。</li>
+<li>ZFS：为 Solaris 上专用的写时文件系统，在 Linux 上可以使用 ZFS on Linux。</li>
+</ul>
+<p>它们都能实现分层的架构，同时又有各自的特性。Docker 安装时会根据当前系统配置选择默认最适合的驱动。</p>
+<h2 id="aufs"><a class="markdownIt-Anchor" href="#aufs"></a> AUFS</h2>
+<p>AUFS（Another UnionFS 的简称）是对 UnionFS 的补充。随着 AUFS 的发展，它更名为 Advanced Multi Layered Unification Filesystem（高级多层次统一文件系统）。简单来说，AUFS 可以将分布在不同位置的目录挂载到同一个虚拟文件系统中。</p>
+<p>Docker 参考 Linux 启动过程，首先将一个只读的 bootfs（虚拟文件系统）挂载到容器文件系统中，然后将只读的 rootfs（根目录文件系统）添加到 bootfs 之上。之后每次挂载一个只读的文件层（FS 文件层），将用户所需的文件内容挂载到 rootfs 之上。</p>
+<p>这些文件层就是堆栈式文件系统中所保存的数据，在 AUFS 中，每个文件层被称为一个分支，整个文件系统称为联合文件系统。而 AUFS 则是用来管理和使用这些文件层的文件系统。</p>
+<p>Docker 利用 AUFS 加载完最高层后，在顶部再添加一个具有读写权限的文件系统层。容器内部的应用对当前文件系统的所有写操作都会保存在这个文件系统层中。当使用 commit 命令后，Docker 将会将该文件系统层中的数据作为单独的一个文件层保存在 AUFS 中。</p>
+<p>镜像（Image）可以理解为特定文件系统层的集合。从镜像启动容器（Container）时，Docker 会依次加载基础镜像（Base Image）及其上层镜像。通过将镜像划分为 AUFS 的文件层，使得所有容器可以共享文件层而不会发生写冲突。</p>
+<p>当使用 AUFS 作为存储驱动时，镜像和容器都保存在宿主机的 <code>/var/lib/docker/aufs</code> 目录下：</p>
+<ul>
+<li>/var/lib/docker/aufs/diff：镜像层数据保存目录。</li>
+<li>/var/lib/docker/aufs/layers：镜像层的元数据文件，其中的内容记录了该层之下所有镜像层的名称。</li>
+<li>/var/lib/docker/aufs/mnt：容器运行时容器中的文件系统挂载目录。</li>
+</ul>
+<h2 id="device-mapper"><a class="markdownIt-Anchor" href="#device-mapper"></a> Device Mapper</h2>
+<p>Device Mapper 是 Docker 中支持的第二种存储驱动，在 Red Hat 发行版中存在。其特点是对块设备进行操作，而不是整个文件，在宿主机上很难区分镜像层和容器层。</p>
+<p>Device Mapper 使用的数据块大小为 64KB，在大量小数据写操作时性能不如 AUFS。</p>
+<p>创建镜像的流程与 AUFS 有一些不同：</p>
+<ol>
+<li>创建一个 thin pool，该 pool 可以创建在块设备上，也可以创建在 sparse 文件上。</li>
+<li>创建一个按需分配的基础设备，并在该设备上创建文件系统。</li>
+<li>在创建镜像时，会在基础设备上进行快照，每创建一个镜像层，就会进行一次快照。在快照创建时不会占用空间，只有在内容发生变化时才会在 thin pool 中分配存储空间来保存数据。</li>
+</ol>
+<p>在容器中读取数据的流程如下：</p>
+<ol>
+<li>容器中的程序发起读请求，要访问指定地址的数据块。容器层只是镜像层的一个快照，它保存了数据块映射表，而不保存实际的数据。通过指针，它指向镜像层中真正的数据块。</li>
+<li>程序通过映射表读取对应镜像层中的数据块，并将其复制到容器的内存区域。</li>
+</ol>
+<p>在容器中修改数据的流程与 AUFS 类似，不同之处在于 AUFS 会将整个文件复制到容器层，而 Device Mapper 通过定位需要修改的数据块并分配新的存储区域，将需要修改的数据块复制到新分配的存储区域，然后由程序进行更新。</p>
+<h2 id="btrfs"><a class="markdownIt-Anchor" href="#btrfs"></a> Btrfs</h2>
+<p>Docker 使用 Btrfs 中的子卷和快照技术来管理镜像和容器。Btrfs 中的子卷类似于 UNIX 文件系统，每个子卷都有自己的目录结构。</p>
+<p>Btrfs 中的快照会复制整个子卷，并且快照是可读写的。快照保存在子卷中，也可以对快照进行递归的快照操作。</p>
+<p>Btrfs 使用写时复制技术为子卷和快照分配底层存储空间，块大小通常为 1 GB。</p>
+<p>Btrfs 将镜像的基础层作为一个子卷进行保存，其他镜像层和容器层则以快照的形式保存。</p>
+<p>Btrfs 中的读写操作与 Device Mapper 类似，但是工作在文件层而不是数据块层。在修改文件时，Btrfs 不会直接修改原文件，而是在容器层中分配新的存储空间来保存修改后的数据，然后在元数据中更新数据的指向地址。</p>
+<h2 id="zfs"><a class="markdownIt-Anchor" href="#zfs"></a> ZFS</h2>
+<p>在 Docker 中使用了三种 ZFS DataSet，包括文件系统、快照和克隆。其中，快照是只读的，克隆是从快照上创建而来，可读写。</p>
+<p>镜像的基础层是一个 ZFS 文件系统，其他镜像层是一个 ZFS 克隆。在启动容器后，会在顶部增加一个读写层。</p>
+<h2 id="overlayoverlay2"><a class="markdownIt-Anchor" href="#overlayoverlay2"></a> Overlay/Overlay2</h2>
+<p>OverlayFS 是一种联合文件系统，类似于 AUFS，使用两个目录进行分层，分别保存镜像层（lowerdir）和容器层（upperdir）。</p>
+<p>在运行容器时，Overlay 会将所有镜像层对应的目录组合起来（merged/diff），并在顶层添加一个容器层。而 Overlay2 原生支持多个 lowerdir，因此在保存多层镜像时更具优势。</p>
+<p>在 Overlay 中读取文件时，优先从容器层读取，如果容器层没有，则从镜像层读取。</p>
+<p>在 Overlay 中修改文件时，会将文件从镜像层复制到容器层，并将所有的修改保存在容器层中。</p>
+<p>在 Overlay 中删除文件时，会在容器层中新建一个 without（白障）文件，用于隐藏镜像层中的目标文件。删除目录时，会在容器层中新建一个 opaque 目录，用于隐藏镜像层中的目标目录。镜像层中的文件和目录不会被直接删除。</p>
+<h1 id="docker-网络"><a class="markdownIt-Anchor" href="#docker-网络"></a> Docker 网络</h1>
+<p>Docker 的本地网络实现利用了 Linux 上的网络命名空间和虚拟网络设备。</p>
+<p>Docker 中的网络接口默认都是虚拟接口。它通过在内核中进行数据复制来实现虚拟接口之间的数据转发，发送接口的发送缓存中的数据包直接被复制到接收接口缓存中，而无需通过外部物理网络设备进行交换。</p>
+<h2 id="网络模型"><a class="markdownIt-Anchor" href="#网络模型"></a> 网络模型</h2>
+<p>libnetwork 中的容器网络模型（CNM，Container Networking Model）非常简洁和抽象，可以让其上层使用网络功能的容器最大程度地忽略底层具体实现。</p>
+<p>容器网络模型包括三种元素：</p>
+<ul>
+<li>沙盒（Sandbox）：代表容器的网络栈，包括网卡、路由和 DNS 设置。Linux 网络命名空间是沙盒的标准实现。沙盒可以包含来自不同网络的接入点。</li>
+<li>接入点（Endpoint）：作用是将沙盒接入网络。代表网络上可以挂载容器的接口，例如 veth pair，会分配 IP 地址。</li>
+<li>网络（Network）：可以连通多个接入点的一个子网，例如 Bridge 或 VLAN 等。</li>
+</ul>
+<p>对于 CNM 的容器管理系统来说，具体底层网络如何实现，不同子网如何隔离，都不关心。只要插件能提供网络和接入点，剩下的都是插件驱动的工作，这样就解耦了容器和网络功能。</p>
+<h1 id="docker-镜像"><a class="markdownIt-Anchor" href="#docker-镜像"></a> Docker 镜像</h1>
+<p>镜像类似于虚拟机的镜像，可以将其理解为一个只读模板，保存着容器需要的环境和应用的执行代码。</p>
+<p>镜像是创建 Docker 容器的基础，不同的镜像对应着不同的应用程序或服务。</p>
+<h2 id="镜像名称"><a class="markdownIt-Anchor" href="#镜像名称"></a> 镜像名称</h2>
+<p>镜像名称的格式如下：<code>[命名空间|仓库地址]/镜像名:标签</code></p>
+<ul>
+<li>
+<p>命名空间（Namespace）</p>
+<p>用于区别构建镜像的组织或个人，一般为 Docker Hub 上的用户名。没有命名空间的镜像代表由官方提供，由可靠且权威的第三方组织或机构维护的官方镜像。</p>
+</li>
+<li>
+<p>仓库地址（URL）</p>
+<p>如果镜像放置在第三方或私有仓库中，命名空间部分使用仓库 URL 路径来命名。</p>
+</li>
+<li>
+<p>镜像名（Repository）</p>
+<p>通常采用镜像中所包含的应用程序或服务的名称作为镜像名。</p>
+</li>
+<li>
+<p>标签（Tag）</p>
+<p>习惯采用镜像包含的应用程序或服务的版本作为镜像标签。</p>
+</li>
+</ul>
+<h2 id="镜像分层"><a class="markdownIt-Anchor" href="#镜像分层"></a> 镜像分层</h2>
+<p>Docker 的镜像是一个多层结构，每一层都在原有层基础上进行改动，这称为镜像分层框架（image-layering framework）：</p>
+<ul>
+<li>镜像最底层为启动文件系统（bootfs）镜像。</li>
+<li>往上一层是根镜像（rootfs），通常包含操作系统。它不包含内核，因此可以非常小。</li>
+<li>用户镜像构建于根镜像之上，可以由多个层组成。</li>
+<li>再往上一层是初始化（init）层，存放一些定制化文件，如 /etc/hosts 和 /etc/resolv.conf。</li>
+<li>最后是用户可读写的操作层。</li>
+</ul>
+<p>类似于 Git 的原理，每一层镜像都可以视为一个提交，并拥有独立的 ID，最顶层的 ID 被视为镜像 ID（Image ID）。镜像 ID 使用 64 个十六进制字符串（256 比特）来表示。当不同的镜像包含相同的层时，本地仅保留一份相同内容的副本。</p>
+<p>当上层和下层有相同的文件和配置时，上层会覆盖下层，以上层的数据为准。用户看到的是一个叠加之后的文件系统。</p>
+<h2 id="写时复制"><a class="markdownIt-Anchor" href="#写时复制"></a> 写时复制</h2>
+<p>写时复制指的是在复制某个数组或对象时，并不立即进行复制，而是先进行一些标记动作，只有在需要修改复制的数组或对象时，才真正复制出该变量的副本。</p>
+<p>在 Docker 中，当通过镜像运行容器时，并不立即将镜像内容复制到沙盒环境，而是直接在镜像的基础上建立沙盒环境。容器运行的沙盒环境是位于镜像之上的一层临时可读写的镜像层，也被称为 thin 类型容器层。镜像层以只读方式堆叠在容器层的下方。</p>
+<p>只有在发生文件修改时，才会将原始镜像中需要修改的文件复制到容器层中，并直接保存在容器层中。在 AUFS 文件系统中，删除文件是通过在容器层中生成一个空白文件来替代镜像层对应文件的方式，实现逻辑上的删除操作。</p>
+<h1 id="docker-容器"><a class="markdownIt-Anchor" href="#docker-容器"></a> Docker 容器</h1>
+<p>容器是从镜像创建的应用运行实例，包含独立运行的一个或一组应用，以及运行环境。可以在容器中装入任何应用，所有应用的运行方式都一样，可以启动、开始、停止、删除等。同时可以在任何环境中运行容器，容器之间互相隔离。</p>
+<p>从操作系统角度看，容器是运行在操作系统上的一个特殊进程，只不过加入了对资源的隔离和限制。在 Windows 和 Mac 上的 Docker 实现基于虚拟化技术实现，和 Linux 容器不同。</p>
+<h2 id="容器设计"><a class="markdownIt-Anchor" href="#容器设计"></a> 容器设计</h2>
+<p>虽然容器中能运行多个进程或多个不同的程序，但容器只会绑定一个进程。所以容器设计上应该以一个应用程序为主体，其他程序作为主体程序的支援。</p>
+<p>这样容器启动时，主体程序也会被启动，Docker 会监视这个程序的主进程。进程退出时，容器也会停止运行。同样通过命令停止容器运行时，Docker 会发送停止信号给主体程序，让程序结束。</p>
+<h2 id="启动流程"><a class="markdownIt-Anchor" href="#启动流程"></a> 启动流程</h2>
+<p>使用 <code>docker run</code> 命令创建启动容器的流程如下：</p>
+<ol>
+<li>执行 <code>docker run</code> 命令后，Docker 会在本地搜索所需镜像，如果没找到则从远程仓库中搜索并下载到本地，如果找到了，直接使用本地镜像。</li>
+<li>Docker 使用指定镜像创建一个新容器并启动。启动后在只读镜像文件层上挂载一层可读写的容器层，用来记录改变的数据。</li>
+<li>Docker 为容器分配一个虚拟网络接口，并通过网桥的方式将该网络接口桥接到宿主机上去。然后从网桥地址池取出一个 IP 地址分配给容器虚拟网络接口。</li>
+<li>Docker 在新容器中运行指定的命令或程序，执行完毕后被自动终止。</li>
+</ol>
+<h1 id="docker仓库"><a class="markdownIt-Anchor" href="#docker仓库"></a> Docker仓库</h1>
+<p>Docker 仓库是集中存放镜像文件的场所。</p>
+<p>仓库注册服务器（Registry）是存放仓库的地方，往往有多个仓库地址，用来存放不同类型的资源。</p>
+<h2 id="仓库分类"><a class="markdownIt-Anchor" href="#仓库分类"></a> 仓库分类</h2>
+<p>根据所在位置，仓库可以分为本地仓库和远程仓库。</p>
+<p>根据储存镜像公开分享与否，仓库可以分为公开仓库（Public）和私有仓库（Private）。</p>
+<h2 id="仓库组成"><a class="markdownIt-Anchor" href="#仓库组成"></a> 仓库组成</h2>
+<p>镜像仓库主要由两部分组成：</p>
+<ul>
+<li>镜像管理系统为镜像仓库提供类似代码库式的镜像存取和管理方式。</li>
+<li>用户系统为镜像仓库中的镜像管理操作的授权提供支持。</li>
+</ul>
+<h2 id="仓库角色"><a class="markdownIt-Anchor" href="#仓库角色"></a> 仓库角色</h2>
+<p>一般网络上的镜像仓库包含三个角色：</p>
+<ul>
+<li>Index（索引）：负责维护用户账号、镜像校验及公共命名空间等信息。</li>
+<li>Registry（库）：镜像和图标的仓库。</li>
+<li>Client（客户端）：用户通过客户端与仓库进行通信、鉴权、推送和拉取。</li>
+</ul>
+<h2 id="下载流程"><a class="markdownIt-Anchor" href="#下载流程"></a> 下载流程</h2>
+<p>以 Docker Hub 为例，下载镜像的流程如下：</p>
+<ol>
+<li>客户端向 Index 发送下载某个镜像的请求。</li>
+<li>Index 返回三个信息：镜像位置、镜像所有层的校验信息、授权令牌。</li>
+<li>用户使用授权 token 向目标 Registry 发出请求。</li>
+<li>Registry 向 Index 核实 token是否授权。</li>
+<li>Index 返回授权验证结果，如果合法，则通过下载请求。</li>
+</ol>
+<h2 id="上传流程"><a class="markdownIt-Anchor" href="#上传流程"></a> 上传流程</h2>
+<p>以 Docker Hub 为例，上传镜像的流程如下：</p>
+<ol>
+<li>用户发送带有证书的请求到 Index，要求分配库名。</li>
+<li>在成功认证并确定命名空间和库名都能分配后，Index 返回一个临时 token。</li>
+<li>镜像带着临时 token 向 Registry 发起推送请求。</li>
+<li>Registry 向 Index 检验该 token 的有效性，认证成功后开始读取客户端的数据流。</li>
+<li>Index 更新此次镜像的校验信息。</li>
+</ol>
+<h1 id="相关链接"><a class="markdownIt-Anchor" href="#相关链接"></a> 相关链接</h1>
+<p>和 Docker 相关的资源网站：</p>
+<ul>
+<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.docker.com/">Docker 官网</a></li>
+<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.docker.com/">Docker 官方文档</a></li>
+<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://hub.docker.com/">Docker Hub</a></li>
+<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/docker">Docker 源码</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/3341501969/" title="Docker 基础概念">https://blog.x2b.net/3341501969/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../2592592171/" rel="prev" title="Linux 中用户与用户组">
+                  <i class="fa fa-chevron-left"></i> Linux 中用户与用户组
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">171k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">9:29</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@next-theme/pjax@0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://unpkg.com/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://unpkg.com/katex@0.16.4/dist/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/3341501969/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://unpkg.com/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'blog.x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>
