@@ -4440,110 +4440,6 @@ finger root bin daemon adm ?<span class="token punctuation">..</span>.<span aria
       </categories>
   </entry>
   <entry>
-    <title>Perl 基础</title>
-    <url>/591566948/</url>
-    <content><![CDATA[<h1 id="基本格式"><a class="markdownIt-Anchor" href="#基本格式"></a> 基本格式</h1>
-<p>Perl 在 Linux 中是内置程序，可以创建一个最简单的 <code>hello.pl</code> 来测试：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ <span class="token function">vi</span> hello.pl 
-<span class="token comment">#! /usr/bin/perl -w</span>
-
-print <span class="token string">"hello<span class="token entity" title="\n">\n</span>"</span><span class="token punctuation">;</span>
-<span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ <span class="token function">chmod</span> <span class="token number">755</span> hello.pl 
-<span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ ./hello.pl 
-hello<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>第一行 <code>#!</code> 指定 Perl 程序所在位置。<code>-w</code> 开关告诉 Perl 解释器提供完整的警告消息的方法。最新版本中可以不使用 <code>-w</code> 开关。</p>
-<h1 id="变量"><a class="markdownIt-Anchor" href="#变量"></a> 变量</h1>
-<p>在 Perl 中使用变量之前不需要声明变量类型，所有标量型变量（Scalar Variable），也就是只包含一个元素的变量，都是以美元符号 <code>$</code> 作为前缀：</p>
-<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token variable">$name</span> <span class="token operator">=</span> <span class="token string">"Alice"</span><span class="token punctuation">;</span>
-<span class="token variable">$age</span> <span class="token operator">=</span> <span class="token number">30</span><span class="token punctuation">;</span>
-<span class="token variable">$URL_ADDR</span> <span class="token operator">=</span> <span class="token string">'http://www.g.cn'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>Perl 也允许定义多个元素的变量，使用符号 <code>@</code> 作为前缀：</p>
-<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token variable">@authors</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token string">"Alice"</span><span class="token punctuation">,</span><span class="token string">"Bob"</span><span class="token punctuation">,</span><span class="token string">"Cindy"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token variable">@list</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>数组元素也可以通过使用 <code>$</code> 和元素的序号来解引用，从 0 开始计算：</p>
-<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token variable">@authors</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>Perl 还允许声明关联数组（Associative Array）或以字符串作为索引的散列（Hash）。散列的索引称为键（Key），散列由百分号 <code>%</code> 特别指定：</p>
-<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token variable">%person</span> <span class="token operator">=</span> <span class="token punctuation">(</span> name <span class="token operator">=></span> <span class="token string">'Alice'</span><span class="token punctuation">,</span> age <span class="token operator">=></span> <span class="token string">'30'</span><span class="token punctuation">,</span> url<span class="token operator">=></span> <span class="token string">'tty.org'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h1 id="运算符"><a class="markdownIt-Anchor" href="#运算符"></a> 运算符</h1>
-<p>Perl 允许使用所有其他语言都有的同样的基本数学运算符：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#! /usr/bin/perl</span>
-
-<span class="token variable">$a</span><span class="token operator">=</span><span class="token number">77</span><span class="token punctuation">;</span>
-<span class="token variable">$b</span><span class="token operator">=</span><span class="token number">13</span><span class="token punctuation">;</span>
-<span class="token variable">$result</span><span class="token operator">=</span><span class="token variable">$a</span>/<span class="token variable">$b</span><span class="token punctuation">;</span>
-print <span class="token variable">$result</span><span class="token punctuation">;</span>
-print <span class="token string">"<span class="token entity" title="\n">\n</span>"</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="基本函数"><a class="markdownIt-Anchor" href="#基本函数"></a> 基本函数</h1>
-<p>Perl 提供的通用函数。</p>
-<h2 id="打印"><a class="markdownIt-Anchor" href="#打印"></a> 打印</h2>
-<p>函数 <code>print</code> 向标准输出或其他流输出一个字符串，它具有和其他很多语言一样的控制字符：</p>
-<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token keyword">print</span> <span class="token string">"Hello again\n"</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>向一个具有文件句柄的文件打印文本：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">print FILE <span class="token string">"hello<span class="token entity" title="\n">\n</span>"</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>想在一个文本字符串中打印一个变量的值，可以使用点号（<code>.</code>）字符把变量内容加入到字符串语句中：</p>
-<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token keyword">print</span> <span class="token string">"The result is:"</span><span class="token operator">.</span><span class="token variable">$result</span><span class="token operator">.</span><span class="token string">"\n"</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="字符串操作"><a class="markdownIt-Anchor" href="#字符串操作"></a> 字符串操作</h2>
-<p>函数 <code>chomp</code> 用于删除变量末尾的多个换行符：</p>
-<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl">chomp <span class="token variable">@authors</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>函数 <code>join</code> 把两个单独的字符串连接成一个字符串，类似 <code>print</code> 中点号的作用，但 <code>join</code> 可以单独指定两个字符串之间的分隔符。例如使用冒号作为连接字段的分隔符：</p>
-<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token variable">$fields</span> <span class="token operator">=</span> join <span class="token string">':'</span> <span class="token punctuation">,</span> <span class="token variable">$a1</span><span class="token punctuation">,</span> <span class="token variable">$a2</span><span class="token punctuation">,</span> <span class="token variable">$b</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>函数 <code>split</code> 将根据指定的分隔符把一个字符串分割成一组字符串。例如将指定的字符串分割到两个单独的变量中：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">(</span><span class="token variable">$f1</span>,<span class="token variable">$f2</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token function">split</span> /:/, <span class="token string">'Alice:Bob'</span>, <span class="token number">2</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>或者不限制分割的段数，把分割结果存入到一个多元素的变量中：</p>
-<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token punctuation">(</span><span class="token variable">@fs</span><span class="token punctuation">)</span> <span class="token operator">=</span> split <span class="token regex">/:/</span><span class="token punctuation">,</span> <span class="token variable">$raw_data</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p><code>split</code> 函数还可以使用正则表达式进行模式匹配：</p>
-<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token punctuation">(</span><span class="token variable">@fs</span><span class="token punctuation">)</span> <span class="token operator">=</span> split <span class="token regex">/[^0-9]/</span><span class="token punctuation">,</span> <span class="token variable">$raw_date</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="文件操作"><a class="markdownIt-Anchor" href="#文件操作"></a> 文件操作</h2>
-<p>Perl 使用 <code>open</code>、<code>close</code>、<code>opendir</code>、<code>readdir</code> 和 <code>closedir</code> 这些函数来访问 Linux 系统上的底层文件系统。</p>
-<p>函数 <code>open</code> 用来打开文件，然后就可以使用所获得的文件句柄处理文件内容，对文件进行读写操作：</p>
-<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token comment">#! /usr/bin/perl</span>
-
-open<span class="token punctuation">(</span>FILE<span class="token punctuation">,</span> <span class="token string">"/etc/passwd"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token variable">@filedata</span><span class="token operator">=</span><span class="token filehandle symbol">&lt;FILE></span><span class="token punctuation">;</span>
-close<span class="token punctuation">(</span>FILE<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-<span class="token keyword">foreach</span> <span class="token variable">$item</span> <span class="token punctuation">(</span><span class="token variable">@filedata</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-        <span class="token keyword">print</span> <span class="token variable">$item</span> <span class="token operator">.</span><span class="token string">"\n"</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><code>opendir</code> 用于打开目录并创建一个文件句柄，<code>readdir</code> 用于读取文件句柄，<code>closedir</code> 用于关闭文件句柄。</p>
-<h2 id="局部变量"><a class="markdownIt-Anchor" href="#局部变量"></a> 局部变量</h2>
-<p><code>my</code> 运算符声明在一个有限范围（例如循环）内存在的变量。<code>local</code> 声明一个或多个已经存在的全局变量，这些变量拥有只在一个代码块中有效的值。</p>
-<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token variable">$name</span> <span class="token operator">=</span> Alice
-<span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token variable">@date</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-	<span class="token keyword">my</span> <span class="token variable">$current_file</span><span class="token punctuation">;</span>
-	<span class="token keyword">local</span> <span class="token variable">$name</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>首先在任何循环或子程序外定义的变量 <code>$name</code> 为全局声明，可以在后续代码块中的任意位置上使用。然后 <code>$current_file</code> 由 <code>my</code> 运算符声明，只在 <code>foreach</code> 循环中有效。最后是 <code>local</code> 运算符，它将变量限制到特定的代码块中，也就是修改一个已经存在的变量的作用域，待代码块执行结束，该变量将恢复成全局变量并继承全集变量的值。</p>
-<h2 id="循环和条件"><a class="markdownIt-Anchor" href="#循环和条件"></a> 循环和条件</h2>
-<p><code>while</code> 循环示例如下：</p>
-<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token variable">$counter</span><span class="token operator">&lt;</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-        <span class="token keyword">print</span> <span class="token variable">$counter</span><span class="token operator">.</span><span class="token string">"\n"</span><span class="token punctuation">;</span>
-        <span class="token variable">$counter</span><span class="token operator">++</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p><code>do...while</code> 循环会在第一次循环结束时检查测试条件，因此至少会执行循环体一次：</p>
-<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token keyword">do</span> <span class="token punctuation">&#123;</span>
-        <span class="token keyword">print</span> <span class="token variable">$counter</span><span class="token operator">.</span><span class="token string">"\n"</span><span class="token punctuation">;</span>
-        <span class="token variable">$counter</span><span class="token operator">++</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span> <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token variable">$counter</span><span class="token operator">&lt;</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p><code>foreach</code> 循环用于遍历数组，并把每个元素传递到一个临时变量中，直到打印完所有元素：</p>
-<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token variable">@list</span><span class="token operator">=</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token keyword">foreach</span> <span class="token variable">$tmp</span> <span class="token punctuation">(</span><span class="token variable">@list</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">print</span> <span class="token variable">$tmp</span> <span class="token operator">.</span> <span class="token string">"\n"</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p><code>if...else</code> 循环用于测试条件并有选择地执行：</p>
-<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token variable">$name</span><span class="token operator">=</span><span class="token string">'Bob'</span><span class="token punctuation">;</span>
-<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$name</span> <span class="token operator">eq</span> <span class="token string">'Alice'</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-<span class="token keyword">print</span> <span class="token string">"Hey"</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span> <span class="token keyword">elsif</span> <span class="token punctuation">(</span><span class="token variable">$name</span> <span class="token operator">eq</span> <span class="token string">'Bob'</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-<span class="token keyword">print</span> <span class="token string">"Hi"</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
-<span class="token keyword">print</span> <span class="token string">"Hello"</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>3.脚本编程</category>
-      </categories>
-  </entry>
-  <entry>
     <title>Shell 脚本基础</title>
     <url>/2734315757/</url>
     <content><![CDATA[<h1 id="shell-script-定义"><a class="markdownIt-Anchor" href="#shell-script-定义"></a> Shell Script 定义</h1>
@@ -5170,6 +5066,110 @@ sh11.sh: line <span class="token number">8</span>: syntax error: unexpected end 
 + <span class="token assign-left variable">s</span><span class="token operator">=</span><span class="token number">10403</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>带 <code>+</code> 开头的行表示命令串，实际输出没有 <code>+</code>。</p>
 <p>另外可以设置调试的范围，在希望开始调试的地方插入 <code>set -x</code> 命令，在希望结束调试的地方插入 <code>set +x</code> 命令。</p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>3.脚本编程</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Perl 基础</title>
+    <url>/591566948/</url>
+    <content><![CDATA[<h1 id="基本格式"><a class="markdownIt-Anchor" href="#基本格式"></a> 基本格式</h1>
+<p>Perl 在 Linux 中是内置程序，可以创建一个最简单的 <code>hello.pl</code> 来测试：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ <span class="token function">vi</span> hello.pl 
+<span class="token comment">#! /usr/bin/perl -w</span>
+
+print <span class="token string">"hello<span class="token entity" title="\n">\n</span>"</span><span class="token punctuation">;</span>
+<span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ <span class="token function">chmod</span> <span class="token number">755</span> hello.pl 
+<span class="token punctuation">[</span>root@server1 bin<span class="token punctuation">]</span>$ ./hello.pl 
+hello<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>第一行 <code>#!</code> 指定 Perl 程序所在位置。<code>-w</code> 开关告诉 Perl 解释器提供完整的警告消息的方法。最新版本中可以不使用 <code>-w</code> 开关。</p>
+<h1 id="变量"><a class="markdownIt-Anchor" href="#变量"></a> 变量</h1>
+<p>在 Perl 中使用变量之前不需要声明变量类型，所有标量型变量（Scalar Variable），也就是只包含一个元素的变量，都是以美元符号 <code>$</code> 作为前缀：</p>
+<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token variable">$name</span> <span class="token operator">=</span> <span class="token string">"Alice"</span><span class="token punctuation">;</span>
+<span class="token variable">$age</span> <span class="token operator">=</span> <span class="token number">30</span><span class="token punctuation">;</span>
+<span class="token variable">$URL_ADDR</span> <span class="token operator">=</span> <span class="token string">'http://www.g.cn'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>Perl 也允许定义多个元素的变量，使用符号 <code>@</code> 作为前缀：</p>
+<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token variable">@authors</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token string">"Alice"</span><span class="token punctuation">,</span><span class="token string">"Bob"</span><span class="token punctuation">,</span><span class="token string">"Cindy"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">@list</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>数组元素也可以通过使用 <code>$</code> 和元素的序号来解引用，从 0 开始计算：</p>
+<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token variable">@authors</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>Perl 还允许声明关联数组（Associative Array）或以字符串作为索引的散列（Hash）。散列的索引称为键（Key），散列由百分号 <code>%</code> 特别指定：</p>
+<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token variable">%person</span> <span class="token operator">=</span> <span class="token punctuation">(</span> name <span class="token operator">=></span> <span class="token string">'Alice'</span><span class="token punctuation">,</span> age <span class="token operator">=></span> <span class="token string">'30'</span><span class="token punctuation">,</span> url<span class="token operator">=></span> <span class="token string">'tty.org'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="运算符"><a class="markdownIt-Anchor" href="#运算符"></a> 运算符</h1>
+<p>Perl 允许使用所有其他语言都有的同样的基本数学运算符：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#! /usr/bin/perl</span>
+
+<span class="token variable">$a</span><span class="token operator">=</span><span class="token number">77</span><span class="token punctuation">;</span>
+<span class="token variable">$b</span><span class="token operator">=</span><span class="token number">13</span><span class="token punctuation">;</span>
+<span class="token variable">$result</span><span class="token operator">=</span><span class="token variable">$a</span>/<span class="token variable">$b</span><span class="token punctuation">;</span>
+print <span class="token variable">$result</span><span class="token punctuation">;</span>
+print <span class="token string">"<span class="token entity" title="\n">\n</span>"</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="基本函数"><a class="markdownIt-Anchor" href="#基本函数"></a> 基本函数</h1>
+<p>Perl 提供的通用函数。</p>
+<h2 id="打印"><a class="markdownIt-Anchor" href="#打印"></a> 打印</h2>
+<p>函数 <code>print</code> 向标准输出或其他流输出一个字符串，它具有和其他很多语言一样的控制字符：</p>
+<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token keyword">print</span> <span class="token string">"Hello again\n"</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>向一个具有文件句柄的文件打印文本：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">print FILE <span class="token string">"hello<span class="token entity" title="\n">\n</span>"</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>想在一个文本字符串中打印一个变量的值，可以使用点号（<code>.</code>）字符把变量内容加入到字符串语句中：</p>
+<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token keyword">print</span> <span class="token string">"The result is:"</span><span class="token operator">.</span><span class="token variable">$result</span><span class="token operator">.</span><span class="token string">"\n"</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="字符串操作"><a class="markdownIt-Anchor" href="#字符串操作"></a> 字符串操作</h2>
+<p>函数 <code>chomp</code> 用于删除变量末尾的多个换行符：</p>
+<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl">chomp <span class="token variable">@authors</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>函数 <code>join</code> 把两个单独的字符串连接成一个字符串，类似 <code>print</code> 中点号的作用，但 <code>join</code> 可以单独指定两个字符串之间的分隔符。例如使用冒号作为连接字段的分隔符：</p>
+<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token variable">$fields</span> <span class="token operator">=</span> join <span class="token string">':'</span> <span class="token punctuation">,</span> <span class="token variable">$a1</span><span class="token punctuation">,</span> <span class="token variable">$a2</span><span class="token punctuation">,</span> <span class="token variable">$b</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>函数 <code>split</code> 将根据指定的分隔符把一个字符串分割成一组字符串。例如将指定的字符串分割到两个单独的变量中：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">(</span><span class="token variable">$f1</span>,<span class="token variable">$f2</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token function">split</span> /:/, <span class="token string">'Alice:Bob'</span>, <span class="token number">2</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>或者不限制分割的段数，把分割结果存入到一个多元素的变量中：</p>
+<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token punctuation">(</span><span class="token variable">@fs</span><span class="token punctuation">)</span> <span class="token operator">=</span> split <span class="token regex">/:/</span><span class="token punctuation">,</span> <span class="token variable">$raw_data</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><code>split</code> 函数还可以使用正则表达式进行模式匹配：</p>
+<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token punctuation">(</span><span class="token variable">@fs</span><span class="token punctuation">)</span> <span class="token operator">=</span> split <span class="token regex">/[^0-9]/</span><span class="token punctuation">,</span> <span class="token variable">$raw_date</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="文件操作"><a class="markdownIt-Anchor" href="#文件操作"></a> 文件操作</h2>
+<p>Perl 使用 <code>open</code>、<code>close</code>、<code>opendir</code>、<code>readdir</code> 和 <code>closedir</code> 这些函数来访问 Linux 系统上的底层文件系统。</p>
+<p>函数 <code>open</code> 用来打开文件，然后就可以使用所获得的文件句柄处理文件内容，对文件进行读写操作：</p>
+<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token comment">#! /usr/bin/perl</span>
+
+open<span class="token punctuation">(</span>FILE<span class="token punctuation">,</span> <span class="token string">"/etc/passwd"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">@filedata</span><span class="token operator">=</span><span class="token filehandle symbol">&lt;FILE></span><span class="token punctuation">;</span>
+close<span class="token punctuation">(</span>FILE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">foreach</span> <span class="token variable">$item</span> <span class="token punctuation">(</span><span class="token variable">@filedata</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">print</span> <span class="token variable">$item</span> <span class="token operator">.</span><span class="token string">"\n"</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>opendir</code> 用于打开目录并创建一个文件句柄，<code>readdir</code> 用于读取文件句柄，<code>closedir</code> 用于关闭文件句柄。</p>
+<h2 id="局部变量"><a class="markdownIt-Anchor" href="#局部变量"></a> 局部变量</h2>
+<p><code>my</code> 运算符声明在一个有限范围（例如循环）内存在的变量。<code>local</code> 声明一个或多个已经存在的全局变量，这些变量拥有只在一个代码块中有效的值。</p>
+<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token variable">$name</span> <span class="token operator">=</span> Alice
+<span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token variable">@date</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">my</span> <span class="token variable">$current_file</span><span class="token punctuation">;</span>
+	<span class="token keyword">local</span> <span class="token variable">$name</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>首先在任何循环或子程序外定义的变量 <code>$name</code> 为全局声明，可以在后续代码块中的任意位置上使用。然后 <code>$current_file</code> 由 <code>my</code> 运算符声明，只在 <code>foreach</code> 循环中有效。最后是 <code>local</code> 运算符，它将变量限制到特定的代码块中，也就是修改一个已经存在的变量的作用域，待代码块执行结束，该变量将恢复成全局变量并继承全集变量的值。</p>
+<h2 id="循环和条件"><a class="markdownIt-Anchor" href="#循环和条件"></a> 循环和条件</h2>
+<p><code>while</code> 循环示例如下：</p>
+<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token variable">$counter</span><span class="token operator">&lt;</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">print</span> <span class="token variable">$counter</span><span class="token operator">.</span><span class="token string">"\n"</span><span class="token punctuation">;</span>
+        <span class="token variable">$counter</span><span class="token operator">++</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>do...while</code> 循环会在第一次循环结束时检查测试条件，因此至少会执行循环体一次：</p>
+<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token keyword">do</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">print</span> <span class="token variable">$counter</span><span class="token operator">.</span><span class="token string">"\n"</span><span class="token punctuation">;</span>
+        <span class="token variable">$counter</span><span class="token operator">++</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span> <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token variable">$counter</span><span class="token operator">&lt;</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>foreach</code> 循环用于遍历数组，并把每个元素传递到一个临时变量中，直到打印完所有元素：</p>
+<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token variable">@list</span><span class="token operator">=</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">foreach</span> <span class="token variable">$tmp</span> <span class="token punctuation">(</span><span class="token variable">@list</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">print</span> <span class="token variable">$tmp</span> <span class="token operator">.</span> <span class="token string">"\n"</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p><code>if...else</code> 循环用于测试条件并有选择地执行：</p>
+<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl"><span class="token variable">$name</span><span class="token operator">=</span><span class="token string">'Bob'</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$name</span> <span class="token operator">eq</span> <span class="token string">'Alice'</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+<span class="token keyword">print</span> <span class="token string">"Hey"</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span> <span class="token keyword">elsif</span> <span class="token punctuation">(</span><span class="token variable">$name</span> <span class="token operator">eq</span> <span class="token string">'Bob'</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+<span class="token keyword">print</span> <span class="token string">"Hi"</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+<span class="token keyword">print</span> <span class="token string">"Hello"</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 ]]></content>
       <categories>
         <category>Linux</category>
@@ -5980,6 +5980,187 @@ REPOSITORY                   TAG       IMAGE ID       CREATED       SIZE
       </categories>
   </entry>
   <entry>
+    <title>Docker 镜像操作</title>
+    <url>/1103407806/</url>
+    <content><![CDATA[<h1 id="获取镜像"><a class="markdownIt-Anchor" href="#获取镜像"></a> 获取镜像</h1>
+<p>一般镜像通过 Docker Hub 来获取。</p>
+<h2 id="搜索镜像"><a class="markdownIt-Anchor" href="#搜索镜像"></a> 搜索镜像</h2>
+<p>通过 <code>docker search</code> 命令可以搜索公共仓库 Docker Hub 中的镜像：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> search python
+NAME                       DESCRIPTION               STARS     OFFICIAL   AUTOMATED
+python                     Python is an interpreted, <span class="token number">6632</span>      <span class="token punctuation">[</span>OK<span class="token punctuation">]</span>       
+pypy                       PyPy is a fast, compliant <span class="token number">290</span>       <span class="token punctuation">[</span>OK<span class="token punctuation">]</span>       
+nikolaik/python-nodejs     Python with Node.js       <span class="token number">86</span>                   <span class="token punctuation">[</span>OK<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>搜索结果以 STARS 排序，默认显示 25 个结果。其字段说明如下：</p>
+<ul>
+<li>NAME：镜像名称。</li>
+<li>DESCRIPTION：创建者对镜像的简单描述。</li>
+<li>STARS：镜像在官方镜像仓库中受欢迎程度。</li>
+<li>OFFICIAL：是否由 Docker 官方提供。</li>
+<li>AUTOMATED：镜像是否使用了自动构建。</li>
+</ul>
+<p>设置搜索结果数目限制到 100 个：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> search <span class="token parameter variable">--limit</span> <span class="token number">100</span> centos<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>使用 <code>--filter</code> 参数来限制搜索结果只显示官方构建的 <code>nginx</code> 镜像：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> search <span class="token parameter variable">--filter</span><span class="token operator">=</span>is-official<span class="token operator">=</span>true nginx
+NAME      DESCRIPTION                STARS     OFFICIAL   AUTOMATED
+nginx     Official build of Nginx.   <span class="token number">15666</span>     <span class="token punctuation">[</span>OK<span class="token punctuation">]</span>    <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>过滤收藏数小于 10 的镜像：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> search <span class="token parameter variable">--filter</span><span class="token operator">=</span>stars<span class="token operator">=</span><span class="token number">10</span> linux<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="拉取镜像"><a class="markdownIt-Anchor" href="#拉取镜像"></a> 拉取镜像</h2>
+<p>在运行 Docker 容器之前，需要在本地获取相应的镜像，可以使用 <code>docker pull</code> 命令进行镜像拉取。</p>
+<p>例如，从 Docker Hub 拉取 <code>Ubuntu 18.04</code> 系统的基础镜像：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> pull ubuntu:18.04
+<span class="token number">18.04</span>: Pulling from library/ubuntu
+<span class="token number">284055322776</span>: Pull complete 
+Digest: sha256:0fedbd5bd9fb72089c7bbca476949e10593cebed9b1fb9edf5b79dbbacddd7d6
+Status: Downloaded newer image <span class="token keyword">for</span> ubuntu:18.04
+docker.io/library/ubuntu:18.04<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Docker 利用镜像的分层机制，将镜像分为多个包进行下载。当所有镜像层的下载和解压等操作完成后，镜像会出现在本地镜像仓库中。</p>
+<p>如果不指定标签，默认使用 latest 标签。例如，从网易镜像站下载最新版本的 <code>Ubuntu</code> 镜像：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> pull hub-mirror.c.163.com/public/ubuntu<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>此外，可以使用 <code>-a</code> 参数一次性下载所有标签版本的镜像。</p>
+<h1 id="管理镜像"><a class="markdownIt-Anchor" href="#管理镜像"></a> 管理镜像</h1>
+<p>镜像管理命令和容器管理命令类似。</p>
+<h2 id="创建镜像"><a class="markdownIt-Anchor" href="#创建镜像"></a> 创建镜像</h2>
+<p>可以使用 <code>docker commit</code> 将容器转换为镜像，以保存容器中所做的更改：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> commit c238293 newimage:v1
+sha256:392f66f55bace6d10def28028edc90eebc3bb1e23e8e30a030aeb8f96e98ac8e
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> images
+REPOSITORY                TAG       IMAGE ID       CREATED         SIZE
+newimage                  v1        392f66f55bac   <span class="token number">4</span> seconds ago   <span class="token number">63</span>.1MB<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这种手动创建镜像的方法容易出错且可重复性较差，因此最好使用 <code>docker build</code> 命令结合 Dockerfile 来构建镜像。</p>
+<p>默认情况下，<code>docker build</code> 命令会自动在指定目录下查找名为 Dockerfile 的文件，并使用该文件进行构建。也可以通过 <code>-f</code> 参数指定要使用的文件名：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> Dockerfile
+FROM ubuntu:18.04
+CMD <span class="token builtin class-name">echo</span> <span class="token string">"Hello Dockerfile"</span>
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> build <span class="token builtin class-name">.</span>
+Sending build context to Docker daemon  <span class="token number">5</span>.938MB
+Step <span class="token number">1</span>/2 <span class="token builtin class-name">:</span> FROM ubuntu:18.04
+ ---<span class="token operator">></span> 5a214d77f5d7
+Step <span class="token number">2</span>/2 <span class="token builtin class-name">:</span> CMD <span class="token builtin class-name">echo</span> <span class="token string">"Hello Dockerfile"</span>
+ ---<span class="token operator">></span> Running <span class="token keyword">in</span> 2fe4d2fa8be2
+Removing intermediate container 2fe4d2fa8be2
+ ---<span class="token operator">></span> 4e73bed1428a
+Successfully built 4e73bed1428a
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> images
+REPOSITORY                TAG       IMAGE ID       CREATED          SIZE
+<span class="token operator">&lt;</span>none<span class="token operator">></span>                    <span class="token operator">&lt;</span>none<span class="token operator">></span>    4e73bed1428a   <span class="token number">12</span> seconds ago   <span class="token number">63</span>.1MB
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> run <span class="token parameter variable">--rm</span> 4e73
+Hello Dockerfile<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 <code>-t</code> 参数可以指定构建镜像的名称和标签：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> build <span class="token parameter variable">-t</span> assassing/redis:2.3 <span class="token builtin class-name">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="删除镜像"><a class="markdownIt-Anchor" href="#删除镜像"></a> 删除镜像</h2>
+<p>要删除本地镜像，可以使用 <code>docker rmi</code> 命令。如果一个镜像有多个标签，只有在最后一个标签被删除时，镜像才会被真正删除：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> rmi 5a214d77
+Error response from daemon: conflict: unable to delete 5a214d77f5d7 <span class="token punctuation">(</span>must be forced<span class="token punctuation">)</span> - image is referenced <span class="token keyword">in</span> multiple repositories
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> rmi base:1.0
+Untagged: base:1.0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果镜像中包含与其他镜像共享的镜像层，那些层将被保留下来，只删除未被使用的层。</p>
+<p>当镜像被容器使用时，可以使用 <code>-f</code> 参数强制删除镜像：</p>
+<pre class="line-numbers language-none"><code class="language-none">[root@server4 ~]$ docker rmi -f nginx
+Untagged: nginx:latest
+Untagged: nginx@sha256:644a70516a26004c97d0d85c7fe1d0c3a67ea8ab7ddf4aff193d9f301670cf36<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>但是，强制删除镜像不会自动停止或删除使用该镜像的容器，这可能会导致一些难以处理的问题。最好先停止或清理使用该镜像的容器，然后再删除镜像。</p>
+<h2 id="清理镜像"><a class="markdownIt-Anchor" href="#清理镜像"></a> 清理镜像</h2>
+<p>要清理系统中残留的临时镜像文件或未使用的镜像，可以使用 <code>docker image prune</code> 命令进行清理：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> image prune
+WARNING<span class="token operator">!</span> This will remove all dangling images.
+Are you sure you want to continue? <span class="token punctuation">[</span>y/N<span class="token punctuation">]</span> y
+Total reclaimed space: 0B<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="导出镜像"><a class="markdownIt-Anchor" href="#导出镜像"></a> 导出镜像</h2>
+<p>要导出镜像，可以使用 <code>docker save</code> 命令。例如，将 <code>alpine</code> 镜像导出到本地的 <code>a.tar</code> 文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> images alpine
+REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+alpine       latest    14119a10abf4   <span class="token number">7</span> weeks ago   <span class="token number">5</span>.6MB
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> save <span class="token parameter variable">-o</span> a.tar alpine
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ ll a.tar 
+-rw-------. <span class="token number">1</span> root root <span class="token number">5874688</span> Oct <span class="token number">20</span> <span class="token number">23</span>:22 a.tar<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>也可以使用输出重定向将导出内容保存到指定文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> save alpine <span class="token operator">></span> a1.tar<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>可以一次将多个镜像导出到单个文件中：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> save <span class="token parameter variable">-o</span> docker.tar alpine hello-world<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="导入镜像"><a class="markdownIt-Anchor" href="#导入镜像"></a> 导入镜像</h2>
+<p>可以使用 <code>docker load</code> 命令从文件中导入镜像：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> load <span class="token parameter variable">-i</span> docker.tar 
+e2eb06d8af82: Loading layer <span class="token punctuation">[</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">></span><span class="token punctuation">]</span>  <span class="token number">5</span>.865MB/5.865MB
+Loaded image: alpine:latest
+e07ee1baac5f: Loading layer <span class="token punctuation">[</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">></span><span class="token punctuation">]</span>  <span class="token number">14</span>.85kB/14.85kB
+Loaded image: hello-world:latest<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>也可以使用输入重定向符号从文件中导入镜像：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> load <span class="token operator">&lt;</span> <span class="token number">2</span>.tar 
+2653d992f4ef: Loading layer <span class="token punctuation">[</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">></span><span class="token punctuation">]</span>  <span class="token number">216</span>.5MB/216.5MB
+Loaded image ID: sha256:300e315adb2f96afe5f0b2780b87f28ae95231fe3bdd1e16b9ba606307728f55<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h1 id="查询镜像"><a class="markdownIt-Anchor" href="#查询镜像"></a> 查询镜像</h1>
+<p>镜像以分层文件的形式存储在文件系统中。</p>
+<h2 id="查询镜像列表"><a class="markdownIt-Anchor" href="#查询镜像列表"></a> 查询镜像列表</h2>
+<p>使用 <code>docker images</code> 命令可以列出本地镜像列表：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> images
+REPOSITORY    TAG       IMAGE ID       CREATED       SIZE
+ubuntu        <span class="token number">18.04</span>     5a214d77f5d7   <span class="token number">2</span> weeks ago   <span class="token number">63</span>.1MB
+hello-world   latest    feb5d9fea6a5   <span class="token number">3</span> weeks ago   <span class="token number">13</span>.3kB<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>结果显示字段的含义如下：</p>
+<ul>
+<li>REPOSITORY: 镜像名或镜像来源仓库。如果有 Namespace，也会一同显示。</li>
+<li>TAG: 镜像标签，用于标记不同的版本信息。</li>
+<li>IMAGE ID: 镜像的 ID，也是镜像的唯一标识。可以使用前几个字符代替完整的 ID。</li>
+<li>CREATED: 镜像的创建时间。</li>
+<li>SIZE: 镜像的大小，包括共享的镜像层。实际占用的存储空间可能较小。</li>
+</ul>
+<p>可以使用通配符来过滤镜像列表：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> images ubu*
+REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+ubuntu       <span class="token number">18.04</span>     5a214d77f5d7   <span class="token number">2</span> weeks ago   <span class="token number">63</span>.1MB<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h2 id="查询镜像详情"><a class="markdownIt-Anchor" href="#查询镜像详情"></a> 查询镜像详情</h2>
+<p>可以使用 <code>docker inspect</code> 命令获取镜像的详细信息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> inspect ubuntu:18.04
+<span class="token punctuation">[</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token string">"Id"</span><span class="token builtin class-name">:</span> <span class="token string">"sha256:5a214d77f5d747e6ed81632310baa6190301feeb875cf6bf9da560108fa09972"</span>,
+        <span class="token string">"RepoTags"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
+            <span class="token string">"base:1.0"</span>,
+            <span class="token string">"ubuntu:18.04"</span>
+        <span class="token punctuation">]</span>,
+        <span class="token string">"RepoDigests"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
+            <span class="token string">"ubuntu@sha256:0fedbd5bd9fb72089c7bbca476949e10593cebed9b1fb9edf5b79dbbacddd7d6"</span>
+        <span class="token punctuation">]</span>,<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>也可以通过镜像的 ID 进行查询：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> inspect 5a21<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>查询结果以 JSON 格式返回，可以使用输出格式化工具进行过滤：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> inspect <span class="token parameter variable">-f</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#123;</span><span class="token string">".ContainerConfig.Hostname"</span><span class="token punctuation">&#125;</span><span class="token punctuation">&#125;</span> alpine
+330289c649db<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="查询镜像修改历史"><a class="markdownIt-Anchor" href="#查询镜像修改历史"></a> 查询镜像修改历史</h2>
+<p>可以使用 <code>docker history</code> 命令查看镜像的每一层具体内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> <span class="token function">history</span> --no-trunc alpine
+IMAGE          CREATED       CREATED BY                            SIZE      COMMENT
+14119a10abf4   <span class="token number">7</span> weeks ago   /bin/sh <span class="token parameter variable">-c</span> <span class="token comment">#(nop)  CMD ["/bin/sh"]    0B        </span>
+<span class="token operator">&lt;</span>missing<span class="token operator">></span>      <span class="token number">7</span> weeks ago   /bin/sh <span class="token parameter variable">-c</span> <span class="token comment">#(nop) ADD file:aad4290d   5.6MB </span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="操作镜像"><a class="markdownIt-Anchor" href="#操作镜像"></a> 操作镜像</h1>
+<p>涉及到镜像操作的内容包括镜像改名和上传镜像。</p>
+<h2 id="镜像改名"><a class="markdownIt-Anchor" href="#镜像改名"></a> 镜像改名</h2>
+<p>可以使用 <code>docker tag</code> 命令为本地镜像添加标签，并删除原始镜像，从而实现改名的目的。</p>
+<p>例如，为 <code>ubuntu:18.04</code> 镜像添加一个新标签 <code>base:1.0</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> tag ubuntu:18.04 base:1.0
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> images
+REPOSITORY    TAG       IMAGE ID       CREATED       SIZE
+base          <span class="token number">1.0</span>       5a214d77f5d7   <span class="token number">2</span> weeks ago   <span class="token number">63</span>.1MB
+ubuntu        <span class="token number">18.04</span>     5a214d77f5d7   <span class="token number">2</span> weeks ago   <span class="token number">63</span>.1MB
+hello-world   latest    feb5d9fea6a5   <span class="token number">3</span> weeks ago   <span class="token number">13</span>.3kB<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>现在可以看到多了一个名为 <code>base:1.0</code> 的镜像，其镜像 ID 与 <code>ubuntu:18.04</code> 相同。通过添加标签，类似于创建文件的硬链接。</p>
+<h2 id="上传镜像"><a class="markdownIt-Anchor" href="#上传镜像"></a> 上传镜像</h2>
+<p>要将镜像上传到仓库，可以使用 <code>docker push</code> 命令。在上传之前，需要为目标镜像打上标签。如果要上传到 Docker Hub，则目标镜像的命名空间为用户的用户名；如果要上传到私有仓库，则命名空间变为仓库的地址：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> tag alpine:latest assassing/a1:latest
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> push assassing/a1:latest
+The push refers to repository <span class="token punctuation">[</span>docker.io/assassing/a1<span class="token punctuation">]</span>
+e2eb06d8af82: Mounted from library/alpine 
+latest: digest: sha256:69704ef328d05a9f806b6b8502915e6a0a4faa4d72018dc42343f511490daf8a size: <span class="token number">528</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+]]></content>
+      <categories>
+        <category>Docker</category>
+        <category>1.基本操作</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Docker 安装与配置</title>
     <url>/4130112682/</url>
     <content><![CDATA[<h1 id="前置条件"><a class="markdownIt-Anchor" href="#前置条件"></a> 前置条件</h1>
@@ -6337,7 +6518,7 @@ Are you sure you want to continue? <span class="token punctuation">[</span>y/N<s
 </tr>
 </tbody>
 </table>
-<p>如果参数后面有 <code>[] </code>标记，表示该参数可以多次使用。例如，要启用 Debug 模式并监听本地 2376 端口：</p>
+<p>如果参数后面有 <code>[]</code>标记，表示该参数可以多次使用。例如，要启用 Debug 模式并监听本地 2376 端口：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ dockerd <span class="token parameter variable">-D</span> <span class="token parameter variable">-H</span> tcp:/127.0.0.1:2376<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>可以将启动参数写入 <code>/etc/docker/daemon.json</code> 文件中，在 dockerd 服务启动时读取该文件。请注意，该配置文件中不能有与启动参数重复的配置项，否则会导致启动错误：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/docker/daemon.json
@@ -15531,184 +15712,6 @@ drwx------. <span class="token number">2</span> root root  16K Sep  <span class=
       </categories>
   </entry>
   <entry>
-    <title>Linux 中磁盘分区基础知识</title>
-    <url>/3200821655/</url>
-    <content><![CDATA[<h1 id="磁盘设备名"><a class="markdownIt-Anchor" href="#磁盘设备名"></a> 磁盘设备名</h1>
-<p>在新版 Linux 中，IDE 和 SATA 的磁盘命名没有区别。</p>
-<h2 id="ide-接口硬盘"><a class="markdownIt-Anchor" href="#ide-接口硬盘"></a> IDE 接口硬盘</h2>
-<p>由于一个 IDE 接口可以连接两个 IDE 设备，一般主板可以接 4 个 IDE 设备。在系统中，IDE 设备的命名如下：</p>
-<table>
-<thead>
-<tr>
-<th><strong>IDE(Jumper)</strong></th>
-<th><strong>Master</strong></th>
-<th><strong>Slave</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>IDE1(Primary)</td>
-<td>/dev/hda</td>
-<td>/dev/hdb</td>
-</tr>
-<tr>
-<td>IDE2(Secondary)</td>
-<td>/dev/hdc</td>
-<td>/dev/hdd</td>
-</tr>
-</tbody>
-</table>
-<h2 id="sata-接口硬盘"><a class="markdownIt-Anchor" href="#sata-接口硬盘"></a> SATA 接口硬盘</h2>
-<p>SATA 接口设备名由 Linux 内核检测到磁盘的顺序从 a 开始排列，与插槽号无关。例如，两块磁盘插到 SATA1 和 SATA5 插槽上，系统中识别为 sda 和 sdb。</p>
-<h1 id="磁盘阵列"><a class="markdownIt-Anchor" href="#磁盘阵列"></a> 磁盘阵列</h1>
-<p>磁盘阵列（RAID，Redundant Arrays of Inexpensive Disks）即容错廉价磁盘阵列，指通过一些技术（软件或硬件）将多个较小的磁盘整合成一个较大的磁盘设备，并且具有一定数据保护的功能。</p>
-<h2 id="磁盘阵列类型"><a class="markdownIt-Anchor" href="#磁盘阵列类型"></a> 磁盘阵列类型</h2>
-<p>磁盘整列有两种组建方式。</p>
-<h3 id="硬件磁盘阵列"><a class="markdownIt-Anchor" href="#硬件磁盘阵列"></a> 硬件磁盘阵列</h3>
-<p>硬件（hardware）磁盘阵列通过磁盘阵列卡完成组建任务，拥有专门芯片来处理 RAID 任务。性能比较好，例如用来处理 RAID 5 的同位检查码计算，并不会重复消耗原本系统的 I/O 总线。硬件磁盘阵列的设备文件名为/dev/sd[a-p]。</p>
-<h3 id="软件磁盘阵列"><a class="markdownIt-Anchor" href="#软件磁盘阵列"></a> 软件磁盘阵列</h3>
-<p>软件（software）磁盘阵列利用软件来仿真磁盘阵列功能，与 CPU 运算和 I/O 总线速度关系很大。在 CentOS 中提供的软件磁盘阵列软件为 mdadm，支持以分区为单位组建 RAID0/1/5 等。软件磁盘阵列使用的设备文件名是系统的设备文件/dev/md[0-1]。</p>
-<h2 id="磁盘阵列等级"><a class="markdownIt-Anchor" href="#磁盘阵列等级"></a> 磁盘阵列等级</h2>
-<p>常见磁盘阵列等级有 4 种：RAID 0（等量模式，stripe）、RAID 1（映像模式，mirror）、RAID 0+1 或 RAID 1+0、RAID 5。</p>
-<h3 id="raid-0"><a class="markdownIt-Anchor" href="#raid-0"></a> RAID 0</h3>
-<p>此模式下，RAID 会将磁盘先切出等量的区块（名为 chunk，大小 4KB ~ 1MB），写入文件时，该文件依据块大小切割好，依序放到各个磁盘中去。</p>
-<p>磁盘可用容量为所有磁盘容量之和。</p>
-<p>读写性能最佳。</p>
-<p>安全性最糟，任意一块磁盘损坏，所有文件数据将缺损，所有数据都会丢失。</p>
-<h3 id="raid-1"><a class="markdownIt-Anchor" href="#raid-1"></a> RAID 1</h3>
-<p>此模式让同一份数据完整保存在两块磁盘上面，写入文件时，该文件复制为两份，并分别写入到各个磁盘中去。</p>
-<p>磁盘可用容量为所有磁盘容量之和的一半。</p>
-<p>写性能在使用软阵列时不好，因为南桥芯片的 I/O 性能有限，同时写入会导致带宽不够。读取性能和 RAID 0 一样。</p>
-<p>安全性最好。</p>
-<h3 id="raid-01raid-10"><a class="markdownIt-Anchor" href="#raid-01raid-10"></a> RAID 0+1，RAID 1+0</h3>
-<p>所谓 RAID 0+1 就是先让两块磁盘组成 RAID 0，再将两组 RAID 0 组成一组 RAID 1。RAID 1+0 则是先组 RAID 0，再组成 RAID 1。</p>
-<p>磁盘可用容量和 RAID 1 一样只有一半可用。</p>
-<p>读写性能和 RAID 0 一样。</p>
-<p>安全性和 RAID 1 一样。</p>
-<h3 id="raid-5"><a class="markdownIt-Anchor" href="#raid-5"></a> RAID 5</h3>
-<p>至少需要三块以上磁盘才能组建。在每个循环的写入过程中，每块磁盘还加入一个同位检查数据（Parity），这个数据会记录其他磁盘的备份数据，用于磁盘损坏时的恢复。</p>
-<p>磁盘可用容量为总磁盘容量减一块磁盘容量。</p>
-<p>读写取性能介于 RAID 1 和 RAID 0 之间。</p>
-<p>安全性能方面，只接受损坏不超过一块的硬盘情况下恢复数据。</p>
-<h2 id="预备磁盘"><a class="markdownIt-Anchor" href="#预备磁盘"></a> 预备磁盘</h2>
-<p>磁盘阵列中的磁盘损坏时，可更换坏掉的磁盘并插入新的磁盘，磁盘阵列会主动重建数据。这通常需要在关机重启时进行，但 SAS 支持热插拔，可以避免重启。</p>
-<p>为实现系统实时主动重建，需要预备磁盘。预备磁盘是指一块或多块未包含在原磁盘阵列等级中的磁盘。只有在磁盘阵列中出现磁盘损坏时，才会主动将预备磁盘引入磁盘阵列中进行数据重建。</p>
-<h1 id="逻辑卷管理器"><a class="markdownIt-Anchor" href="#逻辑卷管理器"></a> 逻辑卷管理器</h1>
-<p>逻辑卷管理器（LVM，Logical Volume Manager）通过软件组合几个物理分区（PV），将它们称为一块看起来是独立的大磁盘（VG），然后再将这块大磁盘分成可使用分区（LV），最终挂载使用。</p>
-<h2 id="物理卷"><a class="markdownIt-Anchor" href="#物理卷"></a> 物理卷</h2>
-<p>物理卷（PV，Physical Volume）分区需要通过 <code>fdisk</code> 调整系统标识符（system ID）为 8e（LVM 的标识符），然后通过 <code>pvcreate</code> 命令将其转换为 LVM 的最底层物理卷（PV），才能利用这些 PV。</p>
-<h2 id="卷用户组"><a class="markdownIt-Anchor" href="#卷用户组"></a> 卷用户组</h2>
-<p>LVM 将许多 PV 整合成卷用户组(VG，Volume Group)，在 32 位系统下每个 VG 最多仅能包含 65534 个 PE。如果使用 LVM 默认参数，则一个 VG 最大可达 256GB 容量。在 64 位系统下已不存在限制。</p>
-<h2 id="物理扩展块"><a class="markdownIt-Anchor" href="#物理扩展块"></a> 物理扩展块</h2>
-<p>LVM 默认使用 4MB 的物理扩展块（PE，即 Physical Extent），它是整个 LVM 中最小的存储块，类似于文件系统中的 block 大小。</p>
-<h2 id="逻辑卷"><a class="markdownIt-Anchor" href="#逻辑卷"></a> 逻辑卷</h2>
-<p>VG 会被切分成逻辑卷（LV，即 Logical Volume），这个 LV 就是最后可以被格式化使用的分区。</p>
-<p>LV 的大小与此 LV 内的 PE 总数有关。</p>
-<p>为了方便用户利用 LVM 管理其系统，LV 的设备文件名通常指定为 <code>/dev/vgname/lvname</code> 的样式。</p>
-<p>更改文件系统容量本质是通过交换 PE 来进行数据转换，将原本 LV 内的 PE 转移到其他设备中以降低 LV 容量，或将其他设备的 PE 加到此 LV 中以增大容量。</p>
-<p>对 LV 数据写入机制有两种：</p>
-<ul>
-<li>
-<p><strong>线性模式</strong>（linear）：如果有两个分区 sdb1 和 sdb2 加入到 VG 中，并且整个 VG 只有一个 LV 时，数据会先将 sdb1 写满，再开始写 sdb2。</p>
-</li>
-<li>
-<p><strong>交错模式</strong>（striped）：类似于 RAID 0 的模式，同时向两个分区内写入数据。</p>
-</li>
-</ul>
-<p>LVM 的重点在于可以弹性调整文件系统容量，而不是性能优先，因此默认使用线性模式进行读写。</p>
-<h1 id="mbr-分区表"><a class="markdownIt-Anchor" href="#mbr-分区表"></a> MBR 分区表</h1>
-<p>目前主流分区表格式有 MBR 和 GPT。早期的 Linux 系统为了兼容 Windows 磁盘，使用的是支持 Windows 的 MBR。</p>
-<p>MBR 分区表无法支持 2T 以上容量的硬盘。</p>
-<h2 id="第一个扇区"><a class="markdownIt-Anchor" href="#第一个扇区"></a> 第一个扇区</h2>
-<p>MBR 分区表第一个扇区（512Bytes）用来记录三个重要的信息：</p>
-<ul>
-<li>
-<p><strong>主引导分区</strong>（MBR，Master Boot Record）：用来安装引导加载程序的地方，有 446Bytes 大小。</p>
-</li>
-<li>
-<p><strong>分区表</strong>（Partition Table）：记录整块硬盘的分区状态，有 64Bytes 大小。</p>
-</li>
-<li>
-<p><strong>引导记录标识</strong>（BRID）：用来判断设备是否可以用于启动，只有 2 Bytes 大小。值为 55 或 AA 表示可引导。</p>
-</li>
-</ul>
-<p>如果第一个扇区出现物理坏道，整块硬盘都不可用。</p>
-<h2 id="主引导分区"><a class="markdownIt-Anchor" href="#主引导分区"></a> 主引导分区</h2>
-<p>MBR 只有 446Bytes，主要提供以下功能：</p>
-<ul>
-<li>提供菜单，可以选择不同开机选项，实现多重引导；</li>
-<li>载入内核文件，指向可开机的程序区段开启动系统；</li>
-<li>转交其他 Loader，将引导加载功能转交给其他 Loader 负责。</li>
-</ul>
-<h2 id="分区表"><a class="markdownIt-Anchor" href="#分区表"></a> 分区表</h2>
-<p>分区表记录了每个分区的起始柱面号，分区只是针对那 64Bytes 的分区表进行设置。由于只有 64Bytes 大小，所以仅能写入四组分区信息。这四组分区信息分为主（Primary）或扩展（Extended）分区。</p>
-<p>主分区和扩展分区在 Linux 系统中表示为 <code>sda[1-4]</code>。</p>
-<p>分区的最小单位为柱面（Cylinder），通常每个分区都包含一个或多个柱面。</p>
-<h2 id="扩展分区"><a class="markdownIt-Anchor" href="#扩展分区"></a> 扩展分区</h2>
-<p>扩展分区是指利用额外的扇区来记录分区信息，但无法进行格式化。可以在扩展分区中创建逻辑分区，具体做法是在每个逻辑分区的最前面几个扇区记录分区信息。需要注意的是，一个磁盘最多只能有一个扩展分区，这是操作系统的限制。</p>
-<p>为了确保磁盘的连续性，通常将扩展分区的柱面号分配在所有主分区之后。这样可以更好地利用磁盘空间，并有助于提高磁盘读写效率。</p>
-<h2 id="逻辑分区"><a class="markdownIt-Anchor" href="#逻辑分区"></a> 逻辑分区</h2>
-<p>从扩展分区分出的分区也称为逻辑分区（Logical Partition）。在 Linux 系统中，逻辑分区从 hda5 开始计算。</p>
-<p>在一个扩展分区内，相邻的逻辑分区可以合并。如果不相邻，则只能重建扩展分区。</p>
-<p>需要注意的是，如果扩展分区被破坏，所有的逻辑分区将被删除，因为逻辑分区的信息都记录在扩展分区中。</p>
-<h1 id="gpt-分区表"><a class="markdownIt-Anchor" href="#gpt-分区表"></a> GPT 分区表</h1>
-<p>GPT 分区表是为了适应 4K 扇区的硬盘和固态硬盘而设计的，它抛弃了原先以柱面为单位的计算法，改用逻辑区块位址（LBA，Logical Block Address）来规划分区。默认大小为 512Bytes，第一个 LBA 为 LBA0。</p>
-<p>GPT 分区表使用前 34 个 LBA 区块来记录分区信息。此外，磁盘最后 33 个 LBA 区块会用于存储分区表备份，以保障分区信息的安全。</p>
-<h2 id="mbr-兼容区块"><a class="markdownIt-Anchor" href="#mbr-兼容区块"></a> MBR 兼容区块</h2>
-<p>GPT 分区表中的 LBA0 用来兼容 MBR 格式。不同之处在于，原本分区表记录段仅放入一个特殊标志的分区，用来表示此磁盘为 GPT 磁盘。</p>
-<h2 id="gpt-表头记录"><a class="markdownIt-Anchor" href="#gpt-表头记录"></a> GPT 表头记录</h2>
-<p>GPT 分区表中的 LBA1 记录了分区表本身的位置和大小，备份分区表存放位置，以及分区表校验机制码（CRC32）。如果系统检测到分区表有错误，可以通过这个记录区来获取备份分区表并进行恢复。</p>
-<h2 id="分区表-2"><a class="markdownIt-Anchor" href="#分区表-2"></a> 分区表</h2>
-<p>分区表存放在 LBA2-33 位置。从 LBA2 开始，每个 LBA 都可以记录 4 笔分区记录，所以默认可以记录 128 个分区记录。</p>
-<p>每笔记录占用 128 字节空间，具体内容如下表：</p>
-<table>
-<thead>
-<tr>
-<th>起始字节</th>
-<th>长度</th>
-<th>内容</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0</td>
-<td>16 字节</td>
-<td>分区类型 GUID</td>
-</tr>
-<tr>
-<td>16</td>
-<td>16 字节</td>
-<td>分区 GUID</td>
-</tr>
-<tr>
-<td>32</td>
-<td>8 字节</td>
-<td>起始 LBA（小端序）</td>
-</tr>
-<tr>
-<td>40</td>
-<td>8 字节</td>
-<td>末尾 LBA</td>
-</tr>
-<tr>
-<td>48</td>
-<td>8 字节</td>
-<td>属性标签（如 bit60 表示“只读”）</td>
-</tr>
-<tr>
-<td>56</td>
-<td>72 字节</td>
-<td>分区名，可以包括 36 个 UTF-16（小端序）字符</td>
-</tr>
-</tbody>
-</table>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>0.基础概论</category>
-      </categories>
-  </entry>
-  <entry>
     <title>计算机硬件基础</title>
     <url>/3847559470/</url>
     <content><![CDATA[<h1 id="计算机简介"><a class="markdownIt-Anchor" href="#计算机简介"></a> 计算机简介</h1>
@@ -16066,6 +16069,184 @@ drwx------. <span class="token number">2</span> root root  16K Sep  <span class=
 <p>电源供应器（Power Supply Unit，PSU）用于给主板、CPU、显卡和硬盘等硬件供电。选择质量好的电源可以有效降低硬件意外损坏的概率。</p>
 <p>如果使用诸如 AIDA 等软件对未超频的电脑进行测试时，在测试过程中出现中途断电或重启等情况，说明电源的额定功率不够或者不稳定。需要减少设备连接或者更换更高功率的电源。</p>
 <p>在选购电源时，除了考虑电源的额定功率之外，还需要考虑能源转换率，也就是 $ 输入功率 / 输出功率 $ 的值。转换率值越大越好。</p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>0.基础概论</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Linux 中磁盘分区基础知识</title>
+    <url>/3200821655/</url>
+    <content><![CDATA[<h1 id="磁盘设备名"><a class="markdownIt-Anchor" href="#磁盘设备名"></a> 磁盘设备名</h1>
+<p>在新版 Linux 中，IDE 和 SATA 的磁盘命名没有区别。</p>
+<h2 id="ide-接口硬盘"><a class="markdownIt-Anchor" href="#ide-接口硬盘"></a> IDE 接口硬盘</h2>
+<p>由于一个 IDE 接口可以连接两个 IDE 设备，一般主板可以接 4 个 IDE 设备。在系统中，IDE 设备的命名如下：</p>
+<table>
+<thead>
+<tr>
+<th><strong>IDE(Jumper)</strong></th>
+<th><strong>Master</strong></th>
+<th><strong>Slave</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IDE1(Primary)</td>
+<td>/dev/hda</td>
+<td>/dev/hdb</td>
+</tr>
+<tr>
+<td>IDE2(Secondary)</td>
+<td>/dev/hdc</td>
+<td>/dev/hdd</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sata-接口硬盘"><a class="markdownIt-Anchor" href="#sata-接口硬盘"></a> SATA 接口硬盘</h2>
+<p>SATA 接口设备名由 Linux 内核检测到磁盘的顺序从 a 开始排列，与插槽号无关。例如，两块磁盘插到 SATA1 和 SATA5 插槽上，系统中识别为 sda 和 sdb。</p>
+<h1 id="磁盘阵列"><a class="markdownIt-Anchor" href="#磁盘阵列"></a> 磁盘阵列</h1>
+<p>磁盘阵列（RAID，Redundant Arrays of Inexpensive Disks）即容错廉价磁盘阵列，指通过一些技术（软件或硬件）将多个较小的磁盘整合成一个较大的磁盘设备，并且具有一定数据保护的功能。</p>
+<h2 id="磁盘阵列类型"><a class="markdownIt-Anchor" href="#磁盘阵列类型"></a> 磁盘阵列类型</h2>
+<p>磁盘整列有两种组建方式。</p>
+<h3 id="硬件磁盘阵列"><a class="markdownIt-Anchor" href="#硬件磁盘阵列"></a> 硬件磁盘阵列</h3>
+<p>硬件（hardware）磁盘阵列通过磁盘阵列卡完成组建任务，拥有专门芯片来处理 RAID 任务。性能比较好，例如用来处理 RAID 5 的同位检查码计算，并不会重复消耗原本系统的 I/O 总线。硬件磁盘阵列的设备文件名为/dev/sd[a-p]。</p>
+<h3 id="软件磁盘阵列"><a class="markdownIt-Anchor" href="#软件磁盘阵列"></a> 软件磁盘阵列</h3>
+<p>软件（software）磁盘阵列利用软件来仿真磁盘阵列功能，与 CPU 运算和 I/O 总线速度关系很大。在 CentOS 中提供的软件磁盘阵列软件为 mdadm，支持以分区为单位组建 RAID0/1/5 等。软件磁盘阵列使用的设备文件名是系统的设备文件/dev/md[0-1]。</p>
+<h2 id="磁盘阵列等级"><a class="markdownIt-Anchor" href="#磁盘阵列等级"></a> 磁盘阵列等级</h2>
+<p>常见磁盘阵列等级有 4 种：RAID 0（等量模式，stripe）、RAID 1（映像模式，mirror）、RAID 0+1 或 RAID 1+0、RAID 5。</p>
+<h3 id="raid-0"><a class="markdownIt-Anchor" href="#raid-0"></a> RAID 0</h3>
+<p>此模式下，RAID 会将磁盘先切出等量的区块（名为 chunk，大小 4KB ~ 1MB），写入文件时，该文件依据块大小切割好，依序放到各个磁盘中去。</p>
+<p>磁盘可用容量为所有磁盘容量之和。</p>
+<p>读写性能最佳。</p>
+<p>安全性最糟，任意一块磁盘损坏，所有文件数据将缺损，所有数据都会丢失。</p>
+<h3 id="raid-1"><a class="markdownIt-Anchor" href="#raid-1"></a> RAID 1</h3>
+<p>此模式让同一份数据完整保存在两块磁盘上面，写入文件时，该文件复制为两份，并分别写入到各个磁盘中去。</p>
+<p>磁盘可用容量为所有磁盘容量之和的一半。</p>
+<p>写性能在使用软阵列时不好，因为南桥芯片的 I/O 性能有限，同时写入会导致带宽不够。读取性能和 RAID 0 一样。</p>
+<p>安全性最好。</p>
+<h3 id="raid-01raid-10"><a class="markdownIt-Anchor" href="#raid-01raid-10"></a> RAID 0+1，RAID 1+0</h3>
+<p>所谓 RAID 0+1 就是先让两块磁盘组成 RAID 0，再将两组 RAID 0 组成一组 RAID 1。RAID 1+0 则是先组 RAID 0，再组成 RAID 1。</p>
+<p>磁盘可用容量和 RAID 1 一样只有一半可用。</p>
+<p>读写性能和 RAID 0 一样。</p>
+<p>安全性和 RAID 1 一样。</p>
+<h3 id="raid-5"><a class="markdownIt-Anchor" href="#raid-5"></a> RAID 5</h3>
+<p>至少需要三块以上磁盘才能组建。在每个循环的写入过程中，每块磁盘还加入一个同位检查数据（Parity），这个数据会记录其他磁盘的备份数据，用于磁盘损坏时的恢复。</p>
+<p>磁盘可用容量为总磁盘容量减一块磁盘容量。</p>
+<p>读写取性能介于 RAID 1 和 RAID 0 之间。</p>
+<p>安全性能方面，只接受损坏不超过一块的硬盘情况下恢复数据。</p>
+<h2 id="预备磁盘"><a class="markdownIt-Anchor" href="#预备磁盘"></a> 预备磁盘</h2>
+<p>磁盘阵列中的磁盘损坏时，可更换坏掉的磁盘并插入新的磁盘，磁盘阵列会主动重建数据。这通常需要在关机重启时进行，但 SAS 支持热插拔，可以避免重启。</p>
+<p>为实现系统实时主动重建，需要预备磁盘。预备磁盘是指一块或多块未包含在原磁盘阵列等级中的磁盘。只有在磁盘阵列中出现磁盘损坏时，才会主动将预备磁盘引入磁盘阵列中进行数据重建。</p>
+<h1 id="逻辑卷管理器"><a class="markdownIt-Anchor" href="#逻辑卷管理器"></a> 逻辑卷管理器</h1>
+<p>逻辑卷管理器（LVM，Logical Volume Manager）通过软件组合几个物理分区（PV），将它们称为一块看起来是独立的大磁盘（VG），然后再将这块大磁盘分成可使用分区（LV），最终挂载使用。</p>
+<h2 id="物理卷"><a class="markdownIt-Anchor" href="#物理卷"></a> 物理卷</h2>
+<p>物理卷（PV，Physical Volume）分区需要通过 <code>fdisk</code> 调整系统标识符（system ID）为 8e（LVM 的标识符），然后通过 <code>pvcreate</code> 命令将其转换为 LVM 的最底层物理卷（PV），才能利用这些 PV。</p>
+<h2 id="卷用户组"><a class="markdownIt-Anchor" href="#卷用户组"></a> 卷用户组</h2>
+<p>LVM 将许多 PV 整合成卷用户组(VG，Volume Group)，在 32 位系统下每个 VG 最多仅能包含 65534 个 PE。如果使用 LVM 默认参数，则一个 VG 最大可达 256GB 容量。在 64 位系统下已不存在限制。</p>
+<h2 id="物理扩展块"><a class="markdownIt-Anchor" href="#物理扩展块"></a> 物理扩展块</h2>
+<p>LVM 默认使用 4MB 的物理扩展块（PE，即 Physical Extent），它是整个 LVM 中最小的存储块，类似于文件系统中的 block 大小。</p>
+<h2 id="逻辑卷"><a class="markdownIt-Anchor" href="#逻辑卷"></a> 逻辑卷</h2>
+<p>VG 会被切分成逻辑卷（LV，即 Logical Volume），这个 LV 就是最后可以被格式化使用的分区。</p>
+<p>LV 的大小与此 LV 内的 PE 总数有关。</p>
+<p>为了方便用户利用 LVM 管理其系统，LV 的设备文件名通常指定为 <code>/dev/vgname/lvname</code> 的样式。</p>
+<p>更改文件系统容量本质是通过交换 PE 来进行数据转换，将原本 LV 内的 PE 转移到其他设备中以降低 LV 容量，或将其他设备的 PE 加到此 LV 中以增大容量。</p>
+<p>对 LV 数据写入机制有两种：</p>
+<ul>
+<li>
+<p><strong>线性模式</strong>（linear）：如果有两个分区 sdb1 和 sdb2 加入到 VG 中，并且整个 VG 只有一个 LV 时，数据会先将 sdb1 写满，再开始写 sdb2。</p>
+</li>
+<li>
+<p><strong>交错模式</strong>（striped）：类似于 RAID 0 的模式，同时向两个分区内写入数据。</p>
+</li>
+</ul>
+<p>LVM 的重点在于可以弹性调整文件系统容量，而不是性能优先，因此默认使用线性模式进行读写。</p>
+<h1 id="mbr-分区表"><a class="markdownIt-Anchor" href="#mbr-分区表"></a> MBR 分区表</h1>
+<p>目前主流分区表格式有 MBR 和 GPT。早期的 Linux 系统为了兼容 Windows 磁盘，使用的是支持 Windows 的 MBR。</p>
+<p>MBR 分区表无法支持 2T 以上容量的硬盘。</p>
+<h2 id="第一个扇区"><a class="markdownIt-Anchor" href="#第一个扇区"></a> 第一个扇区</h2>
+<p>MBR 分区表第一个扇区（512Bytes）用来记录三个重要的信息：</p>
+<ul>
+<li>
+<p><strong>主引导分区</strong>（MBR，Master Boot Record）：用来安装引导加载程序的地方，有 446Bytes 大小。</p>
+</li>
+<li>
+<p><strong>分区表</strong>（Partition Table）：记录整块硬盘的分区状态，有 64Bytes 大小。</p>
+</li>
+<li>
+<p><strong>引导记录标识</strong>（BRID）：用来判断设备是否可以用于启动，只有 2 Bytes 大小。值为 55 或 AA 表示可引导。</p>
+</li>
+</ul>
+<p>如果第一个扇区出现物理坏道，整块硬盘都不可用。</p>
+<h2 id="主引导分区"><a class="markdownIt-Anchor" href="#主引导分区"></a> 主引导分区</h2>
+<p>MBR 只有 446Bytes，主要提供以下功能：</p>
+<ul>
+<li>提供菜单，可以选择不同开机选项，实现多重引导；</li>
+<li>载入内核文件，指向可开机的程序区段开启动系统；</li>
+<li>转交其他 Loader，将引导加载功能转交给其他 Loader 负责。</li>
+</ul>
+<h2 id="分区表"><a class="markdownIt-Anchor" href="#分区表"></a> 分区表</h2>
+<p>分区表记录了每个分区的起始柱面号，分区只是针对那 64Bytes 的分区表进行设置。由于只有 64Bytes 大小，所以仅能写入四组分区信息。这四组分区信息分为主（Primary）或扩展（Extended）分区。</p>
+<p>主分区和扩展分区在 Linux 系统中表示为 <code>sda[1-4]</code>。</p>
+<p>分区的最小单位为柱面（Cylinder），通常每个分区都包含一个或多个柱面。</p>
+<h2 id="扩展分区"><a class="markdownIt-Anchor" href="#扩展分区"></a> 扩展分区</h2>
+<p>扩展分区是指利用额外的扇区来记录分区信息，但无法进行格式化。可以在扩展分区中创建逻辑分区，具体做法是在每个逻辑分区的最前面几个扇区记录分区信息。需要注意的是，一个磁盘最多只能有一个扩展分区，这是操作系统的限制。</p>
+<p>为了确保磁盘的连续性，通常将扩展分区的柱面号分配在所有主分区之后。这样可以更好地利用磁盘空间，并有助于提高磁盘读写效率。</p>
+<h2 id="逻辑分区"><a class="markdownIt-Anchor" href="#逻辑分区"></a> 逻辑分区</h2>
+<p>从扩展分区分出的分区也称为逻辑分区（Logical Partition）。在 Linux 系统中，逻辑分区从 hda5 开始计算。</p>
+<p>在一个扩展分区内，相邻的逻辑分区可以合并。如果不相邻，则只能重建扩展分区。</p>
+<p>需要注意的是，如果扩展分区被破坏，所有的逻辑分区将被删除，因为逻辑分区的信息都记录在扩展分区中。</p>
+<h1 id="gpt-分区表"><a class="markdownIt-Anchor" href="#gpt-分区表"></a> GPT 分区表</h1>
+<p>GPT 分区表是为了适应 4K 扇区的硬盘和固态硬盘而设计的，它抛弃了原先以柱面为单位的计算法，改用逻辑区块位址（LBA，Logical Block Address）来规划分区。默认大小为 512Bytes，第一个 LBA 为 LBA0。</p>
+<p>GPT 分区表使用前 34 个 LBA 区块来记录分区信息。此外，磁盘最后 33 个 LBA 区块会用于存储分区表备份，以保障分区信息的安全。</p>
+<h2 id="mbr-兼容区块"><a class="markdownIt-Anchor" href="#mbr-兼容区块"></a> MBR 兼容区块</h2>
+<p>GPT 分区表中的 LBA0 用来兼容 MBR 格式。不同之处在于，原本分区表记录段仅放入一个特殊标志的分区，用来表示此磁盘为 GPT 磁盘。</p>
+<h2 id="gpt-表头记录"><a class="markdownIt-Anchor" href="#gpt-表头记录"></a> GPT 表头记录</h2>
+<p>GPT 分区表中的 LBA1 记录了分区表本身的位置和大小，备份分区表存放位置，以及分区表校验机制码（CRC32）。如果系统检测到分区表有错误，可以通过这个记录区来获取备份分区表并进行恢复。</p>
+<h2 id="分区表-2"><a class="markdownIt-Anchor" href="#分区表-2"></a> 分区表</h2>
+<p>分区表存放在 LBA2-33 位置。从 LBA2 开始，每个 LBA 都可以记录 4 笔分区记录，所以默认可以记录 128 个分区记录。</p>
+<p>每笔记录占用 128 字节空间，具体内容如下表：</p>
+<table>
+<thead>
+<tr>
+<th>起始字节</th>
+<th>长度</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>16 字节</td>
+<td>分区类型 GUID</td>
+</tr>
+<tr>
+<td>16</td>
+<td>16 字节</td>
+<td>分区 GUID</td>
+</tr>
+<tr>
+<td>32</td>
+<td>8 字节</td>
+<td>起始 LBA（小端序）</td>
+</tr>
+<tr>
+<td>40</td>
+<td>8 字节</td>
+<td>末尾 LBA</td>
+</tr>
+<tr>
+<td>48</td>
+<td>8 字节</td>
+<td>属性标签（如 bit60 表示“只读”）</td>
+</tr>
+<tr>
+<td>56</td>
+<td>72 字节</td>
+<td>分区名，可以包括 36 个 UTF-16（小端序）字符</td>
+</tr>
+</tbody>
+</table>
 ]]></content>
       <categories>
         <category>Linux</category>
@@ -17837,227 +18018,6 @@ emacs           on<span aria-hidden="true" class="line-numbers-rows"><span></spa
       </categories>
   </entry>
   <entry>
-    <title>Linux 权限配置管理</title>
-    <url>/2354164977/</url>
-    <content><![CDATA[<h1 id="修改文件所属用户组"><a class="markdownIt-Anchor" href="#修改文件所属用户组"></a> 修改文件所属用户组</h1>
-<p>使用 <code>chgrp</code> 可以改变一个文件的所属用户组，目标组名必须已经存在于 <code>/etc/group</code>。</p>
-<p>例如修改 <code>dir1</code> 文件夹的所属组为 <code>tss</code>：</p>
- <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chgrp</span> tss dir1 <span class="token punctuation">;</span> ll
-total <span class="token number">4</span>
--rw-------. <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
-drwxr-xr-x. <span class="token number">2</span> <span class="token function">ftp</span>  tss    <span class="token number">16</span> Sep  <span class="token number">8</span> <span class="token number">23</span>:29 dir1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>使用选项 <code>-R</code> 可以递归修改目录 <code>dir1</code> 下内容的所属组：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chgrp</span> input <span class="token parameter variable">-R</span> dir1 <span class="token punctuation">;</span> ll dir1
-total <span class="token number">0</span>
--rw-r--r--. <span class="token number">1</span> root input <span class="token number">0</span> Sep  <span class="token number">8</span> <span class="token number">23</span>:29 xx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h1 id="修改文件所有者"><a class="markdownIt-Anchor" href="#修改文件所有者"></a> 修改文件所有者</h1>
-<p>使用<code>chown</code>命令可以修改文件或目录的所有者和所属组。目标用户名必须已经存在于<code>/etc/passwd</code>文件中。</p>
-<p>例如，将文件夹<code>dir1</code>的所有者设置为<code>lp</code>，所属组设置为<code>tape</code>：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chown</span> lp:tape dir1 <span class="token punctuation">;</span> ll
-total <span class="token number">4</span>
--rw-------. <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
-drwxr-xr-x. <span class="token number">2</span> lp   tape   <span class="token number">16</span> Sep  <span class="token number">8</span> <span class="token number">23</span>:29 dir1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>使用<code>-R</code>参数可以递归修改目录下的文件或子目录的所有者和所属组：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chown</span> <span class="token parameter variable">-R</span> ftp:ftp dir1 <span class="token punctuation">;</span> ll dir1
-total <span class="token number">0</span>
--rw-r--r--. <span class="token number">1</span> <span class="token function">ftp</span> <span class="token function">ftp</span> <span class="token number">0</span> Sep  <span class="token number">8</span> <span class="token number">23</span>:29 xx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h1 id="修改文件权限"><a class="markdownIt-Anchor" href="#修改文件权限"></a> 修改文件权限</h1>
-<p>使用<code>chmod</code>设置权限（只有文件所有者和 root 能执行），可以使用数字或字符来更改，数字类型采用数字累加来代表：</p>
-<table>
-<thead>
-<tr>
-<th>数字</th>
-<th>字符</th>
-<th>权限（文件/目录）</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>4</td>
-<td>r</td>
-<td>读取文件内容/查看目录下的文件或目录名称（无法看到属性）</td>
-</tr>
-<tr>
-<td>2</td>
-<td>w</td>
-<td>修改文件内容（不包含删除）/在目录下新建、删除、重命名文件或目录</td>
-</tr>
-<tr>
-<td>1</td>
-<td>x</td>
-<td>文件可以被系统执行/进入目录、遍历目录</td>
-</tr>
-</tbody>
-</table>
-<p>特殊权限：</p>
-<table>
-<thead>
-<tr>
-<th>数字</th>
-<th>权限（文件/目录）</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>4</td>
-<td>SUID（用在文件上）</td>
-</tr>
-<tr>
-<td>2</td>
-<td>SGID</td>
-</tr>
-<tr>
-<td>1</td>
-<td>SBIT（用在目录上）</td>
-</tr>
-</tbody>
-</table>
-<p>例如修改<code>dir1</code>文件夹的权限为<code>rwxrw---x</code>：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> <span class="token number">761</span> dir1 <span class="token punctuation">;</span> ll
-total <span class="token number">4</span>
--rw-------. <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
-drwxrw---x. <span class="token number">2</span> <span class="token function">ftp</span>  tss    <span class="token number">16</span> Sep  <span class="token number">8</span> <span class="token number">23</span>:29 dir1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>用字符类型改变文件权限方式：</p>
-<ul>
-<li>用<code>u</code>、<code>g</code>、<code>o</code>、<code>a</code>分别表示所有者、组、其他人和所有人。</li>
-<li>用<code>+</code>、<code>-</code>、<code>=</code>分别表示增加、去除、设置权限。如果没有指定权限，则该权限不会发生变化。</li>
-</ul>
-<p>例如设置 <code>dir1</code> 文件夹及其下的所有文件权限为 <code>rwxrwxr--</code>：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> <span class="token parameter variable">-R</span> <span class="token assign-left variable">u</span><span class="token operator">=</span>rwx,g<span class="token operator">=</span>rwx,o<span class="token operator">=</span>r dir1
-<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll dir1
-total <span class="token number">0</span>
--rwxrwxr--. <span class="token number">1</span> <span class="token function">ftp</span> root <span class="token number">0</span> Sep  <span class="token number">8</span> <span class="token number">23</span>:29 xx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>设置 <code>dir</code> 文件夹禁止进入：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> a-x dir1 <span class="token punctuation">;</span> ll
-total <span class="token number">4</span>
--rw-------. <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
-drw-rw-r--. <span class="token number">2</span> <span class="token function">ftp</span>  tss    <span class="token number">16</span> Sep  <span class="token number">8</span> <span class="token number">23</span>:29 dir1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>要给文件 <code>2</code> 设置 SUID/SGID 的权限（也可以使用 <code>u+s,g+s,o+t</code> 命令来设置 SUID、SGID、SBIT），可以使用以下命令：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> <span class="token number">6755</span> <span class="token number">2</span><span class="token punctuation">;</span> <span class="token function">ls</span> <span class="token parameter variable">-l</span> <span class="token number">2</span>
--rwsr-sr-x. <span class="token number">1</span> root root <span class="token number">0</span> Sep  <span class="token number">9</span> 07:57 <span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>当用户没有执行权限却设置了特殊权限时，特殊权限中的 <code>s</code> 和 <code>t</code> 会变成 <code>S</code> 和 <code>T</code>，表示无效权限。例如：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> <span class="token number">7666</span> <span class="token number">2</span><span class="token punctuation">;</span> ll <span class="token number">2</span>
--rwSrwSrwT. <span class="token number">1</span> root root <span class="token number">0</span> Sep  <span class="token number">9</span> 08:57 <span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h1 id="修改默认权限"><a class="markdownIt-Anchor" href="#修改默认权限"></a> 修改默认权限</h1>
-<p>文件创建时默认（<code>umask</code> 为 <code>000</code> 的情况）权限是 <code>666</code>，文件夹是 <code>777</code>，可以使用 <code>umask</code> 来对这一权限进一步削弱。</p>
-<p><code>root</code> 用户的 <code>umask</code> 默认为 <code>022</code>，一般用户为 <code>002</code>。使用 <code>umask</code> 修改的值必须写入到 <code>.profile</code> 文件中才能一直生效。</p>
-<p>查看目前用户在新建文件和目录时的权限默认值：</p>
-  <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token builtin class-name">umask</span>
-0022<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>上述命令表示新建文件不包括属组和其他用户的写权限。如果要添加属组的写权限，需要定义 <code>umask</code> 值：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token builtin class-name">umask</span> 002 <span class="token punctuation">;</span> <span class="token builtin class-name">umask</span>
-0002<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h1 id="访问控制列表"><a class="markdownIt-Anchor" href="#访问控制列表"></a> 访问控制列表</h1>
-<p>在默认权限无法满足要求时，可以考虑使用访问控制列表。</p>
-<h2 id="acl-访问控制列表"><a class="markdownIt-Anchor" href="#acl-访问控制列表"></a> ACL 访问控制列表</h2>
-<p>ACL 是 Access Control List 的缩写，主要用于提供传统权限之外的具体权限设置。ACL 可以针对单个用户或组、单个文件或目录进行权限控制。</p>
-<p>默认情况下，系统会自动启用 ACL 支持。可以使用 <code>dumpe2fs -h</code> 命令查询挂载参数：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mount</span> <span class="token operator">|</span> <span class="token function">grep</span> sd
-/dev/sda1 on /boot <span class="token builtin class-name">type</span> xfs <span class="token punctuation">(</span>rw,relatime,seclabel,attr2,inode64,noquota<span class="token punctuation">)</span>
-/dev/sdb4 on /root/sdb4m <span class="token builtin class-name">type</span> ext3 <span class="token punctuation">(</span>rw,relatime,seclabel,data<span class="token operator">=</span>ordered<span class="token punctuation">)</span>
-/dev/sdb5 on /ext333 <span class="token builtin class-name">type</span> ext3 <span class="token punctuation">(</span>rw,relatime,seclabel,data<span class="token operator">=</span>ordered<span class="token punctuation">)</span>
-<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ dumpe2fs <span class="token parameter variable">-h</span> /dev/sdb4 <span class="token operator">|</span> <span class="token function">grep</span> acl
-dumpe2fs <span class="token number">1.42</span>.9 <span class="token punctuation">(</span><span class="token number">28</span>-Dec-2013<span class="token punctuation">)</span>
-Default <span class="token function">mount</span> options:    user_xattr acl<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>若要手动挂载 ACL，可以使用 <code>mount -o remount,acl /</code> 命令，或者修改启动配置 <code>/etc/fstab</code>。</p>
-<h2 id="设置-acl"><a class="markdownIt-Anchor" href="#设置-acl"></a> 设置 ACL</h2>
-<p>可以使用 <code>setfacl</code> 来设置某个文件或目录的 ACL 规定，命令用法如下：</p>
-<p><code>setfacl [-bkRd] [&#123;-m|-x&#125; acl 参数] 目标</code></p>
-<p>参数说明：</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>-m</td>
-<td>设置后续的 ACL 参数给文件使用</td>
-</tr>
-<tr>
-<td>-x</td>
-<td>删除后续的 ACL 参数</td>
-</tr>
-<tr>
-<td>-b</td>
-<td>删除所有的 ACL 设置参数</td>
-</tr>
-<tr>
-<td>-k</td>
-<td>删除默认的 ACL 参数</td>
-</tr>
-<tr>
-<td>-R</td>
-<td>递归设置</td>
-</tr>
-<tr>
-<td>-d</td>
-<td>设置默认 ACL 参数，只对目录有效，目录下新建的数据都会用此默认值</td>
-</tr>
-</tbody>
-</table>
-<p>针对单个用户设置，例如给用户 <code>user1</code> 设置目录 <code>dir1</code> 的读取和执行权限：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ setfacl <span class="token parameter variable">-m</span> u:user1:rx dir1
-<span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ ll <span class="token parameter variable">-d</span> dir1
-drwxr-xr-x+ <span class="token number">2</span> root root <span class="token number">2048</span> Sep <span class="token number">13</span> 07:34 dir1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>可以看到权限部分多了一个加号 <code>+</code>。</p>
-<h2 id="查询-acl"><a class="markdownIt-Anchor" href="#查询-acl"></a> 查询 ACL</h2>
-<p>要查询特殊权限，可以使用 <code>getfacl</code> 命令，该命令参数与 <code>setfacl</code> 相同。例如，要查询 <code>dir1</code> 的权限内容：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ getfacl dir1
-<span class="token comment"># file: dir1</span>
-<span class="token comment"># owner: root</span>
-<span class="token comment"># group: root</span>
-user::rwx
-user:user1:r-x
-group::r-x
-mask::r-x
-other::r--<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>其中，<code>user</code>、<code>group</code>、<code>other</code> 代表普通权限。另外，还有一条刚设置的 <code>user1</code> 权限。</p>
-<h2 id="有效权限"><a class="markdownIt-Anchor" href="#有效权限"></a> 有效权限</h2>
-<p>ACL 中的 <code>mask</code> 规定了最大权限，也就是单独设置的权限不能超过 <code>mask</code> 显示的权限。</p>
-<p>首先，给用户组 <code>user1</code> 设置目录 <code>dir1</code> 的写权限：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ setfacl <span class="token parameter variable">-m</span> g:user1:w dir1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>然后，将 <code>dir1</code> 的 <code>mask</code> 权限设置为只读：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ setfacl <span class="token parameter variable">-m</span> m:r dir1
-<span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ getfacl dir1
-<span class="token comment"># file: dir1</span>
-<span class="token comment"># owner: root</span>
-<span class="token comment"># group: root</span>
-user::rwx
-user:user1:r-x                  <span class="token comment">#effective:r--</span>
-group::r-x                      <span class="token comment">#effective:r--</span>
-group:user1:-w-                 <span class="token comment">#effective:---</span>
-mask::r--
-other::r-x<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>这样，<code>effective</code> 后面显示的才是有效权限。</p>
-<h2 id="权限继承"><a class="markdownIt-Anchor" href="#权限继承"></a> 权限继承</h2>
-<p>可以使用 <code>d:[ug]:用户列表:[rwx]</code> 命令设置 ACL 权限被后续子文件夹和目录继承：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ setfacl <span class="token parameter variable">-m</span> d:g:user1:w dir1
-<span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> dir2 <span class="token punctuation">;</span> <span class="token function">ls</span> <span class="token parameter variable">-ld</span> dir2 <span class="token punctuation">;</span> getfacl dir2
-drwxrwxr-x+ <span class="token number">2</span> root root <span class="token number">2048</span> Sep <span class="token number">13</span> 07:56 dir2
-<span class="token comment"># file: dir2</span>
-<span class="token comment"># owner: root</span>
-<span class="token comment"># group: root</span>
-user::rwx
-group::r-x
-group:user1:-w-
-mask::rwx
-other::r-x
-default:user::rwx
-default:group::r-x
-default:group:user1:-w-
-default:mask::rwx
-default:other::r-x<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>这样设置后，<code>dir2</code> 目录会继承 <code>dir1</code> 目录的 ACL 权限。</p>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>2.系统管理</category>
-      </categories>
-  </entry>
-  <entry>
     <title>Linux 磁盘管理</title>
     <url>/3491093041/</url>
     <content><![CDATA[<h1 id="磁盘查询"><a class="markdownIt-Anchor" href="#磁盘查询"></a> 磁盘查询</h1>
@@ -19075,6 +19035,227 @@ The filesystem on /dev/VG400/LV400 is now <span class="token number">1437696</sp
 <p>要想建立快照区，必须注意快照区剩余容量要能装得下原始数据，如果快照区容纳不了，快照功能会失效。</p>
 <p>也可以将快照挂载后卸载原先 LV，使用快照区作为测试环境在上面测试，测试完毕后直接将快照区删除。</p>
 <p>要删除快照，先 <code>umount</code> 再使用 <code>lvremove</code> 命令即可。</p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>2.系统管理</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Linux 权限配置管理</title>
+    <url>/2354164977/</url>
+    <content><![CDATA[<h1 id="修改文件所属用户组"><a class="markdownIt-Anchor" href="#修改文件所属用户组"></a> 修改文件所属用户组</h1>
+<p>使用 <code>chgrp</code> 可以改变一个文件的所属用户组，目标组名必须已经存在于 <code>/etc/group</code>。</p>
+<p>例如修改 <code>dir1</code> 文件夹的所属组为 <code>tss</code>：</p>
+ <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chgrp</span> tss dir1 <span class="token punctuation">;</span> ll
+total <span class="token number">4</span>
+-rw-------. <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
+drwxr-xr-x. <span class="token number">2</span> <span class="token function">ftp</span>  tss    <span class="token number">16</span> Sep  <span class="token number">8</span> <span class="token number">23</span>:29 dir1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用选项 <code>-R</code> 可以递归修改目录 <code>dir1</code> 下内容的所属组：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chgrp</span> input <span class="token parameter variable">-R</span> dir1 <span class="token punctuation">;</span> ll dir1
+total <span class="token number">0</span>
+-rw-r--r--. <span class="token number">1</span> root input <span class="token number">0</span> Sep  <span class="token number">8</span> <span class="token number">23</span>:29 xx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h1 id="修改文件所有者"><a class="markdownIt-Anchor" href="#修改文件所有者"></a> 修改文件所有者</h1>
+<p>使用<code>chown</code>命令可以修改文件或目录的所有者和所属组。目标用户名必须已经存在于<code>/etc/passwd</code>文件中。</p>
+<p>例如，将文件夹<code>dir1</code>的所有者设置为<code>lp</code>，所属组设置为<code>tape</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chown</span> lp:tape dir1 <span class="token punctuation">;</span> ll
+total <span class="token number">4</span>
+-rw-------. <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
+drwxr-xr-x. <span class="token number">2</span> lp   tape   <span class="token number">16</span> Sep  <span class="token number">8</span> <span class="token number">23</span>:29 dir1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用<code>-R</code>参数可以递归修改目录下的文件或子目录的所有者和所属组：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chown</span> <span class="token parameter variable">-R</span> ftp:ftp dir1 <span class="token punctuation">;</span> ll dir1
+total <span class="token number">0</span>
+-rw-r--r--. <span class="token number">1</span> <span class="token function">ftp</span> <span class="token function">ftp</span> <span class="token number">0</span> Sep  <span class="token number">8</span> <span class="token number">23</span>:29 xx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h1 id="修改文件权限"><a class="markdownIt-Anchor" href="#修改文件权限"></a> 修改文件权限</h1>
+<p>使用<code>chmod</code>设置权限（只有文件所有者和 root 能执行），可以使用数字或字符来更改，数字类型采用数字累加来代表：</p>
+<table>
+<thead>
+<tr>
+<th>数字</th>
+<th>字符</th>
+<th>权限（文件/目录）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td>r</td>
+<td>读取文件内容/查看目录下的文件或目录名称（无法看到属性）</td>
+</tr>
+<tr>
+<td>2</td>
+<td>w</td>
+<td>修改文件内容（不包含删除）/在目录下新建、删除、重命名文件或目录</td>
+</tr>
+<tr>
+<td>1</td>
+<td>x</td>
+<td>文件可以被系统执行/进入目录、遍历目录</td>
+</tr>
+</tbody>
+</table>
+<p>特殊权限：</p>
+<table>
+<thead>
+<tr>
+<th>数字</th>
+<th>权限（文件/目录）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td>SUID（用在文件上）</td>
+</tr>
+<tr>
+<td>2</td>
+<td>SGID</td>
+</tr>
+<tr>
+<td>1</td>
+<td>SBIT（用在目录上）</td>
+</tr>
+</tbody>
+</table>
+<p>例如修改<code>dir1</code>文件夹的权限为<code>rwxrw---x</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> <span class="token number">761</span> dir1 <span class="token punctuation">;</span> ll
+total <span class="token number">4</span>
+-rw-------. <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
+drwxrw---x. <span class="token number">2</span> <span class="token function">ftp</span>  tss    <span class="token number">16</span> Sep  <span class="token number">8</span> <span class="token number">23</span>:29 dir1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>用字符类型改变文件权限方式：</p>
+<ul>
+<li>用<code>u</code>、<code>g</code>、<code>o</code>、<code>a</code>分别表示所有者、组、其他人和所有人。</li>
+<li>用<code>+</code>、<code>-</code>、<code>=</code>分别表示增加、去除、设置权限。如果没有指定权限，则该权限不会发生变化。</li>
+</ul>
+<p>例如设置 <code>dir1</code> 文件夹及其下的所有文件权限为 <code>rwxrwxr--</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> <span class="token parameter variable">-R</span> <span class="token assign-left variable">u</span><span class="token operator">=</span>rwx,g<span class="token operator">=</span>rwx,o<span class="token operator">=</span>r dir1
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll dir1
+total <span class="token number">0</span>
+-rwxrwxr--. <span class="token number">1</span> <span class="token function">ftp</span> root <span class="token number">0</span> Sep  <span class="token number">8</span> <span class="token number">23</span>:29 xx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>设置 <code>dir</code> 文件夹禁止进入：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> a-x dir1 <span class="token punctuation">;</span> ll
+total <span class="token number">4</span>
+-rw-------. <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
+drw-rw-r--. <span class="token number">2</span> <span class="token function">ftp</span>  tss    <span class="token number">16</span> Sep  <span class="token number">8</span> <span class="token number">23</span>:29 dir1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>要给文件 <code>2</code> 设置 SUID/SGID 的权限（也可以使用 <code>u+s,g+s,o+t</code> 命令来设置 SUID、SGID、SBIT），可以使用以下命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> <span class="token number">6755</span> <span class="token number">2</span><span class="token punctuation">;</span> <span class="token function">ls</span> <span class="token parameter variable">-l</span> <span class="token number">2</span>
+-rwsr-sr-x. <span class="token number">1</span> root root <span class="token number">0</span> Sep  <span class="token number">9</span> 07:57 <span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>当用户没有执行权限却设置了特殊权限时，特殊权限中的 <code>s</code> 和 <code>t</code> 会变成 <code>S</code> 和 <code>T</code>，表示无效权限。例如：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> <span class="token number">7666</span> <span class="token number">2</span><span class="token punctuation">;</span> ll <span class="token number">2</span>
+-rwSrwSrwT. <span class="token number">1</span> root root <span class="token number">0</span> Sep  <span class="token number">9</span> 08:57 <span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h1 id="修改默认权限"><a class="markdownIt-Anchor" href="#修改默认权限"></a> 修改默认权限</h1>
+<p>文件创建时默认（<code>umask</code> 为 <code>000</code> 的情况）权限是 <code>666</code>，文件夹是 <code>777</code>，可以使用 <code>umask</code> 来对这一权限进一步削弱。</p>
+<p><code>root</code> 用户的 <code>umask</code> 默认为 <code>022</code>，一般用户为 <code>002</code>。使用 <code>umask</code> 修改的值必须写入到 <code>.profile</code> 文件中才能一直生效。</p>
+<p>查看目前用户在新建文件和目录时的权限默认值：</p>
+  <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token builtin class-name">umask</span>
+0022<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>上述命令表示新建文件不包括属组和其他用户的写权限。如果要添加属组的写权限，需要定义 <code>umask</code> 值：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token builtin class-name">umask</span> 002 <span class="token punctuation">;</span> <span class="token builtin class-name">umask</span>
+0002<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h1 id="访问控制列表"><a class="markdownIt-Anchor" href="#访问控制列表"></a> 访问控制列表</h1>
+<p>在默认权限无法满足要求时，可以考虑使用访问控制列表。</p>
+<h2 id="acl-访问控制列表"><a class="markdownIt-Anchor" href="#acl-访问控制列表"></a> ACL 访问控制列表</h2>
+<p>ACL 是 Access Control List 的缩写，主要用于提供传统权限之外的具体权限设置。ACL 可以针对单个用户或组、单个文件或目录进行权限控制。</p>
+<p>默认情况下，系统会自动启用 ACL 支持。可以使用 <code>dumpe2fs -h</code> 命令查询挂载参数：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mount</span> <span class="token operator">|</span> <span class="token function">grep</span> sd
+/dev/sda1 on /boot <span class="token builtin class-name">type</span> xfs <span class="token punctuation">(</span>rw,relatime,seclabel,attr2,inode64,noquota<span class="token punctuation">)</span>
+/dev/sdb4 on /root/sdb4m <span class="token builtin class-name">type</span> ext3 <span class="token punctuation">(</span>rw,relatime,seclabel,data<span class="token operator">=</span>ordered<span class="token punctuation">)</span>
+/dev/sdb5 on /ext333 <span class="token builtin class-name">type</span> ext3 <span class="token punctuation">(</span>rw,relatime,seclabel,data<span class="token operator">=</span>ordered<span class="token punctuation">)</span>
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ dumpe2fs <span class="token parameter variable">-h</span> /dev/sdb4 <span class="token operator">|</span> <span class="token function">grep</span> acl
+dumpe2fs <span class="token number">1.42</span>.9 <span class="token punctuation">(</span><span class="token number">28</span>-Dec-2013<span class="token punctuation">)</span>
+Default <span class="token function">mount</span> options:    user_xattr acl<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>若要手动挂载 ACL，可以使用 <code>mount -o remount,acl /</code> 命令，或者修改启动配置 <code>/etc/fstab</code>。</p>
+<h2 id="设置-acl"><a class="markdownIt-Anchor" href="#设置-acl"></a> 设置 ACL</h2>
+<p>可以使用 <code>setfacl</code> 来设置某个文件或目录的 ACL 规定，命令用法如下：</p>
+<p><code>setfacl [-bkRd] [&#123;-m|-x&#125; acl 参数] 目标</code></p>
+<p>参数说明：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-m</td>
+<td>设置后续的 ACL 参数给文件使用</td>
+</tr>
+<tr>
+<td>-x</td>
+<td>删除后续的 ACL 参数</td>
+</tr>
+<tr>
+<td>-b</td>
+<td>删除所有的 ACL 设置参数</td>
+</tr>
+<tr>
+<td>-k</td>
+<td>删除默认的 ACL 参数</td>
+</tr>
+<tr>
+<td>-R</td>
+<td>递归设置</td>
+</tr>
+<tr>
+<td>-d</td>
+<td>设置默认 ACL 参数，只对目录有效，目录下新建的数据都会用此默认值</td>
+</tr>
+</tbody>
+</table>
+<p>针对单个用户设置，例如给用户 <code>user1</code> 设置目录 <code>dir1</code> 的读取和执行权限：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ setfacl <span class="token parameter variable">-m</span> u:user1:rx dir1
+<span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ ll <span class="token parameter variable">-d</span> dir1
+drwxr-xr-x+ <span class="token number">2</span> root root <span class="token number">2048</span> Sep <span class="token number">13</span> 07:34 dir1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>可以看到权限部分多了一个加号 <code>+</code>。</p>
+<h2 id="查询-acl"><a class="markdownIt-Anchor" href="#查询-acl"></a> 查询 ACL</h2>
+<p>要查询特殊权限，可以使用 <code>getfacl</code> 命令，该命令参数与 <code>setfacl</code> 相同。例如，要查询 <code>dir1</code> 的权限内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ getfacl dir1
+<span class="token comment"># file: dir1</span>
+<span class="token comment"># owner: root</span>
+<span class="token comment"># group: root</span>
+user::rwx
+user:user1:r-x
+group::r-x
+mask::r-x
+other::r--<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中，<code>user</code>、<code>group</code>、<code>other</code> 代表普通权限。另外，还有一条刚设置的 <code>user1</code> 权限。</p>
+<h2 id="有效权限"><a class="markdownIt-Anchor" href="#有效权限"></a> 有效权限</h2>
+<p>ACL 中的 <code>mask</code> 规定了最大权限，也就是单独设置的权限不能超过 <code>mask</code> 显示的权限。</p>
+<p>首先，给用户组 <code>user1</code> 设置目录 <code>dir1</code> 的写权限：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ setfacl <span class="token parameter variable">-m</span> g:user1:w dir1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>然后，将 <code>dir1</code> 的 <code>mask</code> 权限设置为只读：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ setfacl <span class="token parameter variable">-m</span> m:r dir1
+<span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ getfacl dir1
+<span class="token comment"># file: dir1</span>
+<span class="token comment"># owner: root</span>
+<span class="token comment"># group: root</span>
+user::rwx
+user:user1:r-x                  <span class="token comment">#effective:r--</span>
+group::r-x                      <span class="token comment">#effective:r--</span>
+group:user1:-w-                 <span class="token comment">#effective:---</span>
+mask::r--
+other::r-x<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这样，<code>effective</code> 后面显示的才是有效权限。</p>
+<h2 id="权限继承"><a class="markdownIt-Anchor" href="#权限继承"></a> 权限继承</h2>
+<p>可以使用 <code>d:[ug]:用户列表:[rwx]</code> 命令设置 ACL 权限被后续子文件夹和目录继承：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ setfacl <span class="token parameter variable">-m</span> d:g:user1:w dir1
+<span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> dir2 <span class="token punctuation">;</span> <span class="token function">ls</span> <span class="token parameter variable">-ld</span> dir2 <span class="token punctuation">;</span> getfacl dir2
+drwxrwxr-x+ <span class="token number">2</span> root root <span class="token number">2048</span> Sep <span class="token number">13</span> 07:56 dir2
+<span class="token comment"># file: dir2</span>
+<span class="token comment"># owner: root</span>
+<span class="token comment"># group: root</span>
+user::rwx
+group::r-x
+group:user1:-w-
+mask::rwx
+other::r-x
+default:user::rwx
+default:group::r-x
+default:group:user1:-w-
+default:mask::rwx
+default:other::r-x<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这样设置后，<code>dir2</code> 目录会继承 <code>dir1</code> 目录的 ACL 权限。</p>
 ]]></content>
       <categories>
         <category>Linux</category>

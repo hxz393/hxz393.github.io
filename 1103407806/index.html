@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="获取镜像 一般镜像通过 Docker Hub 来获取。  搜索镜像 通过 docker search 命令可以搜索公共仓库 Docker Hub 中的镜像： [root@server4 ~]$ docker search python NAME                       DESCRIPTION               STARS     OFFICIAL   AUTOMAT">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker 镜像操作">
+<meta property="og:url" content="https://blog.x2b.net/1103407806/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="获取镜像 一般镜像通过 Docker Hub 来获取。  搜索镜像 通过 docker search 命令可以搜索公共仓库 Docker Hub 中的镜像： [root@server4 ~]$ docker search python NAME                       DESCRIPTION               STARS     OFFICIAL   AUTOMAT">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-10-20T11:01:39.000Z">
+<meta property="article:modified_time" content="2023-05-14T14:01:57.855Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/1103407806/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/1103407806/","path":"1103407806/","title":"Docker 镜像操作"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Docker 镜像操作 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">64</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E9%95%9C%E5%83%8F"><span class="nav-number">1.</span> <span class="nav-text"> 获取镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%90%9C%E7%B4%A2%E9%95%9C%E5%83%8F"><span class="nav-number">1.1.</span> <span class="nav-text"> 搜索镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%89%E5%8F%96%E9%95%9C%E5%83%8F"><span class="nav-number">1.2.</span> <span class="nav-text"> 拉取镜像</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%A1%E7%90%86%E9%95%9C%E5%83%8F"><span class="nav-number">2.</span> <span class="nav-text"> 管理镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E9%95%9C%E5%83%8F"><span class="nav-number">2.1.</span> <span class="nav-text"> 创建镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E9%95%9C%E5%83%8F"><span class="nav-number">2.2.</span> <span class="nav-text"> 删除镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%85%E7%90%86%E9%95%9C%E5%83%8F"><span class="nav-number">2.3.</span> <span class="nav-text"> 清理镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%BC%E5%87%BA%E9%95%9C%E5%83%8F"><span class="nav-number">2.4.</span> <span class="nav-text"> 导出镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5%E9%95%9C%E5%83%8F"><span class="nav-number">2.5.</span> <span class="nav-text"> 导入镜像</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E9%95%9C%E5%83%8F"><span class="nav-number">3.</span> <span class="nav-text"> 查询镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E9%95%9C%E5%83%8F%E5%88%97%E8%A1%A8"><span class="nav-number">3.1.</span> <span class="nav-text"> 查询镜像列表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E9%95%9C%E5%83%8F%E8%AF%A6%E6%83%85"><span class="nav-number">3.2.</span> <span class="nav-text"> 查询镜像详情</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E9%95%9C%E5%83%8F%E4%BF%AE%E6%94%B9%E5%8E%86%E5%8F%B2"><span class="nav-number">3.3.</span> <span class="nav-text"> 查询镜像修改历史</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E9%95%9C%E5%83%8F"><span class="nav-number">4.</span> <span class="nav-text"> 操作镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E6%94%B9%E5%90%8D"><span class="nav-number">4.1.</span> <span class="nav-text"> 镜像改名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8A%E4%BC%A0%E9%95%9C%E5%83%8F"><span class="nav-number">4.2.</span> <span class="nav-text"> 上传镜像</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">64</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/1103407806/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Docker 镜像操作 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Docker 镜像操作
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-10-20 19:01:39" itemprop="dateCreated datePublished" datetime="2021-10-20T19:01:39+08:00">2021-10-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-14 22:01:57" itemprop="dateModified" datetime="2023-05-14T22:01:57+08:00">2023-05-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Docker/1-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">1.基本操作</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="获取镜像"><a class="markdownIt-Anchor" href="#获取镜像"></a> 获取镜像</h1>
+<p>一般镜像通过 Docker Hub 来获取。</p>
+<h2 id="搜索镜像"><a class="markdownIt-Anchor" href="#搜索镜像"></a> 搜索镜像</h2>
+<p>通过 <code>docker search</code> 命令可以搜索公共仓库 Docker Hub 中的镜像：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> search python
+NAME                       DESCRIPTION               STARS     OFFICIAL   AUTOMATED
+python                     Python is an interpreted, <span class="token number">6632</span>      <span class="token punctuation">[</span>OK<span class="token punctuation">]</span>       
+pypy                       PyPy is a fast, compliant <span class="token number">290</span>       <span class="token punctuation">[</span>OK<span class="token punctuation">]</span>       
+nikolaik/python-nodejs     Python with Node.js       <span class="token number">86</span>                   <span class="token punctuation">[</span>OK<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>搜索结果以 STARS 排序，默认显示 25 个结果。其字段说明如下：</p>
+<ul>
+<li>NAME：镜像名称。</li>
+<li>DESCRIPTION：创建者对镜像的简单描述。</li>
+<li>STARS：镜像在官方镜像仓库中受欢迎程度。</li>
+<li>OFFICIAL：是否由 Docker 官方提供。</li>
+<li>AUTOMATED：镜像是否使用了自动构建。</li>
+</ul>
+<p>设置搜索结果数目限制到 100 个：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> search <span class="token parameter variable">--limit</span> <span class="token number">100</span> centos<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>使用 <code>--filter</code> 参数来限制搜索结果只显示官方构建的 <code>nginx</code> 镜像：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> search <span class="token parameter variable">--filter</span><span class="token operator">=</span>is-official<span class="token operator">=</span>true nginx
+NAME      DESCRIPTION                STARS     OFFICIAL   AUTOMATED
+nginx     Official build of Nginx.   <span class="token number">15666</span>     <span class="token punctuation">[</span>OK<span class="token punctuation">]</span>    <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>过滤收藏数小于 10 的镜像：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> search <span class="token parameter variable">--filter</span><span class="token operator">=</span>stars<span class="token operator">=</span><span class="token number">10</span> linux<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="拉取镜像"><a class="markdownIt-Anchor" href="#拉取镜像"></a> 拉取镜像</h2>
+<p>在运行 Docker 容器之前，需要在本地获取相应的镜像，可以使用 <code>docker pull</code> 命令进行镜像拉取。</p>
+<p>例如，从 Docker Hub 拉取 <code>Ubuntu 18.04</code> 系统的基础镜像：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> pull ubuntu:18.04
+<span class="token number">18.04</span>: Pulling from library/ubuntu
+<span class="token number">284055322776</span>: Pull complete 
+Digest: sha256:0fedbd5bd9fb72089c7bbca476949e10593cebed9b1fb9edf5b79dbbacddd7d6
+Status: Downloaded newer image <span class="token keyword">for</span> ubuntu:18.04
+docker.io/library/ubuntu:18.04<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Docker 利用镜像的分层机制，将镜像分为多个包进行下载。当所有镜像层的下载和解压等操作完成后，镜像会出现在本地镜像仓库中。</p>
+<p>如果不指定标签，默认使用 latest 标签。例如，从网易镜像站下载最新版本的 <code>Ubuntu</code> 镜像：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> pull hub-mirror.c.163.com/public/ubuntu<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>此外，可以使用 <code>-a</code> 参数一次性下载所有标签版本的镜像。</p>
+<h1 id="管理镜像"><a class="markdownIt-Anchor" href="#管理镜像"></a> 管理镜像</h1>
+<p>镜像管理命令和容器管理命令类似。</p>
+<h2 id="创建镜像"><a class="markdownIt-Anchor" href="#创建镜像"></a> 创建镜像</h2>
+<p>可以使用 <code>docker commit</code> 将容器转换为镜像，以保存容器中所做的更改：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> commit c238293 newimage:v1
+sha256:392f66f55bace6d10def28028edc90eebc3bb1e23e8e30a030aeb8f96e98ac8e
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> images
+REPOSITORY                TAG       IMAGE ID       CREATED         SIZE
+newimage                  v1        392f66f55bac   <span class="token number">4</span> seconds ago   <span class="token number">63</span>.1MB<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这种手动创建镜像的方法容易出错且可重复性较差，因此最好使用 <code>docker build</code> 命令结合 Dockerfile 来构建镜像。</p>
+<p>默认情况下，<code>docker build</code> 命令会自动在指定目录下查找名为 Dockerfile 的文件，并使用该文件进行构建。也可以通过 <code>-f</code> 参数指定要使用的文件名：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> Dockerfile
+FROM ubuntu:18.04
+CMD <span class="token builtin class-name">echo</span> <span class="token string">"Hello Dockerfile"</span>
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> build <span class="token builtin class-name">.</span>
+Sending build context to Docker daemon  <span class="token number">5</span>.938MB
+Step <span class="token number">1</span>/2 <span class="token builtin class-name">:</span> FROM ubuntu:18.04
+ ---<span class="token operator">></span> 5a214d77f5d7
+Step <span class="token number">2</span>/2 <span class="token builtin class-name">:</span> CMD <span class="token builtin class-name">echo</span> <span class="token string">"Hello Dockerfile"</span>
+ ---<span class="token operator">></span> Running <span class="token keyword">in</span> 2fe4d2fa8be2
+Removing intermediate container 2fe4d2fa8be2
+ ---<span class="token operator">></span> 4e73bed1428a
+Successfully built 4e73bed1428a
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> images
+REPOSITORY                TAG       IMAGE ID       CREATED          SIZE
+<span class="token operator">&lt;</span>none<span class="token operator">></span>                    <span class="token operator">&lt;</span>none<span class="token operator">></span>    4e73bed1428a   <span class="token number">12</span> seconds ago   <span class="token number">63</span>.1MB
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> run <span class="token parameter variable">--rm</span> 4e73
+Hello Dockerfile<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 <code>-t</code> 参数可以指定构建镜像的名称和标签：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> build <span class="token parameter variable">-t</span> assassing/redis:2.3 <span class="token builtin class-name">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="删除镜像"><a class="markdownIt-Anchor" href="#删除镜像"></a> 删除镜像</h2>
+<p>要删除本地镜像，可以使用 <code>docker rmi</code> 命令。如果一个镜像有多个标签，只有在最后一个标签被删除时，镜像才会被真正删除：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> rmi 5a214d77
+Error response from daemon: conflict: unable to delete 5a214d77f5d7 <span class="token punctuation">(</span>must be forced<span class="token punctuation">)</span> - image is referenced <span class="token keyword">in</span> multiple repositories
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> rmi base:1.0
+Untagged: base:1.0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果镜像中包含与其他镜像共享的镜像层，那些层将被保留下来，只删除未被使用的层。</p>
+<p>当镜像被容器使用时，可以使用 <code>-f</code> 参数强制删除镜像：</p>
+<pre class="line-numbers language-none"><code class="language-none">[root@server4 ~]$ docker rmi -f nginx
+Untagged: nginx:latest
+Untagged: nginx@sha256:644a70516a26004c97d0d85c7fe1d0c3a67ea8ab7ddf4aff193d9f301670cf36<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>但是，强制删除镜像不会自动停止或删除使用该镜像的容器，这可能会导致一些难以处理的问题。最好先停止或清理使用该镜像的容器，然后再删除镜像。</p>
+<h2 id="清理镜像"><a class="markdownIt-Anchor" href="#清理镜像"></a> 清理镜像</h2>
+<p>要清理系统中残留的临时镜像文件或未使用的镜像，可以使用 <code>docker image prune</code> 命令进行清理：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> image prune
+WARNING<span class="token operator">!</span> This will remove all dangling images.
+Are you sure you want to continue? <span class="token punctuation">[</span>y/N<span class="token punctuation">]</span> y
+Total reclaimed space: 0B<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="导出镜像"><a class="markdownIt-Anchor" href="#导出镜像"></a> 导出镜像</h2>
+<p>要导出镜像，可以使用 <code>docker save</code> 命令。例如，将 <code>alpine</code> 镜像导出到本地的 <code>a.tar</code> 文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> images alpine
+REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+alpine       latest    14119a10abf4   <span class="token number">7</span> weeks ago   <span class="token number">5</span>.6MB
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> save <span class="token parameter variable">-o</span> a.tar alpine
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ ll a.tar 
+-rw-------. <span class="token number">1</span> root root <span class="token number">5874688</span> Oct <span class="token number">20</span> <span class="token number">23</span>:22 a.tar<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>也可以使用输出重定向将导出内容保存到指定文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> save alpine <span class="token operator">></span> a1.tar<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>可以一次将多个镜像导出到单个文件中：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> save <span class="token parameter variable">-o</span> docker.tar alpine hello-world<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="导入镜像"><a class="markdownIt-Anchor" href="#导入镜像"></a> 导入镜像</h2>
+<p>可以使用 <code>docker load</code> 命令从文件中导入镜像：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> load <span class="token parameter variable">-i</span> docker.tar 
+e2eb06d8af82: Loading layer <span class="token punctuation">[</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">></span><span class="token punctuation">]</span>  <span class="token number">5</span>.865MB/5.865MB
+Loaded image: alpine:latest
+e07ee1baac5f: Loading layer <span class="token punctuation">[</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">></span><span class="token punctuation">]</span>  <span class="token number">14</span>.85kB/14.85kB
+Loaded image: hello-world:latest<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>也可以使用输入重定向符号从文件中导入镜像：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> load <span class="token operator">&lt;</span> <span class="token number">2</span>.tar 
+2653d992f4ef: Loading layer <span class="token punctuation">[</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">></span><span class="token punctuation">]</span>  <span class="token number">216</span>.5MB/216.5MB
+Loaded image ID: sha256:300e315adb2f96afe5f0b2780b87f28ae95231fe3bdd1e16b9ba606307728f55<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h1 id="查询镜像"><a class="markdownIt-Anchor" href="#查询镜像"></a> 查询镜像</h1>
+<p>镜像以分层文件的形式存储在文件系统中。</p>
+<h2 id="查询镜像列表"><a class="markdownIt-Anchor" href="#查询镜像列表"></a> 查询镜像列表</h2>
+<p>使用 <code>docker images</code> 命令可以列出本地镜像列表：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> images
+REPOSITORY    TAG       IMAGE ID       CREATED       SIZE
+ubuntu        <span class="token number">18.04</span>     5a214d77f5d7   <span class="token number">2</span> weeks ago   <span class="token number">63</span>.1MB
+hello-world   latest    feb5d9fea6a5   <span class="token number">3</span> weeks ago   <span class="token number">13</span>.3kB<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>结果显示字段的含义如下：</p>
+<ul>
+<li>REPOSITORY: 镜像名或镜像来源仓库。如果有 Namespace，也会一同显示。</li>
+<li>TAG: 镜像标签，用于标记不同的版本信息。</li>
+<li>IMAGE ID: 镜像的 ID，也是镜像的唯一标识。可以使用前几个字符代替完整的 ID。</li>
+<li>CREATED: 镜像的创建时间。</li>
+<li>SIZE: 镜像的大小，包括共享的镜像层。实际占用的存储空间可能较小。</li>
+</ul>
+<p>可以使用通配符来过滤镜像列表：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> images ubu*
+REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+ubuntu       <span class="token number">18.04</span>     5a214d77f5d7   <span class="token number">2</span> weeks ago   <span class="token number">63</span>.1MB<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h2 id="查询镜像详情"><a class="markdownIt-Anchor" href="#查询镜像详情"></a> 查询镜像详情</h2>
+<p>可以使用 <code>docker inspect</code> 命令获取镜像的详细信息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> inspect ubuntu:18.04
+<span class="token punctuation">[</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token string">"Id"</span><span class="token builtin class-name">:</span> <span class="token string">"sha256:5a214d77f5d747e6ed81632310baa6190301feeb875cf6bf9da560108fa09972"</span>,
+        <span class="token string">"RepoTags"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
+            <span class="token string">"base:1.0"</span>,
+            <span class="token string">"ubuntu:18.04"</span>
+        <span class="token punctuation">]</span>,
+        <span class="token string">"RepoDigests"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
+            <span class="token string">"ubuntu@sha256:0fedbd5bd9fb72089c7bbca476949e10593cebed9b1fb9edf5b79dbbacddd7d6"</span>
+        <span class="token punctuation">]</span>,<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>也可以通过镜像的 ID 进行查询：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> inspect 5a21<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>查询结果以 JSON 格式返回，可以使用输出格式化工具进行过滤：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> inspect <span class="token parameter variable">-f</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#123;</span><span class="token string">".ContainerConfig.Hostname"</span><span class="token punctuation">&#125;</span><span class="token punctuation">&#125;</span> alpine
+330289c649db<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="查询镜像修改历史"><a class="markdownIt-Anchor" href="#查询镜像修改历史"></a> 查询镜像修改历史</h2>
+<p>可以使用 <code>docker history</code> 命令查看镜像的每一层具体内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> <span class="token function">history</span> --no-trunc alpine
+IMAGE          CREATED       CREATED BY                            SIZE      COMMENT
+14119a10abf4   <span class="token number">7</span> weeks ago   /bin/sh <span class="token parameter variable">-c</span> <span class="token comment">#(nop)  CMD ["/bin/sh"]    0B        </span>
+<span class="token operator">&lt;</span>missing<span class="token operator">></span>      <span class="token number">7</span> weeks ago   /bin/sh <span class="token parameter variable">-c</span> <span class="token comment">#(nop) ADD file:aad4290d   5.6MB </span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="操作镜像"><a class="markdownIt-Anchor" href="#操作镜像"></a> 操作镜像</h1>
+<p>涉及到镜像操作的内容包括镜像改名和上传镜像。</p>
+<h2 id="镜像改名"><a class="markdownIt-Anchor" href="#镜像改名"></a> 镜像改名</h2>
+<p>可以使用 <code>docker tag</code> 命令为本地镜像添加标签，并删除原始镜像，从而实现改名的目的。</p>
+<p>例如，为 <code>ubuntu:18.04</code> 镜像添加一个新标签 <code>base:1.0</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> tag ubuntu:18.04 base:1.0
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> images
+REPOSITORY    TAG       IMAGE ID       CREATED       SIZE
+base          <span class="token number">1.0</span>       5a214d77f5d7   <span class="token number">2</span> weeks ago   <span class="token number">63</span>.1MB
+ubuntu        <span class="token number">18.04</span>     5a214d77f5d7   <span class="token number">2</span> weeks ago   <span class="token number">63</span>.1MB
+hello-world   latest    feb5d9fea6a5   <span class="token number">3</span> weeks ago   <span class="token number">13</span>.3kB<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>现在可以看到多了一个名为 <code>base:1.0</code> 的镜像，其镜像 ID 与 <code>ubuntu:18.04</code> 相同。通过添加标签，类似于创建文件的硬链接。</p>
+<h2 id="上传镜像"><a class="markdownIt-Anchor" href="#上传镜像"></a> 上传镜像</h2>
+<p>要将镜像上传到仓库，可以使用 <code>docker push</code> 命令。在上传之前，需要为目标镜像打上标签。如果要上传到 Docker Hub，则目标镜像的命名空间为用户的用户名；如果要上传到私有仓库，则命名空间变为仓库的地址：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> tag alpine:latest assassing/a1:latest
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> push assassing/a1:latest
+The push refers to repository <span class="token punctuation">[</span>docker.io/assassing/a1<span class="token punctuation">]</span>
+e2eb06d8af82: Mounted from library/alpine 
+latest: digest: sha256:69704ef328d05a9f806b6b8502915e6a0a4faa4d72018dc42343f511490daf8a size: <span class="token number">528</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/1103407806/" title="Docker 镜像操作">https://blog.x2b.net/1103407806/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../4130112682/" rel="prev" title="Docker 安装与配置">
+                  <i class="fa fa-chevron-left"></i> Docker 安装与配置
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../3229018848/" rel="next" title="Docker 仓库操作">
+                  Docker 仓库操作 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">175k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">9:42</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@next-theme/pjax@0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://unpkg.com/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://unpkg.com/katex@0.16.4/dist/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/1103407806/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://unpkg.com/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'blog.x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>
