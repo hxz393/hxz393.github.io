@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="TLS 加密配置 Docker Daemon 监听 Socket 有三种方式，分别是 unix、tcp 和 fd。其中，监听 fd 文件是使用 system 的系统专用。 在默认配置中，Docker Remote API 通过 Socket 监听来自本地的连接，监听地址位于 unix:&#x2F;&#x2F;&#x2F;var&#x2F;run&#x2F;docker.sock。可以通过 curl 发送一个简单的请求来测试： [root@ser">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker 安全与监控">
+<meta property="og:url" content="https://blog.x2b.net/1472106291/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="TLS 加密配置 Docker Daemon 监听 Socket 有三种方式，分别是 unix、tcp 和 fd。其中，监听 fd 文件是使用 system 的系统专用。 在默认配置中，Docker Remote API 通过 Socket 监听来自本地的连接，监听地址位于 unix:&#x2F;&#x2F;&#x2F;var&#x2F;run&#x2F;docker.sock。可以通过 curl 发送一个简单的请求来测试： [root@ser">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-10-25T20:00:29.000Z">
+<meta property="article:modified_time" content="2023-05-14T17:12:40.210Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/1472106291/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/1472106291/","path":"1472106291/","title":"Docker 安全与监控"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Docker 安全与监控 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">9</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">69</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#tls-%E5%8A%A0%E5%AF%86%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text"> TLS 加密配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-bench"><span class="nav-number">2.</span> <span class="nav-text"> Docker Bench</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#sysdig"><span class="nav-number">3.</span> <span class="nav-text"> Sysdig</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#weave-scope"><span class="nav-number">4.</span> <span class="nav-text"> Weave Scope</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#elk"><span class="nav-number">5.</span> <span class="nav-text"> ELK</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">69</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/1472106291/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Docker 安全与监控 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Docker 安全与监控
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-10-26 04:00:29" itemprop="dateCreated datePublished" datetime="2021-10-26T04:00:29+08:00">2021-10-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-15 01:12:40" itemprop="dateModified" datetime="2023-05-15T01:12:40+08:00">2023-05-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Docker/2-%E8%BF%9B%E9%98%B6%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">2.进阶操作</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="tls-加密配置"><a class="markdownIt-Anchor" href="#tls-加密配置"></a> TLS 加密配置</h1>
+<p>Docker Daemon 监听 Socket 有三种方式，分别是 unix、tcp 和 fd。其中，监听 fd 文件是使用 system 的系统专用。</p>
+<p>在默认配置中，Docker Remote API 通过 Socket 监听来自本地的连接，监听地址位于 <code>unix:///var/run/docker.sock</code>。可以通过 <code>curl</code> 发送一个简单的请求来测试：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 .docker<span class="token punctuation">]</span>$ <span class="token function">curl</span> --unix-socket /var/run/docker.sock http://localhost/info <span class="token operator">|</span> python <span class="token parameter variable">-mjson.tool</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token string">"Architecture"</span><span class="token builtin class-name">:</span> <span class="token string">"x86_64"</span>,
+    <span class="token string">"BridgeNfIp6tables"</span><span class="token builtin class-name">:</span> false,
+    <span class="token string">"BridgeNfIptables"</span><span class="token builtin class-name">:</span> false,
+    <span class="token string">"CPUSet"</span><span class="token builtin class-name">:</span> true,
+    <span class="token string">"CPUShares"</span><span class="token builtin class-name">:</span> true,
+    <span class="token string">"CgroupDriver"</span><span class="token builtin class-name">:</span> <span class="token string">"cgroupfs"</span>,<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以通过 <code>-H</code> 选项来修改监听方式：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ dockerd <span class="token parameter variable">-H</span> <span class="token number">192.168</span>.2.234:5999 <span class="token parameter variable">-H</span> unix:///var/run/docker.sock <span class="token operator">&amp;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>客户端可以通过 <code>docker -H</code> 指定服务端地址来操作服务端。也可以设置 Docker_HOST 变量固定服务器地址：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> <span class="token parameter variable">-H</span> tcp://192.168.2.234:5999 pull ubuntu<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>在 Docker 中规定 2375 作为非加密端口，2376 作为加密端口。如果没有启用 TLS，则服务端与客户端的通信没有认证和加密，任何客户端口可以向服务端发送命令。</p>
+<p>使用 TLS 通信需要在服务端和客户端中加入 TLS 相关的配置。首先创建 RSA 私钥 <code>ca.key</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ openssl genrsa <span class="token parameter variable">-aes256</span> <span class="token parameter variable">-out</span> ca.key <span class="token number">4096</span>
+Generating RSA private key, <span class="token number">4096</span> bit long modulus
+<span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span>++
+<span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span>++
+e is <span class="token number">65537</span> <span class="token punctuation">(</span>0x10001<span class="token punctuation">)</span>
+Enter pass phrase <span class="token keyword">for</span> ca.key:
+Verifying - Enter pass phrase <span class="token keyword">for</span> ca.key:<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 RSA 私钥创建 CA 证书 <code>ca.pem</code>。参数 <code>-x509</code> 是生成自签名 CA 证书，参数 <code>-days 365</code> 设置证书有效期：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ openssl req <span class="token parameter variable">-new</span> <span class="token parameter variable">-x509</span> <span class="token parameter variable">-days</span> <span class="token number">365</span> <span class="token parameter variable">-key</span> ca.key <span class="token parameter variable">-sha256</span> <span class="token parameter variable">-out</span> ca.pem
+Enter pass phrase <span class="token keyword">for</span> ca.key:
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter <span class="token string">'.'</span>, the field will be left blank.
+-----
+Country Name <span class="token punctuation">(</span><span class="token number">2</span> letter code<span class="token punctuation">)</span> <span class="token punctuation">[</span>XX<span class="token punctuation">]</span>:CN
+State or Province Name <span class="token punctuation">(</span>full name<span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>:BeiJing
+Locality Name <span class="token punctuation">(</span>eg, city<span class="token punctuation">)</span> <span class="token punctuation">[</span>Default City<span class="token punctuation">]</span>:BeiJing
+Organization Name <span class="token punctuation">(</span>eg, company<span class="token punctuation">)</span> <span class="token punctuation">[</span>Default Company Ltd<span class="token punctuation">]</span>:server1
+Organizational Unit Name <span class="token punctuation">(</span>eg, section<span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>:Dev
+Common Name <span class="token punctuation">(</span>eg, your name or your server<span class="token string">'s hostname) []:server1
+Email Address []:root@server1.com
+[root@server1 ~]$ scp ca.* root@192.168.2.241:/root
+root@192.168.2.241'</span>s password: 
+ca.key                                                 <span class="token number">100</span>% <span class="token number">3326</span>     <span class="token number">2</span>.7MB/s   00:00    
+ca.pem                                                 <span class="token number">100</span>% <span class="token number">2094</span>     <span class="token number">2</span>.4MB/s   00:00    
+ca.srl                                                 <span class="token number">100</span>%   <span class="token number">17</span>    <span class="token number">24</span>.3KB/s   00:00<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>创建服务器私钥和 CSR。其中 <code>server.key</code> 是服务器私钥的文件名，<code>server.csr</code> 是服务器 CSR 文件名：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ openssl genrsa <span class="token parameter variable">-out</span> server.key <span class="token number">4096</span>
+Generating RSA private key, <span class="token number">4096</span> bit long modulus
+<span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span>++
+<span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span>++
+e is <span class="token number">65537</span> <span class="token punctuation">(</span>0x10001<span class="token punctuation">)</span>
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ openssl req <span class="token parameter variable">-subj</span> <span class="token string">"/CN=server1"</span> <span class="token parameter variable">-sha256</span> <span class="token parameter variable">-new</span> <span class="token parameter variable">-key</span> server.key <span class="token parameter variable">-out</span> server.csr<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 CA 证书创建服务器证书文件，可以限制连接客户端 IP：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> subjectAltName <span class="token operator">=</span> IP:192.168.2.234,IP:192.168.2.241,IP:127.0.0.1 <span class="token operator">></span> allowip.cnf
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ openssl x509 <span class="token parameter variable">-req</span> <span class="token parameter variable">-days</span> <span class="token number">365</span> <span class="token parameter variable">-sha256</span> <span class="token parameter variable">-in</span> server.csr <span class="token parameter variable">-CA</span> ca.pem <span class="token parameter variable">-CAkey</span> ca.key <span class="token parameter variable">-CAcreateserial</span> <span class="token parameter variable">-out</span> server.pem <span class="token parameter variable">-extfile</span> allowip.cnf
+Signature ok
+<span class="token assign-left variable">subject</span><span class="token operator">=</span>/CN<span class="token operator">=</span>server1
+Getting CA Private Key
+Enter pass phrase <span class="token keyword">for</span> ca.key:<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>创建客户端私钥和 CSR：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ openssl genrsa <span class="token parameter variable">-out</span> client.key <span class="token number">4096</span>
+Generating RSA private key, <span class="token number">4096</span> bit long modulus
+<span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span>++
+<span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span>.++
+e is <span class="token number">65537</span> <span class="token punctuation">(</span>0x10001<span class="token punctuation">)</span>
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ openssl req <span class="token parameter variable">-subj</span> <span class="token string">'/CN=server4'</span> <span class="token parameter variable">-new</span> <span class="token parameter variable">-key</span> client.key <span class="token parameter variable">-out</span> client.csr<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 CA 证书创建客户端证书文件，需要加入 <code>extendedKeyUsage</code> 选项：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> extendedKeyUsage <span class="token operator">=</span> clientAuth <span class="token operator">></span> client.cnf
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ openssl x509 <span class="token parameter variable">-req</span> <span class="token parameter variable">-days</span> <span class="token number">365</span> <span class="token parameter variable">-sha256</span> <span class="token parameter variable">-in</span> client.csr <span class="token parameter variable">-CA</span> ca.pem <span class="token parameter variable">-CAkey</span> ca.key <span class="token parameter variable">-CAcreateserial</span> <span class="token parameter variable">-out</span> client.pem <span class="token parameter variable">-extfile</span> client.cnf 
+Signature ok
+<span class="token assign-left variable">subject</span><span class="token operator">=</span>/CN<span class="token operator">=</span>server4
+Getting CA Private Key
+Enter pass phrase <span class="token keyword">for</span> ca.key:<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>创建 PEM 文件之后可以删除 CSR 文件。修改证书权限并移动到 <code>~/.docker/</code> 目录下：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">rm</span> <span class="token parameter variable">-f</span> client.cnf client.csr 
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> <span class="token parameter variable">-v</span> 0400 *.key
+mode of ‘ca.key’ changed from 0644 <span class="token punctuation">(</span>rw-r--r--<span class="token punctuation">)</span> to 0244 <span class="token punctuation">(</span>r--r--r--<span class="token punctuation">)</span>
+mode of ‘client.key’ changed from 0644 <span class="token punctuation">(</span>rw-r--r--<span class="token punctuation">)</span> to 0244 <span class="token punctuation">(</span>r--r--r--<span class="token punctuation">)</span>
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> <span class="token parameter variable">-v</span> 0444 *.pem
+mode of ‘ca.pem’ changed from 0644 <span class="token punctuation">(</span>rw-r--r--<span class="token punctuation">)</span> to 0444 <span class="token punctuation">(</span>r--r--r--<span class="token punctuation">)</span>
+mode of ‘client.pem’ changed from 0644 <span class="token punctuation">(</span>rw-r--r--<span class="token punctuation">)</span> to 0444 <span class="token punctuation">(</span>r--r--r--<span class="token punctuation">)</span>
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> .docker
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">cp</span> ca.pem client.* .docker/
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">rm</span> <span class="token parameter variable">-f</span> server.csr allowip.cnf 
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> <span class="token parameter variable">-v</span> 0400 *.key
+mode of ‘ca.key’ changed from 0644 <span class="token punctuation">(</span>rw-r--r--<span class="token punctuation">)</span> to 0244 <span class="token punctuation">(</span>r--r--r--<span class="token punctuation">)</span>
+mode of ‘server.key’ changed from 0644 <span class="token punctuation">(</span>rw-r--r--<span class="token punctuation">)</span> to 0244 <span class="token punctuation">(</span>r--r--r--<span class="token punctuation">)</span>
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> <span class="token parameter variable">-v</span> 0444 *.pem
+mode of ‘ca.pem’ changed from 0644 <span class="token punctuation">(</span>rw-r--r--<span class="token punctuation">)</span> to 0444 <span class="token punctuation">(</span>r--r--r--<span class="token punctuation">)</span>
+mode of ‘server.pem’ changed from 0644 <span class="token punctuation">(</span>rw-r--r--<span class="token punctuation">)</span> to 0444 <span class="token punctuation">(</span>r--r--r--<span class="token punctuation">)</span>
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> .docker
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">cp</span> ca.pem server.* .docker/<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>修改服务端配置文件并重启：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/docker/daemon.json
+<span class="token punctuation">&#123;</span>
+    <span class="token string">"tlsverify"</span><span class="token builtin class-name">:</span> true,
+    <span class="token string">"tlscacert"</span><span class="token builtin class-name">:</span> <span class="token string">"/root/.docker/ca.pem"</span>,
+    <span class="token string">"tlscert"</span><span class="token builtin class-name">:</span> <span class="token string">"/root/.docker/server.pem"</span>,
+    <span class="token string">"tlskey"</span><span class="token builtin class-name">:</span> <span class="token string">"/root/.docker/server.key"</span>
+<span class="token punctuation">&#125;</span>
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ systemctl restart <span class="token function">docker</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>修改客户端配置文件并重启：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/docker/daemon.json
+<span class="token punctuation">&#123;</span>
+    <span class="token string">"tlsverify"</span><span class="token builtin class-name">:</span> true,
+    <span class="token string">"tlscacert"</span><span class="token builtin class-name">:</span> <span class="token string">"/root/.docker/ca.pem"</span>,
+    <span class="token string">"tlscert"</span><span class="token builtin class-name">:</span> <span class="token string">"/root/.docker/client.pem"</span>,
+    <span class="token string">"tlskey"</span><span class="token builtin class-name">:</span> <span class="token string">"/root/.docker/client.key"</span>
+<span class="token punctuation">&#125;</span>
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ systemctl restart <span class="token function">docker</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>客户端测试连接：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">cd</span> /root/.docker/
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> <span class="token parameter variable">--tlsverify</span> <span class="token parameter variable">--tlscacert</span><span class="token operator">=</span>ca.pem <span class="token parameter variable">--tlscert</span><span class="token operator">=</span>client.pem <span class="token parameter variable">--tlskey</span><span class="token operator">=</span>client.key <span class="token parameter variable">-H</span> tcp://192.168.2.234:5999 <span class="token function">ps</span> <span class="token parameter variable">-a</span>
+CONTAINER ID   IMAGE           COMMAND           CREATED       STATUS                      PORTS     NAMES
+7198e1cdf396   pytest/volume   <span class="token string">"/bin/sleep 60"</span>   <span class="token number">5</span> hours ago   Exited <span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token number">5</span> hours ago                clever_aryabhata<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="docker-bench"><a class="markdownIt-Anchor" href="#docker-bench"></a> Docker Bench</h1>
+<p>Docker Bench 是一个开源项目，该项目按照互联网安全中心（CIS，Center for Internet Security）对于 Docker 的安全规范进行一系列环境检查。</p>
+<p>可以利用 Docker 镜像快速进行检查：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> run <span class="token parameter variable">-it</span> <span class="token parameter variable">--net</span> <span class="token function">host</span> <span class="token parameter variable">--pid</span> <span class="token function">host</span> <span class="token parameter variable">--userns</span> <span class="token function">host</span> --cap-add audit_control <span class="token parameter variable">-e</span> <span class="token assign-left variable">DOCKER_CONTENT_TRUST</span><span class="token operator">=</span><span class="token variable">$DOCKER_CONTENT_TRUST</span> <span class="token parameter variable">-v</span> /var/lib:/bar/lib <span class="token parameter variable">-v</span> /var/run/docker.sock:/var/run/docker.sock <span class="token parameter variable">-v</span> /usr/lib/systemd:/usr/lib/systemd <span class="token parameter variable">-v</span> /etc:/etc <span class="token parameter variable">--label</span> docker_bench_security docker/docker-bench-security<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="sysdig"><a class="markdownIt-Anchor" href="#sysdig"></a> Sysdig</h1>
+<p>Sysdig 是一个轻量级的系统监控工具，原生支持容器。可以使用容器来运行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> run <span class="token parameter variable">-it</span> <span class="token parameter variable">--rm</span> <span class="token parameter variable">--name</span><span class="token operator">=</span>sysdig <span class="token parameter variable">--privileged</span> <span class="token parameter variable">--volume</span><span class="token operator">=</span>/var/run/docker.sock:/host/var/run/docker.sock <span class="token parameter variable">--volume</span><span class="token operator">=</span>/dev/:/host/dev/ <span class="token parameter variable">--volume</span><span class="token operator">=</span>/proc/:/host/proc/:ro <span class="token parameter variable">--volume</span><span class="token operator">=</span>/boot/:/host/boot/:ro <span class="token parameter variable">--volume</span><span class="token operator">=</span>/lib/modules/:/host/lib/modules/:ro <span class="token parameter variable">--volume</span><span class="token operator">=</span>/usr/:/host/usr/:ro sysdig/sysdig<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>启动后进入容器执行 <code>csysdig</code> 命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">root@213496097e95:/<span class="token comment"># csysdig</span>
+   PID   <span class="token environment constant">PPID</span>     CPU <span class="token environment constant">USER</span>          TH     VIRT      RES    FILE     NET Command
+  <span class="token number">1250</span>      <span class="token number">1</span>    <span class="token number">0.50</span> root          <span class="token number">16</span>       1G      40M       <span class="token number">0</span>    <span class="token number">0.00</span> /usr/bin/contain
+  <span class="token number">5459</span>   <span class="token number">5298</span>    <span class="token number">0.50</span> root           <span class="token number">2</span>     362M      15M       <span class="token number">0</span>    <span class="token number">0.00</span> csysdig
+  <span class="token number">1500</span>      <span class="token number">1</span>    <span class="token number">0.00</span> root           <span class="token number">1</span>      88M       2M       <span class="token number">0</span>    <span class="token number">0.00</span> /usr/libexec/pos
+  <span class="token number">1506</span>   <span class="token number">1500</span>    <span class="token number">0.00</span>                <span class="token number">1</span>      88M       4M       <span class="token number">0</span>    <span class="token number">0.00</span> pickup <span class="token parameter variable">-l</span> <span class="token parameter variable">-t</span> uni
+  <span class="token number">4624</span>   <span class="token number">4511</span>    <span class="token number">0.00</span> www-data       <span class="token number">1</span>     222M       9M       <span class="token number">0</span>    <span class="token number">0.00</span> apache2 <span class="token parameter variable">-DFOREGR</span>
+   <span class="token number">954</span>      <span class="token number">1</span>    <span class="token number">0.00</span>                <span class="token number">2</span>      65M       3M       <span class="token number">0</span>    <span class="token number">0.00</span> /usr/bin/dbus-da
+  <span class="token number">4475</span>   <span class="token number">1477</span>    <span class="token number">0.00</span> root           <span class="token number">7</span>     806M      10M       <span class="token number">0</span>    <span class="token number">0.00</span> /usr/bin/docker-
+   <span class="token number">947</span>      <span class="token number">1</span>    <span class="token number">0.00</span> root           <span class="token number">3</span>     267M       5M       <span class="token number">0</span>    <span class="token number">0.00</span> /usr/bin/vmtools
+  <span class="token number">5254</span>   <span class="token number">5233</span>    <span class="token number">0.00</span> root          <span class="token number">11</span>       1G      39M      4K    <span class="token number">0.00</span> <span class="token function">docker</span> run <span class="token parameter variable">-it</span> -
+  <span class="token number">4291</span>   <span class="token number">4272</span>    <span class="token number">0.00</span>                <span class="token number">8</span>       1G      74M       <span class="token number">0</span>    <span class="token number">0.00</span> mysqld
+  <span class="token number">1036</span>      <span class="token number">1</span>    <span class="token number">0.00</span> root           <span class="token number">1</span>     108M     860K       <span class="token number">0</span>    <span class="token number">0.00</span> /sbin/agetty <span class="token parameter variable">--n</span>
+  <span class="token number">1507</span>   <span class="token number">1500</span>    <span class="token number">0.00</span>                <span class="token number">1</span>      88M       4M       <span class="token number">0</span>    <span class="token number">0.00</span> qmgr <span class="token parameter variable">-l</span> <span class="token parameter variable">-t</span> unix
+   <span class="token number">948</span>      <span class="token number">1</span>    <span class="token number">0.00</span>                <span class="token number">7</span>     598M      14M       <span class="token number">0</span>    <span class="token number">0.00</span> /usr/lib/polkit-
+F1Help  F2Views F4FilterF5Echo  F6Dig   F7LegendF8ActionsF9Sort  F12Spe       <span class="token number">8</span>/43<span class="token punctuation">(</span><span class="token number">18.6</span>%<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="weave-scope"><a class="markdownIt-Anchor" href="#weave-scope"></a> Weave Scope</h1>
+<p>Weave Scope 可以将 Docker 容器分布生成一张地图，看起来很直观：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">sudo</span> <span class="token function">curl</span> <span class="token parameter variable">-L</span> https://github.com/weaveworks/scope/releases/download/latest_release/scope <span class="token parameter variable">-o</span> /usr/local/bin/scope
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> a+x /usr/local/bin/scope 
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ scope launch
+Scope probe started
+Weave Scope is listening at the following URL<span class="token punctuation">(</span>s<span class="token punctuation">)</span>:
+  * http://192.168.2.204:4040/
+  * http://172.18.0.1:4040/<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 <code>scope launch</code> 将以容器方式启动 Weave Scope，之后通过 <code>http://192.168.2.204:4040/</code> 在浏览器访问。</p>
+<p>如果需要监控多台主机，在 <code>scope launch</code> 后面加上对应主机的 IP 地址，并在每台主机上运行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ scope launch <span class="token number">192.168</span>.2.204 <span class="token number">192.168</span>.2.205 <span class="token number">192.168</span>.2.206<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>加入基本账号验证：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ scope launch <span class="token parameter variable">-app.basicAuth</span> <span class="token parameter variable">-app.basicAuth.password</span> <span class="token number">123456</span> <span class="token parameter variable">-app.basicAuth.username</span> user <span class="token parameter variable">-probe.basicAuth</span> <span class="token parameter variable">-probe.basicAuth.password</span> <span class="token number">123456</span> <span class="token parameter variable">-probe.basicAuth.username</span> user<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="elk"><a class="markdownIt-Anchor" href="#elk"></a> ELK</h1>
+<p>ELK 套件是三个软件的合称：Elasticsearch（搜索引擎）、Logstash（日志分析）和Kibana（可视化）。</p>
+<p>下面采用最小部署。其中，5601 是 Kibana web 接口，9200 是 Elasticsearch JSON 接口，5044 是 Logstash 日志接口：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> run <span class="token parameter variable">-d</span> <span class="token parameter variable">-p</span> <span class="token number">5601</span>:5601 <span class="token parameter variable">-p</span> <span class="token number">9200</span>:9200 <span class="token parameter variable">-p</span> <span class="token number">5044</span>:5044 <span class="token parameter variable">-it</span> <span class="token parameter variable">--name</span> elk sebp/elk<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>如果启动报错 “vm.max_map_count [65530] is too low”，需要修改 <code>/etc/sysctl.conf</code> 文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/sysctl.conf
+<span class="token assign-left variable">vm.max_map_count</span><span class="token operator">=</span><span class="token number">262144</span>
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">sysctl</span> <span class="token parameter variable">-p</span>
+net.ipv4.ip_forward <span class="token operator">=</span> <span class="token number">1</span>
+vm.max_map_count <span class="token operator">=</span> <span class="token number">262144</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>启动之后通过 <a target="_blank" rel="noopener external nofollow noreferrer" href="http://192.168.2.204:5601/">http://192.168.2.204:5601/</a> 来访问。由于目前没有任何日志，所以还需要使用 Filebeat 来配合，它能将指定路径下的日志文件转发给 ELK：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> <span class="token parameter variable">-L</span> <span class="token parameter variable">-O</span> https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.3.0-x86_64.rpm
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">rpm</span> <span class="token parameter variable">-vi</span> filebeat-7.3.0-x86_64.rpm<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>之后修改 Filebeat 配置文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/filebeat/filebeat.yml 
+<span class="token comment">#=========================== Filebeat inputs =============================</span>
+- type: log
+  enabled: <span class="token boolean">true</span>
+  paths:
+    - /var/lib/docker/containers/*/*.log
+    - /var/log/*.log
+<span class="token comment">#-------------------------- Elasticsearch output ------------------------------</span>
+output.elasticsearch:
+  <span class="token comment"># Array of hosts to connect to.</span>
+  hosts: <span class="token punctuation">[</span><span class="token string">"localhost:9200"</span><span class="token punctuation">]</span>
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ filebeat setup <span class="token parameter variable">-e</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>启动 Filebeat 后，监控的日志会发送给 Elasticsearch：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ systemctl start filebeat.service<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>访问 <a target="_blank" rel="noopener external nofollow noreferrer" href="http://192.168.2.204:5601/">http://192.168.2.204:5601</a>，进入 Kibana 的 Discover 页面，即可查看日志。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/1472106291/" title="Docker 安全与监控">https://blog.x2b.net/1472106291/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../2670657393/" rel="prev" title="Docker API">
+                  <i class="fa fa-chevron-left"></i> Docker API
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../799638542/" rel="next" title="Linux 网络基础知识">
+                  Linux 网络基础知识 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">186k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">10:21</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@next-theme/pjax@0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://unpkg.com/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://unpkg.com/katex@0.16.4/dist/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/1472106291/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://unpkg.com/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'blog.x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>

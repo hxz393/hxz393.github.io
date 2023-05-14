@@ -92,7 +92,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">9</span></a></li><li class="menu-item menu-item-archives"><a href="../../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">67</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">9</span></a></li><li class="menu-item menu-item-archives"><a href="../../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">69</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -157,7 +157,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="../../archives/">
-          <span class="site-state-item-count">67</span>
+          <span class="site-state-item-count">69</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -459,6 +459,258 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/1472106291/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="../../1472106291/" class="post-title-link" itemprop="url">Docker 安全与监控</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-10-26 04:00:29" itemprop="dateCreated datePublished" datetime="2021-10-26T04:00:29+08:00">2021-10-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-15 01:12:40" itemprop="dateModified" datetime="2023-05-15T01:12:40+08:00">2023-05-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../../categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../../categories/Docker/2-%E8%BF%9B%E9%98%B6%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">2.进阶操作</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="tls-加密配置"><a class="markdownIt-Anchor" href="#tls-加密配置"></a> TLS 加密配置</h1>
+<p>Docker Daemon 监听 Socket 有三种方式，分别是 unix、tcp 和 fd。其中，监听 fd 文件是使用 system 的系统专用。</p>
+<p>在默认配置中，Docker Remote API 通过 Socket 监听来自本地的连接，监听地址位于 <code>unix:///var/run/docker.sock</code>。可以通过 <code>curl</code> 发送一个简单的请求来测试：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 .docker<span class="token punctuation">]</span>$ <span class="token function">curl</span> --unix-socket /var/run/docker.sock http://localhost/info <span class="token operator">|</span> python <span class="token parameter variable">-mjson.tool</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token string">"Architecture"</span><span class="token builtin class-name">:</span> <span class="token string">"x86_64"</span>,
+    <span class="token string">"BridgeNfIp6tables"</span><span class="token builtin class-name">:</span> false,
+    <span class="token string">"BridgeNfIptables"</span><span class="token builtin class-name">:</span> false,
+    <span class="token string">"CPUSet"</span><span class="token builtin class-name">:</span> true,
+    <span class="token string">"CPUShares"</span><span class="token builtin class-name">:</span> true,
+    <span class="token string">"CgroupDriver"</span><span class="token builtin class-name">:</span> <span class="token string">"cgroupfs"</span>,<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以通过 <code>-H</code> 选项来修改监听方式：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ dockerd <span class="token parameter variable">-H</span> <span class="token number">192.168</span>.2.234:5999 <span class="token parameter variable">-H</span> unix:///var/run/docker.sock <span class="token operator">&amp;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="../../1472106291/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/2670657393/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="../../2670657393/" class="post-title-link" itemprop="url">Docker API</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-10-25 20:55:34" itemprop="dateCreated datePublished" datetime="2021-10-25T20:55:34+08:00">2021-10-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-15 00:59:38" itemprop="dateModified" datetime="2023-05-15T00:59:38+08:00">2023-05-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../../categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../../categories/Docker/2-%E8%BF%9B%E9%98%B6%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">2.进阶操作</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="restful"><a class="markdownIt-Anchor" href="#restful"></a> RESTful</h1>
+<p>Docker API 是一套基于 RESTful（Representational State Transfer，表述性状态转移）设计的 HTTP 接口，用于操作 Docker 服务。它实现在 Docker 服务程序中，并由 Docker 服务程序向外提供。</p>
+<p>RESTful 设计中有几个比较关键的概念：</p>
+<ul>
+<li>
+<p>资源（Resource）</p>
+<p>RESTful 接口操作或获取的对象就是资源，在 Docker 中可以是容器、镜像、数据卷等实体。</p>
+</li>
+<li>
+<p>表述（Representation）</p>
+<p>由于资源形式各式各样，因此在 RESTful 设计中要求采用可读性的格式来展示资源。在 Docker API 中，大多数资源以 JSON 文本的形式进行表述。</p>
+</li>
+<li>
+<p>状态转移（State Transfer）</p>
+<p>对于资源的修改可以理解为资源状态的变化，即状态转移。在 RESTful 设计中，强调使用 HTTP 方法来确定资源的操作方式，例如使用 GET 获取、POST 新增、PUT 修改、DELETE 删除等。</p>
+</li>
+</ul>
+<h1 id="docker-api"><a class="markdownIt-Anchor" href="#docker-api"></a> Docker API</h1>
+<p>采用 Docker API 进行通信可以省去 Docker 客户端的安装，并且能够提供更高效和更自由的操作。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="../../2670657393/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/1910773265/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -567,242 +819,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/2894555783/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="../../images/avatar.jpg">
-      <meta itemprop="name" content="assassing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="X to Bytes">
-      <meta itemprop="description" content="技术分享">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | X to Bytes">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="../../2894555783/" class="post-title-link" itemprop="url">Docker 数据卷使用</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-10-22 09:39:46" itemprop="dateCreated datePublished" datetime="2021-10-22T09:39:46+08:00">2021-10-22</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-14 23:13:22" itemprop="dateModified" datetime="2023-05-14T23:13:22+08:00">2023-05-14</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Docker/2-%E8%BF%9B%E9%98%B6%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">2.进阶操作</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>1.4k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>5 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="数据卷特点"><a class="markdownIt-Anchor" href="#数据卷特点"></a> 数据卷特点</h1>
-<p>在容器中，文件环境是由 UFS（Union File System）提供的临时层。所有在容器中进行的操作都会随着容器的删除而被丢弃。为了实现从外部获取文件并进行持久化存储的目标，Docker 提出了数据卷（Data Volume）的概念。数据卷是一个挂载在容器内文件系统中的文件或目录，每次启动容器时都会自动挂载到容器中，并且它可以脱离容器的生命周期而独立存在。</p>
-<p>数据卷作为容器中的一个特殊文件或目录，与其他文件或目录有很大的区别：</p>
-<ul>
-<li>数据卷中的数据不继承自镜像，也不受容器临时层管理的范围。因此，数据卷没有写时复制机制，文件操作的效果会立即生效。这些数据也不会被 <code>docker commit</code> 命令提交到新的镜像中。</li>
-<li>数据卷不依赖于容器，它独立于容器之外。多个容器可以共享同一个数据卷，通过数据卷可以实现容器之间的文件共享和数据交互。</li>
-</ul>
-<p>数据卷提供了一种方便的方式来处理容器内文件的持久化和共享需求。通过使用数据卷，我们可以更灵活地管理容器中的数据，并实现容器之间的文件共享。</p>
-<h1 id="创建数据卷"><a class="markdownIt-Anchor" href="#创建数据卷"></a> 创建数据卷</h1>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="../../2894555783/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/2679776821/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="../../images/avatar.jpg">
-      <meta itemprop="name" content="assassing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="X to Bytes">
-      <meta itemprop="description" content="技术分享">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | X to Bytes">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="../../2679776821/" class="post-title-link" itemprop="url">Docker 容器操作</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-10-21 21:23:15" itemprop="dateCreated datePublished" datetime="2021-10-21T21:23:15+08:00">2021-10-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-14 22:35:52" itemprop="dateModified" datetime="2023-05-14T22:35:52+08:00">2023-05-14</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Docker/1-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">1.基本操作</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>3.8k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>13 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="创建容器"><a class="markdownIt-Anchor" href="#创建容器"></a> 创建容器</h1>
-<p>创建容器可以使用 <code>docker create</code> 命令或 <code>docker run</code> 命令。</p>
-<h2 id="创建静止容器"><a class="markdownIt-Anchor" href="#创建静止容器"></a> 创建静止容器</h2>
-<p>使用 <code>docker create</code> 命令可以创建一个处于停止状态的容器：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> create alpine
-53b658ada694f5d5a5a5ba8e1bf656db4de8bacd79d4ae49857fe1ce27f60292<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>创建容器后，Docker 会立即返回容器的 ID。每个容器的 ID 都是唯一的。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="../../2679776821/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="../3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="../../">1</a><span class="space">&hellip;</span><a class="page-number" href="../3/">3</a><span class="page-number current">4</span><a class="page-number" href="../5/">5</a><span class="space">&hellip;</span><a class="page-number" href="../14/">14</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="../5/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -827,13 +843,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">183k</span>
+    <span title="站点总字数">186k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">10:10</span>
+    <span title="站点阅读时长">10:21</span>
   </span>
 </div>
 <div class="busuanzi-count">
