@@ -92,7 +92,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a></li><li class="menu-item menu-item-archives"><a href="../../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">65</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">9</span></a></li><li class="menu-item menu-item-archives"><a href="../../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">67</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -157,13 +157,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="../../archives/">
-          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-count">67</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="../../categories/">
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
@@ -206,6 +206,263 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/630034191/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="../../630034191/" class="post-title-link" itemprop="url">Linux 中程序与进程关系</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-09-18 13:44:21" itemprop="dateCreated datePublished" datetime="2021-09-18T13:44:21+08:00">2021-09-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-07 17:33:51" itemprop="dateModified" datetime="2023-05-07T17:33:51+08:00">2023-05-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../../categories/Linux/0-%E5%9F%BA%E7%A1%80%E6%A6%82%E8%AE%BA/" itemprop="url" rel="index"><span itemprop="name">0.基础概论</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>950</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="进程与程序"><a class="markdownIt-Anchor" href="#进程与程序"></a> 进程与程序</h1>
+<p>程序（Program）是可执行的二进制文件。</p>
+<p>当触发执行程序动作后，程序内容及程序数据会加载到内存中，成为一个运行中的程序，即进程（Process）。</p>
+<p>系统为这个进程分配一个 ID，称为 PID（Program ID）。同时，根据触发这个进程的用户及相关属性关系，为这个 PID 设置一组有效的权限。</p>
+<h1 id="子进程与父进程"><a class="markdownIt-Anchor" href="#子进程与父进程"></a> 子进程与父进程</h1>
+<p>登录系统后，会获得一个 bash 的 shell。通过 bash 提供的接口执行另一个命令，如 <code>vim</code>，它也会被分配一个 PID。此时，原本的 bash 就是 <code>vim</code> 的父进程。父进程的 PID 可以用 PPID（Parent ID）表示。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="../../630034191/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/3847284551/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="../../3847284551/" class="post-title-link" itemprop="url">Linux 工作调度与定时任务</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-09-18 12:50:00" itemprop="dateCreated datePublished" datetime="2021-09-18T12:50:00+08:00">2021-09-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-07 18:25:14" itemprop="dateModified" datetime="2023-05-07T18:25:14+08:00">2023-05-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../../categories/Linux/1-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">1.基本操作</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>7 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="系统例行性工作"><a class="markdownIt-Anchor" href="#系统例行性工作"></a> 系统例行性工作</h1>
+<p>在 Linux 系统常见的例行性任务有：</p>
+<ul>
+<li>
+<p><strong>进行日志文件的轮替</strong></p>
+<p>Linux 会主动将系统所发生的各种事件都记录到日志文件，日志轮替会不时检查，将旧日志与新日志分别存放。</p>
+</li>
+<li>
+<p><strong>日志文件分析</strong></p>
+<p>CentOS 提供 <code>logwatch</code> 来主动分析日志信息。</p>
+</li>
+<li>
+<p><strong>更新 locate 数据库</strong></p>
+<p>默认每天都更新一次存放在 <code>/var/lib/mlocate</code> 中的数据库。</p>
+</li>
+<li>
+<p><strong>更新 RPM 软件数据库</strong></p>
+<p>由于系统中软件经常变更，需要系统帮我们将文件名做个排序记录，生成 RPM 数据库。</p>
+</li>
+<li>
+<p><strong>删除临时文件</strong></p>
+<p>系统通过调用 <code>tmpwatch</code> 命令来删除软件运行时所产生的不再需要的临时文件。</p>
+</li>
+<li>
+<p><strong>与网络服务有关的分析行为</strong></p>
+<p>如果安装了 WWW 服务器，系统会主动分析软件的入口文件。</p>
+</li>
+</ul>
+<h1 id="单次工作调度"><a class="markdownIt-Anchor" href="#单次工作调度"></a> 单次工作调度</h1>
+<p>单次工作调度任务主要由 atd 服务提供，使用 <code>at</code> 命令来生成所需要运行的工作，再将工作写入 <code>/var/spool/at</code> 目录内。</p>
+<p>可以运行 <code>at</code> 的账号记录在 <code>/etc/at.allow</code> 中，禁止运行 <code>at</code> 的账号记录在 <code>/etc/at.deny</code> 中。如果两个文件都不存在，则只有 root 可以使用 <code>at</code> 命令。如果账号在两个文件中都有记录，以 <code>/etc/at.allow</code> 优先。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="../../3847284551/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -360,7 +617,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/1872252014/">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/4039294623/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="../../images/avatar.jpg">
@@ -378,7 +635,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="../../1872252014/" class="post-title-link" itemprop="url">Linux 中文件属性详解</a>
+          <a href="../../4039294623/" class="post-title-link" itemprop="url">Linux 自带帮助查询</a>
         </h2>
 
         <div class="post-meta-container">
@@ -396,7 +653,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-13 21:44:07" itemprop="dateModified" datetime="2023-05-13T21:44:07+08:00">2023-05-13</time>
+      <time title="修改时间：2023-05-07 18:21:52" itemprop="dateModified" datetime="2023-05-07T18:21:52+08:00">2023-05-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -408,7 +665,7 @@
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Linux/0-%E5%9F%BA%E7%A1%80%E6%A6%82%E8%AE%BA/" itemprop="url" rel="index"><span itemprop="name">0.基础概论</span></a>
+          <a href="../../categories/Linux/1-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">1.基本操作</span></a>
         </span>
     </span>
 
@@ -419,7 +676,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>905</span>
+      <span>979</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -437,28 +694,37 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="查看文件属性"><a class="markdownIt-Anchor" href="#查看文件属性"></a> 查看文件属性</h1>
-<p>执行 <code>ls -la</code> 命令后，可以查看当前目录下所有文件的权限和属性：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll <span class="token parameter variable">-la</span>
-total <span class="token number">32</span>
-dr-xr-x---.  <span class="token number">4</span> root root  <span class="token number">175</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 <span class="token builtin class-name">.</span>
-dr-xr-xr-x. <span class="token number">17</span> root root  <span class="token number">224</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:37 <span class="token punctuation">..</span>
--rw-------.  <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
--rw-------.  <span class="token number">1</span> root root  <span class="token number">847</span> Sep  <span class="token number">8</span> <span class="token number">12</span>:32 .bash_history
--rw-r--r--.  <span class="token number">1</span> root root   <span class="token number">18</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bash_logout
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">176</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bash_profile
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">176</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .bashrc
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">100</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .cshrc
-drwxr-xr-x.  <span class="token number">2</span> root root    <span class="token number">6</span> Sep  <span class="token number">8</span> <span class="token number">22</span>:48 dir1
-drwxr-----.  <span class="token number">3</span> root root   <span class="token number">19</span> Sep  <span class="token number">7</span> 05:51 .pki
--rw-r--r--.  <span class="token number">1</span> root root  <span class="token number">129</span> Dec <span class="token number">28</span>  <span class="token number">2013</span> .tcshrc
--rw-------.  <span class="token number">1</span> root root  <span class="token number">508</span> Sep  <span class="token number">7</span> 05:52 .viminfo<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>total 为该目录下的所有数据所占用的实际块数量乘以块大小的值。</p>
-<p>从左到右以空格分隔成七列，分别代表：类型和权限、连接数、所有者、所有组、大小、修改时间、文件名。</p>
-<h1 id="文件类型"><a class="markdownIt-Anchor" href="#文件类型"></a> 文件类型</h1>
+          <h1 id="帮助命令"><a class="markdownIt-Anchor" href="#帮助命令"></a> 帮助命令</h1>
+<p>某些命令可以使用 <code>--help</code> 参数来查看简短的帮助信息。例如，要查看命令 <code>mkdir</code> 的帮助信息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 root<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> <span class="token parameter variable">--help</span>
+Usage: <span class="token function">mkdir</span> <span class="token punctuation">[</span>OPTION<span class="token punctuation">]</span><span class="token punctuation">..</span>. DIRECTORY<span class="token punctuation">..</span>.
+Create the DIRECTORY<span class="token punctuation">(</span>ies<span class="token punctuation">)</span>, <span class="token keyword">if</span> they <span class="token keyword">do</span> not already exist.
+
+Mandatory arguments to long options are mandatory <span class="token keyword">for</span> short options too.
+  -m, <span class="token parameter variable">--mode</span><span class="token operator">=</span>MODE   <span class="token builtin class-name">set</span> <span class="token function">file</span> mode <span class="token punctuation">(</span>as <span class="token keyword">in</span> <span class="token function">chmod</span><span class="token punctuation">)</span>, not <span class="token assign-left variable">a</span><span class="token operator">=</span>rwx - <span class="token builtin class-name">umask</span>
+  -p, <span class="token parameter variable">--parents</span>     no error <span class="token keyword">if</span> existing, <span class="token function">make</span> parent directories as needed
+  -v, <span class="token parameter variable">--verbose</span>     print a message <span class="token keyword">for</span> each created directory
+  <span class="token parameter variable">-Z</span>                   <span class="token builtin class-name">set</span> SELinux security context of each created directory
+                         to the default <span class="token builtin class-name">type</span>
+      --context<span class="token punctuation">[</span><span class="token operator">=</span>CTX<span class="token punctuation">]</span>  like -Z, or <span class="token keyword">if</span> CTX is specified <span class="token keyword">then</span> <span class="token builtin class-name">set</span> the SELinux
+                         or SMACK security context to CTX
+      <span class="token parameter variable">--help</span>     display this <span class="token builtin class-name">help</span> and <span class="token builtin class-name">exit</span>
+      <span class="token parameter variable">--version</span>  output version information and <span class="token builtin class-name">exit</span>
+
+GNU coreutils online help: <span class="token operator">&lt;</span>http://www.gnu.org/software/coreutils/<span class="token operator">></span>
+For complete documentation, run: info coreutils 'mkdir invocation<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>一些特殊符号的含义：</p>
+<ul>
+<li>省略号<code>...</code>：表示可以有多个选项或参数。</li>
+<li>中括号<code>[]</code>：之间的任何内容都是可选的。</li>
+<li>大括号<code>&#123;&#125;</code>：表示应该选择由|隔开的各项中一个。</li>
+<li>尖括号<code>&lt;&gt;</code>：内为变量表示参数可变。</li>
+<li>不带中括号<code>[]</code>：表示<strong>必选项</strong>，必须作为命令的一部分输入。</li>
+</ul>
+<h1 id="查询手册"><a class="markdownIt-Anchor" href="#查询手册"></a> 查询手册</h1>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="../../1872252014/#more" rel="contents">
+              <a class="btn" href="../../4039294623/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -489,7 +755,7 @@ drwxr-----.  <span class="token number">3</span> root root   <span class="token 
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/46662635/">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/635683850/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="../../images/avatar.jpg">
@@ -507,7 +773,7 @@ drwxr-----.  <span class="token number">3</span> root root   <span class="token 
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="../../46662635/" class="post-title-link" itemprop="url">Linux 文件与目录权限</a>
+          <a href="../../635683850/" class="post-title-link" itemprop="url">Linux 下压缩和解压操作</a>
         </h2>
 
         <div class="post-meta-container">
@@ -525,7 +791,7 @@ drwxr-----.  <span class="token number">3</span> root root   <span class="token 
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-13 22:46:50" itemprop="dateModified" datetime="2023-05-13T22:46:50+08:00">2023-05-13</time>
+      <time title="修改时间：2023-05-07 18:23:00" itemprop="dateModified" datetime="2023-05-07T18:23:00+08:00">2023-05-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -537,7 +803,7 @@ drwxr-----.  <span class="token number">3</span> root root   <span class="token 
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Linux/0-%E5%9F%BA%E7%A1%80%E6%A6%82%E8%AE%BA/" itemprop="url" rel="index"><span itemprop="name">0.基础概论</span></a>
+          <a href="../../categories/Linux/1-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">1.基本操作</span></a>
         </span>
     </span>
 
@@ -548,14 +814,14 @@ drwxr-----.  <span class="token number">3</span> root root   <span class="token 
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.2k</span>
+      <span>1.5k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>4 分钟</span>
+      <span>5 分钟</span>
     </span>
 </div>
 
@@ -566,366 +832,60 @@ drwxr-----.  <span class="token number">3</span> root root   <span class="token 
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="基本权限"><a class="markdownIt-Anchor" href="#基本权限"></a> 基本权限</h1>
-<p>基本权限有三种，分别是：读（r，Read）、写（w，Write）、执行（x，eXecute）。</p>
-<p>同样的权限标记对于文件和目录代表不同的意义。</p>
-<h2 id="文件权限"><a class="markdownIt-Anchor" href="#文件权限"></a> 文件权限</h2>
-<p>文件包括一般文本文件、数据库和二进制可执行文件。文件权限只针对文件内容而言，和改名、删除等操作无关。</p>
+          <h1 id="常见压缩格式"><a class="markdownIt-Anchor" href="#常见压缩格式"></a> 常见压缩格式</h1>
+<p>各种压缩工具使用的压缩技术不同，最后生成的文件后缀也不同，下面是 Linux 下常用的几种压缩格式：</p>
 <table>
 <thead>
 <tr>
-<th>数字</th>
-<th>字符</th>
-<th>权限</th>
+<th>后缀</th>
+<th>对应程序</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>4</td>
-<td>r</td>
-<td>读取文件内容。例如使用 <code>cat</code> 命令查看，使用 <code>vim</code> 以只读方式打开。</td>
+<td>*.Z</td>
+<td>compress 程序压缩的文件</td>
 </tr>
 <tr>
-<td>2</td>
-<td>w</td>
-<td>编辑修改文件内容，但不包括删除文件。例如使用 <code>vim</code>、<code>sed</code> 等对文件内容进行修改并保存。</td>
+<td>*.zip</td>
+<td>zip 程序压缩的文件</td>
 </tr>
 <tr>
-<td>1</td>
-<td>x</td>
-<td>文件具有可以被系统执行的权限。例如命令和脚本必须拥有此权限才能直接执行。</td>
+<td>*.gz</td>
+<td>gzip 程序压缩的文件</td>
+</tr>
+<tr>
+<td>*.bz2</td>
+<td>bzip2 程序压缩的文件</td>
+</tr>
+<tr>
+<td>*.xz</td>
+<td>xz 程序压缩的文件</td>
+</tr>
+<tr>
+<td>*.tar</td>
+<td>tar 程序打包的数据，没有经过压缩</td>
+</tr>
+<tr>
+<td>*.tar.gz</td>
+<td>tar 程序打包的文件，经过 gzip 的压缩</td>
+</tr>
+<tr>
+<td>*.tar.bz2</td>
+<td>tar 程序打包的文件，经过 bzip2 的压缩</td>
+</tr>
+<tr>
+<td>*.tar.xz</td>
+<td>tar 程序打包的文件，经过 xz 的压缩</td>
 </tr>
 </tbody>
 </table>
+<p>gzip 和 bzip2 都只能针对单个文件进行压缩和解压缩，而 tar 可以调用它们来集中打包文件。</p>
+<h1 id="单文件压缩解压"><a class="markdownIt-Anchor" href="#单文件压缩解压"></a> 单文件压缩解压</h1>
+<p><code>compress</code> 程序已经不再被使用，<code>gzip</code> 为系统内置程序，可用的参数有下面这些：</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="../../46662635/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/2794564793/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="../../images/avatar.jpg">
-      <meta itemprop="name" content="assassing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="X to Bytes">
-      <meta itemprop="description" content="技术分享">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | X to Bytes">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="../../2794564793/" class="post-title-link" itemprop="url">Linux 主流文件系统</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-09-18 11:57:47" itemprop="dateCreated datePublished" datetime="2021-09-18T11:57:47+08:00">2021-09-18</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-13 23:16:19" itemprop="dateModified" datetime="2023-05-13T23:16:19+08:00">2023-05-13</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Linux/0-%E5%9F%BA%E7%A1%80%E6%A6%82%E8%AE%BA/" itemprop="url" rel="index"><span itemprop="name">0.基础概论</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>5.5k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>18 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="查看文件系统支持"><a class="markdownIt-Anchor" href="#查看文件系统支持"></a> 查看文件系统支持</h1>
-<p>Linux 系统现支持的文件系统格式如下：</p>
-<table>
-<thead>
-<tr>
-<th>文件系统</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>ext</td>
-<td>Linux 扩展文件系统（Extended Filesystem），最早的 Linux 文件系统。</td>
-</tr>
-<tr>
-<td>ext2</td>
-<td>第 2 代扩展文件系统，在 ext 的基础上提供了更多的功能。ext2 支持 undelete（反删除）和大文件。</td>
-</tr>
-<tr>
-<td>ext3</td>
-<td>第 3 代扩展文件系统，支持日志功能。ext3 支持大文件。但不支持反删除（undelete）操作。</td>
-</tr>
-<tr>
-<td>ext4</td>
-<td>第 4 代扩展文件系统，支持高级日志功能。</td>
-</tr>
-<tr>
-<td>hpfs</td>
-<td>OS/2 高性能文件系统</td>
-</tr>
-<tr>
-<td>jfs</td>
-<td>IBM 日志文件系统。</td>
-</tr>
-<tr>
-<td>iso9660</td>
-<td>ISO 9660 文件系统（CD-ROM）。</td>
-</tr>
-<tr>
-<td>minix</td>
-<td>MINIX 文件系统。</td>
-</tr>
-<tr>
-<td>msdos</td>
-<td>微软的 FAT16。</td>
-</tr>
-<tr>
-<td>ncp</td>
-<td>Netware 文件系统。</td>
-</tr>
-<tr>
-<td>nfs</td>
-<td>网络文件系统。</td>
-</tr>
-<tr>
-<td>ntfs</td>
-<td>支持 Microsoft NT 文件系统。</td>
-</tr>
-<tr>
-<td>proc</td>
-<td>访问系统信息。</td>
-</tr>
-<tr>
-<td>ReiserFS</td>
-<td>高级 Linux 文件系统，支持大文件，支持反删除，几乎能恢复 90% 以上的数据，有时能恢复到 100%。</td>
-</tr>
-<tr>
-<td>smb</td>
-<td>支持网络访问的 Samba SMB 文件系统。</td>
-</tr>
-<tr>
-<td>sysv</td>
-<td>较早期的 Unix 文件系统。</td>
-</tr>
-<tr>
-<td>ufs</td>
-<td>BSD 文件系统。</td>
-</tr>
-<tr>
-<td>umsdos</td>
-<td>建立在 msdos 上的类 Unix 文件系统。</td>
-</tr>
-<tr>
-<td>vfat</td>
-<td>Windows 95 文件系统（FAT32）。</td>
-</tr>
-<tr>
-<td>XFS</td>
-<td>高性能 64 位日志文件系统。</td>
-</tr>
-</tbody>
-</table>
-<p>可以通过查看 <code>fs</code> 目录了解支持的文件系统有哪些：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 /<span class="token punctuation">]</span>$ <span class="token function">ls</span> <span class="token parameter variable">-l</span> /lib/modules/<span class="token variable"><span class="token variable">$(</span><span class="token function">uname</span> <span class="token parameter variable">-r</span><span class="token variable">)</span></span>/kernel/fs
-total <span class="token number">20</span>
--rw-r--r--. <span class="token number">1</span> root root <span class="token number">5992</span> Aug <span class="token number">31</span> <span class="token number">11</span>:05 binfmt_misc.ko.xz
-drwxr-xr-x. <span class="token number">2</span> root root   <span class="token number">25</span> Sep  <span class="token number">7</span> 05:54 btrfs
-drwxr-xr-x. <span class="token number">2</span> root root   <span class="token number">30</span> Sep  <span class="token number">7</span> 05:54 cachefiles
-drwxr-xr-x. <span class="token number">2</span> root root   <span class="token number">24</span> Sep  <span class="token number">7</span> 05:54 ceph<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>查看系统目前已加载到内存中支持的文件系统：</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="../../2794564793/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/3847559470/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="../../images/avatar.jpg">
-      <meta itemprop="name" content="assassing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="X to Bytes">
-      <meta itemprop="description" content="技术分享">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | X to Bytes">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="../../3847559470/" class="post-title-link" itemprop="url">计算机硬件基础</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-09-18 11:57:47" itemprop="dateCreated datePublished" datetime="2021-09-18T11:57:47+08:00">2021-09-18</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-13 23:38:35" itemprop="dateModified" datetime="2023-05-13T23:38:35+08:00">2023-05-13</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Linux/0-%E5%9F%BA%E7%A1%80%E6%A6%82%E8%AE%BA/" itemprop="url" rel="index"><span itemprop="name">0.基础概论</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>5.5k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>18 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="计算机简介"><a class="markdownIt-Anchor" href="#计算机简介"></a> 计算机简介</h1>
-<p>计算机是一种拥有输入和输出设备的机器，它可以通过输入设备接受用户的输入，并经过中央处理器的数学与逻辑单元的处理，将这些输入转换成有用的信息进行生成或储存。因此，计算机可以说是一种具有高度智能化的信息处理工具。</p>
-<h2 id="计算机组成"><a class="markdownIt-Anchor" href="#计算机组成"></a> 计算机组成</h2>
-<p>计算机通常由五大部分组成，它们分别是输入单元、输出单元、中央处理器（CPU）内部的控制单元、算术逻辑单元和内存。这些部分协同工作，使得计算机能够完成复杂的计算和数据处理任务。其中，输入单元用于接收用户的输入信息，输出单元用于向用户展示计算机处理结果，控制单元则负责控制计算机的整个运作过程，算术逻辑单元则处理计算机的算术和逻辑运算，而内存则用于储存数据和程序。这五大部分共同构成了现代计算机的核心。</p>
-<h2 id="计算机分类"><a class="markdownIt-Anchor" href="#计算机分类"></a> 计算机分类</h2>
-<p>根据用途的不同，计算机可以被分为以下几类：</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="../../3847559470/#more" rel="contents">
+              <a class="btn" href="../../635683850/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -949,7 +909,7 @@ drwxr-xr-x. <span class="token number">2</span> root root   <span class="token n
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="../9/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="../../">1</a><span class="space">&hellip;</span><a class="page-number" href="../9/">9</a><span class="page-number current">10</span><a class="page-number" href="../11/">11</a><span class="space">&hellip;</span><a class="page-number" href="../13/">13</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="../11/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="../9/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="../../">1</a><span class="space">&hellip;</span><a class="page-number" href="../9/">9</a><span class="page-number current">10</span><a class="page-number" href="../11/">11</a><span class="space">&hellip;</span><a class="page-number" href="../14/">14</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="../11/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
@@ -972,13 +932,13 @@ drwxr-xr-x. <span class="token number">2</span> root root   <span class="token n
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">178k</span>
+    <span title="站点总字数">183k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">9:54</span>
+    <span title="站点阅读时长">10:10</span>
   </span>
 </div>
 <div class="busuanzi-count">

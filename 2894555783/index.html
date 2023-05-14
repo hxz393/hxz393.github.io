@@ -22,28 +22,28 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
 
-    <meta name="description" content="工作控制 工作控制是一种由内核支持、shell 实现的功能，允许用户同时运行多个进程，其中一个进程在前台（foreground），其他进程在后台（background）运行。用户可以在前台和后台之间切换、挂起和显示进程状态。 将一个进程放入后台运行，该进程必须不需要与用户交互，且不能使用 Ctrl+c 来终止运行。  后台运行 在命令后加入空格和&amp;符号即可将进程放入后台运行，这也被称为异">
+    <meta name="description" content="数据卷特点 在容器中，文件环境是由 UFS（Union File System）提供的临时层。所有在容器中进行的操作都会随着容器的删除而被丢弃。为了实现从外部获取文件并进行持久化存储的目标，Docker 提出了数据卷（Data Volume）的概念。数据卷是一个挂载在容器内文件系统中的文件或目录，每次启动容器时都会自动挂载到容器中，并且它可以脱离容器的生命周期而独立存在。 数据卷作为容器中的一个">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux 进程前后台切换">
-<meta property="og:url" content="https://blog.x2b.net/517799084/index.html">
+<meta property="og:title" content="Docker 数据卷使用">
+<meta property="og:url" content="https://blog.x2b.net/2894555783/index.html">
 <meta property="og:site_name" content="X to Bytes">
-<meta property="og:description" content="工作控制 工作控制是一种由内核支持、shell 实现的功能，允许用户同时运行多个进程，其中一个进程在前台（foreground），其他进程在后台（background）运行。用户可以在前台和后台之间切换、挂起和显示进程状态。 将一个进程放入后台运行，该进程必须不需要与用户交互，且不能使用 Ctrl+c 来终止运行。  后台运行 在命令后加入空格和&amp;符号即可将进程放入后台运行，这也被称为异">
+<meta property="og:description" content="数据卷特点 在容器中，文件环境是由 UFS（Union File System）提供的临时层。所有在容器中进行的操作都会随着容器的删除而被丢弃。为了实现从外部获取文件并进行持久化存储的目标，Docker 提出了数据卷（Data Volume）的概念。数据卷是一个挂载在容器内文件系统中的文件或目录，每次启动容器时都会自动挂载到容器中，并且它可以脱离容器的生命周期而独立存在。 数据卷作为容器中的一个">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-09-18T05:56:41.000Z">
-<meta property="article:modified_time" content="2023-05-07T12:19:35.832Z">
+<meta property="article:published_time" content="2021-10-22T01:39:46.000Z">
+<meta property="article:modified_time" content="2023-05-14T15:13:22.555Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://blog.x2b.net/517799084/">
+<link rel="canonical" href="https://blog.x2b.net/2894555783/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/517799084/","path":"517799084/","title":"Linux 进程前后台切换"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/2894555783/","path":"2894555783/","title":"Docker 数据卷使用"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Linux 进程前后台切换 | X to Bytes</title>
+<title>Docker 数据卷使用 | X to Bytes</title>
   
 
   <script src="../js/third-party/analytics/baidu-analytics.js"></script>
@@ -145,7 +145,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E6%8E%A7%E5%88%B6"><span class="nav-number">1.</span> <span class="nav-text"> 工作控制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C"><span class="nav-number">2.</span> <span class="nav-text"> 后台运行</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8E%E5%8F%B0%E6%9A%82%E5%81%9C"><span class="nav-number">3.</span> <span class="nav-text"> 后台暂停</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8E%E5%8F%B0%E7%8A%B6%E6%80%81"><span class="nav-number">4.</span> <span class="nav-text"> 后台状态</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8E%E5%8F%B0%E8%BD%AC%E5%89%8D%E5%8F%B0"><span class="nav-number">5.</span> <span class="nav-text"> 后台转前台</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8E%E5%8F%B0%E8%BD%AC%E8%BF%90%E8%A1%8C"><span class="nav-number">6.</span> <span class="nav-text"> 后台转运行</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%84%B1%E6%9C%BA%E8%BF%90%E8%A1%8C"><span class="nav-number">7.</span> <span class="nav-text"> 脱机运行</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%8D%B7%E7%89%B9%E7%82%B9"><span class="nav-number">1.</span> <span class="nav-text"> 数据卷特点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%8D%B7"><span class="nav-number">2.</span> <span class="nav-text"> 创建数据卷</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E6%95%B0%E6%8D%AE%E5%8D%B7"><span class="nav-number">3.</span> <span class="nav-text"> 查询数据卷</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8C%82%E8%BD%BD%E6%95%B0%E6%8D%AE%E5%8D%B7"><span class="nav-number">4.</span> <span class="nav-text"> 挂载数据卷</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E6%95%B0%E6%8D%AE%E5%8D%B7"><span class="nav-number">5.</span> <span class="nav-text"> 删除数据卷</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%8D%B7%E5%AE%B9%E5%99%A8"><span class="nav-number">6.</span> <span class="nav-text"> 数据卷容器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%8D%B7%E5%A4%87%E4%BB%BD"><span class="nav-number">7.</span> <span class="nav-text"> 数据卷备份</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -219,7 +219,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/517799084/">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/2894555783/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="../images/avatar.jpg">
@@ -232,12 +232,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Linux 进程前后台切换 | X to Bytes">
+      <meta itemprop="name" content="Docker 数据卷使用 | X to Bytes">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Linux 进程前后台切换
+          Docker 数据卷使用
         </h1>
 
         <div class="post-meta-container">
@@ -248,14 +248,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2021-09-18 13:56:41" itemprop="dateCreated datePublished" datetime="2021-09-18T13:56:41+08:00">2021-09-18</time>
+      <time title="创建时间：2021-10-22 09:39:46" itemprop="dateCreated datePublished" datetime="2021-10-22T09:39:46+08:00">2021-10-22</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-07 20:19:35" itemprop="dateModified" datetime="2023-05-07T20:19:35+08:00">2023-05-07</time>
+      <time title="修改时间：2023-05-14 23:13:22" itemprop="dateModified" datetime="2023-05-14T23:13:22+08:00">2023-05-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -263,11 +263,11 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+          <a href="../categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../categories/Linux/1-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">1.基本操作</span></a>
+          <a href="../categories/Docker/2-%E8%BF%9B%E9%98%B6%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">2.进阶操作</span></a>
         </span>
     </span>
 
@@ -285,14 +285,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>822</span>
+      <span>1.4k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>3 分钟</span>
+      <span>5 分钟</span>
     </span>
 </div>
 
@@ -303,75 +303,78 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="工作控制"><a class="markdownIt-Anchor" href="#工作控制"></a> 工作控制</h1>
-<p>工作控制是一种由内核支持、shell 实现的功能，允许用户同时运行多个进程，其中一个进程在前台（foreground），其他进程在后台（background）运行。用户可以在前台和后台之间切换、挂起和显示进程状态。</p>
-<p>将一个进程放入后台运行，该进程必须不需要与用户交互，且不能使用 Ctrl+c 来终止运行。</p>
-<h1 id="后台运行"><a class="markdownIt-Anchor" href="#后台运行"></a> 后台运行</h1>
-<p>在命令后加入空格和&amp;符号即可将进程放入后台运行，这也被称为异步进程（Asynchronous Process）运行程序：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ <span class="token function">tar</span> <span class="token parameter variable">-zxvf</span> <span class="token number">1</span>.iso <span class="token parameter variable">-C</span> lost+found/ <span class="token operator">&amp;</span>
-<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token number">36961</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>中括号内的数字为工作号码（job number），后续数字为工作在系统中的 PID。</p>
-<p>后台工作完成后会给前台发信息：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>+  Done                    <span class="token function">cp</span> <span class="token parameter variable">-i</span> <span class="token number">1</span>.iso <span class="token number">1</span>.copy<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>后台运行的工作如果有标准输出（stdout）和标准错误输出（stderr），依然会实时输出到屏幕。可以在执行时将这些数据重定向，以免影响前台工作。</p>
-<h1 id="后台暂停"><a class="markdownIt-Anchor" href="#后台暂停"></a> 后台暂停</h1>
-<p>使用 Ctrl+z 把当前的前台工作停止放到后台：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">tail</span> <span class="token parameter variable">-f</span> root.txt 
--rw-r--r--.  <span class="token number">1</span> root root         <span class="token number">0</span> Sep <span class="token number">11</span> <span class="token number">10</span>:11 list_error.txt
--rw-r--r--.  <span class="token number">1</span> root root        <span class="token number">54</span> Sep <span class="token number">11</span> <span class="token number">10</span>:16 list.txt
-^Z
-<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span>+  Stopped                 <span class="token function">tail</span> <span class="token parameter variable">-f</span> root.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>数字 2 表示这是后台中的第 2 个工作，加号 + 代表最近一个被丢进后台的工作。</p>
-<h1 id="后台状态"><a class="markdownIt-Anchor" href="#后台状态"></a> 后台状态</h1>
-<p>使用 <code>jobs</code> 命令查看当前后台工作状态。可用参数如下：</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>-l</td>
-<td>除了列出 job number 与命令外，同时列出 PID</td>
-</tr>
-<tr>
-<td>-r</td>
-<td>仅列出后台运行的工作</td>
-</tr>
-<tr>
-<td>-s</td>
-<td>仅列出后台暂停的工作</td>
-</tr>
-</tbody>
-</table>
-<p>使用 <code>-l</code> 参数查看当前后台工作状态与工作 PID：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">jobs</span> <span class="token parameter variable">-l</span>
-<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>- <span class="token number">37687</span> Stopped                 <span class="token function">tail</span> <span class="token parameter variable">-f</span> root1.txt
-<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span>+ <span class="token number">37698</span> Stopped                 <span class="token function">tail</span> <span class="token parameter variable">-f</span> root.txt
-<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span>  <span class="token number">37916</span> Running                 <span class="token function">tail</span> <span class="token parameter variable">-f</span> list_error.txt <span class="token operator">&amp;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>加号 <code>+</code> 代表最近一个被放置到后台的工作，减号 <code>-</code> 代表倒数第二个被放置到后台中的工作，其他工作没有符号。</p>
-<h1 id="后台转前台"><a class="markdownIt-Anchor" href="#后台转前台"></a> 后台转前台</h1>
-<p>使用 <code>fg</code> 命令将后台工作转到前台处理。例如将 3 号工作取出到前台：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">fg</span> %3
-<span class="token function">tail</span> <span class="token parameter variable">-f</span> list_error.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h1 id="后台转运行"><a class="markdownIt-Anchor" href="#后台转运行"></a> 后台转运行</h1>
-<p>使用 <code>bg</code> 命令启动后台暂停中工作为后台运行。例如将后台暂停的 3 号工作转为后台运行：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">bg</span> <span class="token variable">$3</span>
-<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span>+ <span class="token function">tail</span> <span class="token parameter variable">-f</span> list_error.txt <span class="token operator">&amp;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h1 id="脱机运行"><a class="markdownIt-Anchor" href="#脱机运行"></a> 脱机运行</h1>
-<p>由于登陆后在 shell 中运行的命令父进程是 bash，所以当 shell 会话中断时，后台的程序也会跟着被中断。</p>
-<p>想要保持程序一直运行与终端状态脱离关系，可以使用 <code>nohup</code> 命令来处理。命令格式为：<code>nohup [命令与参数] &amp;</code></p>
-<p>例如保持 <code>sh13.sh</code> 脚本脱机运行：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">nohup</span> ./sh13.sh <span class="token operator">&amp;</span>
-<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token number">40062</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>注销用户后重新登录，使用<code>ps</code>命令查询：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">ps</span> aux <span class="token operator">|</span> <span class="token function">grep</span> sh13
-root      <span class="token number">40062</span>  <span class="token number">0.0</span>  <span class="token number">0.0</span> <span class="token number">113284</span>  <span class="token number">1184</span> ?        S    03:53   <span class="token number">0</span>:00 /bin/bash ./sh13.sh
-root      <span class="token number">40219</span>  <span class="token number">0.0</span>  <span class="token number">0.0</span> <span class="token number">112812</span>   <span class="token number">968</span> pts/0    S+   03:55   <span class="token number">0</span>:00 <span class="token function">grep</span> <span class="token parameter variable">--color</span><span class="token operator">=</span>auto sh13<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>可以看到程序（PID=40062）依然在运行中，可以使用 <code>kill</code> 命令来终止运行。</p>
-<p>程序的输出会被重定向到 <code>~/nohup.out</code> 文件。也可以手动指定 <code>1&gt;</code> 和 <code>2&gt;</code> 到其他文件。</p>
+        <h1 id="数据卷特点"><a class="markdownIt-Anchor" href="#数据卷特点"></a> 数据卷特点</h1>
+<p>在容器中，文件环境是由 UFS（Union File System）提供的临时层。所有在容器中进行的操作都会随着容器的删除而被丢弃。为了实现从外部获取文件并进行持久化存储的目标，Docker 提出了数据卷（Data Volume）的概念。数据卷是一个挂载在容器内文件系统中的文件或目录，每次启动容器时都会自动挂载到容器中，并且它可以脱离容器的生命周期而独立存在。</p>
+<p>数据卷作为容器中的一个特殊文件或目录，与其他文件或目录有很大的区别：</p>
+<ul>
+<li>数据卷中的数据不继承自镜像，也不受容器临时层管理的范围。因此，数据卷没有写时复制机制，文件操作的效果会立即生效。这些数据也不会被 <code>docker commit</code> 命令提交到新的镜像中。</li>
+<li>数据卷不依赖于容器，它独立于容器之外。多个容器可以共享同一个数据卷，通过数据卷可以实现容器之间的文件共享和数据交互。</li>
+</ul>
+<p>数据卷提供了一种方便的方式来处理容器内文件的持久化和共享需求。通过使用数据卷，我们可以更灵活地管理容器中的数据，并实现容器之间的文件共享。</p>
+<h1 id="创建数据卷"><a class="markdownIt-Anchor" href="#创建数据卷"></a> 创建数据卷</h1>
+<p>在创建容器时，可以同时创建数据卷。通过 <code>-v</code> 参数向容器中挂载一个数据卷，Docker 会自动创建该数据卷：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> create <span class="token parameter variable">--name</span> vdisk <span class="token parameter variable">-v</span> /disk alpine
+000385b2005b5f79c1d1d05df5c981ac4dd3cffe1cc4d272691660151aebd26c<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>以上命令为名为 <code>vdisk</code> 的容器创建了一个路径为 <code>/disk</code> 的数据卷。如果需要，可以多次使用 <code>-v</code> 参数来挂载多个数据卷。</p>
+<p>此外，可以使用 <code>docker volume create</code> 命令创建一个自定义名称为 <code>disk1</code> 的数据卷：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> volume create <span class="token parameter variable">--name</span> disk1
+disk1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>所有创建的数据卷默认存放在 <code>/var/lib/docker/volumes/</code> 路径下。</p>
+<h1 id="查询数据卷"><a class="markdownIt-Anchor" href="#查询数据卷"></a> 查询数据卷</h1>
+<p>可以使用 <code>docker volume ls</code> 命令查看已创建的数据卷列表：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> volume <span class="token function">ls</span>
+DRIVER    VOLUME NAME
+<span class="token builtin class-name">local</span>     21470509cc37589319a7eab45bdb9ca12ad4d500ff49228ce0b65cd985fb62fb
+<span class="token builtin class-name">local</span>     disk1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以使用 <code>docker volume inspect</code> 命令查看指定数据卷的基本信息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> volume inspect disk1
+<span class="token punctuation">[</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token string">"CreatedAt"</span><span class="token builtin class-name">:</span> <span class="token string">"2021-10-22T09:58:06+08:00"</span>,
+        <span class="token string">"Driver"</span><span class="token builtin class-name">:</span> <span class="token string">"local"</span>,
+        <span class="token string">"Labels"</span><span class="token builtin class-name">:</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>,
+        <span class="token string">"Mountpoint"</span><span class="token builtin class-name">:</span> <span class="token string">"/var/lib/docker/volumes/disk1/_data"</span>,
+        <span class="token string">"Name"</span><span class="token builtin class-name">:</span> <span class="token string">"disk1"</span>,
+        <span class="token string">"Options"</span><span class="token builtin class-name">:</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>,
+        <span class="token string">"Scope"</span><span class="token builtin class-name">:</span> <span class="token string">"local"</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="挂载数据卷"><a class="markdownIt-Anchor" href="#挂载数据卷"></a> 挂载数据卷</h1>
+<p>在创建容器时，已创建的数据卷会自动挂载到容器中。而使用 <code>docker create</code> 或 <code>docker run</code> 命令创建容器时，可以使用 <code>-v</code> 选项指定挂载数据卷，格式为：<code>-v &lt;volume_name&gt;:&lt;container_path&gt;</code>。数据卷可以绕过分层的联合文件系统，为 Docker 提供持久数据或共享数据。这也意味着对数据卷的修改会直接生效，但当提交或创建镜像时，数据卷不会被包含在镜像中。</p>
+<p>在将宿主机目录或文件挂载到容器时，默认权限是读写（rw），可以对数据的权限进行限制。例如，以只读（ro）的方式挂载目录 <code>/root/disk1</code>，可以保证容器内的程序无法修改该目录中的数据：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> create <span class="token parameter variable">--name</span> vdisk2 <span class="token parameter variable">-v</span> /root/disk1:/disk1:ro alpine
+d44ab826d5ddd43bcdfa966648acb57d19f1982f22b28053f6e4b3b223118351<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>有时候，希望将数据保存在内存中而非宿主机或容器中，可以使用 <code>--tmpfs</code> 参数来挂载只存在于内存中的 tmpfs 数据卷。</p>
+<h1 id="删除数据卷"><a class="markdownIt-Anchor" href="#删除数据卷"></a> 删除数据卷</h1>
+<p>可以使用 <code>docker volume rm</code> 命令来删除数据卷：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> volume <span class="token function">rm</span> disk1
+disk1
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ ll /var/lib/docker/volumes/disk1/
+ls: cannot access /var/lib/docker/volumes/disk1/: No such <span class="token function">file</span> or directory<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>删除数据卷时，对应的本地目录也会被一并删除。</p>
+<p>如果是与容器一同创建的数据卷，最好使用 <code>-v</code> 参数一起删除：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> <span class="token function">rm</span> <span class="token parameter variable">-v</span> 000385b <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>批量删除数据卷可以先使用 <code>docker volume ls -q</code> 命令查询数据卷的 ID，然后再进行删除：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ubutu-trusty<span class="token punctuation">]</span>$ <span class="token function">docker</span> volume <span class="token function">rm</span> <span class="token variable"><span class="token variable">$(</span><span class="token function">docker</span> volume <span class="token function">ls</span> <span class="token parameter variable">-q</span><span class="token variable">)</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="数据卷容器"><a class="markdownIt-Anchor" href="#数据卷容器"></a> 数据卷容器</h1>
+<p>数据卷容器是专门用于存放数据卷的容器，它并不直接管理或控制数据卷，只是作为其他容器使用数据卷的桥梁。其作用是为了保证数据卷的安全性，防止随着其他容器的删除而被删除。</p>
+<p>创建数据卷容器的方法与普通容器的创建方法没有区别，数据卷容器不需要保持运行。创建数据卷容器时所使用的数据卷目录，将作为其他容器连接到该数据卷容器时访问数据卷的目录。</p>
+<p>例如，创建一个专门用于存放日志的数据卷容器：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> create <span class="token parameter variable">--name</span> logdata <span class="token parameter variable">-v</span> /logs alpine 
+118002bf522df93e5e31011c74f0760d317ae235f23dca24f413068a1abe2d7a<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>在需要使用数据卷的容器中，可以使用 <code>--volumes-from</code> 参数挂载指定数据卷容器中的所有数据卷：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> run <span class="token parameter variable">-it</span> <span class="token parameter variable">--rm</span> --volumes-from logdata ubuntu:18.04 /bin/bash
+root@7baf237b2484:/<span class="token comment"># ll -d /logs</span>
+drwxr-xr-x. <span class="token number">2</span> root root <span class="token number">6</span> Oct <span class="token number">22</span> 02:49 /logs/<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>也可以多次使用 <code>--volumes-from</code> 参数来挂载多个不同的数据卷容器，以同时使用多个数据卷。</p>
+<h1 id="数据卷备份"><a class="markdownIt-Anchor" href="#数据卷备份"></a> 数据卷备份</h1>
+<p>使用数据卷容器可以方便地备份数据卷的内容。通过创建一个新的容器，将数据卷容器和宿主机目录连接起来，然后执行打包命令即可快速备份数据卷：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> run <span class="token parameter variable">-it</span> --volumes-from logdata <span class="token parameter variable">-v</span> <span class="token variable"><span class="token variable">$(</span><span class="token builtin class-name">pwd</span><span class="token variable">)</span></span>:/backup <span class="token parameter variable">--rm</span> ubuntu:18.04 <span class="token function">tar</span> cf /backup/logdata.tar /logs
+tar: Removing leading `/' from member names
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ ll logdata.tar 
+-rw-r--r--. <span class="token number">1</span> root root <span class="token number">10240</span> Oct <span class="token number">22</span> <span class="token number">11</span>:10 logdata.tar<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>要恢复数据，则需要反向操作：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> run <span class="token parameter variable">-it</span> --volumes-from logdata <span class="token parameter variable">-v</span> <span class="token variable"><span class="token variable">$(</span><span class="token builtin class-name">pwd</span><span class="token variable">)</span></span>:/backup <span class="token parameter variable">--rm</span> ubuntu:18.04 <span class="token function">tar</span> xf /backup/logdata.tar<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
     </div>
 
@@ -403,7 +406,7 @@ root      <span class="token number">40219</span>  <span class="token number">0.
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://blog.x2b.net/517799084/" title="Linux 进程前后台切换">https://blog.x2b.net/517799084/</a>
+      <a href="https://blog.x2b.net/2894555783/" title="Docker 数据卷使用">https://blog.x2b.net/2894555783/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
@@ -433,13 +436,13 @@ root      <span class="token number">40219</span>  <span class="token number">0.
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="../630034191/" rel="prev" title="Linux 中程序与进程关系">
-                  <i class="fa fa-chevron-left"></i> Linux 中程序与进程关系
+                <a href="../2679776821/" rel="prev" title="Docker 容器操作">
+                  <i class="fa fa-chevron-left"></i> Docker 容器操作
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="../1804980384/" rel="next" title="Linux 进程查询与管理">
-                  Linux 进程查询与管理 <i class="fa fa-chevron-right"></i>
+                <a href="../1910773265/" rel="next" title="Docker 网络模式">
+                  Docker 网络模式 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -549,7 +552,7 @@ root      <span class="token number">40219</span>  <span class="token number">0.
 
 
   <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
-  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/517799084/"}</script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/2894555783/"}</script>
   <script src="../js/third-party/quicklink.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
