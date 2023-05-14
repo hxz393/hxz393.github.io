@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="网络传输流程 当一个安全配置的服务器要接收外来数据时，可以分为以下阶段：   防火墙的分析 Linux 系统内建防火墙机制，因此首先连接要通过防火墙。   服务的基本功能 在应用层面来看，某些软件带有控制访问功能。例如 httpd.conf 配置文件内可以规定某些 IP 来源不能使用 httpd 这个服务来取得主机的数据。   SELinux 对网络服务的权限控制 为了避免前一个步骤的权限误用，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 网络安全">
+<meta property="og:url" content="https://blog.x2b.net/3333155646/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="网络传输流程 当一个安全配置的服务器要接收外来数据时，可以分为以下阶段：   防火墙的分析 Linux 系统内建防火墙机制，因此首先连接要通过防火墙。   服务的基本功能 在应用层面来看，某些软件带有控制访问功能。例如 httpd.conf 配置文件内可以规定某些 IP 来源不能使用 httpd 这个服务来取得主机的数据。   SELinux 对网络服务的权限控制 为了避免前一个步骤的权限误用，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.x2b.net/images/%E9%93%BE%E4%B8%8E%E8%A1%A8%E7%9A%84%E7%9B%B8%E5%85%B3%E6%80%A7.png">
+<meta property="og:image" content="https://blog.x2b.net/images/%E5%8D%95%E4%B8%80%E7%BD%91%E7%BB%9C%E9%98%B2%E7%81%AB%E5%A2%99.png">
+<meta property="og:image" content="https://blog.x2b.net/images/%E5%86%85%E7%BD%91%E9%98%B2%E7%81%AB%E5%A2%99.png">
+<meta property="og:image" content="https://blog.x2b.net/images/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%98%B2%E7%81%AB%E5%A2%99.png">
+<meta property="article:published_time" content="2021-09-23T12:46:34.000Z">
+<meta property="article:modified_time" content="2023-05-14T11:43:34.925Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.x2b.net/images/%E9%93%BE%E4%B8%8E%E8%A1%A8%E7%9A%84%E7%9B%B8%E5%85%B3%E6%80%A7.png">
+
+
+<link rel="canonical" href="https://blog.x2b.net/3333155646/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/3333155646/","path":"3333155646/","title":"Linux 网络安全"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Linux 网络安全 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">59</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E4%BC%A0%E8%BE%93%E6%B5%81%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text"> 网络传输流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E6%94%BB%E5%87%BB%E6%89%8B%E6%AE%B5"><span class="nav-number">2.</span> <span class="nav-text"> 常见攻击手段</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9A%B4%E5%8A%9B%E7%A0%B4%E8%A7%A3%E5%AF%86%E7%A0%81"><span class="nav-number">2.1.</span> <span class="nav-text"> 暴力破解密码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E6%8F%90%E6%9D%83"><span class="nav-number">2.2.</span> <span class="nav-text"> 本地提权</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E6%94%BB%E5%87%BB"><span class="nav-number">2.3.</span> <span class="nav-text"> 缓冲区溢出攻击</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E7%A8%8B%E5%BA%8F%E6%BC%8F%E6%B4%9E%E4%B8%BB%E5%8A%A8%E6%94%BB%E5%87%BB"><span class="nav-number">2.4.</span> <span class="nav-text"> 利用程序漏洞主动攻击</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E7%A4%BE%E4%BC%9A%E5%B7%A5%E7%A8%8B%E5%AD%A6%E6%AC%BA%E9%AA%97"><span class="nav-number">2.5.</span> <span class="nav-text"> 利用社会工程学欺骗</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E7%A8%8B%E5%BA%8F%E5%8A%9F%E8%83%BD%E7%9A%84%E8%A2%AB%E5%8A%A8%E6%94%BB%E5%87%BB"><span class="nav-number">2.6.</span> <span class="nav-text"> 利用程序功能的被动攻击</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A0%95%E8%99%AB%E5%92%8C%E6%9C%A8%E9%A9%AC%E7%9A%84-rootkit"><span class="nav-number">2.7.</span> <span class="nav-text"> 蠕虫和木马的 Rootkit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ddos-%E6%94%BB%E5%87%BB"><span class="nav-number">2.8.</span> <span class="nav-text"> DDoS 攻击</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ipv4-%E5%86%85%E6%A0%B8%E7%AE%A1%E7%90%86%E5%8A%9F%E8%83%BD"><span class="nav-number">3.</span> <span class="nav-text"> IPv4 内核管理功能</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp_syncookies"><span class="nav-number">3.1.</span> <span class="nav-text"> tcp_syncookies</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#icmp_echo_ignore"><span class="nav-number">3.2.</span> <span class="nav-text"> icmp_echo_ignore</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#conf"><span class="nav-number">3.3.</span> <span class="nav-text"> conf&#x2F;*&#x2F;</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E5%88%97%E8%A1%A8"><span class="nav-number">4.</span> <span class="nav-text"> 访问控制列表</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%98%B2%E7%81%AB%E5%A2%99"><span class="nav-number">5.</span> <span class="nav-text"> 防火墙</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%8C%85%E8%BF%87%E6%BB%A4%E9%98%B2%E7%81%AB%E5%A2%99"><span class="nav-number">6.</span> <span class="nav-text"> 数据包过滤防火墙</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%84%E5%88%99%E9%A1%BA%E5%BA%8F"><span class="nav-number">6.1.</span> <span class="nav-text"> 规则顺序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A8%E4%B8%8E%E9%93%BE"><span class="nav-number">6.2.</span> <span class="nav-text"> 表与链</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%84%E5%88%99%E6%9F%A5%E8%AF%A2"><span class="nav-number">6.3.</span> <span class="nav-text"> 规则查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%85%E7%A9%BA%E8%A7%84%E5%88%99"><span class="nav-number">6.4.</span> <span class="nav-text"> 清空规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E9%BB%98%E8%AE%A4%E7%AD%96%E7%95%A5"><span class="nav-number">6.5.</span> <span class="nav-text"> 定义默认策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E8%A7%84%E5%88%99"><span class="nav-number">6.6.</span> <span class="nav-text"> 自定义规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E8%A7%84%E5%88%99"><span class="nav-number">6.7.</span> <span class="nav-text"> 删除规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%96%E6%8C%82%E6%A8%A1%E5%9D%97"><span class="nav-number">6.8.</span> <span class="nav-text"> 外挂模块</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#nat-%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">7.</span> <span class="nav-text"> NAT 服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#snat"><span class="nav-number">7.1.</span> <span class="nav-text"> SNAT</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dnat"><span class="nav-number">7.2.</span> <span class="nav-text"> DNAT</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%98%B2%E7%81%AB%E5%A2%99%E9%85%8D%E7%BD%AE"><span class="nav-number">8.</span> <span class="nav-text"> 防火墙配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E9%98%B2%E7%81%AB%E5%A2%99"><span class="nav-number">8.1.</span> <span class="nav-text"> 客户端防火墙</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E4%B8%80%E7%BD%91%E7%BB%9C%E9%98%B2%E7%81%AB%E5%A2%99"><span class="nav-number">8.2.</span> <span class="nav-text"> 单一网络防火墙</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E7%BD%91%E9%98%B2%E7%81%AB%E5%A2%99"><span class="nav-number">8.3.</span> <span class="nav-text"> 内网防火墙</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%98%B2%E7%81%AB%E5%A2%99"><span class="nav-number">8.4.</span> <span class="nav-text"> 网络服务器防火墙</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/3333155646/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Linux 网络安全 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux 网络安全
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-09-23 20:46:34" itemprop="dateCreated datePublished" datetime="2021-09-23T20:46:34+08:00">2021-09-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-14 19:43:34" itemprop="dateModified" datetime="2023-05-14T19:43:34+08:00">2023-05-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Linux/4-%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1/" itemprop="url" rel="index"><span itemprop="name">4.网络服务</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>21 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="网络传输流程"><a class="markdownIt-Anchor" href="#网络传输流程"></a> 网络传输流程</h1>
+<p>当一个安全配置的服务器要接收外来数据时，可以分为以下阶段：</p>
+<ul>
+<li>
+<p><strong>防火墙的分析</strong></p>
+<p>Linux 系统内建防火墙机制，因此首先连接要通过防火墙。</p>
+</li>
+<li>
+<p><strong>服务的基本功能</strong></p>
+<p>在应用层面来看，某些软件带有控制访问功能。例如 <code>httpd.conf</code> 配置文件内可以规定某些 IP 来源不能使用 <code>httpd</code> 这个服务来取得主机的数据。</p>
+</li>
+<li>
+<p><strong>SELinux 对网络服务的权限控制</strong></p>
+<p>为了避免前一个步骤的权限误用，或者是程序有问题所造成的安全问题，SELinux 可以针对网络服务的权限设置一些规则，让程序能够拥有的功能有限。这样即使 <code>httpd</code> 真的被攻击取得 root 的使用权，所能操作的范围也被控制在 <code>/var/www/html</code> 里面，无法对系统造成进一步威胁。</p>
+</li>
+<li>
+<p><strong>使用主机的文件系统资源</strong></p>
+<p>主要是文件系统的权限设置，如果文件权限错误，用户依然可能无法获得网页数据。</p>
+</li>
+</ul>
+<h1 id="常见攻击手段"><a class="markdownIt-Anchor" href="#常见攻击手段"></a> 常见攻击手段</h1>
+<p>下面介绍一些常见的网络攻击手法。完善防火墙规则、定期自动更新软件和定时检查日志是应对网络攻击的基本工作。同时要时刻保持警惕，及时采取措施来保护系统和数据的安全。</p>
+<h2 id="暴力破解密码"><a class="markdownIt-Anchor" href="#暴力破解密码"></a> 暴力破解密码</h2>
+<p>假如有人知道了你的主机地址，可以利用端口扫描工具（如 <code>NMAP</code>）来扫描主机，得出主机上运行的服务，例如邮箱服务。接下来使用脚本来尝试常用管理员账号（如 admin）的密码，通过密码字典就能破解一些简单密码，获取管理权限。</p>
+<p>不过现在很多软件都有密码输入次数限制，连续输入错误到一定次数会限制攻击者的访问。此时攻击者可以使用代理池来更换 IP 地址继续破解，不过这样会耗时耗力，因此现在比较少见了。</p>
+<p>对于这种攻击，设置一个不易破解的密码是最重要的。其次可以制定密码修改策略，提高密码破解的难度。</p>
+<h2 id="本地提权"><a class="markdownIt-Anchor" href="#本地提权"></a> 本地提权</h2>
+<p>如果已经拥有本机账号，在登录以后可以设法提升权限。例如利用下面这些具有 SUID 的二进制文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token function">find</span> / <span class="token parameter variable">-perm</span> <span class="token number">4775</span> <span class="token parameter variable">-uid</span> <span class="token number">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>目前系统已经很少有能如此利用二进制文件了。</p>
+<h2 id="缓冲区溢出攻击"><a class="markdownIt-Anchor" href="#缓冲区溢出攻击"></a> 缓冲区溢出攻击</h2>
+<p>入侵程序的目的是取得 root 执行权，或是通过 root 所执行的程序指向自己。缓冲区溢出攻击的目的在于干扰具有某些特权运行的程序功能，使得攻击者取得程序控制权。如果程序由 root 所执行，那么整个主机就有可能被控制。</p>
+<p>从程序角度看，是在寻求改变程序的执行流程，使之跳转到攻击代码，例如溢出一个没有边界检查的缓冲区。</p>
+<p>主要防范方法是编写程序时注意安全检查。</p>
+<h2 id="利用程序漏洞主动攻击"><a class="markdownIt-Anchor" href="#利用程序漏洞主动攻击"></a> 利用程序漏洞主动攻击</h2>
+<p>程序 Bug 可能造成安全问题，导致系统权限被攻击者掌握。由于程序问题被公开后，网上会出现针对漏洞的攻击程序代码，很容易被别有用心的人拿来使用，因此这类攻击比较常见。</p>
+<p>针对解决方法也很简单：保持系统更新，关闭掉不需要的软件和服务即可。</p>
+<h2 id="利用社会工程学欺骗"><a class="markdownIt-Anchor" href="#利用社会工程学欺骗"></a> 利用社会工程学欺骗</h2>
+<p>社会工程学欺骗方式很多，有些甚至完全不需要懂电脑技术，例如通过邮件和仿制网站钓鱼，来骗取用户账号密码。</p>
+<p>只要记住不要随便透露账号密码信息，多留意下网站网址或交流对象身份即可。</p>
+<h2 id="利用程序功能的被动攻击"><a class="markdownIt-Anchor" href="#利用程序功能的被动攻击"></a> 利用程序功能的被动攻击</h2>
+<p>在一些利用浏览器漏洞的网站上，只是打开页面就能运行网站上插入的恶意代码，进而使主机遭受攻击。</p>
+<p>作为应对，记得更新浏览器和设置好不要自动下载运行文件。</p>
+<h2 id="蠕虫和木马的-rootkit"><a class="markdownIt-Anchor" href="#蠕虫和木马的-rootkit"></a> 蠕虫和木马的 Rootkit</h2>
+<p>蠕虫会让主机一直发送数据包向外攻击。木马则是在主机中开启一个后门（端口），来进一步控制主机。</p>
+<p>Rootkit 是指可以获取 root 权限的一组工具，主要也是通过主机的程序漏洞进行攻击。很多 Rootkit 本身就是蠕虫或木马，主要通过下载安装带有 Rootkit 的软件来传播，一旦被绑架非常难以追踪与清除。</p>
+<p>作为防范最重要的一点是不要下载安装来路不明的程序，另外可以安装防范扫描 Rootkit 的软件，确保安全。</p>
+<h2 id="ddos-攻击"><a class="markdownIt-Anchor" href="#ddos-攻击"></a> DDoS 攻击</h2>
+<p>DDoS（Distributed Denial of Service）叫分布式拒绝服务，是通过分散在世界各地的僵尸计算机进行高频率的请求，从而使正常请求无法处理的攻击方式。</p>
+<p>最常见的是 SYN Flood 攻击，发送带有 SYN 的 TCP 数据包请求连接，但将服务器的回复确认数据包丢弃，造成服务器一直处于等待状态。一旦此类数据包过多，服务器的端口被占满，就无法继续提供服务。</p>
+<p>现在的云服务提供商和 CDN 服务提供商都具有一定的抵御 DDoS 攻击能力，会自动阻断异常请求和流量，因此可以根据需要进行购买。</p>
+<h1 id="ipv4-内核管理功能"><a class="markdownIt-Anchor" href="#ipv4-内核管理功能"></a> IPv4 内核管理功能</h1>
+<p>在 <code>/proc/sys/net/ipv4/</code> 目录中还有许多内核网络功能的设置，可以通过将其值设置为 1 来启用。如果希望在开机时自动启用这些设置，可以将其写入 <code>/etc/sysctl.conf</code> 文件，并运行 <code>sysctl -p</code> 命令。</p>
+<h2 id="tcp_syncookies"><a class="markdownIt-Anchor" href="#tcp_syncookies"></a> tcp_syncookies</h2>
+<p>SYN Cookie 模块用于抵御 DoS 攻击，在系统使用的端口（1024~65535）即将耗尽时会自动启用。</p>
+<p>启用 SYN Cookie 后，在主机发送 SYN/ACK 确认数据包之前，会要求客户端在短时间内回复一个序列号。这个序列号包含了原始 SYN 数据包中的许多信息，包括 IP 和端口等。如果客户端能够正确回复序列号，主机会确认该数据包是可信的，并发送 SYN/ACK 数据包。否则，数据包将被丢弃。</p>
+<p>由于 SYN Cookie 的设置违反了 TCP 的三次握手规定，所以可能会导致某些服务的延迟问题，例如 SMTP。因此，它不适用于负载已经很高的服务器，因为在负载过高的主机上，内核有时会错误地判断遭受 SYN Flood 攻击。</p>
+<h2 id="icmp_echo_ignore"><a class="markdownIt-Anchor" href="#icmp_echo_ignore"></a> icmp_echo_ignore</h2>
+<p>使用大量的大尺寸 Ping 包发送到服务器可能会导致服务器带宽满载或无响应，这种攻击方式被称为 Ping Flooding 和 Ping of Death。</p>
+<p>可以通过防火墙取消对 ICMP 类型 8 的 ICMP 数据包的回应，也可以调整内核参数来取消 ICMP 回应。有两个设置文件可供使用：<code>icmp_echo_ignore_all</code>（拒绝所有 Ping 回应）和 <code>icmp_echo_ignore_broadcasts</code>（仅在收到 Ping 广播地址时取消 Ping 回应）。</p>
+<h2 id="conf"><a class="markdownIt-Anchor" href="#conf"></a> conf/*/</h2>
+<p>在网口配置目录下有一些参数设置：</p>
+<ul>
+<li>rp_filter：称为逆向路径过滤（Reverse Path Filtering），可以通过分析网口的路由信息，结合数据包的源地址来分析数据包是否合理。</li>
+<li>log_martians：启用记录不合法的 IP 来源功能，例如来自 127.0.0.0 或 192.168.0.0 的 IP 不应应用于互联网。记录将写入 <code>/var/log/messages</code> 日志文件中。</li>
+<li>accept_source_route：允许源路由。一般不设置。</li>
+<li>accept_redirects：允许实体网络内不同 IP 网段之间的信息不通过路由器传递。不建议开启。</li>
+<li>send_redirects：类似于上一个设置，该值用于发送 ICMP redirect 数据包。不建议开启。</li>
+</ul>
+<h1 id="访问控制列表"><a class="markdownIt-Anchor" href="#访问控制列表"></a> 访问控制列表</h1>
+<p>访问控制列表（TCP Wrappers）通过服务器程序的外挂（tcpd）进行处理。该机制主要用于管理服务器程序。系统会检查 <code>/etc/hosts.allow</code> 和 <code>/etc/hosts.deny</code> 的配置，以过滤特定的 IP 和端口。</p>
+<p>并非所有软件都可以通过配置文件进行管理，只有由 Super Daemon（Xinetd）管理的服务和支持 <code>Libwrap.so</code> 模块的服务才能使用访问控制列表。</p>
+<p>对于 <code>allow</code> 和 <code>deny</code> 文件的优先规则如下：</p>
+<ul>
+<li>首先与 <code>/etc/hosts.allow</code> 进行匹配，符合规则的允许访问。</li>
+<li>其次与 <code>/etc/hosts.deny</code> 进行匹配，符合规则的阻止访问。</li>
+<li>如果不匹配这两个文件，则允许访问。</li>
+</ul>
+<p>例如，如果要定义允许局域网 192.168.1.0/24 和 10.1.1.2 使用 rsync，而不允许其他来源使用 rsync。修改配置文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/hosts.allow
+ALL: <span class="token number">127.0</span>.0.1
+rsync: <span class="token number">192.168</span>.1.0/255.255.255.0 <span class="token number">10.1</span>.1.2
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/hosts.deny 
+rsync: ALL<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="防火墙"><a class="markdownIt-Anchor" href="#防火墙"></a> 防火墙</h1>
+<p>防火墙是一种通过定义一系列有序规则，并管理进入网络内的主机数据包的机制。只要能够分析与过滤进出管理的网络数据包的数据，就可以称为防火墙。防火墙最大的功能是限制某些服务的访问来源。</p>
+<p>网络数据包一般包含四个基本信息，即源IP、目标IP、源端口和目标端口。防火墙即对数据包报头进行分析，根据设定的规则来对数据包进行放行或丢弃。防火墙在 OSI 七层协议中具体作用如下：</p>
+<ul>
+<li>第二层：可以针对来源与目标的 MAC 进行阻挡。</li>
+<li>第三层：主要针对来源与目标的 IP，以及 ICMP 的类别进行阻挡。</li>
+<li>第四层：针对 TCP/UDP 的端口进行阻挡，也可以针对 TCP 的状态来处理。</li>
+</ul>
+<p>防火墙可以分为硬件防火墙和软件防火墙两种。硬件防火墙是由厂商设计的主机硬件，其操作系统主要以提供数据包数据的过滤机制为主，并将其他不必要的功能剔除。而软件防火墙本身就是一套保护系统网络安全的软件。</p>
+<h1 id="数据包过滤防火墙"><a class="markdownIt-Anchor" href="#数据包过滤防火墙"></a> 数据包过滤防火墙</h1>
+<p>所谓数据包过滤（IP Filtering 或 Net Filter），就是分析进入主机的网络数据包，将包头数据提取出来进行分析，以决定该连接是放行还是阻止的机制。数据包过滤防火墙简单地说就是 iptables 或 firewall 提供的防火墙功能，它主要分析 OSI 的第 2 到 4 层，控制 MAC、IP、ICMP、TCP 和 UDP 的端口与状态（SYN、ACK 等）。</p>
+<p>防火墙由 Linux 内核处理，因此性能非常好。根据内核版本的不同，所用的防火墙软件也不同：</p>
+<ul>
+<li>版本 2.0：使用 ipfwadm 防火墙</li>
+<li>版本 2.2：使用 ipchains 防火墙</li>
+<li>版本 2.4 或 2.6：使用 iptables 防火墙</li>
+</ul>
+<p>在这里主要以 iptables 为主。</p>
+<h2 id="规则顺序"><a class="markdownIt-Anchor" href="#规则顺序"></a> 规则顺序</h2>
+<p>防火墙规则有顺序关系，数据包会按照规则定义的顺序一条条进行对比。如果匹配到一条规则，就会执行后面定义的动作，并忽略之后的规则。如果没有匹配的规则，则使用默认策略来决定数据包的去向。</p>
+<h2 id="表与链"><a class="markdownIt-Anchor" href="#表与链"></a> 表与链</h2>
+<p>防火墙中可以定义多个表格（Table），每个表格都定义了自己的默认策略和规则链（Chain），以用于不同的目的。默认情况下，有三个功能的表格：管理本机进出的 Filter、管理后端主机（防火墙内部机器）的 NAT、管理特殊标志使用的 Mangle。</p>
+<ul>
+<li>
+<p><strong>Filter</strong>（过滤器）</p>
+<p>主要与进入 Linux 本机的数据包有关，是默认的 table。</p>
+<ul>
+<li>INPUT：与本机接收的数据包有关。</li>
+<li>OUTPUT：与本机发送的数据包有关。</li>
+<li>FORWARD：与本机无关，可以转发数据包到后端主机，与 NAT 的 table 相关性较高。</li>
+</ul>
+</li>
+<li>
+<p><strong>NAT</strong>（地址转换）</p>
+<p>NAT 是 Network Address Translation 的缩写，主要用于进行源地址和目标地址以及端口的转换。</p>
+<ul>
+<li>PREROUTING：在进行路由判断之前要执行的规则（DNAT/REDIRECT）。</li>
+<li>POSTROUTING：在进行路由判断之后要执行的规则（SNAT/MASQUERADE）。</li>
+<li>INPUT：与接收的数据包有关。</li>
+<li>OUTPUT：与发送的数据包有关。</li>
+</ul>
+</li>
+<li>
+<p><strong>Mangle</strong>（破坏者）</p>
+<p>与特殊数据包的路由标志有关，用于重组数据包，使用较少。</p>
+</li>
+</ul>
+<p>各表格之间的关系如下图所示：</p>
+<p><img data-src="../../../images/%E9%93%BE%E4%B8%8E%E8%A1%A8%E7%9A%84%E7%9B%B8%E5%85%B3%E6%80%A7.png" alt="链与表的相关性" /></p>
+<p>从上图可以看出，iptables 可以控制三种数据包流向：</p>
+<ul>
+<li>路径 A：数据包进入 Linux 主机并使用资源。在路由判断后确定是向 Linux 主机请求的数据包，主机通过 Filter 的 INPUT 链来进行控制。</li>
+<li>路径 B：数据包通过 Linux 主机进行转发，不使用主机资源，目标是后端主机。在路由判断之前对数据包报头进行修订后，发现数据包目标地址是防火墙后端主机，数据包通过路径 B 移动。主要经过的链是 Filter 的 FORWARD 和 NAT 的 POSTROUTING、PREROUTING。</li>
+<li>路径 C：数据包由 Linux 本机发出，可能是响应客户端请求或主动发送的数据包。在路由判断后确定输出路径，然后通过 Filter 的 OUTPUT 链传送，最后经过 NAT 的 POSTROUTING 链。</li>
+</ul>
+<h2 id="规则查询"><a class="markdownIt-Anchor" href="#规则查询"></a> 规则查询</h2>
+<p>防火墙查询和设置都使用 <code>iptables</code> 命令，命令格式为：<code>iptables [-t tables] [-L] [-nv]</code>。与规则查询相关的选项如下：</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-t</td>
+<td>后面接 tables，例如 nat 或 filter。不带此参数默认查询 filter。</td>
+</tr>
+<tr>
+<td>-L</td>
+<td>列出当前表格的规则。</td>
+</tr>
+<tr>
+<td>-n</td>
+<td>不解析 IP 对应的主机名。</td>
+</tr>
+<tr>
+<td>-v</td>
+<td>列出详细信息，包括数据包传输状态和相关网口等。</td>
+</tr>
+</tbody>
+</table>
+<p>例如，查询 nat table 中的 4 条链的规则：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ iptables <span class="token parameter variable">-t</span> nat <span class="token parameter variable">-L</span> <span class="token parameter variable">-n</span>
+Chain PREROUTING <span class="token punctuation">(</span>policy ACCEPT<span class="token punctuation">)</span>
+target     prot opt <span class="token builtin class-name">source</span>               destination         
+
+Chain INPUT <span class="token punctuation">(</span>policy ACCEPT<span class="token punctuation">)</span>
+target     prot opt <span class="token builtin class-name">source</span>               destination         
+
+Chain OUTPUT <span class="token punctuation">(</span>policy ACCEPT<span class="token punctuation">)</span>
+target     prot opt <span class="token builtin class-name">source</span>               destination         
+
+Chain POSTROUTING <span class="token punctuation">(</span>policy ACCEPT<span class="token punctuation">)</span>
+target     prot opt <span class="token builtin class-name">source</span>               destination  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中，policy 表示默认策略，其他项目的解释如下：</p>
+<ul>
+<li>target：代表执行的操作，ACCEPT 允许，REJECT 拒绝，DROP 丢弃。</li>
+<li>prot：代表使用的数据包协议，TCP、UDP、ICMP。</li>
+<li>opt：额外的选项说明。</li>
+<li>source：规则匹配的来源 IP。</li>
+<li>destination：规则匹配的目标 IP。</li>
+</ul>
+<p>可以使用 <code>iptables-save</code> 命令来查询完整的规则：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ iptables-save <span class="token parameter variable">-t</span> filter
+<span class="token comment"># Generated by iptables-save v1.4.21 on Fri Oct  8 23:48:44 2021</span>
+*filter
+:INPUT ACCEPT <span class="token punctuation">[</span><span class="token number">2470</span>:186319<span class="token punctuation">]</span>
+:FORWARD ACCEPT <span class="token punctuation">[</span><span class="token number">0</span>:0<span class="token punctuation">]</span>
+:OUTPUT ACCEPT <span class="token punctuation">[</span><span class="token number">1687</span>:123767<span class="token punctuation">]</span>
+COMMIT
+<span class="token comment"># Completed on Fri Oct  8 23:48:44 2021</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中，以星号 * 开头的是表格，以冒号 : 开头的是链。</p>
+<h2 id="清空规则"><a class="markdownIt-Anchor" href="#清空规则"></a> 清空规则</h2>
+<p>清除规则使用的命令格式：<code>iptables [-t table] [-FXZ]</code></p>
+<p>选项说明：</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-F</td>
+<td>清除所有已定义的规则。</td>
+</tr>
+<tr>
+<td>-X</td>
+<td>清除所有用户自定义的表格。</td>
+</tr>
+<tr>
+<td>-Z</td>
+<td>将所有链的计数和流量统计归零。</td>
+</tr>
+</tbody>
+</table>
+<p>例如，清除所有 filter 表格的规则，但不改变默认策略：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ iptables -F<span class="token punctuation">;</span>iptables -X<span class="token punctuation">;</span>iptables <span class="token parameter variable">-Z</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="定义默认策略"><a class="markdownIt-Anchor" href="#定义默认策略"></a> 定义默认策略</h2>
+<p>定义默认策略（Policy）使用命令：<code>iptables [-t table] -P [INPUT, OUTPUT, FORWARD] [ACCEPT, DROP]</code>。</p>
+<p>例如，将本机的 INPUT 设置为 DROP，其他设置为 ACCEPT：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ iptables <span class="token parameter variable">-P</span> INPUT DROP
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ iptables <span class="token parameter variable">-P</span> OUTPUT ACCEPT
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ iptables <span class="token parameter variable">-P</span> FORWARD ACCEPT
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ iptables-save<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="自定义规则"><a class="markdownIt-Anchor" href="#自定义规则"></a> 自定义规则</h2>
+<p>使用 <code>iptables</code> 自定义规则的语法如下：</p>
+<p><code>iptables [-AI 链名] [-io 网口] [-p 协议] [-s 源地址] [--sport 端口范围] [-d 目标地址] [--dport 端口范围] -j [ACCEPT|DROP|REJECT|LOG]</code></p>
+<p>选项说明：</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-A</td>
+<td>在链的最后新增一条规则。</td>
+</tr>
+<tr>
+<td>-I</td>
+<td>插入一条规则，默认在链最前面插入。</td>
+</tr>
+<tr>
+<td>-i</td>
+<td>数据包接收的网口，例如 <code>eth0</code>。需要与 INPUT 链配合。</td>
+</tr>
+<tr>
+<td>-o</td>
+<td>数据包发送的网口，需要与 OUTPUT 链配合。</td>
+</tr>
+<tr>
+<td>-p</td>
+<td>设置规则适用的数据包格式，例如 tcp、udp、icmp、all。</td>
+</tr>
+<tr>
+<td>-s</td>
+<td>来源 IP/网络，可以指定具体 IP 或网段。</td>
+</tr>
+<tr>
+<td>-d</td>
+<td>目标 IP/网络，例如 192.168.1.104 或 192.168.1.0/24。</td>
+</tr>
+<tr>
+<td>–sport</td>
+<td>限制来源端口号码，可以设置连续端口，例如 1055:1100。</td>
+</tr>
+<tr>
+<td>–dport</td>
+<td>限制目标端口号码，针对端口操作需要与 <code>-p</code> 参数配合才能成功。</td>
+</tr>
+<tr>
+<td>-j</td>
+<td>后面接针对数据包的操作。</td>
+</tr>
+</tbody>
+</table>
+<p>例如，将 lo 口设置为受信任设备，不管数据包来源与目标，只要来自 lo 口都予以接受：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ iptables <span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-i</span> lo <span class="token parameter variable">-j</span> ACCEPT
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ iptables <span class="token parameter variable">-L</span> <span class="token parameter variable">-nv</span>
+Chain INPUT <span class="token punctuation">(</span>policy ACCEPT <span class="token number">86</span> packets, <span class="token number">7740</span> bytes<span class="token punctuation">)</span>
+ pkts bytes target     prot opt <span class="token keyword">in</span>     out     <span class="token builtin class-name">source</span>               destination         
+   <span class="token number">12</span>   <span class="token number">702</span> ACCEPT     all  --  lo     *       <span class="token number">0.0</span>.0.0/0            <span class="token number">0.0</span>.0.0/0  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上面命令没有指定 <code>-s</code> 和 <code>-d</code> 参数，则默认代表该项目完全接受。</p>
+<p>设置接受来源 192.168.2.234 的包，拒绝 192.168.2.230 的包：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ iptables <span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-i</span> ens33 <span class="token parameter variable">-s</span> <span class="token number">192.168</span>.2.234 <span class="token parameter variable">-j</span> ACCEPT
+<span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ iptables <span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-i</span> ens33 <span class="token parameter variable">-s</span> <span class="token number">192.168</span>.2.230 <span class="token parameter variable">-j</span> DROP
+<span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ iptables-save 
+<span class="token comment"># Generated by iptables-save v1.4.21 on Sat Oct  9 00:58:26 2021</span>
+*filter
+:INPUT ACCEPT <span class="token punctuation">[</span><span class="token number">74</span>:6754<span class="token punctuation">]</span>
+:FORWARD ACCEPT <span class="token punctuation">[</span><span class="token number">0</span>:0<span class="token punctuation">]</span>
+:OUTPUT ACCEPT <span class="token punctuation">[</span><span class="token number">33</span>:3160<span class="token punctuation">]</span>
+<span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-s</span> <span class="token number">192.168</span>.2.234/32 <span class="token parameter variable">-i</span> ens33 <span class="token parameter variable">-j</span> ACCEPT
+<span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-s</span> <span class="token number">192.168</span>.2.230/32 <span class="token parameter variable">-i</span> ens33 <span class="token parameter variable">-j</span> DROP
+COMMIT
+<span class="token comment"># Completed on Sat Oct  9 00:58:26 2021</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>设置屏蔽本机端口 2021：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ iptables <span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-i</span> ens33 <span class="token parameter variable">-p</span> tcp <span class="token parameter variable">--dport</span> <span class="token number">2021</span> <span class="token parameter variable">-j</span> DROP<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>屏蔽 10000~20000 端口带 SYN 标记的 TCP 数据包：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ iptables <span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-i</span> ens33 <span class="token parameter variable">-p</span> tcp <span class="token parameter variable">--sport</span> <span class="token number">10000</span>:20000 <span class="token parameter variable">--dport</span> <span class="token number">10000</span>:20000 <span class="token parameter variable">--syn</span> <span class="token parameter variable">-j</span> DROP<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="删除规则"><a class="markdownIt-Anchor" href="#删除规则"></a> 删除规则</h2>
+<p>删除规则使用命令：<code>iptables [-t table] -D [chain] line-numbers</code></p>
+<p>首先需要获取规则在表链中的序号：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ iptables <span class="token parameter variable">-L</span> <span class="token parameter variable">-t</span> nat --line-numbers
+Chain PREROUTING <span class="token punctuation">(</span>policy ACCEPT<span class="token punctuation">)</span>
+num  target     prot opt <span class="token builtin class-name">source</span>            destination         
+<span class="token number">1</span>    REDIRECT   tcp  --  <span class="token number">10.1</span>.1.0/24       anywhere     tcp dpt:http redir ports <span class="token number">3128</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>然后用行号删除指定规则：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ iptables <span class="token parameter variable">-t</span> nat <span class="token parameter variable">-D</span> PREROUTING <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="外挂模块"><a class="markdownIt-Anchor" href="#外挂模块"></a> 外挂模块</h2>
+<p>在早期版本的防火墙中，需要分别在 INPUT 和 OUTPUT 链中添加规则才能实现双向通信，这样规则会变得相当冗长。现在的 <code>iptables</code> 可以通过一个状态模块来分析数据包是否为响应包，如果是，则直接放行。这样就不用考虑向 INPUT 链添加对应规则了。</p>
+<p>加载模块使用 <code>-m</code> 参数，常用的有 <code>mac</code> 和 <code>state</code> 模块。指定 <code>-m state</code> 模块后可以使用 <code>--state</code> 接收数据包状态：</p>
+<table>
+<thead>
+<tr>
+<th>状态</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>INVALID</td>
+<td>无效数据包，例如数据破损的数据包状态。</td>
+</tr>
+<tr>
+<td>ESTABLISHED</td>
+<td>已经连接成功的连接状态。</td>
+</tr>
+<tr>
+<td>NEW</td>
+<td>想要新建立连接的数据包状态。</td>
+</tr>
+<tr>
+<td>RELATED</td>
+<td>表示数据包与发送出去的数据包有关。</td>
+</tr>
+</tbody>
+</table>
+<p>例如设置只要已建立连接或已发出请求相关的数据包就予以通过：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ iptables <span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-m</span> state <span class="token parameter variable">--state</span> RELATED,ESTABLISHED <span class="token parameter variable">-j</span> ACCEPT<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>针对局域网内网卡 MAC 地址进行限制：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ iptables <span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-m</span> mac --mac-source aa:bb:cc:dd:ee:ff <span class="token parameter variable">-j</span> ACCEPT <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="nat-服务器"><a class="markdownIt-Anchor" href="#nat-服务器"></a> NAT 服务器</h1>
+<p>网络地址转换是通过 iptables 修改 IP 数据包报头数据中来源或目标 IP 地址和端口。在 NAT 表中，POSTROUTING 链用于修改源 IP，PREROUTING 链用于修改目标 IP。</p>
+<p>NAT 有两种，来源 NAT（SNAT，Source NAT）针对局域网访问互联网，目标 NAT（DNAT，Destination NAT）针对局域网内服务器服务互联网。</p>
+<h2 id="snat"><a class="markdownIt-Anchor" href="#snat"></a> SNAT</h2>
+<p>当内网主机通过 NAT 服务器发送互联网请求包时，POSTROUTING 链将数据包报头来源的内网 IP 替换成 NAT 服务器的外网 IP，记录数据包序号和转换的 IP 地址信息后，将数据包发送出去。</p>
+<p>当数据包返回通过 NAT 服务器时，iptables 会分析数据包的序号。如发现序号有记录，PREROUTING 链会将目标 IP 替换成对应的内网 IP，并转发给对应主机。</p>
+<p>例如将内部 10.1.1.0/24 网段的 IP 伪装成外网口 <code>ens37</code> 的 IP：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 iptables<span class="token punctuation">]</span>$ iptables <span class="token parameter variable">-t</span> nat <span class="token parameter variable">-A</span> POSTROUTING <span class="token parameter variable">-s</span> <span class="token number">10.1</span>.1.0/24 <span class="token parameter variable">-o</span> ens37 <span class="token parameter variable">-j</span> MASQUERADE<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>也可以指定多个对外 IP 轮流使用：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 iptables<span class="token punctuation">]</span>$ iptables <span class="token parameter variable">-t</span> nat <span class="token parameter variable">-A</span> POSTROUTING <span class="token parameter variable">-o</span> ens37 <span class="token parameter variable">-j</span> SNAT --to-source <span class="token number">192.168</span>.2.230-192.168.2.240<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="dnat"><a class="markdownIt-Anchor" href="#dnat"></a> DNAT</h2>
+<p>当内网中有提供 HTTP 服务的服务器时，必须通过 NAT 服务器映射端口，也就是将自身 80 端口与 NAT 服务器 80 端口绑定。NAT 服务器接收到客户端发送的 HTTP 请求数据包后，PREROUTING 链会将目标 IP 替换成内网 HTTP 服务器 IP 并发送给它。</p>
+<p>当内网 HTTP 服务器回应数据包通过 NAT 服务器时，通过 POSTROUTING 链将源 IP 替换成 NAT 服务器外网 IP，并发送出去。</p>
+<p>例如将内网 HTTP 服务器 10.1.1.2 的端口指向外网端口 <code>ens33</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ iptables <span class="token parameter variable">-t</span> nat <span class="token parameter variable">-A</span> PREROUTING <span class="token parameter variable">-i</span> ens33 <span class="token parameter variable">-p</span> tcp <span class="token parameter variable">--dport</span> <span class="token number">80</span> <span class="token parameter variable">-j</span> DNAT --to-destination <span class="token number">10.1</span>.1.2:80<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>也可以将本机的 8080 端口转发到 80 端口：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ iptables <span class="token parameter variable">-t</span> nat <span class="token parameter variable">-A</span> PREROUTING <span class="token parameter variable">-p</span> tcp <span class="token parameter variable">--dport</span> <span class="token number">8080</span> <span class="token parameter variable">-j</span> REDIRECT --to-ports <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="防火墙配置"><a class="markdownIt-Anchor" href="#防火墙配置"></a> 防火墙配置</h1>
+<p>常见的防火墙与网络布线配置有下面几种：</p>
+<h2 id="客户端防火墙"><a class="markdownIt-Anchor" href="#客户端防火墙"></a> 客户端防火墙</h2>
+<p>当 Linux 主机作为客户端且不提供网络服务时，基本防火墙设置如下：</p>
+<ul>
+<li>规则归零：清除所有已存在的规则。</li>
+<li>默认策略：除了将 INPUT 设为 DROP 外，其他默认为 ACCEPT。</li>
+<li>信任本机：由于 lo 对本机来说很重要，因此必须设置为信任设备。</li>
+<li>回应数据包：让本机通过主动向外发出请求而响应的数据包可以进入本机。</li>
+<li>信任用户：可在想要让本地网络的来源使用主机资源时设置。</li>
+</ul>
+<p>可以将防火墙规则写入脚本中：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#!/bin/bash</span>
+
+<span class="token comment"># 1.清除规则</span>
+iptables <span class="token parameter variable">-F</span>
+iptables <span class="token parameter variable">-X</span>
+iptables <span class="token parameter variable">-Z</span>
+
+<span class="token comment"># 2.设置默认策略</span>
+iptables <span class="token parameter variable">-P</span> INPUT DROP
+iptables <span class="token parameter variable">-P</span> OUTPUT ACCEPT
+iptables <span class="token parameter variable">-P</span> FORWARD ACCEPT
+
+<span class="token comment"># 3.定制各项规则</span>
+iptables <span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-i</span> ens37 <span class="token parameter variable">-s</span> <span class="token number">192.168</span>.2.101 <span class="token parameter variable">-j</span> ACCEPT
+iptables <span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-i</span> lo <span class="token parameter variable">-j</span> ACCEPT
+iptables <span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-i</span> ens37 <span class="token parameter variable">-m</span> state <span class="token parameter variable">--state</span> RELATED,ESTABLISHED <span class="token parameter variable">-j</span> ACCEPT
+
+<span class="token comment"># 4.保存配置</span>
+iptables-save<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="单一网络防火墙"><a class="markdownIt-Anchor" href="#单一网络防火墙"></a> 单一网络防火墙</h2>
+<p>防火墙至少有两个接口，将可信任的内部局域网与不可信任的外部因特网分开，由防火墙全权掌控到局域网内的所有数据包。</p>
+<p>网络示例图：</p>
+<p><img data-src="../../../images/%E5%8D%95%E4%B8%80%E7%BD%91%E7%BB%9C%E9%98%B2%E7%81%AB%E5%A2%99.png" alt="单一网络防火墙" /></p>
+<p>假设上面的 Linux 服务器作为防火墙和内部 LAN 的路由器使用，配置如下：</p>
+<ul>
+<li>对外网口 ens33，IP 配置 192.168.2.254/24，网关 192.168.2.1。</li>
+<li>对内网口 ens37，IP 配置 10.1.1.1/24。</li>
+<li>默认开放 HTTP、HTTPS、SSH 端口。</li>
+</ul>
+<p>针对防火墙的脚本内容如下：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 iptables<span class="token punctuation">]</span>$ <span class="token function">vi</span> iptables.rules
+<span class="token comment">#!/bin/bash</span>
+
+<span class="token comment"># 定义参数</span>
+<span class="token assign-left variable">OUTIF</span><span class="token operator">=</span><span class="token string">'ens33'</span>
+<span class="token assign-left variable">INIF</span><span class="token operator">=</span><span class="token string">'ens37'</span>
+<span class="token assign-left variable">INNET</span><span class="token operator">=</span><span class="token string">'10.1.1.0/24'</span>
+<span class="token builtin class-name">export</span> OUTIF INIF INNET
+
+<span class="token comment"># 针对互联网卡设置###################</span>
+<span class="token comment"># 1.设置内核参数</span>
+<span class="token builtin class-name">echo</span> <span class="token string">"1"</span> <span class="token operator">></span>/proc/sys/net/ipv4/tcp_syncookies
+<span class="token builtin class-name">echo</span> <span class="token string">"1"</span> <span class="token operator">></span>/proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+<span class="token keyword">for</span> <span class="token for-or-select variable">i</span> <span class="token keyword">in</span> /proc/sys/net/ipv4/conf/*/<span class="token punctuation">&#123;</span>rp_filter,log_martians<span class="token punctuation">&#125;</span><span class="token punctuation">;</span> <span class="token keyword">do</span>
+    <span class="token builtin class-name">echo</span> <span class="token string">"1"</span> <span class="token operator">></span><span class="token variable">$i</span>
+<span class="token keyword">done</span>
+<span class="token keyword">for</span> <span class="token for-or-select variable">i</span> <span class="token keyword">in</span> /proc/sys/net/ipv4/conf/*/<span class="token punctuation">&#123;</span>accept_source_route,accept_redirects,send_redirects<span class="token punctuation">&#125;</span><span class="token punctuation">;</span> <span class="token keyword">do</span>
+    <span class="token builtin class-name">echo</span> <span class="token string">"0"</span> <span class="token operator">></span><span class="token variable">$i</span>
+<span class="token keyword">done</span>
+
+<span class="token comment"># 2.清除规则,设置默认策略及开放lo与相关设置值</span>
+iptables <span class="token parameter variable">-F</span>
+iptables <span class="token parameter variable">-X</span>
+iptables <span class="token parameter variable">-Z</span>
+iptables <span class="token parameter variable">-P</span> INPUT DROP
+iptables <span class="token parameter variable">-P</span> OUTPUT ACCEPT
+iptables <span class="token parameter variable">-P</span> FORWARD ACCEPT
+iptables <span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-i</span> lo <span class="token parameter variable">-j</span> ACCEPT
+iptables <span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-m</span> state <span class="token parameter variable">--state</span> RELATED,ESTABLISHED <span class="token parameter variable">-j</span> ACCEPT
+
+<span class="token comment"># 3.启动额外的防火墙script模块</span>
+<span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token parameter variable">-f</span> /root/iptables/iptables.deny <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+    <span class="token function">sh</span> /root/iptables/iptables.deny
+<span class="token keyword">fi</span>
+<span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token parameter variable">-f</span> /root/iptables/iptables.allow <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+    <span class="token function">sh</span> /root/iptables/iptables.allow
+<span class="token keyword">fi</span>
+<span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token parameter variable">-f</span> /root/iptables/iptables.http <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+    <span class="token function">sh</span> /root/iptables/iptables.http
+<span class="token keyword">fi</span>
+
+<span class="token comment"># 4.允许某些类型的ICMP数据包进入</span>
+<span class="token assign-left variable">AICMP</span><span class="token operator">=</span><span class="token string">"0 3 3/4 4 11 12 14 16 18"</span>
+<span class="token keyword">for</span> <span class="token for-or-select variable">x</span> <span class="token keyword">in</span> <span class="token variable">$AICMP</span><span class="token punctuation">;</span> <span class="token keyword">do</span>
+    iptables <span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-i</span> <span class="token variable">$OUTIF</span> <span class="token parameter variable">-p</span> icmp --icmp-type <span class="token variable">$x</span> <span class="token parameter variable">-j</span> ACCEPT
+<span class="token keyword">done</span>
+
+<span class="token comment"># 5.允许某些服务的进入</span>
+iptables <span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-p</span> TCP <span class="token parameter variable">-i</span> <span class="token variable">$OUTIF</span> <span class="token parameter variable">--dport</span> <span class="token number">21</span> <span class="token parameter variable">--sport</span> <span class="token number">1</span>:65534 <span class="token parameter variable">-j</span> ACCEPT  <span class="token comment"># FTP</span>
+iptables <span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-p</span> TCP <span class="token parameter variable">-i</span> <span class="token variable">$OUTIF</span> <span class="token parameter variable">--dport</span> <span class="token number">22</span> <span class="token parameter variable">--sport</span> <span class="token number">1</span>:65534 <span class="token parameter variable">-j</span> ACCEPT  <span class="token comment"># SSH</span>
+iptables <span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-p</span> TCP <span class="token parameter variable">-i</span> <span class="token variable">$OUTIF</span> <span class="token parameter variable">--dport</span> <span class="token number">25</span> <span class="token parameter variable">--sport</span> <span class="token number">1</span>:65534 <span class="token parameter variable">-j</span> ACCEPT  <span class="token comment"># SMTP</span>
+iptables <span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-p</span> TCP <span class="token parameter variable">-i</span> <span class="token variable">$OUTIF</span> <span class="token parameter variable">--dport</span> <span class="token number">53</span> <span class="token parameter variable">--sport</span> <span class="token number">1</span>:65534 <span class="token parameter variable">-j</span> ACCEPT  <span class="token comment"># DNS</span>
+iptables <span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-p</span> UDP <span class="token parameter variable">-i</span> <span class="token variable">$OUTIF</span> <span class="token parameter variable">--dport</span> <span class="token number">53</span> <span class="token parameter variable">--sport</span> <span class="token number">1</span>:65534 <span class="token parameter variable">-j</span> ACCEPT  <span class="token comment"># DNS</span>
+iptables <span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-p</span> TCP <span class="token parameter variable">-i</span> <span class="token variable">$OUTIF</span> <span class="token parameter variable">--dport</span> <span class="token number">80</span> <span class="token parameter variable">--sport</span> <span class="token number">1</span>:65534 <span class="token parameter variable">-j</span> ACCEPT  <span class="token comment"># HTTP</span>
+iptables <span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-p</span> TCP <span class="token parameter variable">-i</span> <span class="token variable">$OUTIF</span> <span class="token parameter variable">--dport</span> <span class="token number">110</span> <span class="token parameter variable">--sport</span> <span class="token number">1</span>:65534 <span class="token parameter variable">-j</span> ACCEPT <span class="token comment"># POP3</span>
+iptables <span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-p</span> TCP <span class="token parameter variable">-i</span> <span class="token variable">$OUTIF</span> <span class="token parameter variable">--dport</span> <span class="token number">443</span> <span class="token parameter variable">--sport</span> <span class="token number">1</span>:65534 <span class="token parameter variable">-j</span> ACCEPT <span class="token comment"># HTTPS</span>
+
+<span class="token comment"># 针对局域网网卡设置####################</span>
+<span class="token comment"># 1.先加载一些有用的模块</span>
+<span class="token assign-left variable">modules</span><span class="token operator">=</span><span class="token string">"ip_tables iptable_nat ip_nat_ftp ip_nat_irc ip_conntrack ip_conntrack_ftp ip_conntrack_irc"</span>
+<span class="token keyword">for</span> <span class="token for-or-select variable">mod</span> <span class="token keyword">in</span> <span class="token variable">$modules</span><span class="token punctuation">;</span> <span class="token keyword">do</span>
+    <span class="token assign-left variable">testmod</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span>lsmod <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">"^<span class="token variable">$&#123;mod&#125;</span> "</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'&#123;print $1&#125;'</span><span class="token variable">)</span></span>
+    <span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token string">"<span class="token variable">$testmod</span>"</span> <span class="token operator">==</span> <span class="token string">""</span> <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+        modprobe <span class="token variable">$mod</span>
+    <span class="token keyword">fi</span>
+<span class="token keyword">done</span>
+
+<span class="token comment"># 2.清除NAT table的规则</span>
+iptables <span class="token parameter variable">-F</span> <span class="token parameter variable">-t</span> nat
+iptables <span class="token parameter variable">-X</span> <span class="token parameter variable">-t</span> nat
+iptables <span class="token parameter variable">-Z</span> <span class="token parameter variable">-t</span> nat
+iptables <span class="token parameter variable">-t</span> nat <span class="token parameter variable">-P</span> PREROUTING ACCEPT
+iptables <span class="token parameter variable">-t</span> nat <span class="token parameter variable">-P</span> POSTROUTING ACCEPT
+iptables <span class="token parameter variable">-t</span> nat <span class="token parameter variable">-P</span> OUTPUT ACCEPT
+
+<span class="token comment"># 3.开启内网SNAT</span>
+<span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token string">"<span class="token variable">$INIF</span>"</span> <span class="token operator">!=</span> <span class="token string">""</span> <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+    iptables <span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-i</span> <span class="token variable">$INIF</span> <span class="token parameter variable">-j</span> ACCEPT
+    <span class="token builtin class-name">echo</span> <span class="token string">"1"</span> <span class="token operator">></span>/proc/sys/net/ipv4/ip_forward
+    <span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token string">"<span class="token variable">$INNET</span>"</span> <span class="token operator">!=</span> <span class="token string">""</span> <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+        iptables <span class="token parameter variable">-t</span> nat <span class="token parameter variable">-A</span> POSTROUTING <span class="token parameter variable">-s</span> <span class="token variable">$INNET</span> <span class="token parameter variable">-o</span> <span class="token variable">$OUTIF</span> <span class="token parameter variable">-j</span> MASQUERADE
+    <span class="token keyword">fi</span>
+<span class="token keyword">fi</span>
+
+<span class="token comment"># 4. NAT服务器内局域网中服务器端口转发</span>
+iptables <span class="token parameter variable">-t</span> nat <span class="token parameter variable">-A</span> PREROUTING <span class="token parameter variable">-p</span> tcp <span class="token parameter variable">-i</span> <span class="token variable">$OUTIF</span> <span class="token parameter variable">--dport</span> <span class="token number">80</span> <span class="token parameter variable">-j</span> DNAT --to-destination <span class="token number">192.168</span>.2.234:80
+
+<span class="token comment"># 5. 保存规则</span>
+iptables-save<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在 <code>/root/iptables</code> 目录下可以填写额外规则：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 iptables<span class="token punctuation">]</span>$ <span class="token function">vi</span> iptables.allow
+<span class="token comment">#!/bin/bash</span>
+iptables <span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-i</span> <span class="token variable">$OUTIF</span> <span class="token parameter variable">-s</span> <span class="token number">192.168</span>.2.0/24 <span class="token parameter variable">-j</span> ACCEPT
+<span class="token punctuation">[</span>root@server2 iptables<span class="token punctuation">]</span>$ <span class="token function">vi</span> iptables.deny
+<span class="token comment">#!/bin/bash</span>
+iptables <span class="token parameter variable">-A</span> INPUT <span class="token parameter variable">-i</span> <span class="token variable">$OUTIF</span> <span class="token parameter variable">-s</span> <span class="token number">192.168</span>.2.230 <span class="token parameter variable">-j</span> DROP
+<span class="token punctuation">[</span>root@server2 iptables<span class="token punctuation">]</span>$ <span class="token function">chmod</span> <span class="token number">700</span> iptables.*<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以将脚本写入 <code>/etc/rc.d/rc.local</code> 文件中来开机执行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 iptables<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/rc.d/rc.local
+/root/iptables/iptables.rules<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="内网防火墙"><a class="markdownIt-Anchor" href="#内网防火墙"></a> 内网防火墙</h2>
+<p>一般情况下，局域网内部的防火墙并不需要过于严格的防备措施。但是，如果局域网内部存在高度机密的子网，可以考虑增设防火墙进行保护。</p>
+<p>网络示例图：</p>
+<p><img data-src="../../../images/%E5%86%85%E7%BD%91%E9%98%B2%E7%81%AB%E5%A2%99.png" alt="内网防火墙" /></p>
+<h2 id="网络服务器防火墙"><a class="markdownIt-Anchor" href="#网络服务器防火墙"></a> 网络服务器防火墙</h2>
+<p>如果存在提供对外网络服务的服务器，可以将该服务器放置在两台防火墙之间，这样可以使服务器免受来自内部和外部网络的攻击。该服务器所处的区域也被称为非军事化隔离区（DMZ）。</p>
+<p>网络示例图：</p>
+<p><img data-src="../../../images/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%98%B2%E7%81%AB%E5%A2%99.png" alt="网络服务器防火墙" /></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/3333155646/" title="Linux 网络安全">https://blog.x2b.net/3333155646/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../2991697559/" rel="prev" title="Linux 网络命令">
+                  <i class="fa fa-chevron-left"></i> Linux 网络命令
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../1926461212/" rel="next" title="DNS 服务">
+                  DNS 服务 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">162k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">8:59</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@next-theme/pjax@0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://unpkg.com/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://unpkg.com/katex@0.16.4/dist/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/3333155646/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://unpkg.com/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'blog.x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>

@@ -92,7 +92,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="../../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">58</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="../../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">59</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -157,7 +157,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="../../archives/">
-          <span class="site-state-item-count">58</span>
+          <span class="site-state-item-count">59</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -456,6 +456,139 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/3333155646/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="../../3333155646/" class="post-title-link" itemprop="url">Linux 网络安全</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-09-23 20:46:34" itemprop="dateCreated datePublished" datetime="2021-09-23T20:46:34+08:00">2021-09-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-14 19:43:34" itemprop="dateModified" datetime="2023-05-14T19:43:34+08:00">2023-05-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../../categories/Linux/4-%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1/" itemprop="url" rel="index"><span itemprop="name">4.网络服务</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>21 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="网络传输流程"><a class="markdownIt-Anchor" href="#网络传输流程"></a> 网络传输流程</h1>
+<p>当一个安全配置的服务器要接收外来数据时，可以分为以下阶段：</p>
+<ul>
+<li>
+<p><strong>防火墙的分析</strong></p>
+<p>Linux 系统内建防火墙机制，因此首先连接要通过防火墙。</p>
+</li>
+<li>
+<p><strong>服务的基本功能</strong></p>
+<p>在应用层面来看，某些软件带有控制访问功能。例如 <code>httpd.conf</code> 配置文件内可以规定某些 IP 来源不能使用 <code>httpd</code> 这个服务来取得主机的数据。</p>
+</li>
+<li>
+<p><strong>SELinux 对网络服务的权限控制</strong></p>
+<p>为了避免前一个步骤的权限误用，或者是程序有问题所造成的安全问题，SELinux 可以针对网络服务的权限设置一些规则，让程序能够拥有的功能有限。这样即使 <code>httpd</code> 真的被攻击取得 root 的使用权，所能操作的范围也被控制在 <code>/var/www/html</code> 里面，无法对系统造成进一步威胁。</p>
+</li>
+<li>
+<p><strong>使用主机的文件系统资源</strong></p>
+<p>主要是文件系统的权限设置，如果文件权限错误，用户依然可能无法获得网页数据。</p>
+</li>
+</ul>
+<h1 id="常见攻击手段"><a class="markdownIt-Anchor" href="#常见攻击手段"></a> 常见攻击手段</h1>
+<p>下面介绍一些常见的网络攻击手法。完善防火墙规则、定期自动更新软件和定时检查日志是应对网络攻击的基本工作。同时要时刻保持警惕，及时采取措施来保护系统和数据的安全。</p>
+<h2 id="暴力破解密码"><a class="markdownIt-Anchor" href="#暴力破解密码"></a> 暴力破解密码</h2>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="../../3333155646/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/2991697559/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -492,7 +625,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-14 18:58:26" itemprop="dateModified" datetime="2023-05-14T18:58:26+08:00">2023-05-14</time>
+      <time title="修改时间：2023-05-14 18:59:15" itemprop="dateModified" datetime="2023-05-14T18:59:15+08:00">2023-05-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -715,137 +848,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/3511703514/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="../../images/avatar.jpg">
-      <meta itemprop="name" content="assassing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="X to Bytes">
-      <meta itemprop="description" content="技术分享">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | X to Bytes">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="../../3511703514/" class="post-title-link" itemprop="url">Linux 基本系统设置</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-09-21 16:26:41" itemprop="dateCreated datePublished" datetime="2021-09-21T16:26:41+08:00">2021-09-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-07 18:27:16" itemprop="dateModified" datetime="2023-05-07T18:27:16+08:00">2023-05-07</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Linux/1-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">1.基本操作</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>685</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>2 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="网络设置"><a class="markdownIt-Anchor" href="#网络设置"></a> 网络设置</h1>
-<p>可以通过 <code>nmcli connection show</code> 命令来查询网卡信息：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ nmcli connection show
-NAME   UUID                                  TYPE      DEVICE 
-ens33  ebab2aaf-84f5-45b6-a431-7ec3c63891b0  ethernet  ens33
-<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ nmcli connection show ens33
-connection.id:                          ens33
-connection.uuid:                        ebab2aaf-84f5-45b6-a431-7ec3c63891b0
-connection.stable-id:                   --
-connection.type:                        <span class="token number">802</span>-3-ethernet
-connection.interface-name:              ens33<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>如上，网卡信息列得非常详细，也可以通过 <code>nmcli connection modify</code> 来修改网卡参数：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ nmcli connection modify ens33 <span class="token punctuation">\</span>
-<span class="token operator">></span> connection.autoconnect <span class="token function">yes</span> <span class="token punctuation">\</span>
-<span class="token operator">></span> ipv4.method manual <span class="token punctuation">\</span>
-<span class="token operator">></span> ipv4.addresses <span class="token number">192.168</span>.2.234/16 <span class="token punctuation">\</span>
-<span class="token operator">></span> ipv4.gateway <span class="token number">192.168</span>.2.1 <span class="token punctuation">\</span>
-<span class="token operator">></span> ipv4.dns <span class="token number">222.246</span>.129.80
-<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ nmcli connection up ens33
-Connection successfully activated <span class="token punctuation">(</span>D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/2<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>如果设置成 DHCP 获取 IP，只用把 <code>ipv4.method</code> 设置为 <code>auto</code> 即可，或者使用 <code>dhclient</code> 命令来发送 DHCP 请求获取 IP 地址参数。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="../../3511703514/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="../5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="../../">1</a><span class="space">&hellip;</span><a class="page-number" href="../5/">5</a><span class="page-number current">6</span><a class="page-number" href="../7/">7</a><span class="space">&hellip;</span><a class="page-number" href="../12/">12</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="../7/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -870,13 +872,13 @@ Connection successfully activated <span class="token punctuation">(</span>D-Bus 
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">155k</span>
+    <span title="站点总字数">162k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">8:38</span>
+    <span title="站点阅读时长">8:59</span>
   </span>
 </div>
 <div class="busuanzi-count">

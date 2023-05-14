@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
 
-    <meta name="description" content="基本概念 Internet（1980年代）由 ARPANET（1970年代）发展而来。  网络硬件 组成计算机网络的组件大致有下面这些：  节点（Node）：节点是具有网络地址（IP）设备的统称。 服务器（Server）：提供数据给用户的主机就能被称为一台服务器。 工作站（Workstation）：任何可以在网络输入的设备都可以是工作站。 客户端（Client）：主动发起连接去请求数据的，就可以">
+    <meta name="description" content="基本概念 Internet（1980 年代）由 ARPANET（1970 年代）发展而来。  网络硬件 组成计算机网络的组件大致有下面这些：  节点（Node）：节点是具有网络地址（IP）设备的统称。 服务器（Server）：提供数据给用户的主机就能被称为一台服务器。 工作站（Workstation）：任何可以在网络输入的设备都可以是工作站。 客户端（Client）：主动发起连接去请求数据的，就">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Linux 网络基础知识">
 <meta property="og:url" content="https://blog.x2b.net/799638542/index.html">
 <meta property="og:site_name" content="X to Bytes">
-<meta property="og:description" content="基本概念 Internet（1980年代）由 ARPANET（1970年代）发展而来。  网络硬件 组成计算机网络的组件大致有下面这些：  节点（Node）：节点是具有网络地址（IP）设备的统称。 服务器（Server）：提供数据给用户的主机就能被称为一台服务器。 工作站（Workstation）：任何可以在网络输入的设备都可以是工作站。 客户端（Client）：主动发起连接去请求数据的，就可以">
+<meta property="og:description" content="基本概念 Internet（1980 年代）由 ARPANET（1970 年代）发展而来。  网络硬件 组成计算机网络的组件大致有下面这些：  节点（Node）：节点是具有网络地址（IP）设备的统称。 服务器（Server）：提供数据给用户的主机就能被称为一台服务器。 工作站（Workstation）：任何可以在网络输入的设备都可以是工作站。 客户端（Client）：主动发起连接去请求数据的，就">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog.x2b.net/images/OSI%E4%B8%83%E5%B1%82%E6%A8%A1%E5%9E%8B.jpg">
 <meta property="og:image" content="https://blog.x2b.net/images/MAC%E6%95%B0%E6%8D%AE%E5%B8%A7.png">
@@ -35,7 +35,7 @@
 <meta property="og:image" content="https://blog.x2b.net/images/TCP%E6%8A%A5%E5%A4%B4.jpg">
 <meta property="og:image" content="https://blog.x2b.net/images/UDP%E6%8A%A5%E5%A4%B4.jpg">
 <meta property="article:published_time" content="2022-03-20T01:01:17.000Z">
-<meta property="article:modified_time" content="2023-05-14T10:29:10.981Z">
+<meta property="article:modified_time" content="2023-05-14T10:59:24.262Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python">
 <meta name="twitter:card" content="summary">
@@ -100,7 +100,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">58</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">59</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -151,7 +151,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text"> 基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%A1%AC%E4%BB%B6"><span class="nav-number">1.1.</span> <span class="nav-text"> 网络硬件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%8C%83%E5%9B%B4"><span class="nav-number">1.2.</span> <span class="nav-text"> 网络范围</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#osi-%E4%B8%83%E5%B1%82%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.3.</span> <span class="nav-text"> OSI 七层协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcpip"><span class="nav-number">1.4.</span> <span class="nav-text"> TCP&#x2F;IP</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tcpip-%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3%E5%B1%82%E7%9B%B8%E5%85%B3%E5%8D%8F%E8%AE%AE"><span class="nav-number">2.</span> <span class="nav-text"> TCP&#x2F;IP 网络接口层相关协议</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%BF%E5%9F%9F%E7%BD%91%E8%AE%BE%E5%A4%87"><span class="nav-number">2.1.</span> <span class="nav-text"> 广域网设备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%80%E5%9F%9F%E7%BD%91%E8%AE%BE%E5%A4%87"><span class="nav-number">2.1.1.</span> <span class="nav-text"> 局域网设备</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#csmacd"><span class="nav-number">2.2.</span> <span class="nav-text"> CSMA&#x2F;CD</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mac-%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.3.</span> <span class="nav-text"> MAC 封装格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mtu-%E6%9C%80%E5%A4%A7%E4%BC%A0%E8%BE%93%E5%8D%95%E5%85%83"><span class="nav-number">2.4.</span> <span class="nav-text"> MTU 最大传输单元</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9B%86%E7%BA%BF%E5%99%A8%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA"><span class="nav-number">2.5.</span> <span class="nav-text"> 集线器与交换机</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tcpip-%E7%BD%91%E7%BB%9C%E5%B1%82%E7%9B%B8%E5%85%B3%E6%95%B0%E6%8D%AE%E5%8C%85"><span class="nav-number">3.</span> <span class="nav-text"> TCP&#x2F;IP 网络层相关数据包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ip-%E6%95%B0%E6%8D%AE%E5%8C%85%E5%B0%81%E8%A3%85"><span class="nav-number">3.1.</span> <span class="nav-text"> IP 数据包封装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ip-%E5%9C%B0%E5%9D%80%E7%BB%84%E6%88%90%E4%B8%8E%E5%88%86%E7%BA%A7"><span class="nav-number">3.2.</span> <span class="nav-text"> IP 地址组成与分级</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ip-%E5%9C%B0%E5%9D%80%E7%A7%8D%E7%B1%BB%E4%B8%8E%E8%8E%B7%E5%BE%97"><span class="nav-number">3.3.</span> <span class="nav-text"> IP 地址种类与获得</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81"><span class="nav-number">3.4.</span> <span class="nav-text"> 子网掩码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E7%BD%91%E5%85%B3"><span class="nav-number">3.5.</span> <span class="nav-text"> 路由网关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#arprarp"><span class="nav-number">3.6.</span> <span class="nav-text"> ARP&#x2F;RARP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#icmp-%E5%8D%8F%E8%AE%AE"><span class="nav-number">3.7.</span> <span class="nav-text"> ICMP 协议</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tcpip-%E4%BC%A0%E8%BE%93%E5%B1%82%E7%9B%B8%E5%85%B3%E6%95%B0%E6%8D%AE%E5%8C%85"><span class="nav-number">4.</span> <span class="nav-text"> TCP&#x2F;IP 传输层相关数据包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp-%E5%8D%8F%E8%AE%AE"><span class="nav-number">4.1.</span> <span class="nav-text"> TCP 协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp-%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B"><span class="nav-number">4.2.</span> <span class="nav-text"> TCP 三次握手</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#udp-%E5%8D%8F%E8%AE%AE"><span class="nav-number">4.3.</span> <span class="nav-text"> UDP 协议</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1"><span class="nav-number">5.</span> <span class="nav-text"> 路由</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E5%99%A8"><span class="nav-number">5.1.</span> <span class="nav-text"> 路由器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E8%A1%A8"><span class="nav-number">5.2.</span> <span class="nav-text"> 路由表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%9C%B0%E5%9D%80%E8%BD%AC%E6%8D%A2"><span class="nav-number">5.3.</span> <span class="nav-text"> 网络地址转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E7%BD%91%E5%8D%A1%E7%BB%91%E5%A4%9Aip"><span class="nav-number">5.4.</span> <span class="nav-text"> 单网卡绑多IP</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text"> 基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%A1%AC%E4%BB%B6"><span class="nav-number">1.1.</span> <span class="nav-text"> 网络硬件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%8C%83%E5%9B%B4"><span class="nav-number">1.2.</span> <span class="nav-text"> 网络范围</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#osi-%E4%B8%83%E5%B1%82%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.3.</span> <span class="nav-text"> OSI 七层协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcpip"><span class="nav-number">1.4.</span> <span class="nav-text"> TCP&#x2F;IP</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tcpip-%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3%E5%B1%82%E7%9B%B8%E5%85%B3%E5%8D%8F%E8%AE%AE"><span class="nav-number">2.</span> <span class="nav-text"> TCP&#x2F;IP 网络接口层相关协议</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%BF%E5%9F%9F%E7%BD%91%E8%AE%BE%E5%A4%87"><span class="nav-number">2.1.</span> <span class="nav-text"> 广域网设备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%80%E5%9F%9F%E7%BD%91%E8%AE%BE%E5%A4%87"><span class="nav-number">2.1.1.</span> <span class="nav-text"> 局域网设备</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#csmacd"><span class="nav-number">2.2.</span> <span class="nav-text"> CSMA&#x2F;CD</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mac-%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.3.</span> <span class="nav-text"> MAC 封装格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mtu-%E6%9C%80%E5%A4%A7%E4%BC%A0%E8%BE%93%E5%8D%95%E5%85%83"><span class="nav-number">2.4.</span> <span class="nav-text"> MTU 最大传输单元</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9B%86%E7%BA%BF%E5%99%A8%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA"><span class="nav-number">2.5.</span> <span class="nav-text"> 集线器与交换机</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tcpip-%E7%BD%91%E7%BB%9C%E5%B1%82%E7%9B%B8%E5%85%B3%E6%95%B0%E6%8D%AE%E5%8C%85"><span class="nav-number">3.</span> <span class="nav-text"> TCP&#x2F;IP 网络层相关数据包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ip-%E6%95%B0%E6%8D%AE%E5%8C%85%E5%B0%81%E8%A3%85"><span class="nav-number">3.1.</span> <span class="nav-text"> IP 数据包封装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ip-%E5%9C%B0%E5%9D%80%E7%BB%84%E6%88%90%E4%B8%8E%E5%88%86%E7%BA%A7"><span class="nav-number">3.2.</span> <span class="nav-text"> IP 地址组成与分级</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ip-%E5%9C%B0%E5%9D%80%E7%A7%8D%E7%B1%BB%E4%B8%8E%E8%8E%B7%E5%BE%97"><span class="nav-number">3.3.</span> <span class="nav-text"> IP 地址种类与获得</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81"><span class="nav-number">3.4.</span> <span class="nav-text"> 子网掩码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E7%BD%91%E5%85%B3"><span class="nav-number">3.5.</span> <span class="nav-text"> 路由网关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#arprarp"><span class="nav-number">3.6.</span> <span class="nav-text"> ARP&#x2F;RARP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#icmp-%E5%8D%8F%E8%AE%AE"><span class="nav-number">3.7.</span> <span class="nav-text"> ICMP 协议</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tcpip-%E4%BC%A0%E8%BE%93%E5%B1%82%E7%9B%B8%E5%85%B3%E6%95%B0%E6%8D%AE%E5%8C%85"><span class="nav-number">4.</span> <span class="nav-text"> TCP&#x2F;IP 传输层相关数据包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp-%E5%8D%8F%E8%AE%AE"><span class="nav-number">4.1.</span> <span class="nav-text"> TCP 协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp-%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B"><span class="nav-number">4.2.</span> <span class="nav-text"> TCP 三次握手</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#udp-%E5%8D%8F%E8%AE%AE"><span class="nav-number">4.3.</span> <span class="nav-text"> UDP 协议</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1"><span class="nav-number">5.</span> <span class="nav-text"> 路由</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E5%99%A8"><span class="nav-number">5.1.</span> <span class="nav-text"> 路由器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E8%A1%A8"><span class="nav-number">5.2.</span> <span class="nav-text"> 路由表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%9C%B0%E5%9D%80%E8%BD%AC%E6%8D%A2"><span class="nav-number">5.3.</span> <span class="nav-text"> 网络地址转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E7%BD%91%E5%8D%A1%E7%BB%91%E5%A4%9A-ip"><span class="nav-number">5.4.</span> <span class="nav-text"> 单网卡绑多 IP</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -166,7 +166,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="../archives/">
-          <span class="site-state-item-count">58</span>
+          <span class="site-state-item-count">59</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -261,7 +261,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-14 18:29:10" itemprop="dateModified" datetime="2023-05-14T18:29:10+08:00">2023-05-14</time>
+      <time title="修改时间：2023-05-14 18:59:24" itemprop="dateModified" datetime="2023-05-14T18:59:24+08:00">2023-05-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -310,7 +310,7 @@
     
     <div class="post-body" itemprop="articleBody">
         <h1 id="基本概念"><a class="markdownIt-Anchor" href="#基本概念"></a> 基本概念</h1>
-<p>Internet（1980年代）由 ARPANET（1970年代）发展而来。</p>
+<p>Internet（1980 年代）由 ARPANET（1970 年代）发展而来。</p>
 <h2 id="网络硬件"><a class="markdownIt-Anchor" href="#网络硬件"></a> 网络硬件</h2>
 <p>组成计算机网络的组件大致有下面这些：</p>
 <ul>
@@ -476,16 +476,16 @@
 <h2 id="mac-封装格式"><a class="markdownIt-Anchor" href="#mac-封装格式"></a> MAC 封装格式</h2>
 <p>CSMA/CD 发送的数据帧实际上就是 MAC，它是在整个网络硬件上传输数据的最小单位。数据帧中包含两个非常重要的数据：目标网卡的 MAC 地址和来源网卡的 MAC 地址。MAC 数据帧的内容如下所示：</p>
 <p><img data-src="../../../images/MAC%E6%95%B0%E6%8D%AE%E5%B8%A7.png" alt="MAC数据帧" /></p>
-<p>MAC地址范围从 00:00:00:00:00:00 到 FF:FF:FF:FF:FF:FF，这 6 Bytes 中，前 3 Bytes 为厂商代码，后 3 Bytes 是配置码。这个MAC地址直连仅在局域网内使用，在广域网中MAC地址会跟随网络设备变化。</p>
+<p>MAC 地址范围从 00:00:00:00:00:00 到 FF:FF:FF:FF:FF:FF，这 6 Bytes 中，前 3 Bytes 为厂商代码，后 3 Bytes 是配置码。这个 MAC 地址直连仅在局域网内使用，在广域网中 MAC 地址会跟随网络设备变化。</p>
 <p>数据帧内的数据大小范围为 46 Bytes 到 1500 Bytes。当最小为 46 Bytes 数据量时，加上包内其他固定 18 Bytes 数据量，则数据帧总大小最少为 64 Bytes。假如实际数据量不足 46 Bytes，则会填充到 46 Bytes。</p>
 <h2 id="mtu-最大传输单元"><a class="markdownIt-Anchor" href="#mtu-最大传输单元"></a> MTU 最大传输单元</h2>
-<p>标准以太网数据帧所能传送的数据量最大值也叫最大传输单元（MTU，Maximum Transmission Unit）。标准定义为 1500 Bytes，不过每种网络接口的MTU都不相同，有定义为 1492 Bytes 的MTU（802.2+802.3组合封装）。超过MTU的数据包会被拆解分发。</p>
-<p>在千兆网中另有一个参数叫巨帧（Jumbo Frame），等同于MTU的作用，一般定义到 9000 Bytes。但由于大多数网络设备都使用MTU标准，因此巨帧只用于内部网络传输数据，以此提高网速。</p>
+<p>标准以太网数据帧所能传送的数据量最大值也叫最大传输单元（MTU，Maximum Transmission Unit）。标准定义为 1500 Bytes，不过每种网络接口的 MTU 都不相同，有定义为 1492 Bytes 的 MTU（802.2+802.3 组合封装）。超过 MTU 的数据包会被拆解分发。</p>
+<p>在千兆网中另有一个参数叫巨帧（Jumbo Frame），等同于 MTU 的作用，一般定义到 9000 Bytes。但由于大多数网络设备都使用 MTU 标准，因此巨帧只用于内部网络传输数据，以此提高网速。</p>
 <h2 id="集线器与交换机"><a class="markdownIt-Anchor" href="#集线器与交换机"></a> 集线器与交换机</h2>
 <p>使用集线器的网络共享设备之间可能会发生冲突，交换机（Switch）可以解决这一问题。</p>
-<p>在一个支持OSI第二层的交换机上，会有一个特别的内存，用来记录每个交换机端口与其连接的网卡MAC地址。当传输数据时直接通过交换机内存再转给目标主机，这样克服了数据包冲突问题。</p>
+<p>在一个支持 OSI 第二层的交换机上，会有一个特别的内存，用来记录每个交换机端口与其连接的网卡 MAC 地址。当传输数据时直接通过交换机内存再转给目标主机，这样克服了数据包冲突问题。</p>
 <p>交换机端口有全双工/半双工（full-duplex/half-duplex）两种工作模式，全双工表示端口上行和下行带宽可同时达到端口速度。半双工则是上行和下行共享端口速度，类似于集线器工作模式。</p>
-<p>交换机拥有自动协调网口速度功能（Auto-negotiation，又叫N-Way），可以自动协调出最高的传输速度来通信。此外，交换机还能自动识别交叉线或直连线来自适应。</p>
+<p>交换机拥有自动协调网口速度功能（Auto-negotiation，又叫 N-Way），可以自动协调出最高的传输速度来通信。此外，交换机还能自动识别交叉线或直连线来自适应。</p>
 <h1 id="tcpip-网络层相关数据包"><a class="markdownIt-Anchor" href="#tcpip-网络层相关数据包"></a> TCP/IP 网络层相关数据包</h1>
 <p>Internet 其实就是 TCP/IP 这个通信协议的通称，由 Inter NIC 所管理。</p>
 <h2 id="ip-数据包封装"><a class="markdownIt-Anchor" href="#ip-数据包封装"></a> IP 数据包封装</h2>
@@ -544,7 +544,7 @@
 <table>
 <thead>
 <tr>
-<th>IP内代码</th>
+<th>IP 内代码</th>
 <th>数据包协议名称</th>
 </tr>
 </thead>
@@ -669,7 +669,7 @@
 <li>二进制 00101111 = 十进制 47，此为网段结束 IP 的 Net_ID 值；</li>
 </ul>
 <p>可得此网段的 IP 范围为 192.168.1.32~192.168.1.47，除去表示网段的地址 192.168.1.32 和表示广播的地址 192.168.1.47 ，共 14 个可用地址。下一网段从 48 也就是二进制 00110000 开始。</p>
-<p>总结一下，子网掩码位数和网段内可用 IP 数的关系为（子网掩码位数小于等于30）：IP 数=2<sup>32-子网掩码位数</sup>-2</p>
+<p>总结一下，子网掩码位数和网段内可用 IP 数的关系为（子网掩码位数小于等于 30）：IP 数=2<sup>32-子网掩码位数</sup>-2</p>
 <h2 id="路由网关"><a class="markdownIt-Anchor" href="#路由网关"></a> 路由网关</h2>
 <p>在同一个局域网内，可以通过 IP 广播的方式来实现数据传输，而非局域网数据传输依靠路由器来协助。</p>
 <p>网关（Gateway）/ 路由器（Router）的功能是负责在不同网络之间进行数据包传递（IP Forwarding），并且具有管理路由表的功能。因此，主机的 IP 和网关的 IP 必须在同一个网段内。</p>
@@ -885,7 +885,7 @@ Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 <p>网络地址转换（NAT，Network Address Translation）可以实现 IP 共享的功能。NAT 服务器本身就是一个路由器，它比普通路由器多了一个 IP 转换功能。</p>
 <p>路由器的 IP 转发负责让两个网段能够相互通信，而 IP 转换则负责在公共 IP 和私有 IP 之间进行通信。</p>
 <p>Linux 的 NAT 服务器可以通过修改数据包的 IP 包头中的源 IP 或目标 IP，使来自私有 IP 的数据包转发到 NAT 服务器的公共 IP，从而直接连接到互联网。</p>
-<h2 id="单网卡绑多ip"><a class="markdownIt-Anchor" href="#单网卡绑多ip"></a> 单网卡绑多IP</h2>
+<h2 id="单网卡绑多-ip"><a class="markdownIt-Anchor" href="#单网卡绑多-ip"></a> 单网卡绑多 IP</h2>
 <p>一个网卡具备多个 IP 的功能被称为 IP Alias。</p>
 <p>IP Alias 功能的最大用途是应急情况下的应用。例如，当电脑前面连接了可配置交换机和路由器时，它们的 IP 不在同一个网段。默认情况下，使用本机 IP 只能访问其中一个设备。这时可以使用 IP Alias 创建一个虚拟端口，并配置另一个设备使用相同网段的 IP，从而在不修改主 IP 的情况下访问两个设备。</p>
 <p>由于 IP Alias 是通过实体网卡进行仿真的，因此其状态也会随着实体网卡的变化而变化。如果希望保留虚拟网卡的设置，可以在 <code>/etc/sysconfig/network-scripts</code> 目录下创建相同名称的配置文件。</p>
@@ -990,13 +990,13 @@ Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">155k</span>
+    <span title="站点总字数">162k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">8:38</span>
+    <span title="站点阅读时长">8:59</span>
   </span>
 </div>
 <div class="busuanzi-count">
