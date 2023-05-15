@@ -295,12 +295,6 @@
           <h1 id="数据卷特点"><a class="markdownIt-Anchor" href="#数据卷特点"></a> 数据卷特点</h1>
 <p>在容器中，文件环境是由 UFS（Union File System）提供的临时层。所有在容器中进行的操作都会随着容器的删除而被丢弃。为了实现从外部获取文件并进行持久化存储的目标，Docker 提出了数据卷（Data Volume）的概念。数据卷是一个挂载在容器内文件系统中的文件或目录，每次启动容器时都会自动挂载到容器中，并且它可以脱离容器的生命周期而独立存在。</p>
 <p>数据卷作为容器中的一个特殊文件或目录，与其他文件或目录有很大的区别：</p>
-<ul>
-<li>数据卷中的数据不继承自镜像，也不受容器临时层管理的范围。因此，数据卷没有写时复制机制，文件操作的效果会立即生效。这些数据也不会被 <code>docker commit</code> 命令提交到新的镜像中。</li>
-<li>数据卷不依赖于容器，它独立于容器之外。多个容器可以共享同一个数据卷，通过数据卷可以实现容器之间的文件共享和数据交互。</li>
-</ul>
-<p>数据卷提供了一种方便的方式来处理容器内文件的持久化和共享需求。通过使用数据卷，我们可以更灵活地管理容器中的数据，并实现容器之间的文件共享。</p>
-<h1 id="创建数据卷"><a class="markdownIt-Anchor" href="#创建数据卷"></a> 创建数据卷</h1>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../2894555783/#more" rel="contents">
@@ -414,10 +408,6 @@
           <h1 id="创建容器"><a class="markdownIt-Anchor" href="#创建容器"></a> 创建容器</h1>
 <p>创建容器可以使用 <code>docker create</code> 命令或 <code>docker run</code> 命令。</p>
 <h2 id="创建静止容器"><a class="markdownIt-Anchor" href="#创建静止容器"></a> 创建静止容器</h2>
-<p>使用 <code>docker create</code> 命令可以创建一个处于停止状态的容器：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> create alpine
-53b658ada694f5d5a5a5ba8e1bf656db4de8bacd79d4ae49857fe1ce27f60292<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>创建容器后，Docker 会立即返回容器的 ID。每个容器的 ID 都是唯一的。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../2679776821/#more" rel="contents">
@@ -531,17 +521,6 @@
           <h1 id="登录仓库"><a class="markdownIt-Anchor" href="#登录仓库"></a> 登录仓库</h1>
 <p>登录仓库使用 <code>docker login</code> 命令：<code>docker login -u 用户名 -p 密码 服务器地址</code>。如果没有给出镜像仓库服务器的地址，会采用 Docker Daemon 中的默认值。</p>
 <p>例如，不使用账号参数登录 Docker Hub:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> login
-Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, <span class="token function">head</span> over to https://hub.docker.com to create one.
-Username: assassing
-Password: 
-WARNING<span class="token operator">!</span> Your password will be stored unencrypted <span class="token keyword">in</span> /root/.docker/config.json.
-Configure a credential helper to remove this warning. See
-https://docs.docker.com/engine/reference/commandline/login/<span class="token comment">#credentials-store</span>
-
-Login Succeeded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="仓库配置"><a class="markdownIt-Anchor" href="#仓库配置"></a> 仓库配置</h1>
-<p>由于从 Docker Hub 下载慢，可以配置镜像仓库：</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../3229018848/#more" rel="contents">
@@ -655,13 +634,6 @@ Login Succeeded<span aria-hidden="true" class="line-numbers-rows"><span></span><
           <h1 id="获取镜像"><a class="markdownIt-Anchor" href="#获取镜像"></a> 获取镜像</h1>
 <p>一般镜像通过 Docker Hub 来获取。</p>
 <h2 id="搜索镜像"><a class="markdownIt-Anchor" href="#搜索镜像"></a> 搜索镜像</h2>
-<p>通过 <code>docker search</code> 命令可以搜索公共仓库 Docker Hub 中的镜像：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> search python
-NAME                       DESCRIPTION               STARS     OFFICIAL   AUTOMATED
-python                     Python is an interpreted, <span class="token number">6632</span>      <span class="token punctuation">[</span>OK<span class="token punctuation">]</span>       
-pypy                       PyPy is a fast, compliant <span class="token number">290</span>       <span class="token punctuation">[</span>OK<span class="token punctuation">]</span>       
-nikolaik/python-nodejs     Python with Node.js       <span class="token number">86</span>                   <span class="token punctuation">[</span>OK<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>搜索结果以 STARS 排序，默认显示 25 个结果。其字段说明如下：</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../1103407806/#more" rel="contents">
@@ -779,10 +751,6 @@ nikolaik/python-nodejs     Python with Node.js       <span class="token number">
 <li>系统内核版本需要大于 3.10。</li>
 <li>硬盘空间推荐为 100 GB 以上。</li>
 </ul>
-<p>可以使用以下命令查询系统位数和内核版本：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span>$ <span class="token function">uname</span> <span class="token parameter variable">-r</span>
-<span class="token number">3.10</span>.0-1160.42.2.el7.x86_64<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>Docker 引擎分为两个版本，社区版本（CE，Community Edition）和企业版本（EE，Enterprise Edition）。通常安装社区稳定版。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../4130112682/#more" rel="contents">
@@ -838,7 +806,7 @@ nikolaik/python-nodejs     Python with Node.js       <span class="token number">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">10:56</span>
+    <span title="站点阅读时长">10:57</span>
   </span>
 </div>
 <div class="busuanzi-count">

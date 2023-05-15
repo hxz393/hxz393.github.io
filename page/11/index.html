@@ -332,13 +332,6 @@
 </tr>
 </tbody>
 </table>
-<p>要查询与当前登录会话相关的 PID 和相关信息，可以使用 <code>ps -l</code> 命令，如下所示：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 bin<span class="token punctuation">]</span>$ <span class="token function">ps</span> <span class="token parameter variable">-l</span>
-F S   <span class="token environment constant">UID</span>    PID   <span class="token environment constant">PPID</span>  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
-<span class="token number">4</span> S     <span class="token number">0</span>  <span class="token number">40090</span>  <span class="token number">40085</span>  <span class="token number">0</span>  <span class="token number">80</span>   <span class="token number">0</span> - <span class="token number">28919</span> do_wai pts/0    00:00:00 <span class="token function">bash</span>
-<span class="token number">0</span> S     <span class="token number">0</span>  <span class="token number">40855</span>  <span class="token number">40090</span>  <span class="token number">0</span>  <span class="token number">80</span>   <span class="token number">0</span> - <span class="token number">27024</span> wait_w pts/0    00:00:00 <span class="token function">tail</span>
-<span class="token number">0</span> R     <span class="token number">0</span>  <span class="token number">42025</span>  <span class="token number">40090</span>  <span class="token number">0</span>  <span class="token number">80</span>   <span class="token number">0</span> - <span class="token number">38332</span> -      pts/0    00:00:00 <span class="token function">ps</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>结果仅显示与当前操作环境（bash）相关的进程。表格中各选项的含义如下：</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../1804980384/#more" rel="contents">
@@ -452,10 +445,6 @@ F S   <span class="token environment constant">UID</span>    PID   <span class="
           <h1 id="工作控制"><a class="markdownIt-Anchor" href="#工作控制"></a> 工作控制</h1>
 <p>工作控制是一种由内核支持、shell 实现的功能，允许用户同时运行多个进程，其中一个进程在前台（foreground），其他进程在后台（background）运行。用户可以在前台和后台之间切换、挂起和显示进程状态。</p>
 <p>将一个进程放入后台运行，该进程必须不需要与用户交互，且不能使用 Ctrl+c 来终止运行。</p>
-<h1 id="后台运行"><a class="markdownIt-Anchor" href="#后台运行"></a> 后台运行</h1>
-<p>在命令后加入空格和&amp;符号即可将进程放入后台运行，这也被称为异步进程（Asynchronous Process）运行程序：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ext333<span class="token punctuation">]</span>$ <span class="token function">tar</span> <span class="token parameter variable">-zxvf</span> <span class="token number">1</span>.iso <span class="token parameter variable">-C</span> lost+found/ <span class="token operator">&amp;</span>
-<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token number">36961</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../517799084/#more" rel="contents">
@@ -569,9 +558,6 @@ F S   <span class="token environment constant">UID</span>    PID   <span class="
           <h1 id="进程与程序"><a class="markdownIt-Anchor" href="#进程与程序"></a> 进程与程序</h1>
 <p>程序（Program）是可执行的二进制文件。</p>
 <p>当触发执行程序动作后，程序内容及程序数据会加载到内存中，成为一个运行中的程序，即进程（Process）。</p>
-<p>系统为这个进程分配一个 ID，称为 PID（Program ID）。同时，根据触发这个进程的用户及相关属性关系，为这个 PID 设置一组有效的权限。</p>
-<h1 id="子进程与父进程"><a class="markdownIt-Anchor" href="#子进程与父进程"></a> 子进程与父进程</h1>
-<p>登录系统后，会获得一个 bash 的 shell。通过 bash 提供的接口执行另一个命令，如 <code>vim</code>，它也会被分配一个 PID。此时，原本的 bash 就是 <code>vim</code> 的父进程。父进程的 PID 可以用 PPID（Parent ID）表示。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../630034191/#more" rel="contents">
@@ -710,9 +696,6 @@ F S   <span class="token environment constant">UID</span>    PID   <span class="
 <p>如果安装了 WWW 服务器，系统会主动分析软件的入口文件。</p>
 </li>
 </ul>
-<h1 id="单次工作调度"><a class="markdownIt-Anchor" href="#单次工作调度"></a> 单次工作调度</h1>
-<p>单次工作调度任务主要由 atd 服务提供，使用 <code>at</code> 命令来生成所需要运行的工作，再将工作写入 <code>/var/spool/at</code> 目录内。</p>
-<p>可以运行 <code>at</code> 的账号记录在 <code>/etc/at.allow</code> 中，禁止运行 <code>at</code> 的账号记录在 <code>/etc/at.deny</code> 中。如果两个文件都不存在，则只有 root 可以使用 <code>at</code> 命令。如果账号在两个文件中都有记录，以 <code>/etc/at.allow</code> 优先。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../3847284551/#more" rel="contents">
@@ -826,38 +809,6 @@ F S   <span class="token environment constant">UID</span>    PID   <span class="
           <h1 id="字符流编辑器"><a class="markdownIt-Anchor" href="#字符流编辑器"></a> 字符流编辑器</h1>
 <p>SED 是一个非交互式的面向字符流的编辑器（Stream Editor），输入流通过程序并输出直接送到标准输出端，<strong>输入文件本身不会发生改变</strong>，是操作、过滤和转换文本内容的强大工具。</p>
 <p>SED 可以把输出重定向到文件，但不允许直接送到输入文件。</p>
-<p>命令语法：<code>sed [-nefr] [动作]</code>。</p>
-<p>主要参数：</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>-n</td>
-<td>使用安静模式。只有被处理后的数据才会被列出来。</td>
-</tr>
-<tr>
-<td>-e</td>
-<td>直接在命令行模式上进行 sed 的动作编辑。</td>
-</tr>
-<tr>
-<td>-f</td>
-<td>指定加载的 sed 脚本。</td>
-</tr>
-<tr>
-<td>-r</td>
-<td>设置成支持扩展型正则表达式，默认是基础正则表达式。</td>
-</tr>
-<tr>
-<td>-i</td>
-<td>直接修改读取的文件内容，不在屏幕输出。</td>
-</tr>
-</tbody>
-</table>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../507701603/#more" rel="contents">
@@ -913,7 +864,7 @@ F S   <span class="token environment constant">UID</span>    PID   <span class="
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">10:56</span>
+    <span title="站点阅读时长">10:57</span>
   </span>
 </div>
 <div class="busuanzi-count">

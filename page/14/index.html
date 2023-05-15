@@ -295,30 +295,6 @@
           <h1 id="提取数据列"><a class="markdownIt-Anchor" href="#提取数据列"></a> 提取数据列</h1>
 <p>可以使用 <code>cut</code> 命令按行提取数据并删除所需部分，命令格式如下：</p>
 <p><code>cut -d '分隔字符' -f 编号</code></p>
-<p><code>cut -c 字符范围</code></p>
-<p>可用参数如下：</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>-d</td>
-<td>后面接分隔字符，与 -f 一起使用。</td>
-</tr>
-<tr>
-<td>-f</td>
-<td>选取被切割后的第几段数据。</td>
-</tr>
-<tr>
-<td>-c</td>
-<td>以字符为单位取出固定字符区间。</td>
-</tr>
-</tbody>
-</table>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../3847284551/#more" rel="contents">
@@ -434,9 +410,6 @@
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/issue
 <span class="token punctuation">\</span>S
 Kernel <span class="token punctuation">\</span>r on an <span class="token punctuation">\</span>m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>可以使用反斜杠调用变量，自定义显示登录后显示信息。</p>
-<h1 id="bash-环境变量配置文件"><a class="markdownIt-Anchor" href="#bash-环境变量配置文件"></a> Bash 环境变量配置文件</h1>
-<p>为了让自定义变量和别名在登录时便已准备好，可以将它们写入到配置文件。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../1849958032/#more" rel="contents">
@@ -550,14 +523,6 @@ Kernel <span class="token punctuation">\</span>r on an <span class="token punctu
           <h1 id="修改文件所属用户组"><a class="markdownIt-Anchor" href="#修改文件所属用户组"></a> 修改文件所属用户组</h1>
 <p>使用 <code>chgrp</code> 可以改变一个文件的所属用户组，目标组名必须已经存在于 <code>/etc/group</code>。</p>
 <p>例如修改 <code>dir1</code> 文件夹的所属组为 <code>tss</code>：</p>
- <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chgrp</span> tss dir1 <span class="token punctuation">;</span> ll
-total <span class="token number">4</span>
--rw-------. <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
-drwxr-xr-x. <span class="token number">2</span> <span class="token function">ftp</span>  tss    <span class="token number">16</span> Sep  <span class="token number">8</span> <span class="token number">23</span>:29 dir1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>使用选项 <code>-R</code> 可以递归修改目录 <code>dir1</code> 下内容的所属组：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chgrp</span> input <span class="token parameter variable">-R</span> dir1 <span class="token punctuation">;</span> ll dir1
-total <span class="token number">0</span>
--rw-r--r--. <span class="token number">1</span> root input <span class="token number">0</span> Sep  <span class="token number">8</span> <span class="token number">23</span>:29 xx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../2354164977/#more" rel="contents">
@@ -671,18 +636,6 @@ total <span class="token number">0</span>
           <h1 id="磁盘查询"><a class="markdownIt-Anchor" href="#磁盘查询"></a> 磁盘查询</h1>
 <p>主要是 <code>df</code> 这个命令，经常用来查询系统中磁盘剩余空间。比如发现根目录 <code>/</code> 满了，说明系统危险了。</p>
 <h2 id="查询磁盘容量"><a class="markdownIt-Anchor" href="#查询磁盘容量"></a> 查询磁盘容量</h2>
-<p>使用 <code>df</code> 查看磁盘使用量，<code>df</code> 读取的是在 Superblock 内的信息。</p>
-<p>例如查看系统内所有的文件系统：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 /<span class="token punctuation">]</span>$ <span class="token function">df</span> <span class="token parameter variable">-h</span>
-Filesystem               Size  Used Avail Use% Mounted on
-devtmpfs                 <span class="token number">1</span>.9G     <span class="token number">0</span>  <span class="token number">1</span>.9G   <span class="token number">0</span>% /dev
-tmpfs                    <span class="token number">1</span>.9G     <span class="token number">0</span>  <span class="token number">1</span>.9G   <span class="token number">0</span>% /dev/shm
-tmpfs                    <span class="token number">1</span>.9G   12M  <span class="token number">1</span>.9G   <span class="token number">1</span>% /run
-tmpfs                    <span class="token number">1</span>.9G     <span class="token number">0</span>  <span class="token number">1</span>.9G   <span class="token number">0</span>% /sys/fs/cgroup
-/dev/mapper/centos-root   17G  <span class="token number">2</span>.1G   15G  <span class="token number">13</span>% /
-/dev/sda1               1014M  187M  828M  <span class="token number">19</span>% /boot
-tmpfs                    378M     <span class="token number">0</span>  378M   <span class="token number">0</span>% /run/user/0
-/dev/sdb1                991M  <span class="token number">1</span>.3M  939M   <span class="token number">1</span>% /ext333<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../3491093041/#more" rel="contents">
@@ -796,20 +749,6 @@ tmpfs                    378M     <span class="token number">0</span>  378M   <s
           <h1 id="磁盘配额简介"><a class="markdownIt-Anchor" href="#磁盘配额简介"></a> 磁盘配额简介</h1>
 <p>Linux 下磁盘配额功能叫 <code>quota</code>。</p>
 <h2 id="一般用途"><a class="markdownIt-Anchor" href="#一般用途"></a> 一般用途</h2>
-<ul>
-<li>限制服务使用空间容量；</li>
-<li>限制某一用户组所能使用的最大磁盘配额；</li>
-<li>限制某一用户的最大磁盘配额；</li>
-<li>限制某一目录的最大磁盘配额。</li>
-</ul>
-<h2 id="使用限制"><a class="markdownIt-Anchor" href="#使用限制"></a> 使用限制</h2>
-<ul>
-<li><code>EXT</code> 文件系统下仅能针对整个文件系统设置；</li>
-<li>针对单一目录的设置（<code>prjquota</code>）和针对群组的设置（<code>grpquota</code>）不能共存；</li>
-<li>内核必须支持；</li>
-<li>只对一般身份用户有效。比如 <code>root</code> 就不能设置配额。也不能针对目录来设置（<code>ext</code> 文件系统）；</li>
-<li>若启用 <code>SELinux</code>，非所有目录都可设置 <code>quota</code>。</li>
-</ul>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../3427262780/#more" rel="contents">
@@ -865,7 +804,7 @@ tmpfs                    378M     <span class="token number">0</span>  378M   <s
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">10:56</span>
+    <span title="站点阅读时长">10:57</span>
   </span>
 </div>
 <div class="busuanzi-count">

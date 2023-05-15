@@ -295,37 +295,6 @@
           <h1 id="虚拟化技术"><a class="markdownIt-Anchor" href="#虚拟化技术"></a> 虚拟化技术</h1>
 <p>虚拟化技术是一种计算机资源管理技术，它控制计算机硬件资源并将其抽象化，以统一的形式呈现给应用程序。对于用户而言，虚拟化只是定义了隐藏真实环境的方式，而要实现虚拟化，还需要具体执行虚拟化过程的程序。</p>
 <p>虚拟化技术可分为基于硬件的虚拟化和基于软件的虚拟化。</p>
-<ul>
-<li>
-<p>硬件虚拟化需要使用专门的硬件平台，与普通硬件设备存在兼容性问题，但其优点是可以更高效地利用硬件资源。</p>
-</li>
-<li>
-<p>软件虚拟化通常在应用程序和硬件资源之间建立一个 Hypervisor 层，应用程序通过该虚拟化环境中提供的调用接口来操作资源。例如，Java 虚拟机（JVM，Java Virtual Machine）通过这种方式实现了跨平台运行。</p>
-</li>
-</ul>
-<p>从对象所在的层次来看，软件虚拟化又可分为应用虚拟化（如手机模拟器、Wine 等）和平台虚拟化。常见的平台虚拟化包括以下几类：</p>
-<ul>
-<li>
-<p>完全虚拟化</p>
-<p>虚拟机模拟了完整的底层硬件环境和特权指令的执行过程，例如 VMware Workstation、VirtualBox、QEMU 等。</p>
-</li>
-<li>
-<p>硬件辅助虚拟化</p>
-<p>利用 CPU 的辅助支持（如 Intel-VT、AMD-V）来处理敏感指令，实现完全虚拟化的功能，例如 VMware、Xen、KVM 等。</p>
-</li>
-<li>
-<p>部分虚拟化</p>
-<p>只对部分硬件资源进行虚拟化，需要修改客户操作系统。</p>
-</li>
-<li>
-<p>超虚拟化（Paravirtualization）</p>
-<p>以软件形式提供部分硬件接口给客户机操作系统，例如早期的 Xen。</p>
-</li>
-<li>
-<p>操作系统级虚拟化</p>
-<p>通过创建多个虚拟的操作系统实例来隔离不同的进程，例如容器相关技术。</p>
-</li>
-</ul>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="3341501969/#more" rel="contents">
@@ -439,13 +408,6 @@
           <h1 id="用户标识符"><a class="markdownIt-Anchor" href="#用户标识符"></a> 用户标识符</h1>
 <p>每个用户至少都有两个 ID，用户 ID（UID，User ID）和用户组 ID（GID，Group ID）。</p>
 <p>当显示文件属性时，系统会根据 <code>/etc/passwd</code> 与 <code>/etc/group</code> 文件的内容找到 UID/GID 对应的账号与组名再显示出来。</p>
-<h1 id="用户账号"><a class="markdownIt-Anchor" href="#用户账号"></a> 用户账号</h1>
-<p>用户通过终端或 SSH 登录时，系统的处理过程如下：</p>
-<ol>
-<li>首先在 <code>/etc/passwd</code> 中查找是否存在输入的账户，如果存在，则读取对应的 UID、GID、主目录和 shell 设置。</li>
-<li>核对输入的密码是否与 <code>/etc/shadow</code> 记录匹配。</li>
-<li>如果账户和密码都正确，就可以进入 shell。</li>
-</ol>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="2592592171/#more" rel="contents">
@@ -559,26 +521,6 @@
           <h1 id="目录配置标准"><a class="markdownIt-Anchor" href="#目录配置标准"></a> 目录配置标准</h1>
 <p>Linux 采用将文件储存在单个目录结构中，这种目录被称为虚拟目录（Virtual Directory）。虚拟目录将安装在主机上的所有储存设备的文件路径纳入单个目录结构中。</p>
 <p>各种发行版遵循同一套文件系统层次结构标准（FHS，Filesystem Hierarchy Standard），目的在于规范每个特定目录应该放什么数据。FHS 依据文件系统使用的频繁与否，以及是否允许使用者随意变更，将目录定义为四种交互形态：</p>
-<ul>
-<li>
-<p><strong>可分享的</strong>（Shareable）</p>
-<p>可以分享给其他系统挂载使用的目录，包括可执行文件与使用者的邮件等数据。</p>
-</li>
-<li>
-<p><strong>不可分享的</strong>（Unshareable）</p>
-<p>自己机器上面运行的设备文件或者是与程序有关的 socket 文件等，仅能自己使用，所以不适合分享。</p>
-</li>
-<li>
-<p><strong>不变的</strong>（Static）</p>
-<p>有些数据是不会经常变动的，例如函数库、文件说明文档、系统管理员所管理的主机服务配置文件等。</p>
-</li>
-<li>
-<p><strong>可变动的</strong>（Variable）</p>
-<p>经常改变的数据，例如日志文件等。</p>
-</li>
-</ul>
-<h1 id="顶级目录"><a class="markdownIt-Anchor" href="#顶级目录"></a> 顶级目录</h1>
-<p>所有目录都由根目录/衍生而来，因此 FHS 标准建议根目录所在分区应该越小越好，最好不要将应用程序所安装的软件与根目录放在同一个分区。这样可以提高性能，根目录所在的文件系统也较不容易发生问题。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="4087499240/#more" rel="contents">
@@ -692,10 +634,6 @@
           <h1 id="数字系统"><a class="markdownIt-Anchor" href="#数字系统"></a> 数字系统</h1>
 <p>计算机使用电信号的开和关来代表二进制的 1 和 0，这种逢 2 进 1 位的表示法称为二进制。除了二进制，常用的进制还有八进制和十六进制。然而，现实生活中使用的数字系统是十进制。</p>
 <p>在编程语言中，表示二进制数的前缀是&quot;0b&quot;，表示八进制数的前缀是&quot;0o&quot;，表示十六进制数的前缀是&quot;0x&quot;。</p>
-<h2 id="二进制转十进制"><a class="markdownIt-Anchor" href="#二进制转十进制"></a> 二进制转十进制</h2>
-<p>例如，要将二进制数 1101101 转换为十进制数，手动计算方法如下：</p>
-<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mn>1101101</mn><mo>=</mo><mn>1</mn><mo>∗</mo><msup><mn>2</mn><mn>6</mn></msup><mo>+</mo><mn>1</mn><mo>∗</mo><msup><mn>2</mn><mn>5</mn></msup><mo>+</mo><mn>0</mn><mo>∗</mo><msup><mn>2</mn><mn>4</mn></msup><mo>+</mo><mn>1</mn><mo>∗</mo><msup><mn>2</mn><mn>3</mn></msup><mo>+</mo><mn>1</mn><mo>∗</mo><msup><mn>2</mn><mn>2</mn></msup><mo>+</mo><mn>0</mn><mo>∗</mo><msup><mn>2</mn><mn>1</mn></msup><mo>+</mo><mn>1</mn><mo>=</mo><mn>64</mn><mo>+</mo><mn>32</mn><mo>+</mo><mn>0</mn><mo>+</mo><mn>8</mn><mo>+</mo><mn>4</mn><mo>+</mo><mn>0</mn><mo>+</mo><mn>1</mn><mo>=</mo><mn>109</mn></mrow><annotation encoding="application/x-tex">1101101=1*2^6+1*2^5+0*2^4+1*2^3+1*2^2+0*2^1+1=64+32+0+8+4+0+1=109
-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mord">1</span><span class="mord">0</span><span class="mord">1</span><span class="mord">1</span><span class="mord">0</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.9474379999999999em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">6</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.9474379999999999em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">5</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.9474379999999999em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">4</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.9474379999999999em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.9474379999999999em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.9474379999999999em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">6</span><span class="mord">4</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">3</span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">8</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">4</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mord">0</span><span class="mord">9</span></span></span></span></span></p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="2759544459/#more" rel="contents">
@@ -729,7 +667,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/3570307132/">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/1251081056/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -747,7 +685,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="3570307132/" class="post-title-link" itemprop="url">Linux 下搜索文件</a>
+          <a href="1251081056/" class="post-title-link" itemprop="url">Linux 文件内容查看</a>
         </h2>
 
         <div class="post-meta-container">
@@ -765,7 +703,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-04-27 00:21:31" itemprop="dateModified" datetime="2023-04-27T00:21:31+08:00">2023-04-27</time>
+      <time title="修改时间：2023-05-07 18:22:33" itemprop="dateModified" datetime="2023-05-07T18:22:33+08:00">2023-05-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -788,14 +726,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.9k</span>
+      <span>1.3k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>6 分钟</span>
+      <span>4 分钟</span>
     </span>
 </div>
 
@@ -806,44 +744,12 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="通配符"><a class="markdownIt-Anchor" href="#通配符"></a> 通配符</h1>
-<p>通配符（wildcard）是 Bash 操作接口的一个功能。常用的通配符如下表：</p>
-<table>
-<thead>
-<tr>
-<th>符号</th>
-<th>意义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>*</td>
-<td>代表 0 到无穷多个任意字符。</td>
-</tr>
-<tr>
-<td>?</td>
-<td>代表一定有一个任意字符。</td>
-</tr>
-<tr>
-<td>[]</td>
-<td>代表一定有一个括号内的字符，例如 [xgw] 代表可能是 xgw 其中一个。</td>
-</tr>
-<tr>
-<td>[-]</td>
-<td>代表在编码顺序内的所有字符，例如 [0-9] 代表 0 到 9 之间的所有数字。</td>
-</tr>
-<tr>
-<td>[^]</td>
-<td>第一个字符为 ^ 代表反向选择，例如 [^xpw]代表任意一个非 xpw 的字符。</td>
-</tr>
-</tbody>
-</table>
-<h1 id="快速搜索"><a class="markdownIt-Anchor" href="#快速搜索"></a> 快速搜索</h1>
-<p>在 Linux 中，可以使用不同的命令进行快速搜索，以下是一些常用命令。</p>
-<p>使用 <code>which</code> 命令来查找命令所在路径。这个命令根据的是$PATH 环境变量所指定的路径去查询：</p>
+          <h1 id="一次性输出"><a class="markdownIt-Anchor" href="#一次性输出"></a> 一次性输出</h1>
+<p>在 Linux 中，可以使用 <code>cat</code> 和 <code>tac</code> 命令一次性将文本内容打印出来，即将标准输入的数据复制到标准输出。</p>
+<p><code>cat</code> 是 Catenate 的缩写，从第一行开始显示文件内容。另外一个重要的应用是组合多个文件。如果没有指定文件或文件为 <code>-</code>，则从标准输入读取。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="3570307132/#more" rel="contents">
+              <a class="btn" href="1251081056/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -896,7 +802,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">10:56</span>
+    <span title="站点阅读时长">10:57</span>
   </span>
 </div>
 <div class="busuanzi-count">
