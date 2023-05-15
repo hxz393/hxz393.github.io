@@ -294,15 +294,6 @@
     <div class="post-body" itemprop="articleBody">
           <h1 id="虚拟化技术"><a class="markdownIt-Anchor" href="#虚拟化技术"></a> 虚拟化技术</h1>
 <p>虚拟化技术是一种计算机资源管理技术，它控制计算机硬件资源并将其抽象化，以统一的形式呈现给应用程序。对于用户而言，虚拟化只是定义了隐藏真实环境的方式，而要实现虚拟化，还需要具体执行虚拟化过程的程序。</p>
-<p>虚拟化技术可分为基于硬件的虚拟化和基于软件的虚拟化。</p>
-<ul>
-<li>
-<p>硬件虚拟化需要使用专门的硬件平台，与普通硬件设备存在兼容性问题，但其优点是可以更高效地利用硬件资源。</p>
-</li>
-<li>
-<p>软件虚拟化通常在应用程序和硬件资源之间建立一个 Hypervisor 层，应用程序通过该虚拟化环境中提供的调用接口来操作资源。例如，Java 虚拟机（JVM，Java Virtual Machine）通过这种方式实现了跨平台运行。</p>
-</li>
-</ul>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="3341501969/#more" rel="contents">
@@ -415,8 +406,6 @@
     <div class="post-body" itemprop="articleBody">
           <h1 id="用户标识符"><a class="markdownIt-Anchor" href="#用户标识符"></a> 用户标识符</h1>
 <p>每个用户至少都有两个 ID，用户 ID（UID，User ID）和用户组 ID（GID，Group ID）。</p>
-<p>当显示文件属性时，系统会根据 <code>/etc/passwd</code> 与 <code>/etc/group</code> 文件的内容找到 UID/GID 对应的账号与组名再显示出来。</p>
-<h1 id="用户账号"><a class="markdownIt-Anchor" href="#用户账号"></a> 用户账号</h1>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="2592592171/#more" rel="contents">
@@ -529,25 +518,6 @@
     <div class="post-body" itemprop="articleBody">
           <h1 id="目录配置标准"><a class="markdownIt-Anchor" href="#目录配置标准"></a> 目录配置标准</h1>
 <p>Linux 采用将文件储存在单个目录结构中，这种目录被称为虚拟目录（Virtual Directory）。虚拟目录将安装在主机上的所有储存设备的文件路径纳入单个目录结构中。</p>
-<p>各种发行版遵循同一套文件系统层次结构标准（FHS，Filesystem Hierarchy Standard），目的在于规范每个特定目录应该放什么数据。FHS 依据文件系统使用的频繁与否，以及是否允许使用者随意变更，将目录定义为四种交互形态：</p>
-<ul>
-<li>
-<p><strong>可分享的</strong>（Shareable）</p>
-<p>可以分享给其他系统挂载使用的目录，包括可执行文件与使用者的邮件等数据。</p>
-</li>
-<li>
-<p><strong>不可分享的</strong>（Unshareable）</p>
-<p>自己机器上面运行的设备文件或者是与程序有关的 socket 文件等，仅能自己使用，所以不适合分享。</p>
-</li>
-<li>
-<p><strong>不变的</strong>（Static）</p>
-<p>有些数据是不会经常变动的，例如函数库、文件说明文档、系统管理员所管理的主机服务配置文件等。</p>
-</li>
-<li>
-<p><strong>可变动的</strong>（Variable）</p>
-<p>经常改变的数据，例如日志文件等。</p>
-</li>
-</ul>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="4087499240/#more" rel="contents">
@@ -660,8 +630,6 @@
     <div class="post-body" itemprop="articleBody">
           <h1 id="数字系统"><a class="markdownIt-Anchor" href="#数字系统"></a> 数字系统</h1>
 <p>计算机使用电信号的开和关来代表二进制的 1 和 0，这种逢 2 进 1 位的表示法称为二进制。除了二进制，常用的进制还有八进制和十六进制。然而，现实生活中使用的数字系统是十进制。</p>
-<p>在编程语言中，表示二进制数的前缀是&quot;0b&quot;，表示八进制数的前缀是&quot;0o&quot;，表示十六进制数的前缀是&quot;0x&quot;。</p>
-<h2 id="二进制转十进制"><a class="markdownIt-Anchor" href="#二进制转十进制"></a> 二进制转十进制</h2>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="2759544459/#more" rel="contents">
@@ -774,37 +742,6 @@
     <div class="post-body" itemprop="articleBody">
           <h1 id="通配符"><a class="markdownIt-Anchor" href="#通配符"></a> 通配符</h1>
 <p>通配符（wildcard）是 Bash 操作接口的一个功能。常用的通配符如下表：</p>
-<table>
-<thead>
-<tr>
-<th>符号</th>
-<th>意义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>*</td>
-<td>代表 0 到无穷多个任意字符。</td>
-</tr>
-<tr>
-<td>?</td>
-<td>代表一定有一个任意字符。</td>
-</tr>
-<tr>
-<td>[]</td>
-<td>代表一定有一个括号内的字符，例如 [xgw] 代表可能是 xgw 其中一个。</td>
-</tr>
-<tr>
-<td>[-]</td>
-<td>代表在编码顺序内的所有字符，例如 [0-9] 代表 0 到 9 之间的所有数字。</td>
-</tr>
-<tr>
-<td>[^]</td>
-<td>第一个字符为 ^ 代表反向选择，例如 [^xpw]代表任意一个非 xpw 的字符。</td>
-</tr>
-</tbody>
-</table>
-<h1 id="快速搜索"><a class="markdownIt-Anchor" href="#快速搜索"></a> 快速搜索</h1>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="3570307132/#more" rel="contents">

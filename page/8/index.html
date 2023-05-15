@@ -294,13 +294,6 @@
     <div class="post-body" itemprop="articleBody">
           <h1 id="samba-简介"><a class="markdownIt-Anchor" href="#samba-简介"></a> SAMBA 简介</h1>
 <p>Linux 上面使用 NFS 服务器来共享文件，Windows 上使用的是 CIFS（Common Internet File System）服务（网上邻居）来共享文件。这两种服务都不能跨系统共享文件，SAMBA 就是为了解决这一问题而存在。</p>
-<p>SAMBA（Server Message Block）服务的主要功能：</p>
-<ul>
-<li>共享文件与打印机服务。</li>
-<li>提供用户登录 SAMBA 主机时的身份认证。</li>
-<li>可以进行 Windows 网络上的主机名解析（NetBIOS Name）。</li>
-<li>可以进行设备的共享（例如 CD-ROM）。</li>
-</ul>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../1516343977/#more" rel="contents">
@@ -413,13 +406,6 @@
     <div class="post-body" itemprop="articleBody">
           <h1 id="bios-启动流程"><a class="markdownIt-Anchor" href="#bios-启动流程"></a> BIOS 启动流程</h1>
 <p>当前，主机系统在载入硬件驱动方面的程序有两种：使用 BIOS 和 UEFI。简单的启动流程可以分为以下步骤：</p>
-<ol>
-<li>载入 BIOS 或 UEFI 的硬件信息与自检（POST，Power-On Self-Test），并根据设置选择第一个可启动的设备。</li>
-<li>对于 BIOS，通过硬件的 INT 13 中断功能，读取并执行第一个可启动设备内 MBR 的引导加载程序（Boot Loader）；对于 UEFI，读取并执行第一个可启动设备内 EFI 分区的引导加载程序。</li>
-<li>根据引导加载程序的设置，识别文件系统格式，并加载核心文件。内核开始检测硬件与驱动程序。</li>
-<li>启动初始进程管理程序（systemd 或 System V），最终目的是启动基础服务和用户设置的启动程序。</li>
-</ol>
-<p>在使用 BIOS 时，通常搭配 MBR（Master Boot Record）分区表。而在使用 UEFI 时，通常搭配 GPT（GUID Partition Table）分区表。GPT 格式的启动过程与 MBR 类似，不同之处在于开机管理程序是否支持 GPT。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../4291230975/#more" rel="contents">
@@ -532,15 +518,6 @@
     <div class="post-body" itemprop="articleBody">
           <h1 id="nis-服务器"><a class="markdownIt-Anchor" href="#nis-服务器"></a> NIS 服务器</h1>
 <p>NIS 是 Network Information Services 的缩写，也称为 Sun Yellow Pages。NIS 服务器主要提供用户的账号，密码，主目录，UID 等信息给客户端主机用来查询之用。</p>
-<p>NIS 服务器使用 RPC 协议传输数据，并且可以使用 Master/Slave 构架。整个运行流程如下：</p>
-<ul>
-<li>NIS Master 先将账号密码相关文件制作成数据库格式。</li>
-<li>NIS Slave 连接 Master 同步数据。</li>
-<li>如果账号密码有变动会重新制作数据库并同步。</li>
-<li>当 NIS Client 有登录需求时会先查询本机 passwd, shadow 等文件。</li>
-<li>若找不到相关账号数据，则向整个 NIS 网络的主机广播查询。</li>
-<li>由 NIS Server 响应 Client 的请求。</li>
-</ul>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../26249757/#more" rel="contents">
@@ -653,8 +630,6 @@
     <div class="post-body" itemprop="articleBody">
           <h1 id="nfs-服务器"><a class="markdownIt-Anchor" href="#nfs-服务器"></a> NFS 服务器</h1>
 <p>NFS 为 Network File System 的简称，目的是想让不同机器、不同操作系统可以彼此共享数据文件。NFS 服务器可以让主机将网络中 NFS 服务器共享的目录挂载到本地端的文件系统中，用起来就像本地分区一样。</p>
-<p>NFS 服务端口是 2049，此外用来传输的端口是小于 1024 号的随机端口，由 RPC 协议来调用。</p>
-<p>远程过程调用（RPC，Remote Procedure Call）服务主要功能是指定每个 NFS 功能所对应的端口号，并通知给客户端。端口号由 NFS 启动时随机选取并向 RPC 注册，因此 RPC 服务需要先于 NFS 启动。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../165304807/#more" rel="contents">
@@ -767,8 +742,6 @@
     <div class="post-body" itemprop="articleBody">
           <h1 id="dhcp-服务器"><a class="markdownIt-Anchor" href="#dhcp-服务器"></a> DHCP 服务器</h1>
 <p>DHCP（Dynamic Host Configuration Protocol）服务器的主要工作是自动地将网络参数分配给网络中的计算机，这些网络参数包括 IP，网关，DNS 地址等。</p>
-<p>一般 DHCP 服务器用在计算机（或移动设备）数量众多的局域网内。如果局域网内计算机数量较少，使用手动配置 IP 能节省开机后从 DHCP 服务器获取 IP 的时间。</p>
-<h1 id="dhcp-协议"><a class="markdownIt-Anchor" href="#dhcp-协议"></a> DHCP 协议</h1>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../4189308113/#more" rel="contents">
