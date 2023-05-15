@@ -22,28 +22,28 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
 
-    <meta name="description" content="进程与程序 程序（Program）是可执行的二进制文件。 当触发执行程序动作后，程序内容及程序数据会加载到内存中，成为一个运行中的程序，即进程（Process）。 系统为这个进程分配一个 ID，称为 PID（Program ID）。同时，根据触发这个进程的用户及相关属性关系，为这个 PID 设置一组有效的权限。  子进程与父进程 登录系统后，会获得一个 bash 的 shell。通过 bash">
+    <meta name="description" content="Busybox BusyBox 是一个集成了一百多个常用 Linux 命令的精简工具箱，总大小只有不到 2MB。通过在 Docker 中运行 Busybox 容器，可以快速创建一个轻量级的测试环境，用于验证命令的使用和测试脚本的运行。 在 Docker Hub 上搜索并下载： [root@server4 ~]$ docker search --filter&#x3D;is-official&#x3D;true bu">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux 中程序与进程关系">
-<meta property="og:url" content="https://blog.x2b.net/630034191/index.html">
+<meta property="og:title" content="用 Docker 运行操作系统">
+<meta property="og:url" content="https://blog.x2b.net/962831535/index.html">
 <meta property="og:site_name" content="X to Bytes">
-<meta property="og:description" content="进程与程序 程序（Program）是可执行的二进制文件。 当触发执行程序动作后，程序内容及程序数据会加载到内存中，成为一个运行中的程序，即进程（Process）。 系统为这个进程分配一个 ID，称为 PID（Program ID）。同时，根据触发这个进程的用户及相关属性关系，为这个 PID 设置一组有效的权限。  子进程与父进程 登录系统后，会获得一个 bash 的 shell。通过 bash">
+<meta property="og:description" content="Busybox BusyBox 是一个集成了一百多个常用 Linux 命令的精简工具箱，总大小只有不到 2MB。通过在 Docker 中运行 Busybox 容器，可以快速创建一个轻量级的测试环境，用于验证命令的使用和测试脚本的运行。 在 Docker Hub 上搜索并下载： [root@server4 ~]$ docker search --filter&#x3D;is-official&#x3D;true bu">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-09-18T05:44:21.000Z">
-<meta property="article:modified_time" content="2023-05-07T09:33:51.484Z">
+<meta property="article:published_time" content="2021-10-23T18:49:50.000Z">
+<meta property="article:modified_time" content="2023-05-15T01:51:23.784Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://blog.x2b.net/630034191/">
+<link rel="canonical" href="https://blog.x2b.net/962831535/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/630034191/","path":"630034191/","title":"Linux 中程序与进程关系"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/962831535/","path":"962831535/","title":"用 Docker 运行操作系统"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Linux 中程序与进程关系 | X to Bytes</title>
+<title>用 Docker 运行操作系统 | X to Bytes</title>
   
 
   <script src="../js/third-party/analytics/baidu-analytics.js"></script>
@@ -145,7 +145,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E4%B8%8E%E7%A8%8B%E5%BA%8F"><span class="nav-number">1.</span> <span class="nav-text"> 进程与程序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%90%E8%BF%9B%E7%A8%8B%E4%B8%8E%E7%88%B6%E8%BF%9B%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text"> 子进程与父进程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%87%E7%A8%8B%E8%B0%83%E7%94%A8%E7%9A%84%E6%B5%81%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text"> 过程调用的流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%85%E9%83%A8%E7%A8%8B%E5%BA%8F%E6%B2%9F%E9%80%9A"><span class="nav-number">4.</span> <span class="nav-text"> 内部程序沟通</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%9A%E7%94%A8%E6%88%B7%E4%B8%8E%E5%A4%9A%E4%BB%BB%E5%8A%A1%E7%8E%AF%E5%A2%83"><span class="nav-number">5.</span> <span class="nav-text"> 多用户与多任务环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B"><span class="nav-number">6.</span> <span class="nav-text"> 僵尸进程</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#busybox"><span class="nav-number">1.</span> <span class="nav-text"> Busybox</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#alpine"><span class="nav-number">2.</span> <span class="nav-text"> Alpine</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#debianubuntu"><span class="nav-number">3.</span> <span class="nav-text"> Debian&#x2F;Ubuntu</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#centosfedora"><span class="nav-number">4.</span> <span class="nav-text"> CentOS&#x2F;Fedora</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -219,7 +219,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/630034191/">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/962831535/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="../images/avatar.jpg">
@@ -232,12 +232,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Linux 中程序与进程关系 | X to Bytes">
+      <meta itemprop="name" content="用 Docker 运行操作系统 | X to Bytes">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Linux 中程序与进程关系
+          用 Docker 运行操作系统
         </h1>
 
         <div class="post-meta-container">
@@ -248,14 +248,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2021-09-18 13:44:21" itemprop="dateCreated datePublished" datetime="2021-09-18T13:44:21+08:00">2021-09-18</time>
+      <time title="创建时间：2021-10-24 02:49:50" itemprop="dateCreated datePublished" datetime="2021-10-24T02:49:50+08:00">2021-10-24</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-07 17:33:51" itemprop="dateModified" datetime="2023-05-07T17:33:51+08:00">2023-05-07</time>
+      <time title="修改时间：2023-05-15 09:51:23" itemprop="dateModified" datetime="2023-05-15T09:51:23+08:00">2023-05-15</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -263,11 +263,11 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+          <a href="../categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../categories/Linux/0-%E5%9F%BA%E7%A1%80%E6%A6%82%E8%AE%BA/" itemprop="url" rel="index"><span itemprop="name">0.基础概论</span></a>
+          <a href="../categories/Docker/3-%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" itemprop="url" rel="index"><span itemprop="name">3.最佳实践</span></a>
         </span>
     </span>
 
@@ -285,7 +285,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>950</span>
+      <span>831</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -303,66 +303,94 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="进程与程序"><a class="markdownIt-Anchor" href="#进程与程序"></a> 进程与程序</h1>
-<p>程序（Program）是可执行的二进制文件。</p>
-<p>当触发执行程序动作后，程序内容及程序数据会加载到内存中，成为一个运行中的程序，即进程（Process）。</p>
-<p>系统为这个进程分配一个 ID，称为 PID（Program ID）。同时，根据触发这个进程的用户及相关属性关系，为这个 PID 设置一组有效的权限。</p>
-<h1 id="子进程与父进程"><a class="markdownIt-Anchor" href="#子进程与父进程"></a> 子进程与父进程</h1>
-<p>登录系统后，会获得一个 bash 的 shell。通过 bash 提供的接口执行另一个命令，如 <code>vim</code>，它也会被分配一个 PID。此时，原本的 bash 就是 <code>vim</code> 的父进程。父进程的 PID 可以用 PPID（Parent ID）表示。</p>
-<p>通常，子进程会继承父进程的相关权限和环境变量。</p>
-<p>例如，在 bash 中执行 <code>bash</code>，再用<code>ps -l</code>命令查看：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">bash</span>
-<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">ps</span> <span class="token parameter variable">-l</span>
-F S   <span class="token environment constant">UID</span>    PID   <span class="token environment constant">PPID</span>  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
-<span class="token number">4</span> S     <span class="token number">0</span>   <span class="token number">5713</span>   <span class="token number">5709</span>  <span class="token number">0</span>  <span class="token number">80</span>   <span class="token number">0</span> - <span class="token number">28920</span> do_wai pts/0    00:00:00 <span class="token function">bash</span>
-<span class="token number">4</span> S     <span class="token number">0</span>  <span class="token number">35555</span>   <span class="token number">5713</span>  <span class="token number">0</span>  <span class="token number">80</span>   <span class="token number">0</span> - <span class="token number">28919</span> do_wai pts/0    00:00:00 <span class="token function">bash</span>
-<span class="token number">0</span> R     <span class="token number">0</span>  <span class="token number">35570</span>  <span class="token number">35555</span>  <span class="token number">0</span>  <span class="token number">80</span>   <span class="token number">0</span> - <span class="token number">38332</span> -      pts/0    00:00:00 <span class="token function">ps</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以看到第一个 bash 的 PID 5517 是第二个 bash 的 PPID。</p>
-<h1 id="过程调用的流程"><a class="markdownIt-Anchor" href="#过程调用的流程"></a> 过程调用的流程</h1>
-<p>父进程和子进程之间的互相调用过程通常称为 fork-and-exec 的流程。进程都会通过父进程以复制（fork）的方式产生一个一模一样的子进程，然后被复制的子进程再以 exec 的方式执行实际要进行的进程，最终成为一个子进程的存在。</p>
-<p>其过程从上往下执行如下示意：</p>
-<table>
-<thead>
-<tr>
-<th><strong>阶段</strong></th>
-<th><strong>状态</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>父进程</td>
-<td>PID=x，程序=a</td>
-</tr>
-<tr>
-<td>中间暂存进程</td>
-<td>PID=y，程序=a，PPID=x</td>
-</tr>
-<tr>
-<td>子进程</td>
-<td>PID=y，程序=b，PPID=x</td>
-</tr>
-</tbody>
-</table>
-<h1 id="内部程序沟通"><a class="markdownIt-Anchor" href="#内部程序沟通"></a> 内部程序沟通</h1>
-<p>在系统内，许多进程需要互相交换信息。除了通过文件进行沟通，还包括共享内存（Shared Memory）、消息队列（Message Queues）、管道（Pipe）等方式，统称为内部程序沟通（Interprocess Communication）。可以用命令 <code>ipcs</code> 观察沟通状态：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ ipcs
-
- Message Queues 
-key        msqid      owner      perms      used-bytes   messages    
-
- Shared Memory Segments 
-key        shmid      owner      perms      bytes      nattch     status      
-
- Semaphore Arrays 
-key        semid      owner      perms      nsems   <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以通过 <code>ipcrm</code> 命令将看到的 interprocess 删除。</p>
-<h1 id="多用户与多任务环境"><a class="markdownIt-Anchor" href="#多用户与多任务环境"></a> 多用户与多任务环境</h1>
-<p>多用户系统也叫分时系统（Time-Share System），指多个用户可以在同一时间使用计算机系统。与 Linux 相比，Windows 系统是单用户系统。</p>
-<p>多任务是指 Linux 可以同时执行几个任务，它可以在还未执行完一个任务时又执行另一项任务。</p>
-<p>每个用户权限不同，所以登录后获得的 shell 的 PID 不同。而 CPU 速度 1GHz 代表 CPU 每秒可以运行 10<sup>9</sup>次命令，每个工作都占用 CPU 的几个命令次数。Linux 可以让 CPU 在各个进程间进行切换。所以实际上，所谓多任务处理是 CPU 快速地执行多个任务，看上去就像它们同时被执行一样。CPU 切换进程的工作与这些工作进入到 CPU 运行的调度会影响到系统的整体性能。由于 CPU 性能出众，所以可以支持多个用户同时登录运行不同程序，这就是多用户与多任务环境。</p>
-<h1 id="僵尸进程"><a class="markdownIt-Anchor" href="#僵尸进程"></a> 僵尸进程</h1>
-<p>造成僵尸进程的原因是该进程应该已经执行完毕或因故应该要终止时，该进程的父进程很可能已经死亡，无法完整将该进程结束掉，而造成那个进程一直滞留在内存。</p>
-<p>使用 <code>ps</code> 命令查看进程时，如果发现某个进程的 CMD 后面有 <code>&lt;defunct&gt;</code>，就代表该进程是僵尸进程。</p>
+        <h1 id="busybox"><a class="markdownIt-Anchor" href="#busybox"></a> Busybox</h1>
+<p>BusyBox 是一个集成了一百多个常用 Linux 命令的精简工具箱，总大小只有不到 2MB。通过在 Docker 中运行 Busybox 容器，可以快速创建一个轻量级的测试环境，用于验证命令的使用和测试脚本的运行。</p>
+<p>在 Docker Hub 上搜索并下载：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> search <span class="token parameter variable">--filter</span><span class="token operator">=</span>is-official<span class="token operator">=</span>true busybox
+NAME      DESCRIPTION           STARS     OFFICIAL   AUTOMATED
+busybox   Busybox base image.   <span class="token number">2379</span>      <span class="token punctuation">[</span>OK<span class="token punctuation">]</span> 
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> pull busybox
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> images busybox
+REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+busybox      latest    16ea53ea7c65   <span class="token number">5</span> weeks ago   <span class="token number">1</span>.24MB<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 <code>-it</code> 方式启动交互式容器：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> run <span class="token parameter variable">-it</span> busybox
+/ <span class="token comment"># vi</span>
+<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>+  Stopped <span class="token punctuation">(</span>signal<span class="token punctuation">)</span>           <span class="token function">vi</span>
+/ <span class="token comment"># ls /bin</span>
+<span class="token punctuation">[</span>                  dnsdomainname      <span class="token function">id</span>                 mkfs.minix         <span class="token function">rev</span>                <span class="token function">tee</span>
+<span class="token punctuation">[</span><span class="token punctuation">[</span>                 dos2unix           <span class="token function">ifconfig</span>           mkfs.vfat          <span class="token function">rm</span>                 telnet
+acpid              dpkg               <span class="token function">ifdown</span>             <span class="token function">mknod</span>              <span class="token function">rmdir</span>              telnetd
+add-shell          dpkg-deb           ifenslave          mkpasswd           rmmod              <span class="token builtin class-name">test</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>甚至带有 <code>httpd</code> 服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">root@k8s-204:~$ <span class="token function">docker</span> run <span class="token parameter variable">-d</span> <span class="token parameter variable">-p</span> <span class="token number">18080</span>:80 busybox httpd <span class="token parameter variable">-f</span> <span class="token parameter variable">-p</span> <span class="token number">80</span> <span class="token parameter variable">-h</span> /var/www
+root@k8s-204:~<span class="token comment"># curl 127.0.0.1:18080</span>
+<span class="token operator">&lt;</span>HTML<span class="token operator">></span><span class="token operator">&lt;</span>HEAD<span class="token operator">></span><span class="token operator">&lt;</span>TITLE<span class="token operator">></span><span class="token number">404</span> Not Found<span class="token operator">&lt;</span>/TITLE<span class="token operator">></span><span class="token operator">&lt;</span>/HEAD<span class="token operator">></span>
+<span class="token operator">&lt;</span>BODY<span class="token operator">></span><span class="token operator">&lt;</span>H<span class="token operator"><span class="token file-descriptor important">1</span>></span><span class="token number">404</span> Not Found<span class="token operator">&lt;</span>/H<span class="token operator"><span class="token file-descriptor important">1</span>></span>
+The requested URL was not found
+<span class="token operator">&lt;</span>/BODY<span class="token operator">></span><span class="token operator">&lt;</span>/HTML<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="alpine"><a class="markdownIt-Anchor" href="#alpine"></a> Alpine</h1>
+<p>Alpine 操作系统是一个面向安全的轻型 Linux 发行版，它采用 musl libc 和 BusyBox 来减小系统体积和资源消耗，比 BusyBox 功能更完善。</p>
+<p>Alpine Docker 镜像仅 5 MB 左右大小，由于 Alpine 还提供了包管理工具 <code>apk</code> 查询和安装软件包。所以被 Docker 官方推荐为默认基础环境镜像。使用 alpine 作为基础镜像的镜像名会在后面加上 -alpine，例如 python:3.5-alpine。</p>
+<p>可以在 Docker Hub 上搜索下载：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> search <span class="token parameter variable">--filter</span><span class="token operator">=</span>is-official<span class="token operator">=</span>true alpine
+NAME      DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED
+alpine    A minimal Docker image based on Alpine Linux…   <span class="token number">8012</span>      <span class="token punctuation">[</span>OK<span class="token punctuation">]</span>    
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> pull alpine
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> images alpine
+REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+alpine       latest    14119a10abf4   <span class="token number">8</span> weeks ago   <span class="token number">5</span>.6MB<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>运行时可以将需要在 alpine 中运行的命令写在 <code>docker run</code> 最后：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> run alpine <span class="token builtin class-name">echo</span> <span class="token string">'555'</span>
+<span class="token number">555</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>在 alpine 容器中安装软件使用 <code>apk add</code> 命令，软件包名可以到 <a target="_blank" rel="noopener external nofollow noreferrer" href="https://pkgs.alpinelinux.org/packages">https://pkgs.alpinelinux.org/packages</a> 搜索到：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">~ <span class="token comment"># apk add vim</span>
+<span class="token punctuation">(</span><span class="token number">1</span>/5<span class="token punctuation">)</span> Installing xxd <span class="token punctuation">(</span><span class="token number">8.2</span>.3437-r0<span class="token punctuation">)</span>
+<span class="token punctuation">(</span><span class="token number">2</span>/5<span class="token punctuation">)</span> Installing lua5.3-libs <span class="token punctuation">(</span><span class="token number">5.3</span>.6-r0<span class="token punctuation">)</span>
+<span class="token punctuation">(</span><span class="token number">3</span>/5<span class="token punctuation">)</span> Installing ncurses-terminfo-base <span class="token punctuation">(</span><span class="token number">6</span>.2_p20210612-r0<span class="token punctuation">)</span>
+<span class="token punctuation">(</span><span class="token number">4</span>/5<span class="token punctuation">)</span> Installing ncurses-libs <span class="token punctuation">(</span><span class="token number">6</span>.2_p20210612-r0<span class="token punctuation">)</span>
+<span class="token punctuation">(</span><span class="token number">5</span>/5<span class="token punctuation">)</span> Installing <span class="token function">vim</span> <span class="token punctuation">(</span><span class="token number">8.2</span>.3437-r0<span class="token punctuation">)</span>
+Executing busybox-1.33.1-r3.trigger
+OK: <span class="token number">25</span> MiB <span class="token keyword">in</span> <span class="token number">19</span> packages<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="debianubuntu"><a class="markdownIt-Anchor" href="#debianubuntu"></a> Debian/Ubuntu</h1>
+<p>Debian 和 Ubuntu 都属于 Debian 系列的服务器操作系统。在一些大型软件镜像中，被作为基础镜像使用。</p>
+<p>在 Docker Hub 上搜索并下载相应镜像：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> search <span class="token parameter variable">--filter</span><span class="token operator">=</span>is-official<span class="token operator">=</span>true debian
+NAME      DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED
+ubuntu    Ubuntu is a Debian-based Linux operating sys…   <span class="token number">12999</span>     <span class="token punctuation">[</span>OK<span class="token punctuation">]</span>       
+debian    Debian is a Linux distribution that's compos…   <span class="token number">4039</span>      <span class="token punctuation">[</span>OK<span class="token punctuation">]</span>       
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> pull debian
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> pull ubuntu<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 <code>docker run</code> 命令可以直接运行镜像：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> run <span class="token parameter variable">--rm</span> <span class="token parameter variable">-it</span> debian
+root@67c7d35efc34:/<span class="token comment"># echo $SHELL</span>
+/bin/bash
+root@67c7d35efc34:/<span class="token comment"># cat /etc/issue</span>
+Debian GNU/Linux <span class="token number">11</span> <span class="token punctuation">\</span>n <span class="token punctuation">\</span>l<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果考虑以 Ubuntu 作为基础镜像，通常首先使用 <code>apt-get</code> 命令来更新和安装软件包：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> run <span class="token parameter variable">--rm</span> <span class="token parameter variable">-it</span> ubuntu
+root@a5c5f0b0a7d5:/<span class="token comment"># cat /etc/lsb-release </span>
+<span class="token assign-left variable">DISTRIB_ID</span><span class="token operator">=</span>Ubuntu
+<span class="token assign-left variable">DISTRIB_RELEASE</span><span class="token operator">=</span><span class="token number">20.04</span>
+<span class="token assign-left variable">DISTRIB_CODENAME</span><span class="token operator">=</span>focal
+<span class="token assign-left variable">DISTRIB_DESCRIPTION</span><span class="token operator">=</span><span class="token string">"Ubuntu 20.04.3 LTS"</span>
+root@a5c5f0b0a7d5:/<span class="token comment"># apt-get update</span>
+Fetched <span class="token number">19.5</span> MB <span class="token keyword">in</span> 5s <span class="token punctuation">(</span><span class="token number">3616</span> kB/s<span class="token punctuation">)</span>                
+Reading package lists<span class="token punctuation">..</span>. Done
+root@a5c5f0b0a7d5:/<span class="token comment"># apt-get install -y curl</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="centosfedora"><a class="markdownIt-Anchor" href="#centosfedora"></a> CentOS/Fedora</h1>
+<p>CentOS 和 Fedora 都是基于 Red Hat 的 Linux 发行版：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> search <span class="token parameter variable">--filter</span><span class="token operator">=</span>is-official<span class="token operator">=</span>true centos
+NAME      DESCRIPTION                     STARS     OFFICIAL   AUTOMATED
+centos    The official build of CentOS.   <span class="token number">6810</span>      <span class="token punctuation">[</span>OK<span class="token punctuation">]</span>    
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> pull centos<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>CentOS 最新版为 8.4 版本,一般使用的是 CentOS:7 版本.</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> run <span class="token parameter variable">-it</span> <span class="token parameter variable">--rm</span> centos
+<span class="token punctuation">[</span>root@be4eb8a8025a /<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/centos-release
+CentOS Linux release <span class="token number">8.4</span>.2105
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> run <span class="token parameter variable">-it</span> <span class="token parameter variable">--rm</span> centos:7
+<span class="token punctuation">[</span>root@e6de73058535 /<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/centos-release
+CentOS Linux release <span class="token number">7.9</span>.2009 <span class="token punctuation">(</span>Core<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
     </div>
 
@@ -394,7 +422,7 @@ key        semid      owner      perms      nsems   <span aria-hidden="true" cla
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://blog.x2b.net/630034191/" title="Linux 中程序与进程关系">https://blog.x2b.net/630034191/</a>
+      <a href="https://blog.x2b.net/962831535/" title="用 Docker 运行操作系统">https://blog.x2b.net/962831535/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
@@ -424,13 +452,13 @@ key        semid      owner      perms      nsems   <span aria-hidden="true" cla
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="../3847284551/" rel="prev" title="Linux 工作调度与定时任务">
-                  <i class="fa fa-chevron-left"></i> Linux 工作调度与定时任务
+                <a href="../2014855778/" rel="prev" title="使用 Dockerfile 构建 Docker 镜像">
+                  <i class="fa fa-chevron-left"></i> 使用 Dockerfile 构建 Docker 镜像
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="../517799084/" rel="next" title="Linux 进程前后台切换">
-                  Linux 进程前后台切换 <i class="fa fa-chevron-right"></i>
+                <a href="../2670657393/" rel="next" title="Docker API">
+                  Docker API <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -540,7 +568,7 @@ key        semid      owner      perms      nsems   <span aria-hidden="true" cla
 
 
   <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
-  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/630034191/"}</script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/962831535/"}</script>
   <script src="../js/third-party/quicklink.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 

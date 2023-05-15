@@ -30,7 +30,7 @@
 <meta property="og:description" content="Docker Compose Docker Compose，原名为 Fig，是 Docker 官方开发的用于简化多容器部署和迁移过程的容器编排（Orchestration）插件。Compose 使用一个 YAML 格式的 docker-compose.yml 模板文件来定义一组相关联的应用容器，形成一个服务栈。 在 Compose 中有几个重要的概念：  任务（task）：一个容器被称为一个任务">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-10-31T19:26:12.000Z">
-<meta property="article:modified_time" content="2023-05-14T18:20:02.625Z">
+<meta property="article:modified_time" content="2023-05-15T01:51:23.783Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python">
 <meta name="twitter:card" content="summary">
@@ -94,7 +94,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">9</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">71</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">10</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">72</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -160,13 +160,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="../archives/">
-          <span class="site-state-item-count">71</span>
+          <span class="site-state-item-count">72</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="../categories/">
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
@@ -255,7 +255,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-15 02:20:02" itemprop="dateModified" datetime="2023-05-15T02:20:02+08:00">2023-05-15</time>
+      <time title="修改时间：2023-05-15 09:51:23" itemprop="dateModified" datetime="2023-05-15T09:51:23+08:00">2023-05-15</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -313,68 +313,68 @@
 </ul>
 <h1 id="安装"><a class="markdownIt-Anchor" href="#安装"></a> 安装</h1>
 <p>V1 版本由 Python 编写，安装方式如下：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> <span class="token parameter variable">-L</span> https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64 <span class="token parameter variable">-o</span> /usr/local/bin/docker-compose
-<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> <span class="token parameter variable">-L</span> https://raw.githubusercontent.com/docker/compose/1.29.2/contrib/completion/bash/docker-compose <span class="token operator">></span> /etc/bash_completion.d/docker-compose
-<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> +x /usr/local/bin/docker-compose<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ curl <span class="token punctuation">-</span>L https<span class="token punctuation">:</span>//github.com/docker/compose/releases/download/1.29.2/docker<span class="token punctuation">-</span>compose<span class="token punctuation">-</span>Linux<span class="token punctuation">-</span>x86_64 <span class="token punctuation">-</span>o /usr/local/bin/docker<span class="token punctuation">-</span>compose
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ curl <span class="token punctuation">-</span>L https<span class="token punctuation">:</span>//raw.githubusercontent.com/docker/compose/1.29.2/contrib/completion/bash/docker<span class="token punctuation">-</span>compose <span class="token punctuation">></span> /etc/bash_completion.d/docker<span class="token punctuation">-</span>compose
+<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ chmod +x /usr/local/bin/docker<span class="token punctuation">-</span>compose<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>V2 版本使用 Golang 重构，安装方式如下：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> <span class="token parameter variable">-L</span> https://github.com/docker/compose/releases/download/v2.0.1/docker-compose-linux-x86_64 <span class="token parameter variable">-o</span> /usr/libexec/docker/cli-plugins/docker-compose
-<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> +x /usr/libexec/docker/cli-plugins/docker-compose
-<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> compose version
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ curl <span class="token punctuation">-</span>L https<span class="token punctuation">:</span>//github.com/docker/compose/releases/download/v2.0.1/docker<span class="token punctuation">-</span>compose<span class="token punctuation">-</span>linux<span class="token punctuation">-</span>x86_64 <span class="token punctuation">-</span>o /usr/libexec/docker/cli<span class="token punctuation">-</span>plugins/docker<span class="token punctuation">-</span>compose
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ chmod +x /usr/libexec/docker/cli<span class="token punctuation">-</span>plugins/docker<span class="token punctuation">-</span>compose
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ docker compose version
 Docker Compose version v2.0.1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>不需要使用时，可以直接删除对应的二进制文件即可。</p>
 <h1 id="配置文件"><a class="markdownIt-Anchor" href="#配置文件"></a> 配置文件</h1>
 <p>一个简单的配置文件样本如下：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">version: <span class="token string">"3"</span>
-services:
-  redis:
-    image: redis:alpine
-    ports:
-      - <span class="token string">"6379"</span>
-    networks:
-      - frontend
-  db:
-    image: postgres:9.4
-    environment:
-      ROOT_PASSWORD: example
-    volumes:
-      - db-data:/var/lib/postgresql/data
-    networks:
-      - backend
-  vote:
-    image: dockersamples/examplevotingapp_vote:before
-    ports:
-      - <span class="token string">"5000:80"</span>
-    networks:
-      - frontend
-    depends_on:
-      - redis
-  result:
-    image: dockersamples/examplevotingapp_result:before
-    ports:
-      - <span class="token string">"5001:80"</span>
-    networks:
-      - backend
-    depends_on:
-      - db
-  worker:
-    image: dockersamples/examplevotingapp_worker
-    networks:
-      - frontend
-      - backend
-  visualizer:
-    image: dockersamples/visualizer:stable
-    ports:
-      - <span class="token string">"8080:8080"</span>
-    stop_grace_period: 1m30s
-    volumes:
-      - <span class="token string">"/var/run/docker.sock:/var/run/docker.sock"</span>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">version</span><span class="token punctuation">:</span> <span class="token string">"3"</span>
+<span class="token key atrule">services</span><span class="token punctuation">:</span>
+  <span class="token key atrule">redis</span><span class="token punctuation">:</span>
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> redis<span class="token punctuation">:</span>alpine
+    <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token string">"6379"</span>
+    <span class="token key atrule">networks</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> frontend
+  <span class="token key atrule">db</span><span class="token punctuation">:</span>
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> postgres<span class="token punctuation">:</span><span class="token number">9.4</span>
+    <span class="token key atrule">environment</span><span class="token punctuation">:</span>
+      <span class="token key atrule">ROOT_PASSWORD</span><span class="token punctuation">:</span> example
+    <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> db<span class="token punctuation">-</span>data<span class="token punctuation">:</span>/var/lib/postgresql/data
+    <span class="token key atrule">networks</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> backend
+  <span class="token key atrule">vote</span><span class="token punctuation">:</span>
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> dockersamples/examplevotingapp_vote<span class="token punctuation">:</span>before
+    <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token string">"5000:80"</span>
+    <span class="token key atrule">networks</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> frontend
+    <span class="token key atrule">depends_on</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> redis
+  <span class="token key atrule">result</span><span class="token punctuation">:</span>
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> dockersamples/examplevotingapp_result<span class="token punctuation">:</span>before
+    <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token string">"5001:80"</span>
+    <span class="token key atrule">networks</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> backend
+    <span class="token key atrule">depends_on</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> db
+  <span class="token key atrule">worker</span><span class="token punctuation">:</span>
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> dockersamples/examplevotingapp_worker
+    <span class="token key atrule">networks</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> frontend
+      <span class="token punctuation">-</span> backend
+  <span class="token key atrule">visualizer</span><span class="token punctuation">:</span>
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> dockersamples/visualizer<span class="token punctuation">:</span>stable
+    <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token string">"8080:8080"</span>
+    <span class="token key atrule">stop_grace_period</span><span class="token punctuation">:</span> 1m30s
+    <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token string">"/var/run/docker.sock:/var/run/docker.sock"</span>
       
-networks:
-  frontend:
-  backend:
+<span class="token key atrule">networks</span><span class="token punctuation">:</span>
+  <span class="token key atrule">frontend</span><span class="token punctuation">:</span>
+  <span class="token key atrule">backend</span><span class="token punctuation">:</span>
 
-volumes:
-  db-data:<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+  db<span class="token punctuation">-</span>data<span class="token punctuation">:</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>从上面的示例模板文件中可以看出顶级的配置项有：</p>
 <ul>
 <li>version：定义了版本信息。</li>
@@ -389,239 +389,239 @@ volumes:
 <p>由于 aliases 是网络范围的，因此相同的服务可以在不同的网络上具有不同的别名。</p>
 <p>网络范围的别名可以由多个容器共享，甚至可以由多个服务共享。如果是这样的话，则无法保证名称解析为容器。</p>
 <p>例如设置网络别名：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">services:
-  some-service:
-    networks:
-      some-network:
-        aliases:
-          - alias1
-          - alias3
-      other-network:
-        aliases:
-          - alias2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">services</span><span class="token punctuation">:</span>
+  <span class="token key atrule">some-service</span><span class="token punctuation">:</span>
+    <span class="token key atrule">networks</span><span class="token punctuation">:</span>
+      <span class="token key atrule">some-network</span><span class="token punctuation">:</span>
+        <span class="token key atrule">aliases</span><span class="token punctuation">:</span>
+          <span class="token punctuation">-</span> alias1
+          <span class="token punctuation">-</span> alias3
+      <span class="token key atrule">other-network</span><span class="token punctuation">:</span>
+        <span class="token key atrule">aliases</span><span class="token punctuation">:</span>
+          <span class="token punctuation">-</span> alias2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="bulid"><a class="markdownIt-Anchor" href="#bulid"></a> bulid</h2>
 <p>指定 Dockerfile 所在文件夹的路径，可以是绝对或相对路径，Compose 将会利用它自动构建并使用这个镜像。例如：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">version: <span class="token string">'3'</span>
-services:
-  webapp:
-    build: ./dir<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">version</span><span class="token punctuation">:</span> <span class="token string">'3'</span>
+<span class="token key atrule">services</span><span class="token punctuation">:</span>
+  <span class="token key atrule">webapp</span><span class="token punctuation">:</span>
+    <span class="token key atrule">build</span><span class="token punctuation">:</span> ./dir<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>也可以使用 context 指令指定 Dockerfile 所在文件夹的路径，同时使用 dockerfile 指令指定 Dockerfile 文件名：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">version: <span class="token string">'3'</span>
-services:
-  webapp:
-    build:
-      context: /root/build
-      dockerfile: Dockerfile-alternate<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">version</span><span class="token punctuation">:</span> <span class="token string">'3'</span>
+<span class="token key atrule">services</span><span class="token punctuation">:</span>
+  <span class="token key atrule">webapp</span><span class="token punctuation">:</span>
+    <span class="token key atrule">build</span><span class="token punctuation">:</span>
+      <span class="token key atrule">context</span><span class="token punctuation">:</span> /root/build
+      <span class="token key atrule">dockerfile</span><span class="token punctuation">:</span> Dockerfile<span class="token punctuation">-</span>alternate<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>dockerfile 指令不能跟 image 同时使用，否则 Compose 不知道根据哪个指令来生成最终的服务镜像。</p>
 <h2 id="command"><a class="markdownIt-Anchor" href="#command"></a> command</h2>
 <p>使用 command 可以覆盖容器启动后默认执行的命令，可以为字符串格式：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">command: bundle <span class="token builtin class-name">exec</span> thin <span class="token parameter variable">-p</span> <span class="token number">3000</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">command</span><span class="token punctuation">:</span> bundle exec thin <span class="token punctuation">-</span>p 3000<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>也可以为 JSON 数组格式：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">command: <span class="token punctuation">[</span><span class="token string">"bundle"</span>, <span class="token string">"exec"</span>, <span class="token string">"thin"</span>, <span class="token string">"-p"</span>, <span class="token string">"3000"</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">command</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">"bundle"</span><span class="token punctuation">,</span> <span class="token string">"exec"</span><span class="token punctuation">,</span> <span class="token string">"thin"</span><span class="token punctuation">,</span> <span class="token string">"-p"</span><span class="token punctuation">,</span> <span class="token string">"3000"</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h2 id="container_name"><a class="markdownIt-Anchor" href="#container_name"></a> container_name</h2>
 <p>指定容器名称。不指定默认将会使用 <code>项目名称_服务名称_序号</code> 这样的格式：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">container_name: docker-web-container<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">container_name</span><span class="token punctuation">:</span> docker<span class="token punctuation">-</span>web<span class="token punctuation">-</span>container<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h2 id="depends_on"><a class="markdownIt-Anchor" href="#depends_on"></a> depends_on</h2>
 <p>解决容器的依赖和启动先后的问题。例如先启动 redis 和 db 再启动 web：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">version: <span class="token string">'3'</span>
-services:
-  web:
-    build: <span class="token builtin class-name">.</span>
-    depends_on:
-      - db
-      - redis
-redis:
-    image: redis
-db:
-    image: postgres<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">version</span><span class="token punctuation">:</span> <span class="token string">'3'</span>
+<span class="token key atrule">services</span><span class="token punctuation">:</span>
+  <span class="token key atrule">web</span><span class="token punctuation">:</span>
+    <span class="token key atrule">build</span><span class="token punctuation">:</span> .
+    <span class="token key atrule">depends_on</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> db
+      <span class="token punctuation">-</span> redis
+<span class="token key atrule">redis</span><span class="token punctuation">:</span>
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> redis
+<span class="token key atrule">db</span><span class="token punctuation">:</span>
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> postgres<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>web 服务不会等待 redis 和 db 完全启动之后才启动。</p>
 <h2 id="dns"><a class="markdownIt-Anchor" href="#dns"></a> dns</h2>
 <p>自定义 DNS 服务器，可以是单个也可以是一个列表：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">dns: <span class="token number">8.8</span>.8.8
-dns:
-  - <span class="token number">8.8</span>.8.8
-  - <span class="token number">9.9</span>.9.9<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">dns</span><span class="token punctuation">:</span> 8.8.8.8
+<span class="token key atrule">dns</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> 8.8.8.8
+  <span class="token punctuation">-</span> 9.9.9.9<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="entrypoint"><a class="markdownIt-Anchor" href="#entrypoint"></a> entrypoint</h2>
 <p>覆盖容器中默认的入口命令：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">entrypoint: python app.py<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">entrypoint</span><span class="token punctuation">:</span> python app.py<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h2 id="env-file"><a class="markdownIt-Anchor" href="#env-file"></a> env file</h2>
 <p>从文件获取环境变量，可以为文件路径或列表。如果通过 <code>docker-compose -f FILE</code> 方式来指定 Compose 模板文件，则 <code>env_file</code> 中变量的路径会基于模板文件路径。如果有变量名称与 <code>environment</code> 指令冲突，以后者为准：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">env</span> file: .env
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">env file</span><span class="token punctuation">:</span> .env
 
-<span class="token function">env</span> file:
-  - ./cornmon.enV
-  - ./apps/web.env
-  - /opt/secrets.env<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token key atrule">env file</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> ./cornmon.enV
+  <span class="token punctuation">-</span> ./apps/web.env
+  <span class="token punctuation">-</span> /opt/secrets.env<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>环境变量文件中每一行必须符合格式，支持以 <code>#</code> 开头的注释行：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># cornmon.env : Set development environment</span>
-PROG <span class="token assign-left variable">ENV</span><span class="token operator">=</span>development<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token comment"># cornmon.env : Set development environment</span>
+PROG ENV=development<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <h2 id="environment"><a class="markdownIt-Anchor" href="#environment"></a> environment</h2>
 <p>设置环境变量。可以使用数组或字典两种格式。只给定名称的变量会自动获取运行 Compose 主机上对应变量的值，可以用来防止泄露不必要的数据：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">environment:
-  RACK_ENV: development
-  SESSION_SECRET:
-environment:
-  - <span class="token assign-left variable">RACK_ENV</span><span class="token operator">=</span>development
-  - SESSION_SECRET<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">environment</span><span class="token punctuation">:</span>
+  <span class="token key atrule">RACK_ENV</span><span class="token punctuation">:</span> development
+  <span class="token key atrule">SESSION_SECRET</span><span class="token punctuation">:</span>
+<span class="token key atrule">environment</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> RACK_ENV=development
+  <span class="token punctuation">-</span> SESSION_SECRET<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>如果变量名称或者值中用到 <code>true|false</code>、<code>yes|no</code> 等表达布尔含义的词汇，最好放到引号里，避免 YAML 自动解析某些内容为对应的布尔语义。包括：<code>y|Y|yes|Yes|YES|n|N|no|No|NO|true|True|TRUE|false|False|FALSE|on|On|ON|off|Off|OFF</code>。</p>
 <h2 id="expose"><a class="markdownIt-Anchor" href="#expose"></a> expose</h2>
 <p>暴露端口，但不映射到宿主机，只被连接的服务访问。仅可以指定容器内部的端口为参数：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">expose:
- - <span class="token string">"3000"</span>
- - <span class="token string">"8000"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">expose</span><span class="token punctuation">:</span>
+ <span class="token punctuation">-</span> <span class="token string">"3000"</span>
+ <span class="token punctuation">-</span> <span class="token string">"8000"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <h2 id="extends"><a class="markdownIt-Anchor" href="#extends"></a> extends</h2>
 <p>基于其他模板文件进行扩展。一般情况下，推荐在基础模板中只定义一些可以共享的镜像和环境变量，在扩展模板中具体指定应用变量、链接、数据卷等信息。</p>
 <p>例如已有一个 webapp 服务，定义一个基础模板文件为 common.yml：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># common.yml</span>
-webapp:
-  build: ./webapp
-  environment:
-    - <span class="token assign-left variable">DEBUG</span><span class="token operator">=</span>false
-    - SEND <span class="token assign-left variable">EMAILS</span><span class="token operator">=</span>false <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token comment"># common.yml</span>
+<span class="token key atrule">webapp</span><span class="token punctuation">:</span>
+  <span class="token key atrule">build</span><span class="token punctuation">:</span> ./webapp
+  <span class="token key atrule">environment</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> DEBUG=false
+    <span class="token punctuation">-</span> SEND EMAILS=false <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>再编写一个新的 development.yml 文件，使用 common.yml 中的 webapp 服务进行扩展：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># development.yml</span>
-web:
-  extends:
-    file: common.yml
-    service: webapp
-  ports:
-    - <span class="token string">"8000:8000"</span>
-  links:
-    - db
-  environment:
-    - <span class="token assign-left variable">DEBUG</span><span class="token operator">=</span>true
-db:
-  image: postgres<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token comment"># development.yml</span>
+<span class="token key atrule">web</span><span class="token punctuation">:</span>
+  <span class="token key atrule">extends</span><span class="token punctuation">:</span>
+    <span class="token key atrule">file</span><span class="token punctuation">:</span> common.yml
+    <span class="token key atrule">service</span><span class="token punctuation">:</span> webapp
+  <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token string">"8000:8000"</span>
+  <span class="token key atrule">links</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> db
+  <span class="token key atrule">environment</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> DEBUG=true
+<span class="token key atrule">db</span><span class="token punctuation">:</span>
+  <span class="token key atrule">image</span><span class="token punctuation">:</span> postgres<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>后者会自动继承 common.yml 中的 webapp 服务及环境变量定义。使用 extends 需要注意以下两点：</p>
 <ul>
-<li>要避免出现循环依赖。例如 A 依赖 B，B 依赖 C，C 反过来依赖A的情况。</li>
+<li>要避免出现循环依赖。例如 A 依赖 B，B 依赖 C，C 反过来依赖 A 的情况。</li>
 <li>extends 不会继承 links 和 volumes_from 中定义的容器和数据卷资源。</li>
 </ul>
 <h2 id="external-links"><a class="markdownIt-Anchor" href="#external-links"></a> external links</h2>
 <p>链接到 docker-compose.yml 外部的容器，甚至并非 Compose 管理的外部容器：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">external links:
-  - redis_1
-  - project_db_1:mysql
-  - project_db_1:postgresql<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">external links</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> redis_1
+  <span class="token punctuation">-</span> project_db_1<span class="token punctuation">:</span>mysql
+  <span class="token punctuation">-</span> project_db_1<span class="token punctuation">:</span>postgresql<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="extra-hosts"><a class="markdownIt-Anchor" href="#extra-hosts"></a> extra hosts</h2>
 <p>类似 Docker 中的 <code>--add-host</code> 参数，指定额外的 host 名称映射信息：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">extra_hosts:
-  - <span class="token string">"googledns:8.8.8.8"</span>
-  - <span class="token string">"dockerhub:52.1.157.61"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">extra_hosts</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token string">"googledns:8.8.8.8"</span>
+  <span class="token punctuation">-</span> <span class="token string">"dockerhub:52.1.157.61"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>服务容器启动后会在 <code>/etc/hosts</code> 文件中添加 googledns 和 dockerhub 两条内容。</p>
 <h2 id="healthcheck"><a class="markdownIt-Anchor" href="#healthcheck"></a> healthcheck</h2>
 <p>通过命令检查容器是否健康运行。包括检测方法（test）、间隔（interval）、超时（timeout）、重试次数（retries）、启动等待时间（start_period）等：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">healthcheck:
-  test: <span class="token punctuation">[</span><span class="token string">"CMD"</span>, <span class="token string">"curl"</span>, <span class="token string">"-f"</span>, <span class="token string">"http://localhost"</span><span class="token punctuation">]</span>
-  interval: 1m30s
-  timeout: 10s
-  retries: <span class="token number">3</span>
-  start_period: 30s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">healthcheck</span><span class="token punctuation">:</span>
+  <span class="token key atrule">test</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">"CMD"</span><span class="token punctuation">,</span> <span class="token string">"curl"</span><span class="token punctuation">,</span> <span class="token string">"-f"</span><span class="token punctuation">,</span> <span class="token string">"http://localhost"</span><span class="token punctuation">]</span>
+  <span class="token key atrule">interval</span><span class="token punctuation">:</span> 1m30s
+  <span class="token key atrule">timeout</span><span class="token punctuation">:</span> 10s
+  <span class="token key atrule">retries</span><span class="token punctuation">:</span> <span class="token number">3</span>
+  <span class="token key atrule">start_period</span><span class="token punctuation">:</span> 30s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="image"><a class="markdownIt-Anchor" href="#image"></a> image</h2>
 <p>指定为镜像名称或镜像 ID。如果镜像在本地不存在，Compose 将会尝试拉取：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">image: ubuntu
-image: orchardup/postgresql
-image: a4bc65fd<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">image</span><span class="token punctuation">:</span> ubuntu
+<span class="token key atrule">image</span><span class="token punctuation">:</span> orchardup/postgresql
+<span class="token key atrule">image</span><span class="token punctuation">:</span> a4bc65fd<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>如果同时指定了 image 和 build，那 image 不再具有单独使用的意义，而是指定了当前要构建的镜像的名称。也就是说，Compose 构建的镜像将使用 image 中指定的名称 webapp:tag 进行命名：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">build: ./dir
-image: webapp:tag<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">build</span><span class="token punctuation">:</span> ./dir
+<span class="token key atrule">image</span><span class="token punctuation">:</span> webapp<span class="token punctuation">:</span>tag<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <h2 id="labels"><a class="markdownIt-Anchor" href="#labels"></a> labels</h2>
 <p>为容器添加 Docker 元数据（metadata）信息。例如，可以为容器添加辅助说明信息：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">labels:
-  com.startupteam.description: <span class="token string">"webapp for a startup team"</span>
-  com.startupteam.department: <span class="token string">"devops department"</span>
-  com.startupteam.release: <span class="token string">"rc3 for v1.0"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">labels</span><span class="token punctuation">:</span>
+  <span class="token key atrule">com.startupteam.description</span><span class="token punctuation">:</span> <span class="token string">"webapp for a startup team"</span>
+  <span class="token key atrule">com.startupteam.department</span><span class="token punctuation">:</span> <span class="token string">"devops department"</span>
+  <span class="token key atrule">com.startupteam.release</span><span class="token punctuation">:</span> <span class="token string">"rc3 for v1.0"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="logging"><a class="markdownIt-Anchor" href="#logging"></a> logging</h2>
 <p>与日志相关的配置，包括一系列子配置。logging.driver 类似于 --log-driver 参数，用于指定日志驱动类型。目前支持三种日志驱动类型：json-file、syslog、none。logging.options 设置日志驱动的相关参数。例如，设置为 syslog 格式：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">logging:
-  driver: <span class="token string">"syslog"</span>
-  options:
-    syslog address: <span class="token string">"tcp://192.168.0.42:123"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">logging</span><span class="token punctuation">:</span>
+  <span class="token key atrule">driver</span><span class="token punctuation">:</span> <span class="token string">"syslog"</span>
+  <span class="token key atrule">options</span><span class="token punctuation">:</span>
+    <span class="token key atrule">syslog address</span><span class="token punctuation">:</span> <span class="token string">"tcp://192.168.0.42:123"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>或者使用 json-file 格式：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">logging:
-  driver: <span class="token string">"json-file"</span>
-  options:
-    max-size:<span class="token string">"lOOOk"</span>
-    max-file:<span class="token string">"20"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">logging</span><span class="token punctuation">:</span>
+  <span class="token key atrule">driver</span><span class="token punctuation">:</span> <span class="token string">"json-file"</span>
+  <span class="token key atrule">options</span><span class="token punctuation">:</span>
+    max<span class="token punctuation">-</span>size<span class="token punctuation">:</span><span class="token string">"lOOOk"</span>
+    max<span class="token punctuation">-</span>file<span class="token punctuation">:</span><span class="token string">"20"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="network-mode"><a class="markdownIt-Anchor" href="#network-mode"></a> network mode</h2>
 <p>设置网络模式：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">network mode: <span class="token string">"none"</span>
-network mode: <span class="token string">"bridge"</span>
-network mode: <span class="token string">"host"</span>
-network mode: <span class="token string">"service: [service name]"</span>
-network_mode: <span class="token string">"container:[name or id]"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">network mode</span><span class="token punctuation">:</span> <span class="token string">"none"</span>
+<span class="token key atrule">network mode</span><span class="token punctuation">:</span> <span class="token string">"bridge"</span>
+<span class="token key atrule">network mode</span><span class="token punctuation">:</span> <span class="token string">"host"</span>
+<span class="token key atrule">network mode</span><span class="token punctuation">:</span> <span class="token string">"service: [service name]"</span>
+<span class="token key atrule">network_mode</span><span class="token punctuation">:</span> <span class="token string">"container:[name or id]"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="networks"><a class="markdownIt-Anchor" href="#networks"></a> networks</h2>
 <p>要加入的网络，使用顶级 networks 下的条目：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">services:
-  some-service:
-    networks:
-     - some-network
-     - other-network
-networks:
-  some-network:
-  other-network:<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">services</span><span class="token punctuation">:</span>
+  <span class="token key atrule">some-service</span><span class="token punctuation">:</span>
+    <span class="token key atrule">networks</span><span class="token punctuation">:</span>
+     <span class="token punctuation">-</span> some<span class="token punctuation">-</span>network
+     <span class="token punctuation">-</span> other<span class="token punctuation">-</span>network
+<span class="token key atrule">networks</span><span class="token punctuation">:</span>
+  <span class="token key atrule">some-network</span><span class="token punctuation">:</span>
+  other<span class="token punctuation">-</span>network<span class="token punctuation">:</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="pid"><a class="markdownIt-Anchor" href="#pid"></a> pid</h2>
 <p>与主机系统共享进程命名空间。打开该选项的容器之间，以及和宿主机系统之间，可以通过进程 ID 来相互访问和操作：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">pid: <span class="token string">"host"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">pid</span><span class="token punctuation">:</span> <span class="token string">"host"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h2 id="ports"><a class="markdownIt-Anchor" href="#ports"></a> ports</h2>
 <p>暴露端口信息。使用 <code>宿主端口:容器端口（HOST:CONTAINER）</code>格式，或者仅指定容器的端口（宿主将随机选择端口）均可：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">ports:
-  - <span class="token string">"3000"</span>
-  - <span class="token string">"8000:8000"</span>
-  - <span class="token string">"49100:22"</span>
-  - <span class="token string">"127.0.0.1:8001:8001"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">ports</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token string">"3000"</span>
+  <span class="token punctuation">-</span> <span class="token string">"8000:8000"</span>
+  <span class="token punctuation">-</span> <span class="token string">"49100:22"</span>
+  <span class="token punctuation">-</span> <span class="token string">"127.0.0.1:8001:8001"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>或者可以指定详细设置：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">ports:
-  - target: <span class="token number">80</span>
-    published: <span class="token number">8080</span>
-    protocol: tcp
-    mode: ingress<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">ports</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">target</span><span class="token punctuation">:</span> <span class="token number">80</span>
+    <span class="token key atrule">published</span><span class="token punctuation">:</span> <span class="token number">8080</span>
+    <span class="token key atrule">protocol</span><span class="token punctuation">:</span> tcp
+    <span class="token key atrule">mode</span><span class="token punctuation">:</span> ingress<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>注意，当使用 <code>HOST:CONTAINER</code> 格式来映射端口时，如果使用的容器端口小于 60 并且没有放到引号里，可能会得到错误结果，因为 YAML 会自动解析 xx:yy 这种数字格式为 60 进制。为避免出现这种问题，建议数字串都采用引号包括起来的字符串格式。</p>
 <h2 id="restart"><a class="markdownIt-Anchor" href="#restart"></a> restart</h2>
 <p>指定重启策略，可以为 <code>no</code>（不重启），<code>always</code>（总是），<code>on-failure</code>（失败时），<code>unless-stopped</code>（除非停止）。例如：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">restart: unless-stopped<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">restart</span><span class="token punctuation">:</span> unless<span class="token punctuation">-</span>stopped<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h2 id="sysctls"><a class="markdownIt-Anchor" href="#sysctls"></a> sysctls</h2>
 <p>配置容器内的内核参数。例如指定连接数为 4096 和开启 TCP 的 syncookies：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">sysctls:
-  net.core.somaxconn: <span class="token number">4096</span>
-  net.ipv4.tcp_syncookies: <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">sysctls</span><span class="token punctuation">:</span>
+  <span class="token key atrule">net.core.somaxconn</span><span class="token punctuation">:</span> <span class="token number">4096</span>
+  <span class="token key atrule">net.ipv4.tcp_syncookies</span><span class="token punctuation">:</span> <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <h2 id="ulimits"><a class="markdownIt-Anchor" href="#ulimits"></a> ulimits</h2>
 <p>指定容器的 ulimits 限制值。例如指定最大进程数为 65535，指定文件旬柄数为 20000（软限制）和 40000（系统硬限制）：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">ulimits:
-  nproc: <span class="token number">65535</span>
-  nofile:
-    soft: <span class="token number">20000</span>
-    hard: <span class="token number">40000</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">ulimits</span><span class="token punctuation">:</span>
+  <span class="token key atrule">nproc</span><span class="token punctuation">:</span> <span class="token number">65535</span>
+  <span class="token key atrule">nofile</span><span class="token punctuation">:</span>
+    <span class="token key atrule">soft</span><span class="token punctuation">:</span> <span class="token number">20000</span>
+    <span class="token key atrule">hard</span><span class="token punctuation">:</span> <span class="token number">40000</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="volumes"><a class="markdownIt-Anchor" href="#volumes"></a> volumes</h2>
 <p>数据卷所挂载路径设置。可以设置宿主机路径（<code>HOST:CONTAINER</code>）或加上访问模式（<code>HOST:CONTAINER:ro</code>）。 支持如 <code>ver</code>，<code>driver_opts</code>，<code>external</code>，<code>labels</code>，<code>name</code> 等子配置，该指令中路径支持相对路径：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">volumes:
-  - /var/lib/mysql
-  - cache/:/tmp/cache
-  - ~/configs:/etc/configs/:ro<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> /var/lib/mysql
+  <span class="token punctuation">-</span> cache/<span class="token punctuation">:</span>/tmp/cache
+  <span class="token punctuation">-</span> ~/configs<span class="token punctuation">:</span>/etc/configs/<span class="token punctuation">:</span>ro<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>卷的 <code>bind</code> 和 <code>volume</code> 的混合使用示例：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">version: <span class="token string">"3.2"</span>
-services:
-  web:
-    image: nginx:alpine
-    volumes:
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">version</span><span class="token punctuation">:</span> <span class="token string">"3.2"</span>
+<span class="token key atrule">services</span><span class="token punctuation">:</span>
+  <span class="token key atrule">web</span><span class="token punctuation">:</span>
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> nginx<span class="token punctuation">:</span>alpine
+    <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
       <span class="token comment"># 卷 (volume)</span>
-      - type: volume
-        source: mydata
-        target: /data
-        volume:
-          nocopy: <span class="token boolean">true</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">type</span><span class="token punctuation">:</span> volume
+        <span class="token key atrule">source</span><span class="token punctuation">:</span> mydata
+        <span class="token key atrule">target</span><span class="token punctuation">:</span> /data
+        <span class="token key atrule">volume</span><span class="token punctuation">:</span>
+          <span class="token key atrule">nocopy</span><span class="token punctuation">:</span> <span class="token boolean important">true</span>
       <span class="token comment"># 挂载 (bind)</span>
-      - type: <span class="token builtin class-name">bind</span>
-        source: ./static
-        target: /opt/app/static
-db:
-    image: postgres:latest
-    volumes:
-      - <span class="token string">"/var/run/postgres/postgres.sock:/var/run/postgres/postgres.sock"</span>
-      - <span class="token string">"dbdata:/var/lib/postgresql/data"</span>
-volumes:
-  mydata:
-  dbdata:<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+      <span class="token punctuation">-</span> <span class="token key atrule">type</span><span class="token punctuation">:</span> bind
+        <span class="token key atrule">source</span><span class="token punctuation">:</span> ./static
+        <span class="token key atrule">target</span><span class="token punctuation">:</span> /opt/app/static
+<span class="token key atrule">db</span><span class="token punctuation">:</span>
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> postgres<span class="token punctuation">:</span>latest
+    <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token string">"/var/run/postgres/postgres.sock:/var/run/postgres/postgres.sock"</span>
+      <span class="token punctuation">-</span> <span class="token string">"dbdata:/var/lib/postgresql/data"</span>
+<span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+  <span class="token key atrule">mydata</span><span class="token punctuation">:</span>
+  dbdata<span class="token punctuation">:</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h1 id="操作命令"><a class="markdownIt-Anchor" href="#操作命令"></a> 操作命令</h1>
 <p>使用 <code>docker-compose</code> 或 <code>docker compose</code> 命令执行。常见选项如下：</p>
 <table>
@@ -829,8 +829,8 @@ services:
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="../2734315757/" rel="next" title="Shell 脚本基础">
-                  Shell 脚本基础 <i class="fa fa-chevron-right"></i>
+                <a href="../799638542/" rel="next" title="Linux 网络基础知识">
+                  Linux 网络基础知识 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -864,13 +864,13 @@ services:
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">194k</span>
+    <span title="站点总字数">195k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">10:46</span>
+    <span title="站点阅读时长">10:48</span>
   </span>
 </div>
 <div class="busuanzi-count">
