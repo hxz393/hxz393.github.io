@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="Nginx Nginx 是一款功能强大的开源反向代理服务器，支持 HTTP、HTTPS、SMTP、POP3、IMAP 等协议。同时，它还可以作为负载均衡器、HTTP 缓存或 Web 服务器。  下载 可以放心使用官方最新版本镜像，不同版本没有兼容性问题： [root@server4 ~]$ docker search --filter&#x3D;is-official&#x3D;true nginx NAME">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用 Docker 运行网站服务">
+<meta property="og:url" content="https://blog.x2b.net/717387216/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="Nginx Nginx 是一款功能强大的开源反向代理服务器，支持 HTTP、HTTPS、SMTP、POP3、IMAP 等协议。同时，它还可以作为负载均衡器、HTTP 缓存或 Web 服务器。  下载 可以放心使用官方最新版本镜像，不同版本没有兼容性问题： [root@server4 ~]$ docker search --filter&#x3D;is-official&#x3D;true nginx NAME">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-10-23T19:52:12.000Z">
+<meta property="article:modified_time" content="2023-05-15T03:45:57.780Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/717387216/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/717387216/","path":"717387216/","title":"用 Docker 运行网站服务"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>用 Docker 运行网站服务 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">10</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">74</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#nginx"><span class="nav-number">1.</span> <span class="nav-text"> Nginx</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD"><span class="nav-number">1.1.</span> <span class="nav-text"> 下载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.</span> <span class="nav-text"> 配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8"><span class="nav-number">1.3.</span> <span class="nav-text"> 启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9A%A7%E9%81%93"><span class="nav-number">1.4.</span> <span class="nav-text"> 隧道</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#wordpress"><span class="nav-number">2.</span> <span class="nav-text"> WordPress</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD-2"><span class="nav-number">2.1.</span> <span class="nav-text"> 下载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-2"><span class="nav-number">2.2.</span> <span class="nav-text"> 配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E4%B8%8A%E4%BC%A0%E9%99%90%E5%88%B6"><span class="nav-number">2.2.1.</span> <span class="nav-text"> 修改上传限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E8%AE%BF%E5%AE%A2%E7%9C%9F%E5%AE%9E%E5%9C%B0%E5%9D%80"><span class="nav-number">2.2.2.</span> <span class="nav-text"> 获取访客真实地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nginx-%E9%85%8D%E7%BD%AE"><span class="nav-number">2.2.3.</span> <span class="nav-text"> Nginx 配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8-2"><span class="nav-number">2.3.</span> <span class="nav-text"> 启动</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tinyproxy"><span class="nav-number">3.</span> <span class="nav-text"> Tinyproxy</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#frp"><span class="nav-number">4.</span> <span class="nav-text"> FRP</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">74</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/717387216/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="用 Docker 运行网站服务 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          用 Docker 运行网站服务
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-10-24 03:52:12" itemprop="dateCreated datePublished" datetime="2021-10-24T03:52:12+08:00">2021-10-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-15 11:45:57" itemprop="dateModified" datetime="2023-05-15T11:45:57+08:00">2023-05-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Docker/3-%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" itemprop="url" rel="index"><span itemprop="name">3.最佳实践</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="nginx"><a class="markdownIt-Anchor" href="#nginx"></a> Nginx</h1>
+<p>Nginx 是一款功能强大的开源反向代理服务器，支持 HTTP、HTTPS、SMTP、POP3、IMAP 等协议。同时，它还可以作为负载均衡器、HTTP 缓存或 Web 服务器。</p>
+<h2 id="下载"><a class="markdownIt-Anchor" href="#下载"></a> 下载</h2>
+<p>可以放心使用官方最新版本镜像，不同版本没有兼容性问题：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> search <span class="token parameter variable">--filter</span><span class="token operator">=</span>is-official<span class="token operator">=</span>true nginx
+NAME      DESCRIPTION                STARS     OFFICIAL   AUTOMATED
+nginx     Official build of Nginx.   <span class="token number">15698</span>     <span class="token punctuation">[</span>OK<span class="token punctuation">]</span>       
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> pull nginx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Nginx 服务中主要使用的目录如下：</p>
+<table>
+<thead>
+<tr>
+<th>路径</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/usr/share/nginx/html/</td>
+<td>网页数据存放处。</td>
+</tr>
+<tr>
+<td>/etc/nginx/</td>
+<td>配置文件目录。</td>
+</tr>
+<tr>
+<td>/var/log/nginx/</td>
+<td>日志存放目录。</td>
+</tr>
+</tbody>
+</table>
+<p>Nginx 作为 Web 服务使用的端口如下：</p>
+<table>
+<thead>
+<tr>
+<th>端口</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>80</td>
+<td>HTTP 端口</td>
+</tr>
+<tr>
+<td>443</td>
+<td>HTTPS 端口</td>
+</tr>
+</tbody>
+</table>
+<h2 id="配置"><a class="markdownIt-Anchor" href="#配置"></a> 配置</h2>
+<p>启动一个临时的 Nginx 容器，将要挂载的目录复制出来：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> run <span class="token parameter variable">-d</span> <span class="token parameter variable">--name</span> tempn nginx
+fb67cb1fce9f32b57729cb62c2a5d716edc1d42d39fcd1faae1bc57f6bab6a9d
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> <span class="token function">cp</span> tempn:/etc/nginx/ ~/nginx/config
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> <span class="token function">rm</span> <span class="token parameter variable">-f</span> tempn<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Nginx 主配置文件 <code>nginx.conf</code> 参考如下：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">user  nginx<span class="token punctuation">;</span>
+worker_processes  auto<span class="token punctuation">;</span>
+
+error_log  /var/log/nginx/error.log notice<span class="token punctuation">;</span>
+pid        /var/run/nginx.pid<span class="token punctuation">;</span>
+
+
+events <span class="token punctuation">&#123;</span>
+    use epoll<span class="token punctuation">;</span>
+    accept_mutex on<span class="token punctuation">;</span>
+    multi_accept on<span class="token punctuation">;</span> 
+<span class="token punctuation">&#125;</span>
+
+http <span class="token punctuation">&#123;</span>
+    include       /etc/nginx/mime.types<span class="token punctuation">;</span>
+    default_type  application/octet-stream<span class="token punctuation">;</span>
+
+    log_format  main  <span class="token string">'$remote_addr - $remote_user [$time_local] "$request" '</span>
+                      <span class="token string">'$status $body_bytes_sent "$http_referer" '</span>
+                      <span class="token string">'"$http_user_agent" "$http_x_forwarded_for"'</span><span class="token punctuation">;</span>
+
+    access_log  /var/log/nginx/access.log  main<span class="token punctuation">;</span>
+    
+    <span class="token comment">#上传文件相关参数</span>
+    client_max_body_size 200M<span class="token punctuation">;</span>
+    client_body_buffer_size 1024K<span class="token punctuation">;</span>
+    client_header_timeout    1m<span class="token punctuation">;</span>
+    client_body_timeout      1m<span class="token punctuation">;</span>
+    proxy_connect_timeout     60s<span class="token punctuation">;</span>
+    proxy_read_timeout      1m<span class="token punctuation">;</span>
+    proxy_send_timeout      1m<span class="token punctuation">;</span>
+
+    <span class="token comment">#gzip压缩参数</span>
+    <span class="token function">gzip</span>  on<span class="token punctuation">;</span>                 <span class="token comment"># 开启gzip功能</span>
+    gzip_min_length  1k<span class="token punctuation">;</span>      <span class="token comment"># 响应页数据上限</span>
+    gzip_buffers     <span class="token number">4</span> 16k<span class="token punctuation">;</span>   <span class="token comment"># 缓存空间大小</span>
+    gzip_comp_level <span class="token number">6</span><span class="token punctuation">;</span>        <span class="token comment"># 设置压缩级别为6</span>
+    gzip_types       text/plain application/x-javascript text/css application/xml text/javascript application/x-httpd-php application/javascript application/json<span class="token punctuation">;</span> <span class="token comment"># 压缩文件类型</span>
+    gzip_disable <span class="token string">"MSIE [1-6]\."</span><span class="token punctuation">;</span> <span class="token comment"># IE 1-6关闭gzip压缩</span>
+    gzip_vary on<span class="token punctuation">;</span>             <span class="token comment"># 启用压缩标识</span>
+
+
+    sendfile        on<span class="token punctuation">;</span>
+    <span class="token comment">#tcp_nopush     on;</span>
+
+    keepalive_timeout  <span class="token number">65</span><span class="token punctuation">;</span>
+    <span class="token comment">#在一次长连接上所允许请求的资源的最大数量</span>
+    keepalive_requests <span class="token number">5</span><span class="token punctuation">;</span>
+
+    set_real_ip_from   <span class="token number">0.0</span>.0.0/0<span class="token punctuation">;</span>
+    real_ip_header     X-Forwarded-For<span class="token punctuation">;</span>
+    real_ip_recursive on<span class="token punctuation">;</span>
+    
+    include /etc/nginx/conf.d/*.conf<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>个性化主机配置文件一般放在 <code>config/conf.d</code> 目录中。例如，本站配置文件 <code>blog.x2b.net.conf</code> 内容如下：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">server <span class="token punctuation">&#123;</span>
+    listen <span class="token number">80</span><span class="token punctuation">;</span>
+    listen <span class="token number">443</span> ssl<span class="token punctuation">;</span>
+    server_name blog.x2b.net<span class="token punctuation">;</span>
+
+    ssl_certificate   /etc/nginx/certs/x2b.net.pem<span class="token punctuation">;</span>
+    ssl_certificate_key  /etc/nginx/certs/x2b.net.key<span class="token punctuation">;</span>
+    ssl_session_timeout 5m<span class="token punctuation">;</span>
+    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:<span class="token operator">!</span>NULL:<span class="token operator">!</span>aNULL:<span class="token operator">!</span>MD5:<span class="token operator">!</span>ADH:<span class="token operator">!</span>RC4<span class="token punctuation">;</span>
+    ssl_protocols TLSv1.2 TLSv1.3 SSLv3<span class="token punctuation">;</span>
+    ssl_prefer_server_ciphers on<span class="token punctuation">;</span>
+    location / <span class="token punctuation">&#123;</span>
+        root   /usr/share/nginx/html/x2b.net-deploy/<span class="token punctuation">;</span>
+        index  index.html index.htm<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>将 <code>x2b.net</code> 的 SSL 证书上传到服务器，并修改权限为只读：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">useradd</span> nginx
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">chown</span> <span class="token parameter variable">-R</span> nginx:nginx cert
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> <span class="token parameter variable">-R</span> <span class="token number">400</span> cert<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h2 id="启动"><a class="markdownIt-Anchor" href="#启动"></a> 启动</h2>
+<p>修改好配置文件后，挂载目录和映射端口启动：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> run <span class="token parameter variable">-d</span> <span class="token parameter variable">--name</span> nginx <span class="token parameter variable">-p</span> <span class="token number">80</span>:80 <span class="token parameter variable">-p</span> <span class="token number">443</span>:443 <span class="token parameter variable">-v</span> /docker/nginx/html:/usr/share/nginx/html:ro <span class="token parameter variable">-v</span> /docker/nginx/conf.d:/etc/nginx/conf.d:ro nginx
+220f821e4fed6e1cc421509bbfbaf6b36a71739b69c89c14d929a34e27ab0524
+<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> <span class="token function">ps</span>
+CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS          PORTS                                                                      NAMES
+220f821e4fed   nginx          <span class="token string">"/docker-entrypoint.…"</span>   <span class="token number">21</span> seconds ago   Up <span class="token number">19</span> seconds   <span class="token number">0.0</span>.0.0:80-<span class="token operator">></span><span class="token number">80</span>/tcp, :::80-<span class="token operator">></span><span class="token number">80</span>/tcp, <span class="token number">0.0</span>.0.0:443-<span class="token operator">></span><span class="token number">443</span>/tcp, :::443-<span class="token operator">></span><span class="token number">443</span>/tcp   nginx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 Docker Compose 启动配置文件内容参考：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">version: <span class="token string">'2'</span>
+
+services:
+  nginx:
+    image: nginx:1.23.4
+    container_name: nginx
+    restart: always
+    ports:
+      - <span class="token string">"80:80"</span>
+      - <span class="token string">"443:443"</span>
+    volumes:
+      - ./config:/etc/nginx
+      - ./html:/usr/share/nginx/html
+      - ./logs:/var/log/nginx
+      - ./certs:/etc/nginx/certs
+    environment:
+      - <span class="token assign-left variable">TZ</span><span class="token operator">=</span>Asia/Shanghai
+      - <span class="token assign-left variable">NGINX_WORKER_PROCESSES</span><span class="token operator">=</span>auto
+      - <span class="token assign-left variable">NGINX_HTTP_KEEPALIVE_TIMEOUT</span><span class="token operator">=</span><span class="token number">65</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这里额外挂载了配置文件中指定的日志目录，因为有时需要对 Nginx 日志做分析。</p>
+<h2 id="隧道"><a class="markdownIt-Anchor" href="#隧道"></a> 隧道</h2>
+<p>本地环境可以配合 cloudflared 隧道来发布网站。使用 Docker Compose 启动配置参考：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">version: <span class="token string">'3.9'</span>
+
+services:
+  cloudflare:
+    image: cloudflare/cloudflared:2023.4.0
+    container_name: cloudflared
+    restart: always
+    network_mode: <span class="token string">"host"</span>
+    volumes:
+      - ./certs/cert.pem:/home/nonroot/.cloudflared/cert.pem
+    command: tunnel run <span class="token parameter variable">--token</span> <span class="token string">"eyJhIjoiZWEyZjE2MTE4NjkyMzFlYmYzMWZjNDI0Zj1"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>网络模式必须为 host 才可正常连接服务器。</p>
+<h1 id="wordpress"><a class="markdownIt-Anchor" href="#wordpress"></a> WordPress</h1>
+<p>WordPress 是基于 PHP 和 MySQL 构建的一款开源内容管理系统 (CMS)，用于创建和管理网站、博客和应用程序。</p>
+<h2 id="下载-2"><a class="markdownIt-Anchor" href="#下载-2"></a> 下载</h2>
+<p>WordPress 服务中主要使用的目录如下：</p>
+<table>
+<thead>
+<tr>
+<th>路径</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/var/www/html/</td>
+<td>网页数据存放处。</td>
+</tr>
+<tr>
+<td>/etc/apache2/</td>
+<td>Apache 配置文件目录。</td>
+</tr>
+<tr>
+<td>/usr/local/etc/php/conf.d/</td>
+<td>PHP 配置文件目录。</td>
+</tr>
+</tbody>
+</table>
+<p>WordPress 默认使用的端口如下：</p>
+<table>
+<thead>
+<tr>
+<th>端口</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>80</td>
+<td>HTTP 端口</td>
+</tr>
+</tbody>
+</table>
+<h2 id="配置-2"><a class="markdownIt-Anchor" href="#配置-2"></a> 配置</h2>
+<p>由于 WordPress 配置文件太多，因此最好只挂载需要修改的文件，否则在升级 WordPress 版本后可能会出兼容性问题。</p>
+<h3 id="修改上传限制"><a class="markdownIt-Anchor" href="#修改上传限制"></a> 修改上传限制</h3>
+<p>修改默认文件上传限制，配置文件 <code>uploads.ini</code> 内容如下：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">file_uploads <span class="token operator">=</span> On
+memory_limit <span class="token operator">=</span> 300M
+post_max_size <span class="token operator">=</span> 200M
+upload_max_filesize <span class="token operator">=</span> 100M
+max_execution_time <span class="token operator">=</span> <span class="token number">600</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="获取访客真实地址"><a class="markdownIt-Anchor" href="#获取访客真实地址"></a> 获取访客真实地址</h3>
+<p>添加 <code>remoteip.conf</code> 和 <code>remoteip.load</code> 配置文件用于获取用户真实 IP 地址：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">RemoteIPHeader HTTP-X-Forwarded-For
+RemoteIPProxiesHeader X-Forwarded-By<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>载入模块配置：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">LoadModule remoteip_module /usr/lib/apache2/modules/mod_remoteip.so<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="nginx-配置"><a class="markdownIt-Anchor" href="#nginx-配置"></a> Nginx 配置</h3>
+<p>在 Nginx 上新增配置文件 <code>wordpress.x2b.net.conf</code> ，参考内容如下：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">server <span class="token punctuation">&#123;</span>
+    listen <span class="token number">80</span><span class="token punctuation">;</span>
+    listen <span class="token number">443</span> ssl<span class="token punctuation">;</span>
+    server_name wordpress.x2b.net<span class="token punctuation">;</span>
+
+    ssl_certificate   /etc/nginx/certs/x2b.net.pem<span class="token punctuation">;</span>
+    ssl_certificate_key  /etc/nginx/certs/x2b.net.key<span class="token punctuation">;</span>
+    ssl_session_timeout 5m<span class="token punctuation">;</span>
+    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:<span class="token operator">!</span>NULL:<span class="token operator">!</span>aNULL:<span class="token operator">!</span>MD5:<span class="token operator">!</span>ADH:<span class="token operator">!</span>RC4<span class="token punctuation">;</span>
+    ssl_protocols TLSv1.2 TLSv1.3 SSLv3<span class="token punctuation">;</span>
+
+    ssl_prefer_server_ciphers off<span class="token punctuation">;</span>
+    ssl_stapling on<span class="token punctuation">;</span>
+    ssl_stapling_verify on<span class="token punctuation">;</span>
+
+    location / <span class="token punctuation">&#123;</span>
+        proxy_pass http://192.168.2.204:8080<span class="token punctuation">;</span>
+        proxy_redirect default<span class="token punctuation">;</span>
+        proxy_read_timeout <span class="token number">86400</span><span class="token punctuation">;</span>
+        
+        proxy_http_version <span class="token number">1.1</span><span class="token punctuation">;</span>
+        proxy_set_header Upgrade <span class="token variable">$http_upgrade</span><span class="token punctuation">;</span>
+        proxy_set_header Connection <span class="token string">"upgrade"</span><span class="token punctuation">;</span>
+        
+        <span class="token comment"># 保证获取到真实IP</span>
+        proxy_set_header X-Real-IP <span class="token variable">$remote_addr</span><span class="token punctuation">;</span>
+        <span class="token comment"># 真实端口号</span>
+        proxy_set_header X-Real-Port <span class="token variable">$remote_port</span><span class="token punctuation">;</span>
+        <span class="token comment"># X-Forwarded-For 是一个 HTTP 扩展头部。</span>
+        proxy_set_header X-Forwarded-For <span class="token variable">$proxy_add_x_forwarded_for</span><span class="token punctuation">;</span>
+        <span class="token comment"># 在多级代理的情况下，记录每次代理之前的客户端真实ip</span>
+        proxy_set_header HTTP_X_FORWARDED_FOR <span class="token variable">$remote_addr</span><span class="token punctuation">;</span>
+        <span class="token comment"># 获取到真实协议</span>
+        proxy_set_header X-Forwarded-Proto <span class="token variable">$scheme</span><span class="token punctuation">;</span>
+        <span class="token comment"># 真实主机名</span>
+        proxy_set_header Host <span class="token variable">$host</span><span class="token punctuation">;</span>
+        <span class="token comment"># 设置变量</span>
+        proxy_set_header X-NginX-Proxy <span class="token boolean">true</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>主要是加入获取访客真实 IP 地址的相关配置。</p>
+<h2 id="启动-2"><a class="markdownIt-Anchor" href="#启动-2"></a> 启动</h2>
+<p>使用 Docker Compose 启动配置文件参考：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">version: <span class="token string">'3.9'</span>
+
+services:
+  wordpress:
+    image: wordpress:6.2.0
+    container_name: wordpress
+    restart: always
+    ports:
+      - <span class="token string">"8080:80"</span>
+    environment:
+      - <span class="token assign-left variable">WORDPRESS_DB_HOST</span><span class="token operator">=</span><span class="token number">192.168</span>.2.204
+      - <span class="token assign-left variable">WORDPRESS_DB_USER</span><span class="token operator">=</span>root
+      - <span class="token assign-left variable">WORDPRESS_DB_PASSWORD</span><span class="token operator">=</span>root密码
+      - <span class="token assign-left variable">WORDPRESS_DB_NAME</span><span class="token operator">=</span>wordpress
+      - <span class="token assign-left variable">TZ</span><span class="token operator">=</span>Asia/Shanghai
+    volumes:
+      - ./html:/var/www/html
+      - ./config/remoteip.conf:/etc/apache2/mods-enabled/remoteip.conf
+      - ./config/remoteip.load:/etc/apache2/mods-enabled/remoteip.load
+      - ./config/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="tinyproxy"><a class="markdownIt-Anchor" href="#tinyproxy"></a> Tinyproxy</h1>
+<p>Tinyproxy 是一个轻量级的开源代理服务器，旨在提供快速、高效的代理服务。它主要用于在本地网络中转发 HTTP 和 HTTPS 请求，以便用户可以通过代理服务器访问互联网资源。</p>
+<p>用 Docker Compose 启动的配置文件参考如下：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">version: <span class="token string">'3.9'</span>
+
+services:
+  tinyproxy:
+    image: monokal/tinyproxy:latest
+    container_name: tinyproxy
+    restart: always
+    network_mode: <span class="token string">"host"</span>
+    command: /bin/bash /opt/docker-tinyproxy/run.sh ANY<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="frp"><a class="markdownIt-Anchor" href="#frp"></a> FRP</h1>
+<p>frp（Fast Reverse Proxy）是一个快速、现代化的反向代理工具。通过使用 frp 可以方便地将内网服务暴露给外部网络，实现远程访问内网服务的需求。</p>
+<p>服务端 frps 配置文件 <code>config/frps.ini</code> 极简化配置内容参考如下：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>common<span class="token punctuation">]</span>
+bind_addr <span class="token operator">=</span> <span class="token number">0.0</span>.0.0
+bind_port <span class="token operator">=</span> <span class="token number">7000</span>
+bind_udp_port <span class="token operator">=</span> <span class="token number">7001</span>
+kcp_bind_port <span class="token operator">=</span> <span class="token number">7000</span>
+dashboard_addr <span class="token operator">=</span> <span class="token number">0.0</span>.0.0
+dashboard_port <span class="token operator">=</span> <span class="token number">7002</span>
+dashboard_user <span class="token operator">=</span> hxz393
+dashboard_pwd <span class="token operator">=</span> nopasswd
+log_file <span class="token operator">=</span> ./logs/frps.log
+log_level <span class="token operator">=</span> info
+log_max_days <span class="token operator">=</span> <span class="token number">3</span>
+token <span class="token operator">=</span> <span class="token comment">#Zu1RY#uc@z::z.HA&lt;N&#123;^4F</span>
+max_pool_count <span class="token operator">=</span> <span class="token number">10</span>
+max_ports_per_client <span class="token operator">=</span> <span class="token number">0</span>
+tcp_mux <span class="token operator">=</span> <span class="token boolean">true</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>用 Docker Compose 启动 frp 服务器端的配置文件参考如下：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">version: <span class="token string">'2'</span>
+
+services:
+  nginx:
+    image: snowdreamtech/frps:0.48.0
+    container_name: frps
+    restart: always
+    ports:
+      - <span class="token string">"7000:7000"</span>
+      - <span class="token string">"7001:7001"</span>
+      - <span class="token string">"7002:7002"</span>
+      - <span class="token string">"10101:10101"</span>
+      - <span class="token string">"10102:10102"</span>
+    volumes:
+      - ./config/:/etc/frp/
+      - ./logs/:/logs/<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中 10101 和 10102 端口为预留给客户端连接的端口。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/717387216/" title="用 Docker 运行网站服务">https://blog.x2b.net/717387216/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../962831535/" rel="prev" title="用 Docker 运行操作系统">
+                  <i class="fa fa-chevron-left"></i> 用 Docker 运行操作系统
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../350907895/" rel="next" title="用 Docker 运行数据库">
+                  用 Docker 运行数据库 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">197k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">10:56</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@next-theme/pjax@0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://unpkg.com/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://unpkg.com/katex@0.16.4/dist/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/717387216/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://unpkg.com/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'blog.x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>
