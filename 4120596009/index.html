@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="Pod 详解 一个 Kubernetes（K8s）中的 Pod 是一个部署的最小单位，它是由一个或多个容器组成的，这些容器共享网络和存储资源。Pod 可以包含多个相关联的容器，它们在同一主机上运行并具有共享的网络命名空间。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="K8s 基本资源">
+<meta property="og:url" content="https://blog.x2b.net/4120596009/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="Pod 详解 一个 Kubernetes（K8s）中的 Pod 是一个部署的最小单位，它是由一个或多个容器组成的，这些容器共享网络和存储资源。Pod 可以包含多个相关联的容器，它们在同一主机上运行并具有共享的网络命名空间。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-20T01:01:17.000Z">
+<meta property="article:modified_time" content="2023-05-15T16:30:33.452Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/4120596009/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/4120596009/","path":"4120596009/","title":"K8s 基本资源"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>K8s 基本资源 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">13</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">79</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#pod-%E8%AF%A6%E8%A7%A3"><span class="nav-number">1.</span> <span class="nav-text"> Pod 详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pod-%E5%AE%9A%E4%B9%89"><span class="nav-number">1.1.</span> <span class="nav-text"> Pod 定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%84%E7%BB%87-pod"><span class="nav-number">1.2.</span> <span class="nav-text"> 组织 Pod</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">1.3.</span> <span class="nav-text"> 生命周期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pause-%E5%AE%B9%E5%99%A8"><span class="nav-number">1.4.</span> <span class="nav-text"> Pause 容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%8F%E8%BF%B0%E6%96%87%E4%BB%B6"><span class="nav-number">1.5.</span> <span class="nav-text"> 描述文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-pod"><span class="nav-number">1.6.</span> <span class="nav-text"> 创建 Pod</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B-pod-%E8%AF%A6%E6%83%85"><span class="nav-number">1.7.</span> <span class="nav-text"> 查看 Pod 详情</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B-pod-%E6%97%A5%E5%BF%97"><span class="nav-number">1.8.</span> <span class="nav-text"> 查看 Pod 日志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4"><span class="nav-number">1.9.</span> <span class="nav-text"> 执行命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BD%AC%E5%8F%91-pod-%E7%AB%AF%E5%8F%A3"><span class="nav-number">1.10.</span> <span class="nav-text"> 转发 Pod 端口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4-pod"><span class="nav-number">1.11.</span> <span class="nav-text"> 删除 Pod</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E5%AE%B9%E5%99%A8"><span class="nav-number">1.12.</span> <span class="nav-text"> 初始化容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%88%E6%AD%A2%E5%AE%BD%E9%99%90%E6%9C%9F"><span class="nav-number">1.13.</span> <span class="nav-text"> 终止宽限期</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4"><span class="nav-number">2.</span> <span class="nav-text"> 命名空间</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4"><span class="nav-number">2.1.</span> <span class="nav-text"> 查看命名空间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4"><span class="nav-number">2.2.</span> <span class="nav-text"> 创建命名空间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4"><span class="nav-number">2.3.</span> <span class="nav-text"> 使用命名空间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4"><span class="nav-number">2.4.</span> <span class="nav-text"> 查询命名空间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4"><span class="nav-number">2.5.</span> <span class="nav-text"> 删除命名空间</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE%E5%92%8C%E6%B3%A8%E8%A7%A3"><span class="nav-number">3.</span> <span class="nav-text"> 标签和注解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">3.1.</span> <span class="nav-text"> 定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E5%AE%9A%E6%A0%87%E7%AD%BE"><span class="nav-number">3.2.</span> <span class="nav-text"> 指定标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%A0%87%E7%AD%BE"><span class="nav-number">3.3.</span> <span class="nav-text"> 查看标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E6%A0%87%E7%AD%BE"><span class="nav-number">3.4.</span> <span class="nav-text"> 修改标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E6%A0%87%E7%AD%BE"><span class="nav-number">3.5.</span> <span class="nav-text"> 删除标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE%E9%80%89%E6%8B%A9%E5%99%A8"><span class="nav-number">3.6.</span> <span class="nav-text"> 标签选择器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8A%82%E7%82%B9%E6%A0%87%E7%AD%BE"><span class="nav-number">3.7.</span> <span class="nav-text"> 节点标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%B3%A8%E8%A7%A3"><span class="nav-number">3.8.</span> <span class="nav-text"> 添加注解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8E%A2%E9%92%88%E5%92%8C%E9%92%A9%E5%AD%90"><span class="nav-number">4.</span> <span class="nav-text"> 探针和钩子</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E6%B4%BB%E6%8E%A2%E9%92%88"><span class="nav-number">4.1.</span> <span class="nav-text"> 存活探针</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#http-%E6%8E%A2%E9%92%88"><span class="nav-number">4.1.1.</span> <span class="nav-text"> HTTP 探针</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#exec-%E6%8E%A2%E9%92%88"><span class="nav-number">4.1.2.</span> <span class="nav-text"> Exec 探针</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tcp-%E6%8E%A2%E9%92%88"><span class="nav-number">4.1.3.</span> <span class="nav-text"> TCP 探针</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%99%84%E5%8A%A0%E5%B1%9E%E6%80%A7"><span class="nav-number">4.1.4.</span> <span class="nav-text"> 附加属性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%B1%E7%BB%AA%E6%8E%A2%E9%92%88"><span class="nav-number">4.2.</span> <span class="nav-text"> 就绪探针</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%B0%B1%E7%BB%AA%E6%8E%A2%E9%92%88"><span class="nav-number">4.2.1.</span> <span class="nav-text"> 添加就绪探针</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%95%88%E6%9E%9C"><span class="nav-number">4.2.2.</span> <span class="nav-text"> 测试效果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%A8%E6%9C%9F%E9%92%A9%E5%AD%90"><span class="nav-number">4.3.</span> <span class="nav-text"> 周期钩子</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E5%90%8E%E9%92%A9%E5%AD%90"><span class="nav-number">4.3.1.</span> <span class="nav-text"> 启动后钩子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%81%9C%E6%AD%A2%E5%89%8D%E9%92%A9%E5%AD%90"><span class="nav-number">4.3.2.</span> <span class="nav-text"> 停止前钩子</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">79</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/4120596009/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="K8s 基本资源 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          K8s 基本资源
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-03-20 09:01:17" itemprop="dateCreated datePublished" datetime="2022-03-20T09:01:17+08:00">2022-03-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-16 00:30:33" itemprop="dateModified" datetime="2023-05-16T00:30:33+08:00">2023-05-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Kubernets/" itemprop="url" rel="index"><span itemprop="name">Kubernets</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Kubernets/1-%E5%B8%B8%E7%94%A8%E8%B5%84%E6%BA%90/" itemprop="url" rel="index"><span itemprop="name">1.常用资源</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>7.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>25 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="pod-详解"><a class="markdownIt-Anchor" href="#pod-详解"></a> Pod 详解</h1>
+<p>一个 Kubernetes（K8s）中的 Pod 是一个部署的最小单位，它是由一个或多个容器组成的，这些容器共享网络和存储资源。Pod 可以包含多个相关联的容器，它们在同一主机上运行并具有共享的网络命名空间。</p>
+<h2 id="pod-定义"><a class="markdownIt-Anchor" href="#pod-定义"></a> Pod 定义</h2>
+<p>Pod 是 Kubernetes（K8s）中的一个基本构建模块，代表一组并置的容器。它是一个应用程序的单一运行实例，由共享资源且关系紧密的一个或多个应用容器组成，为它们提供相同的环境。这些容器共享相同的网络命名空间，它们可以通过 IPC（Inter-Process Communication）进行通信，并共享相同的主机名和网络接口。尽管容器在逻辑上运行在同一个 Pod 内，但它们之间仍然保持着一定的隔离性。</p>
+<p>在实际应用中，我们往往会部署一组相关的 Pod，而不是单独部署容器。当一个 Pod 包含多个容器时，这些容器总是运行在同一个工作节点上，一个 Pod 不会跨越多个工作节点。</p>
+<p>Pod 具有以下特点：</p>
+<ul>
+<li>容器部分隔离：Kubernetes 通过配置 Docker，使同一个 Pod 内的所有容器共享相同的 Linux 命名空间。它们共享相同的主机名和网络接口，容器之间可以通过 IPC 进行通信。其他的 MNT（Mount），USR（User），和 PID（Process ID）命名空间是独立的。</li>
+<li>容器共享网络命名空间：在同一个 Pod 中的容器处于相同的网络命名空间中，意味着它们共享 Pod 的 IP 地址和端口。需要注意的是，容器绑定的端口号不能相同，否则会导致端口冲突。同一个 Pod 中的容器可以直接通过回环口（loopback）进行通信。</li>
+<li>平坦的 Pod 间网络：Kubernetes 集群中的所有 Pod 都处于同一个共享网络地址空间中，Pod 之间可以直接通过 Pod 的 IP 地址来相互访问。不管实际节点的网络拓扑结构如何，都不需要进行网络地址转换（NAT），就像在局域网中一样。</li>
+</ul>
+<h2 id="组织-pod"><a class="markdownIt-Anchor" href="#组织-pod"></a> 组织 Pod</h2>
+<p>尽管 Pod 看起来像一个独立的机器，但不应该将多个应用程序填充到一个 Pod 中。每个 Pod 应该只包含紧密相关的组件或进程，保持 Pod 的轻量级。这样可以最大限度地创建更多的 Pod：</p>
+<ul>
+<li>
+<p>将多层应用程序分散到多个 Pod 中</p>
+<p>一个典型的应用程序由前端和后端数据库组成。如果将它们放在同一个 Pod 中，它们作为整体只能在一个节点上运行，无法利用其他节点的计算资源。将它们拆分后，可以在不同的节点上分别部署前端和后端应用程序，提高基础架构的利用率。</p>
+</li>
+<li>
+<p>基于扩缩容的考虑</p>
+<p>Pod 是扩缩容的基本单位，通常前端和后端组件具有不同的扩缩容需求。后端数据库相对于无状态的前端更难以扩展，因此需要将它们分开部署到单独的 Pod 中。</p>
+</li>
+<li>
+<p>使用 Sidecar 容器</p>
+<p>将多个容器添加到单个 Pod 的主要原因是应用程序可能由一个主进程和多个辅助进程组成。辅助进程所在的容器被称为 Sidecar 容器，通常用于日志收集、数据处理、存储和通信等功能。</p>
+</li>
+<li>
+<p>Pod 中使用多个容器</p>
+<p>当多个容器作为一个整体不可分离且需要一起进行扩缩容时，考虑将它们放入同一个 Pod 中。</p>
+</li>
+</ul>
+<h2 id="生命周期"><a class="markdownIt-Anchor" href="#生命周期"></a> 生命周期</h2>
+<p>Pod 对象有 5 种状态：</p>
+<ul>
+<li>
+<p>Pending（等待中）</p>
+<p>API Server 创建了 Pod 资源对象并已存储在 etcd 中，但它尚未完成调度，或者仍在下载镜像中。</p>
+</li>
+<li>
+<p>Running（运行中）</p>
+<p>Pod 已被调度到某个节点，并且所有容器都已由 Kubelet 创建完成。</p>
+</li>
+<li>
+<p>Succeeded（已成功）</p>
+<p>Pod 中的所有容器都已成功终止，并且不会重新启动。</p>
+</li>
+<li>
+<p>Failed（失败）</p>
+<p>所有容器都已终止，但至少有一个容器终止失败，返回了非零的退出状态。</p>
+</li>
+<li>
+<p>Unknown（未知）</p>
+<p>API Server 无法正常获取 Pod 对象的状态信息，通常是由于节点失联造成的。</p>
+</li>
+</ul>
+<h2 id="pause-容器"><a class="markdownIt-Anchor" href="#pause-容器"></a> Pause 容器</h2>
+<p>每个 Pod 都有一个特殊的被称为根容器的 Pause 容器，Pause 容器对应的镜像属于 Kubernetes 平台的一部分，而其他容器则是用户业务容器。</p>
+<p>在启动一个 Pod 资源后，可以查看运行中的节点 Docker 进程：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server5-node1 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> <span class="token function">ps</span>
+CONTAINER ID   IMAGE                                                                 COMMAND                  CREATED              STATUS              PORTS     NAMES
+e9d77706b60a   luksa/kubia-pet-peers                                                 <span class="token string">"node app.js"</span>            About a minute ago   Up About a minute             k8s_kubia_kubia-2_default_49130122-540c-4c8b-98aa-23c84e9bfc9a_0
+fe1980dc3fb7   registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.2   <span class="token string">"/pause"</span>                 About a minute ago   Up About a minute             k8s_POD_kubia-2_default_49130122-540c-4c8b-98aa-23c84e9bfc9a_0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>附加 Pause 容器会先于应用容器创建，它不执行任何操作，只运行一个 pause 命令。</p>
+<p>由于 Pod 内的容器共享同一个网络和 Linux 命名空间，将与业务无关且不易终止的 Pause 容器作为 Pod 的根容器，可以通过它的状态来代表整个容器组的状态，从而更简单地判断 Pod 的运行状态。Pause 容器的生命周期与 Pod 绑定，如果基础 Pod 在此期间被关闭，Kubelet 会重新创建它以及 Pod 中的所有容器。</p>
+<p>另一方面，如果 Pod 中有多个容器，可以通过 Pause 容器挂载外部卷并共享 Pause 容器的 IP，从而简化了业务容器之间的通信问题。</p>
+<h2 id="描述文件"><a class="markdownIt-Anchor" href="#描述文件"></a> 描述文件</h2>
+<p>创建 Pod 或其他资源通常需要提供 JSON 或 YAML 描述文件来向 REST API 提供信息。可以使用 <code>kubectl get</code> 命令加上 <code>-o yaml</code> 参数来查看 YAML 定义：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl get pod kubia <span class="token parameter variable">-o</span> yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: <span class="token string">"2021-11-02T21:50:57Z"</span>
+  labels:
+    run: kubia
+  name: kubia<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>几乎所有的 Kubernetes 资源中都可以找到 Pod 定义文件的结构：</p>
+<ul>
+<li><code>apiVersion</code>：Kubernetes API 的版本。可以使用 <code>kubectl api-resources</code> 命令查找当前资源所使用的 API 版本。</li>
+<li><code>kind</code>：资源类型。</li>
+<li><code>metadata</code>：元数据，包括名称、命名空间、标签和其他容器相关信息。</li>
+<li><code>spec</code>：实际描述 Pod 内容的规范，例如容器和卷。</li>
+<li><code>status</code>：包含当前运行的 Pod 的信息，例如容器状态和内部 IP 信息。</li>
+</ul>
+<p>可以使用 <code>kubectl explain pods</code> 命令查看关于 YAML 文件中各属性的说明。如果需要了解更详细的信息，可以直接查看属性，例如使用 <code>kubectl explain pod.status</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl explain pod.status
+
+FIELDS:
+   conditions   <span class="token operator">&lt;</span><span class="token punctuation">[</span><span class="token punctuation">]</span>Object<span class="token operator">></span>
+     Current <span class="token function">service</span> state of pod. More info:
+     https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle<span class="token comment">#pod-conditions</span>
+
+   containerStatuses    <span class="token operator">&lt;</span><span class="token punctuation">[</span><span class="token punctuation">]</span>Object<span class="token operator">></span>
+     The list has one entry per container <span class="token keyword">in</span> the manifest. Each entry is
+     currently the output of <span class="token variable"><span class="token variable">`</span><span class="token function">docker</span> inspect<span class="token variable">`</span></span><span class="token builtin class-name">.</span> More info:
+     https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle<span class="token comment">#pod-and-container-status</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>以下是一个基本的 Pod YAML 描述文件示例：</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ vi kubia<span class="token punctuation">-</span>pod.yaml
+<span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> Pod
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> alice<span class="token punctuation">-</span>pod
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">containers</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">image</span><span class="token punctuation">:</span> assassing/kubia
+    <span class="token key atrule">name</span><span class="token punctuation">:</span> assassing
+    <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">containerPort</span><span class="token punctuation">:</span> <span class="token number">8080</span>
+      <span class="token key atrule">protocol</span><span class="token punctuation">:</span> TCP<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在 Pod 定义中指定的端口只是为了可读性，并没有实际作用。如果容器绑定到地址为 <code>0.0.0.0</code> 的端口以接收连接，即使端口没有在 Pod spec 中指定，其他 Pod 仍然可以连接到该端口。</p>
+<h2 id="创建-pod"><a class="markdownIt-Anchor" href="#创建-pod"></a> 创建 Pod</h2>
+<p>可以使用 <code>kubectl create</code> 命令根据 YAML 文件创建包括 Pod 在内的任何资源：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-pod.yaml 
+pod/alice-pod created
+<span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl get pod
+NAME        READY   STATUS    RESTARTS   AGE
+alice-pod   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          12s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>除了 YAML 格式，还可以使用 JSON 文件来创建资源。</p>
+<h2 id="查看-pod-详情"><a class="markdownIt-Anchor" href="#查看-pod-详情"></a> 查看 Pod 详情</h2>
+<p>可以将详细信息输出为 JSON 格式：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl get po alice-pod <span class="token parameter variable">-o</span> json
+<span class="token punctuation">&#123;</span>
+    <span class="token string">"apiVersion"</span><span class="token builtin class-name">:</span> <span class="token string">"v1"</span>,
+    <span class="token string">"kind"</span><span class="token builtin class-name">:</span> <span class="token string">"pod"</span>,
+    <span class="token string">"metadata"</span><span class="token builtin class-name">:</span> <span class="token punctuation">&#123;</span>
+        <span class="token string">"creationTimestamp"</span><span class="token builtin class-name">:</span> <span class="token string">"2021-11-02T23:37:42Z"</span>,
+        <span class="token string">"name"</span><span class="token builtin class-name">:</span> <span class="token string">"alice-pod"</span>,
+        <span class="token string">"namespace"</span><span class="token builtin class-name">:</span> <span class="token string">"default"</span>,
+        <span class="token string">"resourceVersion"</span><span class="token builtin class-name">:</span> <span class="token string">"6027"</span>,
+        <span class="token string">"uid"</span><span class="token builtin class-name">:</span> <span class="token string">"de10a52f-d380-4341-9c11-2bd516cf0a02"</span>
+    <span class="token punctuation">&#125;</span>,<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="查看-pod-日志"><a class="markdownIt-Anchor" href="#查看-pod-日志"></a> 查看 Pod 日志</h2>
+<p>使用 <code>kubectl logs</code> 命令查看日志，无需像 <code>docker logs</code> 命令一样在容器所在的主机上查询：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl logs alice-pod 
+Runing<span class="token punctuation">..</span>.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>如果 Pod 中包含多个容器，则必须通过 <code>-c</code> 参数指定容器名称：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost flannel<span class="token punctuation">]</span>$ kubectl logs httpd-app-5bc589d9f7-ggmwq <span class="token parameter variable">-c</span> httpd-app
+AH00558: httpd: Could not reliably determine the server<span class="token string">'s fully qualified domain name, using 10.244.1.5. Set the '</span>ServerName<span class="token string">' directive globally to suppress this message
+AH00558: httpd: Could not reliably determine the server'</span>s fully qualified domain name, using <span class="token number">10.244</span>.1.5. Set the <span class="token string">'ServerName'</span> directive globally to suppress this message
+<span class="token punctuation">[</span>Thu Jul <span class="token number">18</span> <span class="token number">16</span>:28:44.242092 <span class="token number">2019</span><span class="token punctuation">]</span> <span class="token punctuation">[</span>mpm_event:notice<span class="token punctuation">]</span> <span class="token punctuation">[</span>pid <span class="token number">1</span>:tid <span class="token number">139744563483776</span><span class="token punctuation">]</span> AH00489: Apache/2.4.39 <span class="token punctuation">(</span>Unix<span class="token punctuation">)</span> configured -- resuming normal operations
+<span class="token punctuation">[</span>Thu Jul <span class="token number">18</span> <span class="token number">16</span>:28:44.242331 <span class="token number">2019</span><span class="token punctuation">]</span> <span class="token punctuation">[</span>core:notice<span class="token punctuation">]</span> <span class="token punctuation">[</span>pid <span class="token number">1</span>:tid <span class="token number">139744563483776</span><span class="token punctuation">]</span> AH00094: Command line: <span class="token string">'httpd -D FOREGROUND'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>每当日志文件达到 10 MB 大小时，容器日志会自动进行轮替。同时，当 Pod 被删除时，日志也会被删除。</p>
+<h2 id="执行命令"><a class="markdownIt-Anchor" href="#执行命令"></a> 执行命令</h2>
+<p>使用类似 Docker 命令的格式 <code>kubectl exec -it</code> 来进入容器，尽管这样做是可行的，但会提示该命令已被废弃：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> <span class="token parameter variable">-it</span> kubiaex-f4wkw /bin/bash
+kubectl <span class="token builtin class-name">exec</span> <span class="token punctuation">[</span>pod<span class="token punctuation">]</span> <span class="token punctuation">[</span>COMMAND<span class="token punctuation">]</span> is DEPRECATED and will be removed <span class="token keyword">in</span> a future version. Use kubectl <span class="token builtin class-name">exec</span> <span class="token punctuation">[</span>pod<span class="token punctuation">]</span> -- <span class="token punctuation">[</span>COMMAND<span class="token punctuation">]</span> instead.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>这是因为当要在容器中运行带有空格的命令时，kubectl 会将空格后面的内容作为 kubectl 的参数进行解析。正确的用法是在容器命令之前使用两个减号 <code>--</code> 进行分隔：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> <span class="token parameter variable">-it</span> kubiaex-f4wkw -- <span class="token function">bash</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="转发-pod-端口"><a class="markdownIt-Anchor" href="#转发-pod-端口"></a> 转发 Pod 端口</h2>
+<p>除了使用 Service 的方式，还可以通过端口转发来连接 Pod。命令是 <code>kubectl port-forward &lt;pod名称&gt; 本地端口:pod端口</code>。</p>
+<p>例如，将 alice-pod 的 8080 端口转发到本地的 8888 端口：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl port-forward alice-pod <span class="token number">8888</span>:8080
+Forwarding from <span class="token number">127.0</span>.0.1:8888 -<span class="token operator">></span> <span class="token number">8080</span>
+Forwarding from <span class="token punctuation">[</span>::1<span class="token punctuation">]</span>:8888 -<span class="token operator">></span> <span class="token number">8080</span>
+Handling connection <span class="token keyword">for</span> <span class="token number">8888</span>
+<span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> <span class="token number">127.0</span>.0.1:8888
+Hostname: alice-pod<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这种方法可以用于调试应用程序。</p>
+<h2 id="删除-pod"><a class="markdownIt-Anchor" href="#删除-pod"></a> 删除 Pod</h2>
+<p>当 API 服务器接收到删除 Pod 的请求后，它首先修改了 etcd 中的状态，并将事件通知给 Kubelet 和端点控制器（Endpoint Controller）：</p>
+<ul>
+<li>当 Kubelet 接收到 Pod 终止通知时，会执行停止前钩子，发送 SIGTERM 信号，最后完成杀死容器。</li>
+<li>端点控制器则负责从 Pod 对应的服务中移除这个 Pod 的地址，主要通过向 API 服务器发送 REST 请求来修改 Endpoint API 对象。然后 API 服务器会通知所有的客户端，特别是 kube-proxy 服务在节点上更新 iptables 规则，以阻止新的连接被转发到停止状态的 Pod 上。</li>
+</ul>
+<p>使用 <code>kubectl delete</code> 命令来删除 Pod，可以用空格分隔要删除的多个 Pod：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl delete pod alice-pod alice-pod-v1
+pod <span class="token string">"alice-pod"</span> deleted
+pod <span class="token string">"alice-pod-v1"</span> deleted<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>在删除 Pod 的过程中，实际上是请求终止该 Pod 中的所有容器。Kubernetes 向进程发送一个 SIGTERM 信号，默认等待 30 秒使其正常关闭。如果超过 30 秒，则通过 SIGKILL 终止进程。</p>
+<p>通过 <code>-l</code> 参数来通过标签选择 Pod 并删除：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl delete pod <span class="token parameter variable">-l</span> <span class="token assign-left variable">run</span><span class="token operator">=</span>assassing
+pod <span class="token string">"assassing-5c54d7b988-76kdz"</span> deleted
+pod <span class="token string">"assassing-5c54d7b988-hbxtp"</span> deleted<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>删除当前命名空间内所有 Pod，但保留命名空间：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl delete pod <span class="token parameter variable">--all</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>删除当前命名空间内的所有资源，但保留命名空间：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl delete all <span class="token parameter variable">--all</span>
+<span class="token function">service</span> <span class="token string">"kubernetes"</span> deleted
+<span class="token function">service</span> <span class="token string">"kubia"</span> deleted
+<span class="token function">service</span> <span class="token string">"kubia-http"</span> deleted<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="初始化容器"><a class="markdownIt-Anchor" href="#初始化容器"></a> 初始化容器</h2>
+<p>可以在 Pod 中加入一个 init 容器来检查依赖服务的请求是否被响应，获得响应后再让主容器启动。</p>
+<p>初始化容器运行失败会重启，直到成功完成。如果 <code>spec.restartPolicy</code> 字段为 <code>Never</code> 时不会重启。</p>
+<p>初始化容器通过 <code>spec.initContainers</code> 来定义：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">spec:
+  containers:
+  - name: nodejs
+    image: luksa/kubia
+    ports:
+    - name: http
+      containerPort: <span class="token number">8080</span>
+    resources:
+      requests:
+        cpu: 100m
+  initContainers:
+  - name: init
+    image: busybox
+    command:
+    - <span class="token function">sh</span>
+    - <span class="token parameter variable">-C</span>
+    - <span class="token string">'while true; do echo "waiting"; wget http://fortune -q -T 1 -O /dev/null > /dev/null 2>/dev/null &amp;&amp; break; sleep 5; done; echo "Done"'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="终止宽限期"><a class="markdownIt-Anchor" href="#终止宽限期"></a> 终止宽限期</h2>
+<p>Pod 的关闭是通过 API 服务器删除 Pod 的对象来触发的。当服务器接收到 HTTP DELETE 请求后，API 服务器并没有立即删除对象，而是给 Pod 设置一个 <code>deletionTimestamp</code> 值，Pod 开始停止运行。</p>
+<p>节点上的 Kubelet 会开始终止 Pod 中的每个容器。Pod 向容器的主进程发送 SIGTERM 信号，等待容器自行关闭。若等待终止宽限期（Termination Grace Period）超时，Kubelet 会使用 SIGKILL 信号强制关闭进程。</p>
+<p>终止宽限期可以通过 Pod spec 中的 <code>terminationGracePeriodSeconds</code> 字段来设置，其默认值为 30 秒。</p>
+<p>也可以在删除 Pod 时指定宽限时间：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master <span class="token number">6</span><span class="token punctuation">]</span>$ kubectl delete po kubia --grace-period<span class="token operator">=</span><span class="token number">5</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>使用强制删除 <code>--force</code> 选项时要注意 StatefulSet 管理的 Pod。强制删除 Pod 会导致控制器不等待被删除 Pod 中的容器完成关闭，而直接创建一个替代的 Pod，可能会导致相同 Pod 的两个实例同时运行，从而造成集群服务工作异常。因此，只有在 Pod 无法与集群中的其他成员通信的情况下，才应该使用强制删除。</p>
+<p>一种更好的解决方法是使用一个专门持续运行的 Pod，来持续检查是否存在孤立的数据。</p>
+<h1 id="命名空间"><a class="markdownIt-Anchor" href="#命名空间"></a> 命名空间</h1>
+<p>K8s 的命名空间（Namespace）与用于互相隔离进程的 Linux 命名空间不同，它并不提供对正在运行的对象的任何隔离，只是简单地为对象名称提供一个作用域，从逻辑上进行隔离。这样，在不同的命名空间中可以多次使用相同的资源名称。</p>
+<p>命名空间为资源名称提供了一个作用域。可以通过命名空间将资源分配到生产、开发和测试环境。资源名称只需要在命名空间内保持唯一即可。</p>
+<p>在 K8s 集群安装完成后，会自动创建两个命名空间：一个是默认的 default 空间，另一个是系统级的 kube-system。当创建资源对象时没有指定命名空间时，默认会将其存放到 default 命名空间中。</p>
+<h2 id="查看命名空间"><a class="markdownIt-Anchor" href="#查看命名空间"></a> 查看命名空间</h2>
+<p>默认情况下，在 default 命名空间中进行操作。可以使用 <code>kubectl get namespace</code> 或 <code>kubectl get ns</code> 来查看所有命名空间：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl get namespace
+NAME                   STATUS   AGE
+default                Active   4h12m
+kube-node-lease        Active   4h12m
+kube-public            Active   4h12m
+kube-system            Active   4h12m
+kubernetes-dashboard   Active   4h11m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="创建命名空间"><a class="markdownIt-Anchor" href="#创建命名空间"></a> 创建命名空间</h2>
+<p>可以通过 YAML 文件创建命名空间。命名空间的名称不能包含点号：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> my-namespace.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: my-namespace
+<span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> my-namespace.yaml 
+namespace/my-namespace created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>也可以直接使用 <code>create namespace</code> 命令来创建命名空间：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl create namespace my-ns
+namespace/my-ns created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="使用命名空间"><a class="markdownIt-Anchor" href="#使用命名空间"></a> 使用命名空间</h2>
+<p>可以在创建 Pod 的 YAML 文件中，在 metadata 字段中添加 <code>namespace:</code> 来指定命名空间：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-ns.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: alice-ns
+  namespace: my-namespace
+spec:
+  containers:
+  - image: assassing/kubia
+    name: assassing<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>也可以在使用 <code>kubectl create</code> 命令创建资源时，通过添加 <code>-n</code> 参数来指定命名空间：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-ns.yaml <span class="token parameter variable">-n</span> my-namespace 
+pod/alice-ns created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="查询命名空间"><a class="markdownIt-Anchor" href="#查询命名空间"></a> 查询命名空间</h2>
+<p>要查看命名空间下的 Pod，可以在查询命令后添加 <code>-n</code> 选项来指定命名空间：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl get pod <span class="token parameter variable">-n</span> my-namespace
+NAME       READY   STATUS    RESTARTS   AGE
+alice-ns   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          45s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>可以使用 <code>--all-namespaces</code> 参数来查看所有命名空间下的 Pod：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl get pod --all-namespaces<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="删除命名空间"><a class="markdownIt-Anchor" href="#删除命名空间"></a> 删除命名空间</h2>
+<p>可以直接删除整个命名空间，命名空间下的 Pod 将会随之删除：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl delete ns my-namespace
+namespace <span class="token string">"my-namespace"</span> deleted<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h1 id="标签和注解"><a class="markdownIt-Anchor" href="#标签和注解"></a> 标签和注解</h1>
+<p>在 Kubernetes 中，标签注解是用于给资源对象添加元数据的机制。</p>
+<h2 id="定义"><a class="markdownIt-Anchor" href="#定义"></a> 定义</h2>
+<p>标签是可以附加到资源上的任意键值对，通过标签选择器可以选择具有特定标签的资源，从而能够一次性操作所有具有相同标签的资源。在资源内，一个标签的键（key）必须是唯一的，因此一个资源可以拥有多个标签，并且可以随时修改和添加标签。</p>
+<p>通过给指定的资源对象绑定一个或多个不同的标签，可以实现多维度的资源分组管理。常见的标签包括版本标签（release:stable）、环境标签（environment:dev）、架构标签（tier:frontend）、区域标签（partition:HK）和质量控制标签（track:daily）等。这些标签可以根据实际需求来定义和使用，以实现更灵活的资源管理和操作。</p>
+<h2 id="指定标签"><a class="markdownIt-Anchor" href="#指定标签"></a> 指定标签</h2>
+<p>创建一个新的 <code>kubia-label.yaml</code> 文件，添加 <code>labels</code> 字段：</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ vi kubia<span class="token punctuation">-</span>label.yaml
+<span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> Pod
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> alice<span class="token punctuation">-</span>pod<span class="token punctuation">-</span>v1
+  <span class="token key atrule">labels</span><span class="token punctuation">:</span>
+    <span class="token key atrule">creation_method</span><span class="token punctuation">:</span> manual
+    <span class="token key atrule">env</span><span class="token punctuation">:</span> prod
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">containers</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">image</span><span class="token punctuation">:</span> assassing/kubia
+    <span class="token key atrule">name</span><span class="token punctuation">:</span> assassing
+    <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">containerPort</span><span class="token punctuation">:</span> <span class="token number">8080</span>
+      <span class="token key atrule">protocol</span><span class="token punctuation">:</span> TCP
+<span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl create <span class="token punctuation">-</span>f kubia<span class="token punctuation">-</span>label.yaml 
+pod/alice<span class="token punctuation">-</span>pod<span class="token punctuation">-</span>v1 created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="查看标签"><a class="markdownIt-Anchor" href="#查看标签"></a> 查看标签</h2>
+<p>使用 <code>--show-labels</code> 参数来查看标签：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl get pods --show-labels
+NAME           READY   STATUS    RESTARTS   AGE   LABELS
+alice-pod      <span class="token number">1</span>/1     Running   <span class="token number">0</span>          32m   <span class="token operator">&lt;</span>none<span class="token operator">></span>
+alice-pod-v1   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          53s   <span class="token assign-left variable">creation_method</span><span class="token operator">=</span>manual,env<span class="token operator">=</span>prod<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以使用 <code>-L</code> 来显示指定的标签而不是显示所有标签：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl get pods <span class="token parameter variable">-L</span> env,creation_method
+NAME           READY   STATUS    RESTARTS   AGE     ENV    CREATION_METHOD
+alice-pod      <span class="token number">1</span>/1     Running   <span class="token number">0</span>          34m            
+alice-pod-v1   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          2m55s   prod   manual<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="修改标签"><a class="markdownIt-Anchor" href="#修改标签"></a> 修改标签</h2>
+<p>要为现有的 Pod 添加标签，可以使用 <code>kubectl label</code> 命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl label pod alice-pod <span class="token assign-left variable">env</span><span class="token operator">=</span>test
+pod/alice-pod labeled
+<span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl get pods <span class="token parameter variable">-L</span> <span class="token function">env</span>
+NAME           READY   STATUS    RESTARTS   AGE     ENV
+alice-pod      <span class="token number">1</span>/1     Running   <span class="token number">0</span>          36m     <span class="token builtin class-name">test</span>
+alice-pod-v1   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          4m29s   prod<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果要修改已存在的标签，需要使用 <code>--overwrite</code> 参数，以防止在添加新标签时无意中更改现有标签的值：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl label pod alice-pod <span class="token assign-left variable">env</span><span class="token operator">=</span>prod <span class="token parameter variable">--overwrite</span> 
+pod/alice-pod labeled
+<span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl get pods <span class="token parameter variable">-L</span> <span class="token function">env</span>
+NAME           READY   STATUS    RESTARTS   AGE     ENV
+alice-pod      <span class="token number">1</span>/1     Running   <span class="token number">0</span>          37m     prod
+alice-pod-v1   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          5m47s   prod<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>一个标签可以附加于多个对象。</p>
+<h2 id="删除标签"><a class="markdownIt-Anchor" href="#删除标签"></a> 删除标签</h2>
+<p>例如，要删除名为 <code>alice-pod-v1</code> 上的 <code>creation_method</code> 标签：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl label pod alice-pod-v1 creation_method-
+pod/alice-pod-v1 labeled<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>注意，在删除标签时要在标签名后添加 <code>-</code> 符号。</p>
+<h2 id="标签选择器"><a class="markdownIt-Anchor" href="#标签选择器"></a> 标签选择器</h2>
+<p>标签选择器允许选择标记有特定标签的 Pod 子集并进行操作。可以使用以下条件：</p>
+<ul>
+<li>
+<p>包含（或不包含）使用特定键的标签。</p>
+<p>例如选择所有不存在 <code>env</code> 键的标签的资源：<code>!env</code></p>
+</li>
+<li>
+<p>包含具有特定键和值的标签。</p>
+<p>同时选择两个标签，标签之间用逗号分开。例如：<code>app=pc,rel=beta</code></p>
+<p>选择带有 <code>env</code> 标签且值为 <code>prod</code> 或 <code>dev</code> 的 Pod：<code>env in (prod,dev)</code></p>
+</li>
+<li>
+<p>包含具有特定键的标签，但值与指定的不同。</p>
+<p>选择带有 <code>env</code> 标签且值不等于 <code>prod</code> 的 Pod：<code>env!=prod</code></p>
+<p>选择 <code>env</code> 标签且值不为 <code>prod</code> 或 <code>dev</code> 的 Pod：<code>env notin (prod,dev)</code></p>
+</li>
+</ul>
+<p>例如，列出标签 <code>env=prod</code> 的 Pod：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl get po <span class="token parameter variable">-l</span> <span class="token assign-left variable">env</span><span class="token operator">=</span>prod
+NAME           READY   STATUS    RESTARTS   AGE
+alice-pod      <span class="token number">1</span>/1     Running   <span class="token number">0</span>          53m
+alice-pod-v1   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          21m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 <code>!</code> 做选择时，必须将条件用单引号括起来，否则会被 Bash 解释。例如，列出标签 <code>key</code> 不存在 <code>env</code> 的 Pod：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl get po <span class="token parameter variable">-l</span> <span class="token string">'!env'</span>
+NAME           READY   STATUS    RESTARTS   AGE
+alice-pod      <span class="token number">1</span>/1     Running   <span class="token number">0</span>          54m
+alice-pod-v1   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          23m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在金丝雀发布时，可以使用标签选择器一次删除所有金丝雀 Pod。</p>
+<h2 id="节点标签"><a class="markdownIt-Anchor" href="#节点标签"></a> 节点标签</h2>
+<p>标签可以附加到任何 Kubernetes 对象上，包括节点。因此，在添加新节点时，可以使用标签对节点进行分类。例如，一组美国服务器的节点，可以添加标签 <code>location=US</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl label <span class="token function">node</span> k8s-node1 <span class="token assign-left variable">location</span><span class="token operator">=</span>US
+node/k8s-node1 labeled
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl get nodes <span class="token parameter variable">-l</span> <span class="token assign-left variable">location</span><span class="token operator">=</span>US
+NAME        STATUS   ROLES    AGE   VERSION
+k8s-node1   Ready    <span class="token operator">&lt;</span>none<span class="token operator">></span>   85m   v1.15.0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果需要将 Pod 部署到美国服务器，可以在 YAML 文件中添加一个节点选择器 <code>nodeSelector</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-US.yaml 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: alice-pod-us
+spec:
+  nodeSelector:
+    location: <span class="token string">"US"</span>
+  containers:
+  - image: assassing/kubia
+    name: assassing
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl get pod --all-namespaces <span class="token parameter variable">-o</span> wide
+NAMESPACE  NAME         READY  STATUS RESTARTS AGE IP          NODE       NOMINATED NODE
+default    alice-pod-us <span class="token number">1</span>/1    Running <span class="token number">0</span>       32s <span class="token number">10.244</span>.1.6  k8s-node1  <span class="token operator">&lt;</span>none<span class="token operator">></span>      
+default    alice-pod-v1 <span class="token number">1</span>/1    Running <span class="token number">0</span>       26m <span class="token number">10.244</span>.2.5  k8s-node2  <span class="token operator">&lt;</span>none<span class="token operator">></span>      <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="添加注解"><a class="markdownIt-Anchor" href="#添加注解"></a> 添加注解</h2>
+<p>注解只是为了保存标识信息而存在，不能像标签一样进行分组，但可以容纳更多信息，主要用于工具使用。</p>
+<p>可以在描述文件中或使用 <code>kubectl annotate</code> 命令来添加注解：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl annotate pod alice-pod <span class="token assign-left variable">build</span><span class="token operator">=</span><span class="token string">"20160602"</span>
+pod/alice-pod annotated
+<span class="token punctuation">[</span>user1@server6 ~<span class="token punctuation">]</span>$ kubectl describe pod alice-pod
+Labels:       <span class="token assign-left variable">env</span><span class="token operator">=</span>prod
+Annotations:  build: <span class="token number">20160602</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="探针和钩子"><a class="markdownIt-Anchor" href="#探针和钩子"></a> 探针和钩子</h1>
+<p>探针和钩子是容器化应用程序中常用的两种机制，用于增强应用程序的可靠性和健壮性。</p>
+<h2 id="存活探针"><a class="markdownIt-Anchor" href="#存活探针"></a> 存活探针</h2>
+<p>Kubernetes 可以通过存活探针（Liveness Probe）检查容器是否仍在运行。可以为 Pod 中的每个容器单独指定存活探针，如果探测失败，Kubernetes 将定期执行探测并重新启动容器。</p>
+<p>Kubernetes 提供了三种探测容器的机制：</p>
+<ul>
+<li>ExecAction：在容器内执行一个命令，并根据返回的状态码进行诊断。状态码为 0 表示成功，否则表示容器不健康。</li>
+<li>TCPSocketAction：通过尝试与容器的特定 TCP 端口建立连接进行诊断，如果端口能够打开，则表示容器正常。</li>
+<li>HTTPGetAction：通过向容器的 IP 地址的指定端口和路径发起 HTTP GET 请求进行诊断。响应码为 2xx 或 3xx 时表示成功，其他任何响应码表示失败。</li>
+</ul>
+<p>存活探针由各个节点上的 Kubelet 服务负责执行，而主节点上的控制组件不参与此过程。</p>
+<h3 id="http-探针"><a class="markdownIt-Anchor" href="#http-探针"></a> HTTP 探针</h3>
+<p>HTTP 探针用于检测 Web 服务器是否正常响应请求，非常有用。在这里，我们使用一个 Node.js 程序，该程序在第 5 次请求后返回状态码 500：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> http <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'http'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> os <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'os'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"Kubia server starting..."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">var</span> requestCount <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+<span class="token keyword">var</span> <span class="token function-variable function">handler</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">request<span class="token punctuation">,</span> response</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"Received request from "</span> <span class="token operator">+</span> request<span class="token punctuation">.</span>connection<span class="token punctuation">.</span>remoteAddress<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  requestCount<span class="token operator">++</span><span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>requestCount <span class="token operator">></span> <span class="token number">5</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    response<span class="token punctuation">.</span><span class="token function">writeHead</span><span class="token punctuation">(</span><span class="token number">500</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    response<span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token string">"I'm not well. Please restart me!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+  response<span class="token punctuation">.</span><span class="token function">writeHead</span><span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  response<span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token string">"You've hit "</span> <span class="token operator">+</span> os<span class="token punctuation">.</span><span class="token function">hostname</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+<span class="token keyword">var</span> www <span class="token operator">=</span> http<span class="token punctuation">.</span><span class="token function">createServer</span><span class="token punctuation">(</span>handler<span class="token punctuation">)</span><span class="token punctuation">;</span>
+www<span class="token punctuation">.</span><span class="token function">listen</span><span class="token punctuation">(</span><span class="token number">8080</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>构建镜像的方法可以参考快速入门中的内容。下面是用于创建 Pod 的 YAML 文件示例：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-live.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kubia-liveness
+spec:
+  containers:
+  - image: luksa/kubia-unhealthy
+    name: kubia
+    livenessProbe:
+      httpGet:
+        path: /
+        port: <span class="token number">8080</span>
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-live.yaml <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上述配置定义了一个使用 HTTP GET 方法的存活探针，它会检查 Pod 的 8080 端口以确定容器的健康状态。</p>
+<p>启动 Pod 后，观察 Pod 的状态：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">watch</span> kubectl get po
+NAME             READY   STATUS    RESTARTS      AGE       
+kubia-liveness   <span class="token number">1</span>/1     Running   <span class="token number">2</span> <span class="token punctuation">(</span>12h ago<span class="token punctuation">)</span>   4m8s  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>大约两分钟后，存活探针检测到返回码为 500，即会重新启动容器，并增加重启计数。如此循环。</p>
+<p>可以使用以下命令查看 Pod 的日志。由于 <code>kubectl logs</code> 命令只会打印当前容器的日志，如果想查看之前容器的日志，需要使用 <code>--previous</code> 选项：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl logs kubia-liveness <span class="token parameter variable">--previous</span>
+Kubia server starting<span class="token punctuation">..</span>.
+Received request from ::ffff:192.168.2.206
+Received request from ::ffff:192.168.2.206
+Received request from ::ffff:192.168.2.206
+Received request from ::ffff:192.168.2.206<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>日志显示的请求访问都来自存活探针。再次查看 Pod 的描述：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl describe po kubia-liveness
+    Last State:     Terminated
+      Reason:       Error
+      Exit Code:    <span class="token number">137</span>
+      Started:      Wed, 03 Nov <span class="token number">2021</span> <span class="token number">14</span>:38:46 +0800
+      Finished:     Wed, 03 Nov <span class="token number">2021</span> <span class="token number">14</span>:40:33 +0800
+Events:
+  Type     Reason     Age                From               Message
+  ----     ------     ----               ----               -------
+  Normal   Pulled     12h                kubelet            Successfully pulled image <span class="token string">"luksa/kubia-unhealthy"</span> <span class="token keyword">in</span> <span class="token number">40</span>.786546605s
+  Normal   Pulled     12h                kubelet            Successfully pulled image <span class="token string">"luksa/kubia-unhealthy"</span> <span class="token keyword">in</span> <span class="token number">3</span>.188020575s
+  Normal   Created    12h <span class="token punctuation">(</span>x3 over 12h<span class="token punctuation">)</span>  kubelet            Created container kubia
+  Normal   Pulled     12h                kubelet            Successfully pulled image <span class="token string">"luksa/kubia-unhealthy"</span> <span class="token keyword">in</span> <span class="token number">3</span>.281767877s
+  Normal   Started    12h <span class="token punctuation">(</span>x3 over 12h<span class="token punctuation">)</span>  kubelet            Started container kubia
+  Warning  Unhealthy  12h <span class="token punctuation">(</span>x9 over 12h<span class="token punctuation">)</span>  kubelet            Liveness probe failed: HTTP probe failed with statuscode: <span class="token number">500</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以清楚地看到上次退出代码为 137 = 128 + 9，表示进程由外部信号终止，其中 9 代表 SIGKILL 强制终止信号。当容器被强制终止时，会创建一个全新的容器而不是重启原先的容器。</p>
+<h3 id="exec-探针"><a class="markdownIt-Anchor" href="#exec-探针"></a> Exec 探针</h3>
+<p>Exec 探针只有一个可用属性 <code>command</code>，用于指定要执行的命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">livenessProbe:
+  exec:
+    command: <span class="token punctuation">[</span><span class="token string">"test"</span>, <span class="token string">"-e"</span>, <span class="token string">"/tmp/healthy"</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h3 id="tcp-探针"><a class="markdownIt-Anchor" href="#tcp-探针"></a> TCP 探针</h3>
+<p>相比于 HTTP 探测，TCP 探针更高效且节约资源，但精确度稍低。毕竟连接建立成功并不意味着页面资源可用：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">livenessProbe:
+  tcpSocket:
+    port: <span class="token number">443</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h3 id="附加属性"><a class="markdownIt-Anchor" href="#附加属性"></a> 附加属性</h3>
+<p>可以给存活探针增加附加属性，可设置以下五个属性：</p>
+<ul>
+<li><code>initialDelaySeconds</code>：表示容器启动后等待多少秒开始探测，默认为 0 秒。</li>
+<li><code>timeoutSeconds</code>：表示响应时间超过多少秒为失败，默认为 1 秒。</li>
+<li><code>periodSeconds</code>：表示探针探测周期的时间间隔，以秒为单位，默认为 10 秒。</li>
+<li><code>successThreshold</code>：表示探测成功几次后将 Pod 的状态恢复为正常，默认为 1 次。</li>
+<li><code>failureThreshold</code>：表示连续探测失败几次后重启容器，默认为 3 次。</li>
+</ul>
+<p>其中，最常用的是设置初始化等待时间，将默认的立即开始探测改为 15 秒：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-http-liveness-probe.yaml 
+    livenessProbe:
+      httpGet:
+        path: /
+        port: <span class="token number">8080</span>
+      initialDelaySeconds: <span class="token number">15</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="就绪探针"><a class="markdownIt-Anchor" href="#就绪探针"></a> 就绪探针</h2>
+<p>就绪探针用于定期调用并确定特定的 Pod 是否已准备好接收客户端请求。当容器的就绪探针返回成功时，表示容器已经准备好接收请求。Kubernetes 只能检查在容器中运行的应用程序是否响应一个简单的 GET 请求，或者响应特定的 URL 路径。因此，在开发应用程序时需要添加就绪探针的逻辑。</p>
+<p>就绪探针有三种类型，与存活探针相同。与存活探针的目的不同，就绪探针用于确保 Pod 已准备好接收请求。</p>
+<p>就绪探针的工作原理如下：在启动容器时配置一个等待时间，等待时间过后开始执行第一次就绪检查。之后，会定期（默认为每 10 秒）调用就绪探针，并根据结果采取相应的操作。如果容器未通过就绪检查，Pod 不会被终止或重新启动，只是从服务的终端点（endpoints）中移除，等待下一次探测检查。当再次就绪时，将重新添加该 Pod，以确保客户端只与正常的 Pod 进行交互。</p>
+<h3 id="添加就绪探针"><a class="markdownIt-Anchor" href="#添加就绪探针"></a> 添加就绪探针</h3>
+<p>修改已存在的 Replication Controller 对象 kubia，并添加就绪探针的配置，可以执行以下操作：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl edit rc kubia
+<span class="token punctuation">..</span>.
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: kubia
+    spec:
+      containers:
+      - image: luksa/kubia
+        readinessProbe:
+          exec:
+            command:
+            - <span class="token function">ls</span>
+            - /var/ready
+        imagePullPolicy: Always
+        name: kubia
+<span class="token punctuation">..</span>.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上述的 Exec 类型就绪探针将定期在容器内执行 <code>ls /var/ready</code> 命令，如果文件存在则返回退出码 0，否则探测失败。</p>
+<h3 id="测试效果"><a class="markdownIt-Anchor" href="#测试效果"></a> 测试效果</h3>
+<p>由于并不存在 <code>/var/ready</code> 文件，因此删除容器后自动创建的容器会一直失败，READY 项显示为 0/1：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get pod
+NAME                             READY   STATUS    RESTARTS   AGE
+kubia-2vvrx                      <span class="token number">1</span>/1     Running   <span class="token number">0</span>          108m
+kubia-6j8vf                      <span class="token number">1</span>/1     Running   <span class="token number">0</span>          108m
+kubia-fq6lt                      <span class="token number">0</span>/1     Running   <span class="token number">0</span>          64s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>直到手动添加 <code>ready</code> 文件，使就绪探针返回成功，容器的状态才会变为运行中：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> kubia-fq6lt -- <span class="token function">touch</span> /var/ready
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get pod
+NAME                             READY   STATUS    RESTARTS   AGE
+kubia-2vvrx                      <span class="token number">1</span>/1     Running   <span class="token number">0</span>          110m
+kubia-6j8vf                      <span class="token number">1</span>/1     Running   <span class="token number">0</span>          110m
+kubia-fq6lt                      <span class="token number">1</span>/1     Running   <span class="token number">0</span>          2m40s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="周期钩子"><a class="markdownIt-Anchor" href="#周期钩子"></a> 周期钩子</h2>
+<p>周期钩子是 Kubernetes 中的一种机制，用于在 Pod 的生命周期事件发生时执行特定的操作。它可以在 Pod 的不同阶段（如启动前、启动后、终止前）触发预定义的脚本或命令。周期钩子可以用于执行初始化操作、配置设置、资源准备、清理等任务。</p>
+<p>周期钩子主要包括以下三种类型：</p>
+<ol>
+<li><strong>容器生命周期钩子（Container Lifecycle Hook）</strong>：在容器的生命周期事件中触发钩子操作。可以在容器启动前（PreStart）或容器终止前（PostStart）执行自定义的脚本或命令。例如，可以在容器启动前等待其他服务可用，或在容器终止前进行资源清理操作。</li>
+<li><strong>初始化容器（Init Container）</strong>：在 Pod 中的一个或多个初始化容器在主容器启动之前执行。初始化容器可以用于进行初始化设置、数据加载、依赖检查等任务。只有当所有初始化容器成功完成后，主容器才会启动。</li>
+<li><strong>Pod 生命周期钩子（Pod Lifecycle Hook）</strong>：在整个 Pod 的生命周期事件中触发钩子操作。可以在 Pod 启动前（PostStart）或 Pod 终止前（PreStop）执行自定义的脚本或命令。例如，可以在 Pod 启动前进行资源注册、配置加载等操作，或在 Pod 终止前进行清理、数据保存等操作。</li>
+</ol>
+<p>生命周期钩子和探针相似，都可以在容器内部执行命令或发送 GET 请求到指定的 URL。但是，生命周期钩子是针对容器而不是 Pod 的。</p>
+<p>钩子处理可以使用 HTTP 或 Exec 方式进行实现。</p>
+<h3 id="启动后钩子"><a class="markdownIt-Anchor" href="#启动后钩子"></a> 启动后钩子</h3>
+<p>启动后钩子是在容器的主进程启动之后立即执行的。可以利用该钩子在应用程序启动时执行额外的工作，例如向外部监听器发送应用程序已启动的信号。启动后钩子和主进程并行执行，直到钩子执行完毕之前，容器将一直处于等待状态。此时，Pod 的状态将显示为 Pending。如果钩子执行失败或返回非零状态码，主容器将被终止：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">containers:
+- name: nodejs
+  image: luksa/kubia
+  lifecycle:
+    postStart:
+      exec:
+        command:
+        - <span class="token function">sh</span>
+        - <span class="token parameter variable">-C</span>
+        - <span class="token string">"echo 'failed'; sleep 5; exit 250"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在上面的示例中，echo、sleep 和 exit 是与容器的主进程一起执行的。通常情况下，可以通过在容器镜像中存储的 shell 脚本或可执行二进制文件来运行这些钩子。</p>
+<p>如果钩子程序执行失败，可以在 Pod 的事件中看到 FailedPostStartHook 的警告信息。</p>
+<h3 id="停止前钩子"><a class="markdownIt-Anchor" href="#停止前钩子"></a> 停止前钩子</h3>
+<p>停止前钩子是在容器被终止之前立即执行的。当一个容器需要停止运行时，在发送 SIGTERM 信号给容器进程之前，将执行钩子程序。</p>
+<p>添加停止前钩子与添加启动后钩子类似：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">containers:
+- name: nodejs
+  image: luksa/kubia
+  lifecycle:
+    preStop:
+      httpGet:
+        port: <span class="token number">8080</span>
+        path: <span class="token function">shutdown</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上述命令会向 <code>http://POD_IP:8080/shutdown</code> 这个 URL 发送 HTTP GET 请求。</p>
+<p>还可以设置 scheme（HTTP 或 HTTPS）、host 和请求的 httpHeaders。默认情况下，host 的值为 Pod 的 IP 地址。</p>
+<p>与启动后钩子不同的是，无论停止前钩子的执行结果如何，容器都将被终止。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/4120596009/" title="K8s 基本资源">https://blog.x2b.net/4120596009/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../3401119197/" rel="prev" title="K8s 控制器">
+                  <i class="fa fa-chevron-left"></i> K8s 控制器
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../376871778/" rel="next" title="K8s 系统介绍">
+                  K8s 系统介绍 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">239k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">13:16</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@next-theme/pjax@0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://unpkg.com/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://unpkg.com/katex@0.16.4/dist/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/4120596009/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://unpkg.com/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'blog.x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>

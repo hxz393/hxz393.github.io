@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="ReplicationController 以下简称 RC。 可以使用 kubectl api-resources 命令查看所有缩写。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="K8s 控制器">
+<meta property="og:url" content="https://blog.x2b.net/3401119197/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="ReplicationController 以下简称 RC。 可以使用 kubectl api-resources 命令查看所有缩写。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.x2b.net/images/%E6%BB%9A%E5%8A%A8%E5%8D%87%E7%BA%A7%E7%A4%BA%E6%84%8F.jpg">
+<meta property="og:image" content="https://blog.x2b.net/images/%E6%BB%9A%E5%8A%A8%E5%8D%87%E7%BA%A7%E7%AD%96%E7%95%A5%E5%B1%9E%E6%80%A7%E7%A4%BA%E4%BE%8B1.jpg">
+<meta property="og:image" content="https://blog.x2b.net/images/%E6%BB%9A%E5%8A%A8%E5%8D%87%E7%BA%A7%E7%AD%96%E7%95%A5%E5%B1%9E%E6%80%A7%E7%A4%BA%E4%BE%8B2.jpg">
+<meta property="og:image" content="https://blog.x2b.net/images/%E5%B0%B1%E7%BB%AA%E6%8E%A2%E9%92%88%E4%BD%9C%E7%94%A8.jpg">
+<meta property="og:image" content="https://blog.x2b.net/images/%E5%BA%94%E7%94%A8%E7%8A%B6%E6%80%81.jpg">
+<meta property="og:image" content="https://blog.x2b.net/images/STS%E9%87%8D%E6%96%B0%E8%B0%83%E5%BA%A6.jpg">
+<meta property="article:published_time" content="2022-03-20T01:01:17.000Z">
+<meta property="article:modified_time" content="2023-05-15T16:30:33.451Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.x2b.net/images/%E6%BB%9A%E5%8A%A8%E5%8D%87%E7%BA%A7%E7%A4%BA%E6%84%8F.jpg">
+
+
+<link rel="canonical" href="https://blog.x2b.net/3401119197/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/3401119197/","path":"3401119197/","title":"K8s 控制器"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>K8s 控制器 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">13</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">79</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#replicationcontroller"><span class="nav-number">1.</span> <span class="nav-text"> ReplicationController</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-rc"><span class="nav-number">1.1.</span> <span class="nav-text"> 创建 RC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B-rc"><span class="nav-number">1.2.</span> <span class="nav-text"> 查看 RC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E6%A8%A1%E6%9D%BF"><span class="nav-number">1.3.</span> <span class="nav-text"> 修改模板</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B0%B4%E5%B9%B3%E7%BC%A9%E6%94%BE"><span class="nav-number">1.4.</span> <span class="nav-text"> 水平缩放</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4-rc"><span class="nav-number">1.5.</span> <span class="nav-text"> 删除 RC</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#replicaset"><span class="nav-number">2.</span> <span class="nav-text"> ReplicaSet</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-rs"><span class="nav-number">2.1.</span> <span class="nav-text"> 创建 RS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE%E9%80%89%E6%8B%A9"><span class="nav-number">2.2.</span> <span class="nav-text"> 标签选择</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#deployment"><span class="nav-number">3.</span> <span class="nav-text"> Deployment</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-deploy"><span class="nav-number">3.1.</span> <span class="nav-text"> 创建 Deploy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%87%E7%BA%A7-deploy"><span class="nav-number">3.2.</span> <span class="nav-text"> 升级 Deploy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9E%E6%BB%9A%E5%8D%87%E7%BA%A7"><span class="nav-number">3.3.</span> <span class="nav-text"> 回滚升级</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BB%9A%E5%8A%A8%E5%8D%87%E7%BA%A7%E7%AD%96%E7%95%A5%E5%B1%9E%E6%80%A7"><span class="nav-number">3.4.</span> <span class="nav-text"> 滚动升级策略属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9A%82%E5%81%9C%E6%BB%9A%E5%8A%A8%E6%9B%B4%E6%96%B0"><span class="nav-number">3.5.</span> <span class="nav-text"> 暂停滚动更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%81%A2%E5%A4%8D%E6%BB%9A%E5%8A%A8%E5%8D%87%E7%BA%A7"><span class="nav-number">3.6.</span> <span class="nav-text"> 恢复滚动升级</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%B0%B1%E7%BB%AA%E6%8E%A2%E9%92%88"><span class="nav-number">3.7.</span> <span class="nav-text"> 配置就绪探针</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#statefulset"><span class="nav-number">4.</span> <span class="nav-text"> StatefulSet</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E7%8A%B6%E6%80%81"><span class="nav-number">4.1.</span> <span class="nav-text"> 应用状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%89%E7%8A%B6%E6%80%81%E6%9C%8D%E5%8A%A1"><span class="nav-number">4.2.</span> <span class="nav-text"> 有状态服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#statefulset-%E7%89%B9%E7%82%B9"><span class="nav-number">4.3.</span> <span class="nav-text"> StatefulSet 特点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A8%B3%E5%AE%9A%E7%9A%84%E7%BD%91%E7%BB%9C%E6%A0%87%E8%AF%86"><span class="nav-number">4.3.1.</span> <span class="nav-text"> 稳定的网络标识</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A8%B3%E5%AE%9A%E7%9A%84%E4%B8%93%E5%B1%9E%E5%82%A8%E5%AD%98"><span class="nav-number">4.3.2.</span> <span class="nav-text"> 稳定的专属储存</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-sts"><span class="nav-number">4.4.</span> <span class="nav-text"> 创建 STS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95-sts"><span class="nav-number">4.5.</span> <span class="nav-text"> 测试 STS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%91%E7%8E%B0%E8%8A%82%E7%82%B9"><span class="nav-number">4.6.</span> <span class="nav-text"> 发现节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BB%9A%E5%8A%A8%E5%8D%87%E7%BA%A7"><span class="nav-number">4.7.</span> <span class="nav-text"> 滚动升级</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E9%9B%86%E7%BE%A4%E6%95%B0%E6%8D%AE"><span class="nav-number">4.8.</span> <span class="nav-text"> 测试集群数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E8%8A%82%E7%82%B9%E5%A4%B1%E6%95%88"><span class="nav-number">4.9.</span> <span class="nav-text"> 处理节点失效</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#daemonset"><span class="nav-number">5.</span> <span class="nav-text"> DaemonSet</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">5.1.</span> <span class="nav-text"> 定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-ds"><span class="nav-number">5.2.</span> <span class="nav-text"> 创建 DS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81"><span class="nav-number">5.3.</span> <span class="nav-text"> 验证</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#job"><span class="nav-number">6.</span> <span class="nav-text"> Job</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-job"><span class="nav-number">6.1.</span> <span class="nav-text"> 创建 Job</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E6%AC%A1%E8%BF%90%E8%A1%8C"><span class="nav-number">6.2.</span> <span class="nav-text"> 多次运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%90%E5%88%B6%E6%9D%A1%E4%BB%B6"><span class="nav-number">6.3.</span> <span class="nav-text"> 限制条件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#cronjob"><span class="nav-number">7.</span> <span class="nav-text"> CronJob</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-cj"><span class="nav-number">7.1.</span> <span class="nav-text"> 创建 CJ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B6%85%E6%97%B6%E8%AE%BE%E7%BD%AE"><span class="nav-number">7.2.</span> <span class="nav-text"> 超时设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E8%AE%BE%E7%BD%AE"><span class="nav-number">7.3.</span> <span class="nav-text"> 其他设置</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">79</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/3401119197/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="K8s 控制器 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          K8s 控制器
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-03-20 09:01:17" itemprop="dateCreated datePublished" datetime="2022-03-20T09:01:17+08:00">2022-03-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-16 00:30:33" itemprop="dateModified" datetime="2023-05-16T00:30:33+08:00">2023-05-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Kubernets/" itemprop="url" rel="index"><span itemprop="name">Kubernets</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Kubernets/1-%E5%B8%B8%E7%94%A8%E8%B5%84%E6%BA%90/" itemprop="url" rel="index"><span itemprop="name">1.常用资源</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>9.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>31 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="replicationcontroller"><a class="markdownIt-Anchor" href="#replicationcontroller"></a> ReplicationController</h1>
+<p>以下简称 RC。 可以使用 <code>kubectl api-resources</code> 命令查看所有缩写。</p>
+<p>ReplicationController 用于确保 Pod 始终处于运行状态。它主要通过 Pod 标签来控制副本数量。RC 是最初用于复制和重新调度节点的组件，后来被 ReplicaSet 取代，不推荐再使用。</p>
+<p>RC 主要由三个部分组成：</p>
+<ul>
+<li>标签选择器（Label Selector）：用于确定 RC 作用域中的 Pod。</li>
+<li>副本个数（Replica Count）：指定应该运行的 Pod 数量。</li>
+<li>Pod 模板（Pod Template）：用于创建新的 Pod 副本。</li>
+</ul>
+<p>RC 的配置可以随时修改：</p>
+<ul>
+<li>修改副本数量会立即生效。</li>
+<li>更改标签选择器和 Pod 模板对正在运行的 Pod 没有影响，只会使现有的 Pod 脱离 RC 的控制范围。</li>
+<li>修改模板仅影响由此 RC 创建的新 Pod。</li>
+<li>如果更改了一个 Pod 的标签，它将不再由 RC 管理，RC 将自动启动一个新的 Pod 来替代它。</li>
+</ul>
+<h2 id="创建-rc"><a class="markdownIt-Anchor" href="#创建-rc"></a> 创建 RC</h2>
+<p>创建一个最简化的 RC 配置，运行 3 个 Pod 副本，配置如下：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-rc.yaml
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: kubia
+spec:
+  replicas: <span class="token number">3</span>
+  selector:
+    app: kubia
+  template:
+    metadata:
+      labels:
+        app: kubia
+    spec:
+      containers:
+      - name: kubia
+        image: luksa/kubia
+        ports:
+        - containerPort: <span class="token number">8080</span>
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-rc.yaml 
+replicationcontroller/kubia created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>标签选择器需要与 Pod 的 labels 标签匹配，否则 RC 会不断启动新的容器。如果不指定选择器 selector，RC 会根据 Pod 模板中的标签自动配置。</p>
+<p>运行后，Kubernetes 会创建一个名为 “kubia” 的新 RC，并始终运行 3 个实例。如果没有足够的 Pod，RC 会根据模板创建新的 Pod。下面手动删除一个 Pod，RC 会立即重新创建一个新的容器：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl delete po kubia-wtlrp
+pod <span class="token string">"kubia-wtlrp"</span> deleted
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get po
+NAME          READY   STATUS        RESTARTS   AGE
+kubia-2vpxd   <span class="token number">1</span>/1     Running       <span class="token number">0</span>          105s
+kubia-9fqql   <span class="token number">1</span>/1     Running       <span class="token number">0</span>          105s
+kubia-slltr   <span class="token number">1</span>/1     Running       <span class="token number">0</span>          22s
+kubia-wtlrp   <span class="token number">1</span>/1     Terminating   <span class="token number">0</span>          105s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果有节点故障，RC 会在新的节点上启动原先故障节点上的 Pod，之后即使节点故障恢复，Pod 也不会再迁移回故障节点上。</p>
+<h2 id="查看-rc"><a class="markdownIt-Anchor" href="#查看-rc"></a> 查看 RC</h2>
+<p>查询当前运行的所有 RC：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get rc
+NAME    DESIRED   CURRENT   READY   AGE
+kubia   <span class="token number">3</span>         <span class="token number">3</span>         <span class="token number">3</span>       9m37s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>查询具体 RC 的信息同样使用 <code>kubectl describe</code> 命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl describe rc kubia 
+Name:         kubia
+Namespace:    default
+Selector:     <span class="token assign-left variable">app</span><span class="token operator">=</span>kubia
+Labels:       <span class="token assign-left variable">app</span><span class="token operator">=</span>kubia
+Annotations:  <span class="token operator">&lt;</span>none<span class="token operator">></span>
+Replicas:     <span class="token number">3</span> current / <span class="token number">3</span> desired
+P Status:  <span class="token number">3</span> Running / <span class="token number">0</span> Waiting / <span class="token number">0</span> Succeeded / <span class="token number">0</span> Failed<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="修改模板"><a class="markdownIt-Anchor" href="#修改模板"></a> 修改模板</h2>
+<p>可以通过 <code>kubectl edit rc</code> 命令来修改 RC 的 Pod 模板，例如修改模板中的标签选择器和副本数：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl edit rc kubia
+spec:
+  replicas: <span class="token number">2</span>
+  selector:
+    app: kubia1
+  template:
+    metadata:
+      labels:
+        app: kubia1
+<span class="token string">"/tmp/kubectl-edit-2608748675.yaml"</span> 46L, 1157C written
+replicationcontroller/kubia edited<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>查看 Pod 和 Label，发现共有 5 个 Pod，新旧标签同时存在：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get po --show-labels 
+NAME          READY   STATUS    RESTARTS   AGE   LABELS
+kubia-2c44j   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          56s   <span class="token assign-left variable">app</span><span class="token operator">=</span>kubia1
+kubia-2vpxd   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          40m   <span class="token assign-left variable">app</span><span class="token operator">=</span>kubia
+kubia-9fqql   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          40m   <span class="token assign-left variable">app</span><span class="token operator">=</span>kubia
+kubia-ggk2j   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          56s   <span class="token assign-left variable">app</span><span class="token operator">=</span>kubia1
+kubia-slltr   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          38m   <span class="token assign-left variable">app</span><span class="token operator">=</span>kubia<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="水平缩放"><a class="markdownIt-Anchor" href="#水平缩放"></a> 水平缩放</h2>
+<p>使用 <code>scale</code> 命令可以修改 RC 配置中的 <code>spec.replicas</code> 字段的数值，实现扩缩容效果：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl scale rc kubia <span class="token parameter variable">--replicas</span><span class="token operator">=</span><span class="token number">1</span>
+replicationcontroller/kubia scaled
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get pod --show-labels
+NAME          READY   STATUS        RESTARTS   AGE     LABELS
+kubia-2c44j   <span class="token number">1</span>/1     Running       <span class="token number">0</span>          5m18s   <span class="token assign-left variable">app</span><span class="token operator">=</span>kubia1
+kubia-ggk2j   <span class="token number">1</span>/1     Terminating   <span class="token number">0</span>          5m18s   <span class="token assign-left variable">app</span><span class="token operator">=</span>kubia1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="删除-rc"><a class="markdownIt-Anchor" href="#删除-rc"></a> 删除 RC</h2>
+<p>当使用 <code>delete</code> 命令删除 RC 时，Pod 也会被删除。可以指定 <code>--cascade=orphan</code> 选项来删除 RC 同时保持 Pod 运行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl delete rc kubia <span class="token parameter variable">--cascade</span><span class="token operator">=</span>orphan
+replicationcontroller <span class="token string">"kubia"</span> deleted<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>之后可以通过标签选择器创建新的 RC 或 ReplicaSet 将它们再次管理起来。</p>
+<h1 id="replicaset"><a class="markdownIt-Anchor" href="#replicaset"></a> ReplicaSet</h1>
+<p>以下简称 RS。RS 和 RC 都是依赖 Pod 标签选择器来进行控制。</p>
+<p>RS 的行为和用法与 RC 几乎完全相同。与 RC 相比，RS 的选择器还允许进行反向选择，或者通过标签键来选择 Pod。例如，选择所有带有 <code>env</code> 标签的 Pod（<code>env=*</code>）。</p>
+<p>通常情况下，不会直接创建 RS 对象，而是通过创建 Deployment 资源时自动创建。Deployment 通过 RS 来管理多个 Pod 副本。</p>
+<h2 id="创建-rs"><a class="markdownIt-Anchor" href="#创建-rs"></a> 创建 RS</h2>
+<p>创建一个 YAML 配置文件并发布。与 RC 配置不同的是 <code>apiVersion</code> 版本、<code>kind</code> 类型和标签选择器的样式：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-rs.yaml
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: kubia
+spec:
+  replicas: <span class="token number">3</span>
+  selector:
+    matchLabels:
+      app: kubia
+  template:
+    metadata:
+      labels:
+        app: kubia
+    spec:
+      containers:
+      - name: kubia
+        image: luksa/kubia
+        ports:
+        - name: http
+          containerPort: <span class="token number">80</span>
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-rs.yaml
+replicaset.apps/kubia created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="标签选择"><a class="markdownIt-Anchor" href="#标签选择"></a> 标签选择</h2>
+<p>标签选择器和 Pod 中使用的方式相同，只是语法略有不同。例如，通过 <code>matchLabels</code> 来匹配单个标签：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-rs.yaml
+spec:
+  selector:
+    matchLabels:
+      app: kubia<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>通过 <code>matchExpressions</code> 表达式同时选择两个不同 <code>app</code> 值的标签：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-rs.yaml
+spec:
+  selector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - kubia
+          - kubia1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>operator</code> 还可以使用其他运算符：<code>NotIn</code>（不在列表中）、<code>Exists</code>（匹配 Key）、<code>DoesNotExist</code>（反向匹配 Key）。</p>
+<p>如果指定了多个表达式，所有表达式的匹配结果都必须为 true 才能使选择器与 Pod 匹配。</p>
+<p>如果同时使用 <code>matchLabels</code> 和 <code>matchExpressions</code>，则所有标签都必须匹配。</p>
+<h1 id="deployment"><a class="markdownIt-Anchor" href="#deployment"></a> Deployment</h1>
+<p>最常用的控制器，可以管理多个副本的 pod 并确保它们按照预期状态运行。</p>
+<p>Deployment 是一种更高级的资源，用于部署应用程序并以声明的方式升级应用。创建 Deployment 资源时，会同时创建 ReplicaSet（RS）资源，实际上是由 RS 创建和管理 pod。Deployment 的主要职责是处理应用程序升级时两个版本的控制器之间的关系。</p>
+<p>下面简称为 Deploy。</p>
+<h2 id="创建-deploy"><a class="markdownIt-Anchor" href="#创建-deploy"></a> 创建 Deploy</h2>
+<p>创建一个 Deploy 的过程与创建 ReplicaController（RC）的声明基本相同，只是 Deploy 的声明中包含了额外的部署策略字段。由于 Deploy 可以同时管理多个版本的 pod，因此在 Deploy 的名称中不需要添加版本号：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-deploy.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubia
+spec:
+  replicas: <span class="token number">3</span>
+  selector:
+    matchLabels:
+      app: kubia
+  template:
+    metadata:
+      name: kubia
+      labels:
+        app: kubia
+    spec:
+      containers:
+      - image: luksa/kubia:v1
+        name: nodejs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubia
+spec:
+  type: NodePort
+  selector:
+    app: kubia
+  ports:
+  - port: <span class="token number">80</span>
+    targetPort: <span class="token number">8080</span>
+    nodePort: <span class="token number">30002</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>创建 Deploy 时加入 <code>--record</code> 选项，可以记录 CHANGE-CAUSE 信息，即声明文件中的注解字段：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-deploy.yaml <span class="token parameter variable">--record</span>
+Flag <span class="token parameter variable">--record</span> has been deprecated, <span class="token parameter variable">--record</span> will be removed <span class="token keyword">in</span> the future
+deployment.apps/kubia created
+service/kubia created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 <code>kubectl rollout</code> 命令可以查询 Deploy 的部署状态：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl rollout status deployment kubia
+deployment <span class="token string">"kubia"</span> successfully rolled out
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get all
+NAME                         READY   STATUS        RESTARTS   AGE
+pod/kubia-74967b5695-5s68q   <span class="token number">1</span>/1     Running       <span class="token number">0</span>          10s
+pod/kubia-74967b5695-8cxtb   <span class="token number">1</span>/1     Running       <span class="token number">0</span>          10s
+pod/kubia-74967b5695-bwzb9   <span class="token number">1</span>/1     Running       <span class="token number">0</span>          10s
+pod/kubia-74967b5695-jkcjl   <span class="token number">0</span>/1     Terminating   <span class="token number">0</span>          2m55s
+
+NAME                 TYPE        CLUSTER-IP     EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>        AGE
+service/kubernetes   ClusterIP   <span class="token number">10.96</span>.0.1      <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">443</span>/TCP        133d
+service/kubia        NodePort    <span class="token number">10.101</span>.57.66   <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>:30002/TCP   10s
+
+NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/kubia   <span class="token number">3</span>/3     <span class="token number">3</span>            <span class="token number">3</span>           10s
+
+NAME                               DESIRED   CURRENT   READY   AGE
+replicaset.apps/kubia-74967b5695   <span class="token number">3</span>         <span class="token number">3</span>         <span class="token number">3</span>       10s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>新建的 pod 名字中间会有一串数字，这是 pod 模板的哈希值。由 Deploy 创建的 ReplicaSet 控制器也带有相同的哈希值。这样 Deploy 就能够对应和管理一个版本的 pod 模板。</p>
+<p>通过 30002 端口访问服务来测试 pod 的工作状态：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> localhost:30002
+This is v1 running <span class="token keyword">in</span> pod kubia-74967b5695-5s68q<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="升级-deploy"><a class="markdownIt-Anchor" href="#升级-deploy"></a> 升级 Deploy</h2>
+<p>Deploy 默认的升级策略是执行滚动更新（RollingUpdate）。另一种策略是 Recreate，它会一次性删除所有旧版本的 pod，然后创建新的 pod。</p>
+<p>通过 patch 命令修改单个或少量资源属性非常有用，但是更改 Deploy 的自有属性不会触发 pod 的任何更新。可以通过设置一个时间来减慢滚动更新的速度：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl patch deploy kubia <span class="token parameter variable">-p</span> <span class="token string">'&#123;"spec": &#123;"minReadySeconds": 10&#125;&#125;'</span>
+deployment.apps/kubia patched<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>采用 <code>set image</code> 命令来更改包含容器资源中的镜像：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">set</span> image deployment kubia <span class="token assign-left variable">nodejs</span><span class="token operator">=</span>luksa/kubia:v2
+deployment.apps/kubia image updated<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>通过 describe 命令查询可以查看 Deploy 的升级方式，和 ReplicaController（RC）滚动升级类似，先增加新版本的 pod，缩减旧版本的 pod，最后完成升级：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get all
+NAME                         READY   STATUS        RESTARTS   AGE
+pod/kubia-74967b5695-5s68q   <span class="token number">1</span>/1     Running       <span class="token number">0</span>          3m40s
+pod/kubia-74967b5695-8cxtb   <span class="token number">1</span>/1     Terminating   <span class="token number">0</span>          3m40s
+pod/kubia-74967b5695-bwzb9   <span class="token number">1</span>/1     Running       <span class="token number">0</span>          3m40s
+pod/kubia-bcf9bb974-9kb8x    <span class="token number">1</span>/1     Running       <span class="token number">0</span>          3s
+pod/kubia-bcf9bb974-bqwng    <span class="token number">1</span>/1     Running       <span class="token number">0</span>          21s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如下图所示，整个升级过程由运行在 Kubernetes 上的一个控制器处理和完成，简单又可靠：</p>
+<p><img data-src="../../../images/%E6%BB%9A%E5%8A%A8%E5%8D%87%E7%BA%A7%E7%A4%BA%E6%84%8F.jpg" alt="滚动升级示意" /></p>
+<p>如果 Deployment 中的 pod 模板引用了一个 ConfigMap（Secret），那么更改 ConfigMap 资源不会触发升级操作。需要创建一个新的 ConfigMap 并修改 pod 模板引用新的 ConfigMap。</p>
+<h2 id="回滚升级"><a class="markdownIt-Anchor" href="#回滚升级"></a> 回滚升级</h2>
+<p>如果升级的版本存在问题，可以自动停止升级。首先将应用升级到有错误的版本，在第 5 个请求之后会返回内部服务器错误，即 HTTP 状态码 500：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">set</span> image deploy kubia <span class="token assign-left variable">nodejs</span><span class="token operator">=</span>luksa/kubia:v3
+deployment.apps/kubia image updated
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl rollout status deploy kubia
+Waiting <span class="token keyword">for</span> deployment <span class="token string">"kubia"</span> rollout to finish: <span class="token number">1</span> out of <span class="token number">3</span> new replicas have been updated<span class="token punctuation">..</span>.
+Waiting <span class="token keyword">for</span> deployment <span class="token string">"kubia"</span> rollout to finish: <span class="token number">2</span> out of <span class="token number">3</span> new replicas have been updated<span class="token punctuation">..</span>.
+Waiting <span class="token keyword">for</span> deployment <span class="token string">"kubia"</span> rollout to finish: <span class="token number">1</span> old replicas are pending termination<span class="token punctuation">..</span>.
+deployment <span class="token string">"kubia"</span> successfully rolled out<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以使用 <code>rollout undo</code> 命令回滚到上一个版本：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl rollout undo deploy kubia
+deployment.apps/kubia rolled back<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p><code>undo</code> 命令也可以在滚动升级过程中运行，并直接停止升级回退到旧版本。</p>
+<p>最后，通过 <code>rollout history</code> 来显示升级版本的历史记录，可以使用 <code>--revision=1</code> 指定版本号：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl rollout <span class="token function">history</span> deployment kubia
+deployment.apps/kubia 
+REVISION  CHANGE-CAUSE
+<span class="token number">1</span>         kubectl create <span class="token parameter variable">--filename</span><span class="token operator">=</span>kubia-deploy.yaml <span class="token parameter variable">--record</span><span class="token operator">=</span>true
+<span class="token number">3</span>         kubectl create <span class="token parameter variable">--filename</span><span class="token operator">=</span>kubia-deploy.yaml <span class="token parameter variable">--record</span><span class="token operator">=</span>true
+<span class="token number">4</span>         kubectl create <span class="token parameter variable">--filename</span><span class="token operator">=</span>kubia-deploy.yaml <span class="token parameter variable">--record</span><span class="token operator">=</span>true<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>滚动升级成功后，旧版本的 ReplicaSet 不会被删除，Kubernetes 会保留完整的版本修改历史。历史记录保留数目默认为 2，由 Deploy 的 <code>revisionHistoryLimit</code> 属性值来限制，更早的 ReplicaSet 会被删除。</p>
+<p>因此，可以通过 <code>undo</code> 命令指定一个特定版本号，回滚到指定的版本：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl rollout undo deploy kubia --to-revision<span class="token operator">=</span><span class="token number">1</span>
+deployment.apps/kubia rolled back<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p><code>--to-revision</code> 参数对应着历史记录上的版本。如果手动删除了遗留的 ReplicaSet，将导致历史版本记录丢失，无法进行回滚。另外，扩容操作不会创建新的版本。</p>
+<h2 id="滚动升级策略属性"><a class="markdownIt-Anchor" href="#滚动升级策略属性"></a> 滚动升级策略属性</h2>
+<p>可以通过修改 Deploy 配置文件中的 <code>spec.strategy.rollingUpdate</code> 来调整滚动升级策略的两个属性：</p>
+<ul>
+<li>
+<p><code>maxSurge</code>（最大超出数量）</p>
+<p>该属性决定了在 Deploy 配置中所期望的副本数之外，允许超出的 Pod 实例数量。默认值为 25%。例如，如果期望副本数为 4，那么在滚动升级期间，最多会运行 5 个 Pod 实例。将百分数转换为绝对值时会进行四舍五入。也可以直接指定绝对值。</p>
+</li>
+<li>
+<p><code>maxUnavailable</code>（最大不可用数量）</p>
+<p>该属性决定了在滚动升级期间，相对于期望副本数允许的不可用 Pod 实例数量。默认值为 25%，表示可用的 Pod 实例数量不能低于期望副本数的 75%。例如，如果期望副本数为 4，那么只能有一个 Pod 处于不可用状态。也可以使用绝对值进行设定。</p>
+</li>
+</ul>
+<p>假设当前运行的副本数量为 3。当设置 <code>maxSurge=1</code>，<code>maxUnavailable=0</code> 时，表示需要始终保持 3 个可用的副本，升级过程中最多运行 4 个副本数量。每次启动 1 个新副本，新副本正常运行后，删除 1 个旧副本，直到所有旧副本都被替换掉。整个过程的示意图如下所示：</p>
+<p><img data-src="../../../images/%E6%BB%9A%E5%8A%A8%E5%8D%87%E7%BA%A7%E7%AD%96%E7%95%A5%E5%B1%9E%E6%80%A7%E7%A4%BA%E4%BE%8B1.jpg" alt="滚动升级策略属性示例1" /></p>
+<p>对于 extensions/v1beta1 版本的 Deploy，使用不同的默认值，两个参数都被设置为 1，表示允许 1 个副本处于不可用状态，升级过程中最多运行 4 个副本数量。首先删除 1 个旧副本，启动 2 个新副本，新副本正常运行后，继续删除 1 个旧副本并启动 1 个新副本，直到所有旧副本都被替换掉。整个过程的示意图如下所示：</p>
+<p><img data-src="../../../images/%E6%BB%9A%E5%8A%A8%E5%8D%87%E7%BA%A7%E7%AD%96%E7%95%A5%E5%B1%9E%E6%80%A7%E7%A4%BA%E4%BE%8B2.jpg" alt="滚动升级策略属性示例2" /></p>
+<h2 id="暂停滚动更新"><a class="markdownIt-Anchor" href="#暂停滚动更新"></a> 暂停滚动更新</h2>
+<p>可以使用 <code>rollout pause</code> 命令在更新过程中暂停升级：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">set</span> image deploy kubia <span class="token assign-left variable">nodejs</span><span class="token operator">=</span>luksa/kubia:v4
+deployment.apps/kubia image updated
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl rollout pause deploy kubia
+deployment.apps/kubia paused<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在此时应用程序处于一个新版本的 Pod 加上三个旧版本的 Pod 的混合运行状态下，部分请求将被切换到新的 Pod 上。通过这种方式，只有部分用户会访问到新版本，相当于运行了一个金丝雀版本。在验证新版本是否正常工作后，可以继续升级剩余的 Pod 或回滚到上一个版本。</p>
+<p>可以使用 <code>&amp;&amp;</code> 符号将两个命令连接起来：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">set</span> image deploy kubia <span class="token assign-left variable">nodejs</span><span class="token operator">=</span>luksa/kubia:v1 <span class="token operator">&amp;&amp;</span> kubectl rollout pause deploy kubia
+deployment.apps/kubia image updated
+deployment.apps/kubia paused
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get all
+NAME                         READY   STATUS    RESTARTS   AGE
+pod/kubia-74967b5695-ckpf9   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          53s
+pod/kubia-7bddb8bfc7-fjkkg   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          2m
+pod/kubia-7bddb8bfc7-hnjh4   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          2m12s
+pod/kubia-7bddb8bfc7-wtt8g   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          108s
+
+NAME                 TYPE        CLUSTER-IP     EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>        AGE
+service/kubernetes   ClusterIP   <span class="token number">10.96</span>.0.1      <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">443</span>/TCP        133d
+service/kubia        NodePort    <span class="token number">10.101</span>.57.66   <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>:30002/TCP   37m
+
+NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/kubia   <span class="token number">4</span>/3     <span class="token number">1</span>            <span class="token number">4</span>           37m
+
+NAME                               DESIRED   CURRENT   READY   AGE
+replicaset.apps/kubia-555774bf68   <span class="token number">0</span>         <span class="token number">0</span>         <span class="token number">0</span>       9m58s
+replicaset.apps/kubia-74967b5695   <span class="token number">1</span>         <span class="token number">1</span>         <span class="token number">1</span>       37m
+replicaset.apps/kubia-7bddb8bfc7   <span class="token number">3</span>         <span class="token number">3</span>         <span class="token number">3</span>       31m
+replicaset.apps/kubia-bcf9bb974    <span class="token number">0</span>         <span class="token number">0</span>         <span class="token number">0</span>       34m
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> localhost:30002
+This is v3 running <span class="token keyword">in</span> pod kubia-7bddb8bfc7-wtt8g
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> localhost:30002
+This is v1 running <span class="token keyword">in</span> pod kubia-74967b5695-ckpf9<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>滚动升级的进度无法控制，因此进行金丝雀发布的正确方式是使用两个不同的 Deploy，并同时调整它们对应的 Pod 数量。</p>
+<h2 id="恢复滚动升级"><a class="markdownIt-Anchor" href="#恢复滚动升级"></a> 恢复滚动升级</h2>
+<p>在暂停升级期间，撤销命令不起作用。在恢复升级后才能进行撤销操作。可以使用 <code>rollout resume</code> 命令来恢复升级：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl rollout resume deploy kubia
+deployment.apps/kubia resumed
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl rollout undo deploy kubia --to-revision<span class="token operator">=</span><span class="token number">3</span>
+deployment.apps/kubia rolled back<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>暂停部署还可以阻止更新 Deploy 后自动触发的滚动升级过程。可以对 Deployment 进行多次更改，并在完成所有更改后再恢复滚动升级，一旦所有更改完成，则恢复更新过程。</p>
+<h2 id="配置就绪探针"><a class="markdownIt-Anchor" href="#配置就绪探针"></a> 配置就绪探针</h2>
+<p>使用 <code>minReadySeconds</code> 属性来设置新的 Pod 运行多久后才将其标记为可用。当所有容器的就绪探针返回成功时，Pod 就被标记为就绪状态。如果一个新的 Pod 运行出错，并且在 <code>minReadySeconds</code> 时间内其就绪探针失败，那么新版本的滚动升级将被阻止。一般会将 <code>minReadySeconds</code> 设置为较高的值，以确保 Pod 在真正接收实际流量后可以持续保持就绪状态。</p>
+<p>使用之前会报错的 v3 镜像来测试就绪探针的作用：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-v3.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubia
+spec:
+  replicas: <span class="token number">3</span>
+  selector:
+    matchLabels:
+      app: kubia
+  minReadySeconds: <span class="token number">10</span>
+  strategy:
+    rollingUpdate:
+      maxSurge: <span class="token number">1</span>
+      maxUnavailable: <span class="token number">0</span>
+    type: RollingUpdate
+  template:
+    metadata:
+      name: kubia
+      labels:
+        app: kubia
+    spec:
+      containers:
+      - image: luksa/kubia:v3
+        name: nodejs
+        readinessProbe:
+          periodSeconds: <span class="token number">1</span>
+          httpGet:
+            path: /
+            port: <span class="token number">8080</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>通过将 <code>maxUnavailable</code> 的值设置为 0，确保在升级过程中 Pod 逐个被替换。就绪探针的 GET 请求每秒执行一次，在第 6 秒开始报错。使用 <code>apply</code> 命令升级 Deployment 时，不仅会更新镜像，还会添加就绪探针以及其他参数：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl apply <span class="token parameter variable">-f</span> kubia-v3.yaml
+Warning: resource deployments/kubia is missing the kubectl.kubernetes.io/last-applied-configuration annotation <span class="token function">which</span> is required by kubectl apply. kubectl apply should only be used on resources created declaratively by either kubectl create --save-config or kubectl apply. The missing annotation will be patched automatically.
+deployment.apps/kubia configured<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>观察 <code>curl</code> 的输出，可以看到流量并没有转发到 v3 版本的 Pod 上，因为新的 Pod 尚未就绪，被从 Service 的 endpoint 中移除：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> localhost:30002
+This is v1 running <span class="token keyword">in</span> pod kubia-74967b5695-8kmxn
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> localhost:30002
+This is v1 running <span class="token keyword">in</span> pod kubia-74967b5695-ckpf9
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> localhost:30002
+This is v1 running <span class="token keyword">in</span> pod kubia-74967b5695-ls2z2
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get po
+NAME                     READY   STATUS    RESTARTS   AGE
+kubia-67d49c55dd-wcnwd   <span class="token number">0</span>/1     Running   <span class="token number">0</span>          60s
+kubia-74967b5695-8kmxn   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          4m40s
+kubia-74967b5695-ckpf9   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          10m
+kubia-74967b5695-ls2z2   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          4m28s
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl describe po kubia-67d49c55dd-wcnwd
+Events:
+  Type     Reason     Age                     From               Message
+  ----     ------     ----                    ----               -------
+  Warning  Unhealthy  2m51s <span class="token punctuation">(</span>x22 over 3m11s<span class="token punctuation">)</span>  kubelet            Readiness probe failed: HTTP probe failed with statuscode: <span class="token number">500</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>之后，升级一直处于进行中的状态，因为 <code>maxUnavailable</code> 为 0，所以既不会创建新的 Pod，也不会删除任何原始的 Pod。整个流程如下图所示：</p>
+<p><img data-src="../../../images/%E5%B0%B1%E7%BB%AA%E6%8E%A2%E9%92%88%E4%BD%9C%E7%94%A8.jpg" alt="就绪探针作用" /></p>
+<p>如果没有正确设置 <code>minReadySeconds</code>，一旦有一个就绪探针调用成功，就会认为新的 Pod 已经可用。因此，建议将时间设定得较长一些。</p>
+<p>默认情况下，滚动升级如果在 10 分钟内无法完成，将被视为失败。可以通过 <code>spec.progressDeadlineSeconds</code> 来设置此时限：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl describe deploy kubia
+Name:                   kubia
+Namespace:              default
+Replicas:               <span class="token number">3</span> desired <span class="token operator">|</span> <span class="token number">1</span> updated <span class="token operator">|</span> <span class="token number">4</span> total <span class="token operator">|</span> <span class="token number">3</span> available <span class="token operator">|</span> <span class="token number">1</span> unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        <span class="token number">10</span>
+RollingUpdateStrategy:  <span class="token number">0</span> max unavailable, <span class="token number">1</span> max surge
+Conditions:
+  Type           Status  Reason
+  ----           ------  ------
+  Available      True    MinimumReplicasAvailable
+  Progressing    False   ProgressDeadlineExceeded
+OldReplicaSets:  kubia-74967b5695 <span class="token punctuation">(</span><span class="token number">3</span>/3 replicas created<span class="token punctuation">)</span>
+NewReplicaSet:   kubia-67d49c55dd <span class="token punctuation">(</span><span class="token number">1</span>/1 replicas created<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果滚动升级卡住，只能通过 <code>rollout undo</code> 命令来取消滚动升级。</p>
+<h1 id="statefulset"><a class="markdownIt-Anchor" href="#statefulset"></a> StatefulSet</h1>
+<p>StatefulSet 用于确保每个 Pod 副本在整个生命周期中具有相同的名称、网络标识和状态，而其他控制器则不提供此功能。同时，StatefulSet 会确保副本按照固定的顺序启动、更新或删除。</p>
+<p>下面简称 STS。</p>
+<h2 id="应用状态"><a class="markdownIt-Anchor" href="#应用状态"></a> 应用状态</h2>
+<p><img data-src="../../../images/%E5%BA%94%E7%94%A8%E7%8A%B6%E6%80%81.jpg" alt="应用状态" /></p>
+<p>可以通过状态和储存两个概念正交于坐标系中，得到四种应用程序类型：</p>
+<ul>
+<li>象限 A 中是那些具有读写磁盘需求的有状态应用程序，例如各种 RDBMS 储存系统、分布式储存系统 Redis Cluster、MongoDB、ZooKeeper、Cassandra 等。</li>
+<li>象限 B 包含两类应用程序，一类是具有读写磁盘需求的无状态应用程序，另一类是仅需读取权限的无状态应用，比如 Web 服务程序。</li>
+<li>象限 C 中是无磁盘访问需求的无状态应用程序。</li>
+<li>象限 D 中是无磁盘访问需求的有状态应用程序，例如淘宝的购物车系统。</li>
+</ul>
+<h2 id="有状态服务"><a class="markdownIt-Anchor" href="#有状态服务"></a> 有状态服务</h2>
+<p>在 Kubernetes 中，Pod 的管理对象包括 ReplicationController（RC）、ReplicaSet（RS）、Deployment（Deploy）、DaemonSet（DS）和 Job 等，都是面向无状态的服务。然而，许多服务是有状态的，例如 MySQL 集群、MongoDB 集群、Akka 集群等。这些集群具有一些共同点：</p>
+<ul>
+<li>
+<p>每个节点都有固定的身份 ID，通过该 ID 进行相互发现和通信；</p>
+</li>
+<li>
+<p>集群的规模相对固定，不能随意变动；</p>
+</li>
+<li>
+<p>集群中的每个节点都具有状态，通常会将数据持久化到永久存储中；</p>
+</li>
+<li>
+<p>如果磁盘损坏，集群中的某个节点将无法正常运行，从而导致集群功能受损。</p>
+</li>
+</ul>
+<h2 id="statefulset-特点"><a class="markdownIt-Anchor" href="#statefulset-特点"></a> StatefulSet 特点</h2>
+<p>StatefulSet 可以看作是 Deployment 的一个特殊变种，具有以下特性：</p>
+<ul>
+<li>StatefulSet 中的每个 Pod 都有稳定且唯一的网络标识，用于发现集群内的其他成员。例如，如果 StatefulSet 的名称是 “kafka”，那么第一个 Pod 的名称将是 “kafka-0”，第二个 Pod 的名称将是 “kafka-1”。</li>
+<li>StatefulSet 控制的 Pod 副本启动顺序是受控的，操作第 n 个 Pod 时，前一个 Pod 已经处于运行且准备就绪的状态。</li>
+<li>StatefulSet 中的 Pod 使用稳定的持久化存储卷（Persistent Volume，PV），在删除 Pod 时，默认不会删除相关的存储卷。</li>
+</ul>
+<p>完整可用的 StatefulSet 通常由三个组件构成：StatefulSet、Headless Service 和 VolumeClaimTemplate。</p>
+<h3 id="稳定的网络标识"><a class="markdownIt-Anchor" href="#稳定的网络标识"></a> 稳定的网络标识</h3>
+<p>由 StatefulSet 创建的每个 Pod 都有一个从 0 开始的顺序索引，体现在 Pod 的名称、主机名和固定存储上。</p>
+<p>StatefulSet 通常与 Headless Service 配合使用。如果解析 Headless Service 的 DNS 域名，将返回该 Service 对应的所有 Pod 的 Endpoint 列表。StatefulSet 在 Headless Service 的基础上为 StatefulSet 控制的每个 Pod 实例创建了一个 DNS 域名，格式为：<code>$(podname).$(headless service name).$(namespace).svc.cluster.local</code>。</p>
+<p>当 StatefulSet 管理的 Pod 实例消失后，StatefulSet 会确保重新启动一个新的 Pod 实例，新实例具有与之前 Pod 完全一致的名称和主机名。</p>
+<p>扩容 StatefulSet 时，将使用下一个尚未使用的顺序索引值创建一个新的 Pod 实例。缩容时，会先删除最高索引值的实例，每次只操作一个 Pod 实例，并且在存在不健康实例的情况下，不允许进行缩容操作。</p>
+<h3 id="稳定的专属储存"><a class="markdownIt-Anchor" href="#稳定的专属储存"></a> 稳定的专属储存</h3>
+<p>有状态的 Pod 的存储必须是持久的，并且与 Pod 解耦。StatefulSet 需要定义一个或多个卷声明模板，并将其绑定到 Pod 实例上。</p>
+<p>在扩容 StatefulSet 时，会创建新的 Pod 实例以及与之关联的一个或多个持久卷声明。在缩容时，只会删除 Pod，而保留持久卷声明，在重新扩容后，新的 Pod 会与先前的持久卷绑定。</p>
+<h2 id="创建-sts"><a class="markdownIt-Anchor" href="#创建-sts"></a> 创建 STS</h2>
+<p>创建一个简单的应用，接收 POST 请求，并将请求中的 body 数据写入 <code>/var/data/kubia.txt</code>，在收到 GET 请求时，返回主机名和存储的数据：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">root@ec837c407906:/<span class="token comment"># cat app.js</span>
+const http <span class="token operator">=</span> require<span class="token punctuation">(</span><span class="token string">'http'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+const os <span class="token operator">=</span> require<span class="token punctuation">(</span><span class="token string">'os'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+const fs <span class="token operator">=</span> require<span class="token punctuation">(</span><span class="token string">'fs'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+const dataFile <span class="token operator">=</span> <span class="token string">"/var/data/kubia.txt"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> fileExists<span class="token punctuation">(</span>file<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  try <span class="token punctuation">&#123;</span>
+    fs.statSync<span class="token punctuation">(</span>file<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token builtin class-name">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span> catch <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token builtin class-name">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+var handler <span class="token operator">=</span> function<span class="token punctuation">(</span>request, response<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>request.method <span class="token operator">==</span> <span class="token string">'POST'</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    var <span class="token function">file</span> <span class="token operator">=</span> fs.createWriteStream<span class="token punctuation">(</span>dataFile<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    file.on<span class="token punctuation">(</span><span class="token string">'open'</span>, <span class="token keyword">function</span> <span class="token punctuation">(</span>fd<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      request.pipe<span class="token punctuation">(</span>file<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      console.log<span class="token punctuation">(</span><span class="token string">"New data has been received and stored."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      response.writeHead<span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      response.end<span class="token punctuation">(</span><span class="token string">"Data stored on pod "</span> + os.hostname<span class="token punctuation">(</span><span class="token punctuation">)</span> + <span class="token string">"<span class="token entity" title="\n">\n</span>"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+    var data <span class="token operator">=</span> fileExists<span class="token punctuation">(</span>dataFile<span class="token punctuation">)</span> ? fs.readFileSync<span class="token punctuation">(</span>dataFile, <span class="token string">'utf8'</span><span class="token punctuation">)</span> <span class="token builtin class-name">:</span> <span class="token string">"No data posted yet"</span><span class="token punctuation">;</span>
+    response.writeHead<span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    response.write<span class="token punctuation">(</span><span class="token string">"You've hit "</span> + os.hostname<span class="token punctuation">(</span><span class="token punctuation">)</span> + <span class="token string">"<span class="token entity" title="\n">\n</span>"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    response.end<span class="token punctuation">(</span><span class="token string">"Data stored on this pod: "</span> + data + <span class="token string">"<span class="token entity" title="\n">\n</span>"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+var www <span class="token operator">=</span> http.createServer<span class="token punctuation">(</span>handler<span class="token punctuation">)</span><span class="token punctuation">;</span>
+www.listen<span class="token punctuation">(</span><span class="token number">8080</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>首先，创建基于 NFS 的持久化存储卷：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">cd</span> /srv/pv/
+<span class="token punctuation">[</span>root@server4-master pv<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> pv001 pv002 pv003
+<span class="token punctuation">[</span>root@server4-master pv<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token string">"/srv/pv/pv001 *(rw,no_root_squash,sync)"</span> <span class="token operator">>></span> /etc/exports
+<span class="token punctuation">[</span>root@server4-master pv<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token string">"/srv/pv/pv002 *(rw,no_root_squash,sync)"</span> <span class="token operator">>></span> /etc/exports
+<span class="token punctuation">[</span>root@server4-master pv<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token string">"/srv/pv/pv003 *(rw,no_root_squash,sync)"</span> <span class="token operator">>></span> /etc/exports
+<span class="token punctuation">[</span>root@server4-master pv<span class="token punctuation">]</span>$ exportfs <span class="token parameter variable">-a</span>
+<span class="token punctuation">[</span>root@server4-master pv<span class="token punctuation">]</span>$ showmount <span class="token parameter variable">-e</span>
+Export list <span class="token keyword">for</span> server4-master:
+/srv/pv/pv003 *
+/srv/pv/pv002 *
+/srv/pv/pv001 *
+/srv/pv       *
+<span class="token punctuation">[</span>root@server4-master pv<span class="token punctuation">]</span>$ exportfs <span class="token parameter variable">-v</span>
+/srv/pv         <span class="token operator">&lt;</span>world<span class="token operator">></span><span class="token punctuation">(</span>sync,wdelay,hide,no_subtree_check,sec<span class="token operator">=</span>sys,rw,secure,no_root_squash,no_all_squash<span class="token punctuation">)</span>
+/srv/pv/pv001   <span class="token operator">&lt;</span>world<span class="token operator">></span><span class="token punctuation">(</span>sync,wdelay,hide,no_subtree_check,sec<span class="token operator">=</span>sys,rw,secure,no_root_squash,no_all_squash<span class="token punctuation">)</span>
+/srv/pv/pv002   <span class="token operator">&lt;</span>world<span class="token operator">></span><span class="token punctuation">(</span>sync,wdelay,hide,no_subtree_check,sec<span class="token operator">=</span>sys,rw,secure,no_root_squash,no_all_squash<span class="token punctuation">)</span>
+/srv/pv/pv003   <span class="token operator">&lt;</span>world<span class="token operator">></span><span class="token punctuation">(</span>sync,wdelay,hide,no_subtree_check,sec<span class="token operator">=</span>sys,rw,secure,no_root_squash,no_all_squash<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以使用 List 对象来定义一组 PV 资源，效果和使用 <code>--</code> 分隔多个资源一样。设定 storageClassName 为 nfs：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> pv-list.yaml
+kind: List
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    name: pv001
+  spec:
+    capacity:
+      storage: 10Mi
+    accessModes:
+      - ReadWriteOnce
+    persistentVolumeReclaimPolicy: Retain
+    storageClassName: nfs
+    nfs:
+      path: /srv/pv/pv001
+      server: server4-master
+- apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    name: pv002
+  spec:
+    capacity:
+      storage: 10Mi
+    accessModes:
+      - ReadWriteOnce
+    persistentVolumeReclaimPolicy: Retain
+    storageClassName: nfs
+    nfs:
+      path: /srv/pv/pv002
+      server: server4-master
+- apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    name: pv003
+  spec:
+    capacity:
+      storage: 10Mi
+    accessModes:
+      - ReadWriteOnce
+    persistentVolumeReclaimPolicy: Retain
+    storageClassName: nfs
+    nfs:
+      path: /srv/pv/pv003
+      server: server4-master
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> pv-list.yaml 
+persistentvolume/pv001 created
+persistentvolume/pv002 created
+persistentvolume/pv003 created
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get <span class="token function">pv</span>
+NAME         CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM                 STORAGECLASS   REASON   AGE
+pv001        10Mi       RWO            Retain           Available                         nfs                     8s
+pv002        10Mi       RWO            Retain           Available                         nfs                     8s
+pv003        10Mi       RWO            Retain           Available                         nfs                     8s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在部署 StatefulSet 之前，还需要创建一个用于为有状态的 Pod 提供网络标识的 Headless Service，以实现 Pod 之间的互相发现：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-svc-headless.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubia
+spec:
+  clusterIP: None
+  selector:
+    app: kubia
+  ports:
+  - name: http
+    port: <span class="token number">80</span>
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-svc-headless.yaml
+service/kubia created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最后是 StatefulSet 的配置，其中 <code>serviceName</code> 和 <code>template</code> 字段是必需的：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-st.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kubia
+spec:
+  serviceName: kubia
+  replicas: <span class="token number">2</span>
+  selector:
+    matchLabels:
+      app: kubia
+  template:
+    metadata:
+      labels:
+        app: kubia
+    spec:
+      containers:
+      - name: kubia
+        image: luksa/kubia-pet
+        ports:
+        - name: http
+          containerPort: <span class="token number">8080</span>
+        volumeMounts:
+        - mountPath: <span class="token string">"/var/data"</span>
+          name: data
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Mi
+      storageClassName: nfs<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>通过一个名为 <code>data</code> 的 PVC 模板为每个 Pod 创建一个持久卷声明，在其中指定 <code>storageClassName: nfs</code> 来选择前面创建的 PV，这样 PVC 会自动与可用的 PV 相关联：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-st.yaml
+statefulset.apps/kubia created
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get all
+NAME          READY   STATUS              RESTARTS   AGE
+pod/kubia-0   <span class="token number">1</span>/1     Running             <span class="token number">0</span>          13s
+pod/kubia-1   <span class="token number">0</span>/1     ContainerCreating   <span class="token number">0</span>          7s
+NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>   AGE
+service/kubernetes   ClusterIP   <span class="token number">10.96</span>.0.1    <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">443</span>/TCP   135d
+service/kubia        ClusterIP   None         <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>/TCP    29m
+NAME                     READY   AGE
+statefulset.apps/kubia   <span class="token number">1</span>/2     13s
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get pvc
+NAME           STATUS   VOLUME       CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+data-kubia-0   Bound    pv001        10Mi       RWO            nfs            42s
+data-kubia-1   Bound    pv002        10Mi       RWO            nfs            36s
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get <span class="token function">pv</span>
+NAME         CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM                  STORAGECLASS   REASON   AGE
+pv001        10Mi       RWO            Retain           Bound       default/data-kubia-0   nfs                     64s
+pv002        10Mi       RWO            Retain           Bound       default/data-kubia-1   nfs                     64s
+pv003        10Mi       RWO            Retain           Available                          nfs                     64s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>第二个 Pod 会在第一个 Pod 运行并处于就绪状态后创建。当所有 Pod 都就绪时，可以看到有 2 个 PV 已被新创建的 Pod 绑定。</p>
+<h2 id="测试-sts"><a class="markdownIt-Anchor" href="#测试-sts"></a> 测试 STS</h2>
+<p>由于服务处于 Headless 模式，无法通过服务访问服务本身。可以在节点上先运行代理，然后使用 <code>curl</code> 与 API 服务器与 Pod 进行通信：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl proxy
+Starting to serve on <span class="token number">127.0</span>.0.1:8001
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> localhost:8001/api/v1/namespaces/default/pods/kubia-0/proxy/
+You've hit kubia-0
+Data stored on this pod: No data posted yet<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 POST 请求发送数据后,再使用 GET 请求查询数据：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> <span class="token parameter variable">-X</span> POST <span class="token parameter variable">-d</span> <span class="token string">"kubia-0"</span> localhost:8001/api/v1/namespaces/default/pods/kubia-0/proxy/
+Data stored on pod kubia-0
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> localhost:8001/api/v1/namespaces/default/pods/kubia-0/proxy/
+You<span class="token string">'ve hit kubia-0
+Data stored on this pod: kubia-0
+[root@server4-master ~]$ curl localhost:8001/api/v1/namespaces/default/pods/kubia-1/proxy/
+You'</span>ve hit kubia-1
+Data stored on this pod: No data posted yet<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>手动删除 Pod 后，验证重新调度的 Pod 是否关联了相同的存储：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl delete po kubia-0
+pod <span class="token string">"kubia-0"</span> deleted
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get po <span class="token parameter variable">-o</span> wide
+NAME      READY   STATUS    RESTARTS   AGE     IP               NODE            NOMINATED NODE   READINESS GATES
+kubia-0   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          18s     <span class="token number">10.244</span>.244.234   server6-node2   <span class="token operator">&lt;</span>none<span class="token operator">></span>           <span class="token operator">&lt;</span>none<span class="token operator">></span>
+kubia-1   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          8m39s   <span class="token number">10.244</span>.244.233   server6-node2   <span class="token operator">&lt;</span>none<span class="token operator">></span>           <span class="token operator">&lt;</span>none<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>删除后等待一段时间，<code>kubia-0</code> 在另一个节点上重建好了，用 <code>curl</code> 试试看数据是否还在：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> localhost:8001/api/v1/namespaces/default/pods/kubia-0/proxy/
+You've hit kubia-0
+Data stored on this pod: kubia-0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>缩容一个 StatefulSet 只会删除对应的 Pod，持久卷声明将被卸载但保留。如下图所示：</p>
+<p><img data-src="../../../images/STS%E9%87%8D%E6%96%B0%E8%B0%83%E5%BA%A6.jpg" alt="STS重新调度" /></p>
+<h2 id="发现节点"><a class="markdownIt-Anchor" href="#发现节点"></a> 发现节点</h2>
+<p>集群中伙伴节点能够彼此发现是非常重要的需求，这样才能找到集群中的其他成员。虽然可以通过 API 服务器进行通信来获取这些信息，但这与 Kubernetes 的设计理念不符。因此，Kubernetes 通过一个无头服务（headless Service）来创建 SRV 记录，从而指向 Pod 的主机名。</p>
+<p>可以通过查询 DNS 记录中的 SRV 记录来获取这些信息。SRV 记录用于指向提供服务的服务器的主机和端口号：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl run <span class="token parameter variable">-it</span> srvlookup <span class="token parameter variable">--image</span><span class="token operator">=</span>tutum/dnsutils <span class="token parameter variable">--rm</span> <span class="token parameter variable">--restart</span><span class="token operator">=</span>Never -- <span class="token function">dig</span> SRV kubia.default.svc.cluster.local
+
+<span class="token punctuation">;</span> <span class="token operator">&lt;&lt;</span><span class="token operator">>></span> DiG <span class="token number">9.9</span>.5-3ubuntu0.2-Ubuntu <span class="token operator">&lt;&lt;</span><span class="token operator">>></span> SRV kubia.default.svc.cluster.local
+<span class="token punctuation">;</span><span class="token punctuation">;</span> global options: +cmd
+<span class="token punctuation">;</span><span class="token punctuation">;</span> Got answer:
+<span class="token punctuation">;</span><span class="token punctuation">;</span> -<span class="token operator">>></span>HEADER<span class="token operator">&lt;&lt;-</span> opcode: QUERY, status: NOERROR, id: <span class="token number">27077</span>
+<span class="token punctuation">;</span><span class="token punctuation">;</span> flags: qr aa rd<span class="token punctuation">;</span> QUERY: <span class="token number">1</span>, ANSWER: <span class="token number">2</span>, AUTHORITY: <span class="token number">0</span>, ADDITIONAL: <span class="token number">3</span>
+<span class="token punctuation">;</span><span class="token punctuation">;</span> WARNING: recursion requested but not available
+
+<span class="token punctuation">;</span><span class="token punctuation">;</span> OPT PSEUDOSECTION:
+<span class="token punctuation">;</span> EDNS: version: <span class="token number">0</span>, flags:<span class="token punctuation">;</span> udp: <span class="token number">4096</span>
+<span class="token punctuation">;</span><span class="token punctuation">;</span> QUESTION SECTION:
+<span class="token punctuation">;</span>kubia.default.svc.cluster.local. IN    SRV
+
+<span class="token punctuation">;</span><span class="token punctuation">;</span> ANSWER SECTION:
+kubia.default.svc.cluster.local. <span class="token number">30</span> IN  SRV     <span class="token number">0</span> <span class="token number">50</span> <span class="token number">80</span> kubia-1.kubia.default.svc.cluster.local.
+kubia.default.svc.cluster.local. <span class="token number">30</span> IN  SRV     <span class="token number">0</span> <span class="token number">50</span> <span class="token number">80</span> kubia-0.kubia.default.svc.cluster.local.
+
+<span class="token punctuation">;</span><span class="token punctuation">;</span> ADDITIONAL SECTION:
+kubia-0.kubia.default.svc.cluster.local. <span class="token number">30</span> IN A <span class="token number">10.244</span>.244.234
+kubia-1.kubia.default.svc.cluster.local. <span class="token number">30</span> IN A <span class="token number">10.244</span>.244.233
+
+<span class="token punctuation">;</span><span class="token punctuation">;</span> Query time: <span class="token number">1</span> msec
+<span class="token punctuation">;</span><span class="token punctuation">;</span> SERVER: <span class="token number">10.96</span>.0.10<span class="token comment">#53(10.96.0.10)</span>
+<span class="token punctuation">;</span><span class="token punctuation">;</span> WHEN: Fri Mar <span class="token number">18</span> <span class="token number">15</span>:40:53 UTC <span class="token number">2022</span>
+<span class="token punctuation">;</span><span class="token punctuation">;</span> MSG SIZE  rcvd: <span class="token number">350</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>通过创建一个临时 Pod 并运行 <code>dig</code> 命令，可以看到 <code>ANSWER SECTION</code> 显示了两条指向后台无头服务的 SRV 记录。在 <code>ADDITIONAL SECTION</code> 中，每个 Pod 都拥有一条独立的记录。当一个 Pod 需要获取 StatefulSet 中其他 Pod 的列表时，只需要触发一次 SRV DNS 查询即可。</p>
+<h2 id="滚动升级"><a class="markdownIt-Anchor" href="#滚动升级"></a> 滚动升级</h2>
+<p>StatefulSet 的升级方式与 Deployment 相同。推荐先修改配置文件中的镜像或参数，然后使用 <code>kubectl apply -f</code> 命令进行更新：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-st.yaml 
+<span class="token punctuation">..</span>.
+  replicas: <span class="token number">3</span>
+<span class="token punctuation">..</span>.
+        image: luksa/kubia-pet-peers
+<span class="token punctuation">..</span>.
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl apply <span class="token parameter variable">-f</span> kubia-st.yaml 
+statefulset.apps/kubia configured
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get po
+NAME       READY   STATUS        RESTARTS   AGE
+dnsutils   <span class="token number">1</span>/1     Running       <span class="token number">0</span>          43m
+kubia-0    <span class="token number">1</span>/1     Terminating   <span class="token number">0</span>          5h10m
+kubia-1    <span class="token number">1</span>/1     Running       <span class="token number">0</span>          32s
+kubia-2    <span class="token number">1</span>/1     Running       <span class="token number">0</span>          77s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="测试集群数据"><a class="markdownIt-Anchor" href="#测试集群数据"></a> 测试集群数据</h2>
+<p>当所有的 Pod 启动后，可以测试数据存储是否按预期工作。首先将 Service 修改为非无头模式，然后向集群发送一些请求：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-svc-peer.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubia-public
+spec:
+  selector:
+    app: kubia
+  ports:
+  - name: http
+    port: <span class="token number">80</span>
+    targetPort: <span class="token number">8080</span>
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl apply <span class="token parameter variable">-f</span> kubia-svc-peer.yaml 
+service/kubia-public created
+<span class="token punctuation">[</span>root@k8s-master <span class="token number">2</span><span class="token punctuation">]</span>$ <span class="token function">curl</span> <span class="token parameter variable">-X</span> POST <span class="token parameter variable">-d</span> <span class="token string">"11:58:04"</span> localhost:8001/api/v1/namespaces/default/services/kubia-public/proxy/
+Data stored on pod kubia-1
+<span class="token punctuation">[</span>root@k8s-master <span class="token number">2</span><span class="token punctuation">]</span>$ <span class="token function">curl</span> <span class="token parameter variable">-X</span> POST <span class="token parameter variable">-d</span> <span class="token string">"11:58:04"</span> localhost:8001/api/v1/namespaces/default/services/kubia-public/proxy/
+Data stored on pod kubia-1
+<span class="token punctuation">[</span>root@k8s-master <span class="token number">2</span><span class="token punctuation">]</span>$ <span class="token function">curl</span> <span class="token parameter variable">-X</span> POST <span class="token parameter variable">-d</span> <span class="token string">"11:58:04"</span> localhost:8001/api/v1/namespaces/default/services/kubia-public/proxy/
+Data stored on pod kubia-2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>现在三个 Pod 中都有数据了，可以测试从服务中读取数据：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master <span class="token number">2</span><span class="token punctuation">]</span>$ <span class="token function">curl</span> localhost:8001/api/v1/namespaces/default/services/kubia-public/proxy/
+You've hit kubia-2
+Data stored <span class="token keyword">in</span> the cluster:
+- kubia-2.kubia.default.svc.cluster.local: <span class="token number">11</span>:58:04
+- kubia-1.kubia.default.svc.cluster.local: <span class="token number">11</span>:58:04
+- kubia-0.kubia.default.svc.cluster.local: kubia-0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>通过集群中的任意一个节点都能够获取到所有伙伴节点的数据，然后收集它们的数据。</p>
+<h2 id="处理节点失效"><a class="markdownIt-Anchor" href="#处理节点失效"></a> 处理节点失效</h2>
+<p>对于一个有状态的 Pod，必须确保在创建替代 Pod 之前不再运行。当一个节点突然失效时，Kubernetes 并不知道节点的状态，也不知道 Pod 是否还在运行、是否还存在、是否能够被客户端访问，或者是 Kubelet 停止了上报节点状态。只有在 StatefulSet 明确知道一个 Pod 不再运行后，才会采取相应的措施。这个信息通常由管理员删除 Pod 或整个节点来明确指定。</p>
+<p>可以模拟一次节点故障。首先，查看当前的运行状态：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get po <span class="token parameter variable">-o</span> wide
+NAME      READY   STATUS    RESTARTS   AGE   IP               NODE            
+kubia-0   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          29m   <span class="token number">10.244</span>.191.226   server5-node1   
+kubia-1   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          30m   <span class="token number">10.244</span>.191.225   server5-node1   
+kubia-2   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          12s   <span class="token number">10.244</span>.191.227   server5-node1   <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>发现所有的 Pod 都运行在 node1 节点上。然后，断开 node1 的网络连接，并等待 2 分钟后查询节点信息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get <span class="token function">node</span>
+NAME             STATUS     ROLES                  AGE    VERSION
+server4-master   Ready      control-plane,master   135d   v1.22.3
+server5-node1    NotReady   <span class="token operator">&lt;</span>none<span class="token operator">></span>                 135d   v1.22.3
+server6-node2    Ready      <span class="token operator">&lt;</span>none<span class="token operator">></span>                 135d   v1.22.3
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get pod <span class="token parameter variable">-o</span> wide
+NAME      READY   STATUS    RESTARTS   AGE     IP               NODE           
+kubia-0   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          119s    <span class="token number">10.244</span>.191.228   server5-node1   
+kubia-1   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          38m     <span class="token number">10.244</span>.191.225   server5-node1  
+kubia-2   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          8m10s   <span class="token number">10.244</span>.191.227   server5-node1   <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到 node 已变为 NotReady 状态，但 pod 状态没有更新。如果运行 delete 命令，因为节点上 kubelet 无法接收到命令，所以 pod 的状态会一直显示 Terminating。</p>
+<p>再过一段时间，pod 的状态会变成 Unknown。有一个配置可以调整未知状态持续多久，pod 自动从节点上驱除。</p>
+<p>假如节点重连上了，删除命令会被正确执行并在空闲节点上新建 pod。如果节点永远消失了，只能通过强制删除 pod 来解决。通过删除命令加上 <code>--force</code> 和 <code>grace-period 0</code> 两个参数来强制删除：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl delete po kubia-0 <span class="token parameter variable">--force</span> --grace-period <span class="token number">0</span>
+warning: Immediate deletion does not <span class="token function">wait</span> <span class="token keyword">for</span> confirmation that the running resource has been terminated. The resource may <span class="token builtin class-name">continue</span> to run on the cluster indefinitely.
+pod <span class="token string">"kubia-0"</span> force deleted
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get po <span class="token parameter variable">-o</span> wide
+NAME      READY   STATUS    RESTARTS   AGE    IP               NODE            
+kubia-0   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          19s    <span class="token number">10.244</span>.244.245   server6-node2   
+kubia-1   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          39m    <span class="token number">10.244</span>.191.225   server5-node1   
+kubia-2   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          9m7s   <span class="token number">10.244</span>.191.227   server5-node1   <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>pod 强制删除后会在 node2 节点上新建，一般只有确认节点永远不能用的情况下才使用强制删除。</p>
+<p>假如不强制删除，而把断开网络的 node1 节点重新连上，pod 的状态会从 Unknown 变为正常运行。</p>
+<h1 id="daemonset"><a class="markdownIt-Anchor" href="#daemonset"></a> DaemonSet</h1>
+<p>下面简称 DS。与 RS 相比，DS 多了一个 nodeSelector 选择器，DS 依赖节点标签选择器来控制。</p>
+<h2 id="定义"><a class="markdownIt-Anchor" href="#定义"></a> 定义</h2>
+<p>使用 DS 来设置在集群中每个节点固定运行一个 pod，通常用来部署系统服务，比如用来收集日志或者做资源监控。</p>
+<p>也可以通过 nodeSelector 选择器来选择一组节点作为部署节点，而不是默认的所有节点。</p>
+<p>如果被选择器选择的节点被设置为不可调度，DS 依然会绕过调度器将 pod 部署到这种节点上。</p>
+<h2 id="创建-ds"><a class="markdownIt-Anchor" href="#创建-ds"></a> 创建 DS</h2>
+<p>首先给一个节点打上标签 <code>disk='ssd'</code> ：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl label <span class="token function">node</span> server5-node1 <span class="token assign-left variable">disk</span><span class="token operator">=</span><span class="token string">'ssd'</span>
+node/server5-node1 labeled<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>然后建立 YAML 配置文件并启动：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-ds.yaml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: ds-ssd
+spec:
+  selector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - kubia-ssd
+  template:
+    metadata:
+      labels:
+        app: kubia-ssd
+    spec:
+      nodeSelector:
+        disk: ssd
+      containers:
+      - name: kubia
+        image: luksa/kubia
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-ds.yaml 
+daemonset.apps/ds-ssd created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>DS 还可以配置更新机制，相关配置定义在 <code>spec.updateStrategy</code> 字段，方式为 RollingUpdate（滚动更新）或 OnDelete（删除再更新）。回滚操作同样支持。</p>
+<h2 id="验证"><a class="markdownIt-Anchor" href="#验证"></a> 验证</h2>
+<p>将 server6-node2 也打上 <code>ssd</code> 标签后再查看信息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl label <span class="token function">node</span> server6-node2 <span class="token assign-left variable">disk</span><span class="token operator">=</span><span class="token string">'ssd'</span>
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get pod <span class="token parameter variable">-o</span> wide
+NAME           READY   STATUS    RESTARTS   AGE     IP               NODE     
+ds-ssd-drb2z   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          4m19s   <span class="token number">10.244</span>.191.199   server5-node1  
+ds-ssd-f6cwh   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          23s     <span class="token number">10.244</span>.244.199   server6-node2  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>去除节点标签后运行在其上的 pod 会立即删除：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl label <span class="token function">node</span> server6-node2 disk-
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl label <span class="token function">node</span> server5-node1 disk-
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get ds
+NAME     DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+ds-ssd   <span class="token number">0</span>         <span class="token number">0</span>         <span class="token number">0</span>       <span class="token number">0</span>            <span class="token number">0</span>           <span class="token assign-left variable">disk</span><span class="token operator">=</span>ssd        7m52s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="job"><a class="markdownIt-Anchor" href="#job"></a> Job</h1>
+<p>Job 用于执行一个可完成的任务，进程终止之后不会再次启动。</p>
+<p>在发生节点故障时，该节点上由 Job 管理的 pod 将重新安排到其他节点运行。如果节点本身异常退出（返回错误退出代码时），可以将 Job 配置为重新启动容器，由 Job 管理的 pod 会一直被重新安排直到任务完成为止。</p>
+<p>Job 使用 API 为 batch/v1。需要明确地将重启策略设置为 OnFailure 或 Never，防止容器在完成任务时重新启动。</p>
+<h2 id="创建-job"><a class="markdownIt-Anchor" href="#创建-job"></a> 创建 Job</h2>
+<p>这里调用了一个运行 120 秒的进程然后退出。指定 restartPolicy 属性为 OnFailure（默认为 Always）：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-job.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: batch-job
+spec:
+  template:
+    metadata:
+      labels:
+        app: batch-job
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: main
+        image: luksa/batch-job
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-job.yaml<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>当 Job 任务完成后，状态显示为 Completed：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get <span class="token function">jobs</span>
+NAME        COMPLETIONS   DURATION   AGE
+batch-job   <span class="token number">1</span>/1           119s       2m59s
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get pod
+NAME                 READY   STATUS      RESTARTS   AGE
+batch-job--1-2ddkr   <span class="token number">0</span>/1     Completed   <span class="token number">0</span>          3m10s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>出于查询日志的需求，完成任务的 pod 不会自动删除，可以通过删除创建的 Job 来一同删除。</p>
+<h2 id="多次运行"><a class="markdownIt-Anchor" href="#多次运行"></a> 多次运行</h2>
+<p>可以在 Job 中配置创建多个 pod 实例，设置 completions 和 parallelism 属性来以并行或串行方式运行。</p>
+<p>顺序运行用于一个 Job 运行多次的场景，例如设置顺序运行五个 pod，每个 pod 成功完成后工作才结束：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-job.yaml
+spec:
+  completions: <span class="token number">5</span>
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-job.yaml
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get <span class="token function">jobs</span>
+NAME        COMPLETIONS   DURATION   AGE
+batch-job   <span class="token number">0</span>/5           12s        12s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>设置并行运行需要多加一个 parallelism 参数设置并行启动 pod 数目：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-job.yaml
+spec:
+  completions: <span class="token number">5</span>
+  parallelism: <span class="token number">3</span>
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl delete job batch-job 
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-job.yaml
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get po
+NAME                 READY   STATUS    RESTARTS   AGE
+batch-job--1-5ghsj   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          39s
+batch-job--1-mctcz   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          39s
+batch-job--1-znpbq   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          39s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Job 的并行任务数同样可以通过 scale 命令来修改。</p>
+<h2 id="限制条件"><a class="markdownIt-Anchor" href="#限制条件"></a> 限制条件</h2>
+<p>可以通过 activeDeadlineSeconds 属性来限制 pod 的运行时间。如果超时没完成，系统会尝试终止 pod 并标记失败。</p>
+<p>还能配置 Job 被标记为失败前重试的次数，通过 <code>spec.backoffLimit</code> 字段，默认为 6 次。</p>
+<h1 id="cronjob"><a class="markdownIt-Anchor" href="#cronjob"></a> CronJob</h1>
+<p>可以创建 CronJob 资源来通过 cron 格式时间表，设置一个定时运行的 Job 任务。</p>
+<p>下面简称 CJ。K8s 通过 CJ 中配置的 Job 模板创建 Job 资源。</p>
+<h2 id="创建-cj"><a class="markdownIt-Anchor" href="#创建-cj"></a> 创建 CJ</h2>
+<p>创建一个每十五分钟运行一次的 Job：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-cj.yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: 15job
+spec:
+  schedule: <span class="token string">"0,15,30,45 * * * *"</span>
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: 15job
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: main
+            image: luksa/batch-job
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-cj.yaml 
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get cj
+NAME    SCHEDULE             SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+15job   <span class="token number">0,15</span>,30,45 * * * *   False     <span class="token number">0</span>        <span class="token operator">&lt;</span>none<span class="token operator">></span>          16s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中 schedule 段五个设置分别是：<code>分钟 小时 每月日期 月 星期</code></p>
+<h2 id="超时设置"><a class="markdownIt-Anchor" href="#超时设置"></a> 超时设置</h2>
+<p>可以通过 <code>startingDeadlineSeconds</code> 字段来设置预定运行超时时间，例如不能超过预定时间 15 秒后运行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-cj.yaml
+spec:
+  startingDeadlineSeconds: <span class="token number">15</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>不管任何原因，时间超过了 15 秒而没启动任务，任务将不会运行并显示失败。</p>
+<h2 id="其他设置"><a class="markdownIt-Anchor" href="#其他设置"></a> 其他设置</h2>
+<p>其他一些 spec 字段可嵌套使用字段：</p>
+<ul>
+<li>
+<p>concurrencyPolicy：并发执行策略，用于定义前一次作业运行尚未完成时是否以及如何运行后一次的作业。可选值为 Allow、Forbid 或 Replace。</p>
+</li>
+<li>
+<p>failedJobHistoryLimit：为失败的任务执行保留的历史记录数，默认为 1。</p>
+</li>
+<li>
+<p>successfulJobsHistoryLimit：为成功的任务执行保留的历史记录数，默认为 3。</p>
+</li>
+<li>
+<p>startingDeadlineSeconds：设置超时时间，超时未完成任务会被记入错误历史记录。</p>
+</li>
+<li>
+<p>suspend：是否挂起后续的任务执行，默认为 false，对运行中的作业不会产生影响。</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/3401119197/" title="K8s 控制器">https://blog.x2b.net/3401119197/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../1457906456/" rel="prev" title="K8s 组件介绍">
+                  <i class="fa fa-chevron-left"></i> K8s 组件介绍
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../4120596009/" rel="next" title="K8s 基本资源">
+                  K8s 基本资源 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">239k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">13:16</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@next-theme/pjax@0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://unpkg.com/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://unpkg.com/katex@0.16.4/dist/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/3401119197/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://unpkg.com/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'blog.x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>
