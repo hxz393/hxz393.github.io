@@ -295,6 +295,20 @@
           <h1 id="邮件服务器"><a class="markdownIt-Anchor" href="#邮件服务器"></a> 邮件服务器</h1>
 <p>架设邮件服务器（Mail Server）首先需要有一个合法注册的域名，然后需要申请 IP 反解策略。最后是设置 MX 和 A 类型记录，来对应到邮件服务器的 IP 地址上。</p>
 <p>邮件传输过程中所需要的组件和协议如下：</p>
+<ul>
+<li>
+<p>MUA（Mail User Agent）</p>
+<p>MUA，顾名思义就是邮件用户代理人，用来将用户信件送到邮件服务器上。最常见的 MUA 有 Thunderbird、Kmail、Outlook Express 等所谓邮件客户端。</p>
+</li>
+<li>
+<p>MTA（Mail Transfer Agent）</p>
+<p>MTA 是邮件发送代理人，它可以使用简单邮件传输协议（SMTP，Simple Mail Transfer Protocol）来接受用户邮件，并具有中继转发（Relay）功能。常见的 MTA 有 sendmail、postfix 等所谓邮件服务端。</p>
+</li>
+<li>
+<p>MDA（Mail Delivery Agent）</p>
+<p>MDA 是邮件传送代理人，其实是 MTA 下面的组件。主要功能是分析由 MTA 所收到的邮件表头或内容等数据，来决定这份邮件的去向。此外，MDA 还有分析与过滤邮件和自动回复功能。</p>
+</li>
+</ul>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../1516343977/#more" rel="contents">
@@ -408,6 +422,11 @@
           <h1 id="ftp-协议"><a class="markdownIt-Anchor" href="#ftp-协议"></a> FTP 协议</h1>
 <p>文件传输协议（FTP，File Transfer Protocol）主要功能是在服务器与客户端之间进行文件传输。它使用明文传输方式，所以建议只在局域网内使用。</p>
 <p>FTP 服务器提供以下功能：</p>
+<ul>
+<li>身份验证：默认情况下分为三种用户：用户 <code>user</code>，访客 <code>guest</code> 和匿名用户 <code>anonymous</code>。</li>
+<li>日志记录：FTP 可以利用 <code>syslogd</code> 来进行数据记录，存放于 <code>/var/log/</code> 下面。</li>
+<li>限制用户活动目录：<code>change root</code> 简称 <code>chroot</code>，将用户的工作范围局限在用户主目录下。</li>
+</ul>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../1853961938/#more" rel="contents">
@@ -534,6 +553,7 @@
 <p>在 Apache 中默认将 html 文件存放在 <code>/var/www/html/</code> 目录内。</p>
 </li>
 </ul>
+<h1 id="传输数据方法"><a class="markdownIt-Anchor" href="#传输数据方法"></a> 传输数据方法</h1>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../2334204318/#more" rel="contents">
@@ -647,6 +667,7 @@
           <h1 id="nas-与-san"><a class="markdownIt-Anchor" href="#nas-与-san"></a> NAS 与 SAN</h1>
 <p>网络附加储存服务器（NAS，Network Attached Storage）其实就是一台定制好的文件服务器，将 NAS 连上网络，在网络内的主机就能访问 NAS 上的数据。</p>
 <p>储存局域网（SAN，Storage Area Networks）可以被视为一个外接式的储存设备，可以为局域网内所有主机提供磁盘而不是文件系统访问。</p>
+<h1 id="iscsi-接口"><a class="markdownIt-Anchor" href="#iscsi-接口"></a> iSCSI 接口</h1>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../3959662341/#more" rel="contents">
@@ -760,6 +781,7 @@
           <h1 id="代理服务器"><a class="markdownIt-Anchor" href="#代理服务器"></a> 代理服务器</h1>
 <p>代理服务器（Proxy Server）是以类似代理人的身份去获取用户所需数据。通过代理服务器可以实现防火墙与用户浏览数据分析功能。此外，还能充当 CDN（Content Delivery Network），即内容分发网络功能，加速网络访问。</p>
 <p>一般代理服务器会搭建在局域网的单点对外防火墙上。</p>
+<p>Linux 下常用的代理服务使用 Squid 软件。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../1886159042/#more" rel="contents">

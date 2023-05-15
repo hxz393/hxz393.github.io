@@ -303,6 +303,7 @@ connection.uuid:                        ebab2aaf-84f5-45b6-a431-7ec3c63891b0
 connection.stable-id:                   --
 connection.type:                        <span class="token number">802</span>-3-ethernet
 connection.interface-name:              ens33<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如上，网卡信息列得非常详细，也可以通过 <code>nmcli connection modify</code> 来修改网卡参数：</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../3511703514/#more" rel="contents">
@@ -416,6 +417,17 @@ connection.interface-name:              ens33<span aria-hidden="true" class="lin
           <h1 id="日志系统"><a class="markdownIt-Anchor" href="#日志系统"></a> 日志系统</h1>
 <p>日志记录简单来说就是记录系统何时由哪个程序做了什么行为，发生了什么事件等等。</p>
 <p>常见日志文件有下面一些：</p>
+<ul>
+<li><code>/var/log/boot.log</code>：开机硬件检测产生的记录信息，在 CentOS 合并到了 <code>dmesg</code> 中。</li>
+<li><code>/var/log/cron</code>：记录 <code>crontab</code> 调度工作运行情况。</li>
+<li><code>/var/log/dmesg</code>：记录开机检测信息。</li>
+<li><code>/var/log/lastlog</code>：记录系统上所有账号最近一次登录的信息。</li>
+<li><code>/var/log/maillog</code>：记录邮件的往来信息。</li>
+<li><code>/var/log/messages</code>：记录所有错误与重要信息。</li>
+<li><code>/var/log/secure</code>：记录账号登录验证信息。</li>
+<li><code>/var/log/wtmp</code>，<code>/var/log/faillog</code>：记录正确登录与错误登录时的账号信息。</li>
+<li><code>/var/log/服务名</code>：不同服务会使用各自的目录记录日志。</li>
+</ul>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../808925609/#more" rel="contents">
@@ -529,6 +541,7 @@ connection.interface-name:              ens33<span aria-hidden="true" class="lin
           <h1 id="服务定义"><a class="markdownIt-Anchor" href="#服务定义"></a> 服务定义</h1>
 <p>可以将守护进程（Daemon）和服务（Service）视为同一个东西的不同称呼。</p>
 <p>服务是常驻内存中的进程，通常负责提供系统功能以服务用户的各项任务。</p>
+<p>一般来说，守护进程类型的程序会在文件名末尾加上“d”。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../1224880312/#more" rel="contents">
@@ -642,6 +655,7 @@ connection.interface-name:              ens33<span aria-hidden="true" class="lin
           <hr>
 <h1 id="selinux-介绍"><a class="markdownIt-Anchor" href="#selinux-介绍"></a> SELinux 介绍</h1>
 <p><code>SELinux</code>（Security Enhanced Linux）是在进行程序、文件等权限设置依据的一个内核模块。</p>
+<p>传统的权限管理方式称为自主访问控制，<code>SELinux</code>使用的是委托访问控制：</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../1359563972/#more" rel="contents">
@@ -756,6 +770,7 @@ connection.interface-name:              ens33<span aria-hidden="true" class="lin
 <p>使用命令<code>uname -r</code>可以查看当前内核版本：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">uname</span> <span class="token parameter variable">-r</span>
 <span class="token number">3.10</span>.0-862.el7.x86_64<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>如果想要查看更详细的内核信息，可以使用<code>uname -a</code>命令：</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../741506456/#more" rel="contents">

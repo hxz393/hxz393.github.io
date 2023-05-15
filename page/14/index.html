@@ -295,6 +295,7 @@
           <h1 id="提取数据列"><a class="markdownIt-Anchor" href="#提取数据列"></a> 提取数据列</h1>
 <p>可以使用 <code>cut</code> 命令按行提取数据并删除所需部分，命令格式如下：</p>
 <p><code>cut -d '分隔字符' -f 编号</code></p>
+<p><code>cut -c 字符范围</code></p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../3847284551/#more" rel="contents">
@@ -410,6 +411,7 @@
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/issue
 <span class="token punctuation">\</span>S
 Kernel <span class="token punctuation">\</span>r on an <span class="token punctuation">\</span>m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>可以使用反斜杠调用变量，自定义显示登录后显示信息。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../1849958032/#more" rel="contents">
@@ -523,6 +525,10 @@ Kernel <span class="token punctuation">\</span>r on an <span class="token punctu
           <h1 id="修改文件所属用户组"><a class="markdownIt-Anchor" href="#修改文件所属用户组"></a> 修改文件所属用户组</h1>
 <p>使用 <code>chgrp</code> 可以改变一个文件的所属用户组，目标组名必须已经存在于 <code>/etc/group</code>。</p>
 <p>例如修改 <code>dir1</code> 文件夹的所属组为 <code>tss</code>：</p>
+ <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chgrp</span> tss dir1 <span class="token punctuation">;</span> ll
+total <span class="token number">4</span>
+-rw-------. <span class="token number">1</span> root root <span class="token number">1260</span> Sep  <span class="token number">7</span> <span class="token number">13</span>:38 anaconda-ks.cfg
+drwxr-xr-x. <span class="token number">2</span> <span class="token function">ftp</span>  tss    <span class="token number">16</span> Sep  <span class="token number">8</span> <span class="token number">23</span>:29 dir1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../2354164977/#more" rel="contents">
@@ -636,6 +642,7 @@ Kernel <span class="token punctuation">\</span>r on an <span class="token punctu
           <h1 id="磁盘查询"><a class="markdownIt-Anchor" href="#磁盘查询"></a> 磁盘查询</h1>
 <p>主要是 <code>df</code> 这个命令，经常用来查询系统中磁盘剩余空间。比如发现根目录 <code>/</code> 满了，说明系统危险了。</p>
 <h2 id="查询磁盘容量"><a class="markdownIt-Anchor" href="#查询磁盘容量"></a> 查询磁盘容量</h2>
+<p>使用 <code>df</code> 查看磁盘使用量，<code>df</code> 读取的是在 Superblock 内的信息。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../3491093041/#more" rel="contents">
@@ -749,6 +756,12 @@ Kernel <span class="token punctuation">\</span>r on an <span class="token punctu
           <h1 id="磁盘配额简介"><a class="markdownIt-Anchor" href="#磁盘配额简介"></a> 磁盘配额简介</h1>
 <p>Linux 下磁盘配额功能叫 <code>quota</code>。</p>
 <h2 id="一般用途"><a class="markdownIt-Anchor" href="#一般用途"></a> 一般用途</h2>
+<ul>
+<li>限制服务使用空间容量；</li>
+<li>限制某一用户组所能使用的最大磁盘配额；</li>
+<li>限制某一用户的最大磁盘配额；</li>
+<li>限制某一目录的最大磁盘配额。</li>
+</ul>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="../../3427262780/#more" rel="contents">
