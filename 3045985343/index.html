@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="服务概念 在 K8s 中，不再使用记录 pod IP 的方式来实现 pod 之间的通信，因为 pod 是活动的，会随着调度分配而更换 IP 地址。K8s 提供了一种名为服务（Service）的资源，用于解决 pod 之间的通信问题。每个服务实际上就是微服务架构中的一个微服务。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="K8s 服务资源">
+<meta property="og:url" content="https://blog.x2b.net/3045985343/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="服务概念 在 K8s 中，不再使用记录 pod IP 的方式来实现 pod 之间的通信，因为 pod 是活动的，会随着调度分配而更换 IP 地址。K8s 提供了一种名为服务（Service）的资源，用于解决 pod 之间的通信问题。每个服务实际上就是微服务架构中的一个微服务。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.x2b.net/images/proxy%E7%9A%84%E4%BD%9C%E7%94%A8.jpg">
+<meta property="og:image" content="https://blog.x2b.net/images/%E5%B0%86%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2%E5%87%BA%E5%8E%BB.jpg">
+<meta property="og:image" content="https://blog.x2b.net/images/%E9%80%9A%E8%BF%87NodePort%E6%9A%B4%E9%9C%B2%E7%AB%AF%E5%8F%A3.jpg">
+<meta property="og:image" content="https://blog.x2b.net/images/%E9%80%9A%E8%BF%87%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E6%9A%B4%E9%9C%B2%E7%AB%AF%E5%8F%A3.jpg">
+<meta property="og:image" content="https://blog.x2b.net/images/%E9%80%9A%E8%BF%87Ingress%E8%AE%BF%E9%97%AEpod.jpg">
+<meta property="og:image" content="https://blog.x2b.net/images/%E6%9C%8D%E5%8A%A1%E6%8C%87%E5%90%91%E5%A4%96%E9%83%A8%E5%9C%B0%E5%9D%80.jpg">
+<meta property="article:published_time" content="2022-03-20T01:01:17.000Z">
+<meta property="article:modified_time" content="2023-05-16T02:46:25.648Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.x2b.net/images/proxy%E7%9A%84%E4%BD%9C%E7%94%A8.jpg">
+
+
+<link rel="canonical" href="https://blog.x2b.net/3045985343/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/3045985343/","path":"3045985343/","title":"K8s 服务资源"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>K8s 服务资源 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">13</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">80</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text"> 服务概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%8E%9F%E7%90%86"><span class="nav-number">1.1.</span> <span class="nav-text"> 服务原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%96%E9%83%A8%E8%BF%9E%E6%8E%A5%E7%9A%84%E7%89%B9%E6%80%A7"><span class="nav-number">1.2.</span> <span class="nav-text"> 外部连接的特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E9%99%A4%E8%BF%9E%E6%8E%A5%E6%95%85%E9%9A%9C"><span class="nav-number">1.3.</span> <span class="nav-text"> 排除连接故障</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="nav-number">2.</span> <span class="nav-text"> 基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-svc"><span class="nav-number">2.1.</span> <span class="nav-text"> 创建 SVC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%9C%8D%E5%8A%A1"><span class="nav-number">2.2.</span> <span class="nav-text"> 测试服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%B2%E5%92%8C%E6%80%A7"><span class="nav-number">2.3.</span> <span class="nav-text"> 亲和性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9A%B4%E9%9C%B2%E5%A4%9A%E7%AB%AF%E5%8F%A3"><span class="nav-number">2.4.</span> <span class="nav-text"> 暴露多端口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E5%90%8D%E5%BC%95%E7%94%A8"><span class="nav-number">2.5.</span> <span class="nav-text"> 命名引用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text"> 服务发现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="nav-number">3.1.</span> <span class="nav-text"> 环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E8%BF%87-dns-%E5%8F%91%E7%8E%B0"><span class="nav-number">3.2.</span> <span class="nav-text"> 通过 DNS 发现</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9A%B4%E9%9C%B2%E5%86%85%E9%83%A8%E6%9C%8D%E5%8A%A1"><span class="nav-number">4.</span> <span class="nav-text"> 暴露内部服务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#nodeport"><span class="nav-number">4.1.</span> <span class="nav-text"> NodePort</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#loadbalance"><span class="nav-number">4.2.</span> <span class="nav-text"> LoadBalance</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ingress"><span class="nav-number">4.3.</span> <span class="nav-text"> Ingress</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8C%87%E5%90%91%E5%A4%96%E9%83%A8%E6%9C%8D%E5%8A%A1"><span class="nav-number">5.</span> <span class="nav-text"> 指向外部服务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#endpoint"><span class="nav-number">5.1.</span> <span class="nav-text"> Endpoint</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-ep"><span class="nav-number">5.2.</span> <span class="nav-text"> 配置 EP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%88%AB%E5%90%8D"><span class="nav-number">5.3.</span> <span class="nav-text"> 配置别名</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%A0%E5%A4%B4%E6%9C%8D%E5%8A%A1"><span class="nav-number">6.</span> <span class="nav-text"> 无头服务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%9C%8D%E5%8A%A1"><span class="nav-number">6.1.</span> <span class="nav-text"> 创建服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E8%BF%87-dns-%E6%9F%A5%E6%89%BE"><span class="nav-number">6.2.</span> <span class="nav-text"> 通过 DNS 查找</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%91%E7%8E%B0%E6%89%80%E6%9C%89-pod"><span class="nav-number">6.3.</span> <span class="nav-text"> 发现所有 Pod</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">80</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/3045985343/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="K8s 服务资源 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          K8s 服务资源
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-03-20 09:01:17" itemprop="dateCreated datePublished" datetime="2022-03-20T09:01:17+08:00">2022-03-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-16 10:46:25" itemprop="dateModified" datetime="2023-05-16T10:46:25+08:00">2023-05-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Kubernets/" itemprop="url" rel="index"><span itemprop="name">Kubernets</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Kubernets/1-%E5%B8%B8%E7%94%A8%E8%B5%84%E6%BA%90/" itemprop="url" rel="index"><span itemprop="name">1.常用资源</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>18 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="服务概念"><a class="markdownIt-Anchor" href="#服务概念"></a> 服务概念</h1>
+<p>在 K8s 中，不再使用记录 pod IP 的方式来实现 pod 之间的通信，因为 pod 是活动的，会随着调度分配而更换 IP 地址。K8s 提供了一种名为服务（Service）的资源，用于解决 pod 之间的通信问题。每个服务实际上就是微服务架构中的一个微服务。</p>
+<p>服务的主要工作是通过标签选择器选取一组 pod 对象，并为这组 pod 提供一个固定的入口点（固定 IP），客户端通过访问该地址来访问这组 pod 中的任意一个对象。</p>
+<p>如果集群中存在 DNS 服务，它会在创建服务时为其自动配置一个 DNS 名称，该名称对应服务的 ClusterIP 地址，以便客户端进行服务发现。实质上，服务充当了一个四层代理服务器。</p>
+<h2 id="服务原理"><a class="markdownIt-Anchor" href="#服务原理"></a> 服务原理</h2>
+<p>每个 Service 都有自己稳定的 IP 地址和端口，客户端通过连接该 IP 和端口来使用服务。IP 地址是虚拟的，没有分配给任何网络接口，并且当数据包离开节点时，也不会被标记为数据包的源或目的地 IP 地址，因此无法使用 ping 命令连接到 Service 的 IP。</p>
+<p>与 Service 相关的所有事情都由运行在每个节点上的 kube-proxy 处理。在最初的实现中，代理模式采用用户空间代理，对于每个传入的连接，连接到一个 pod。</p>
+<p>现在采用的是 iptables 代理模式，具有更好的性能。当在 API 服务器中创建一个 Service 时，会立即分配虚拟 IP 地址。然后，API 服务器会通知所有节点上的 proxy 客户端有关新服务的信息。每个 proxy 都会在自己所在的节点上建立可寻址的服务。这是通过建立 iptables 规则来实现的，确保目标为服务的 IP/端口对的数据包被解析，目的地址被修改，从而将数据包重定向到支持该服务的一个 pod 上。</p>
+<p>除了监视 Service 的更改，proxy 还监视 Endpoint 对象的更改。Endpoint 对象会在每次新创建或删除 pod 时发生变化，以及 pod 的就绪状态或标签发生变化时，将其纳入或移出服务范畴。</p>
+<p>如下图所示，proxy 在 Service 中的作用：</p>
+<p><img data-src="../../../images/proxy%E7%9A%84%E4%BD%9C%E7%94%A8.jpg" alt="proxy的作用" /></p>
+<p>上述示例中，一个数据包从节点 A 的 pod A 发送到服务 B。节点 A 的 iptables 规则将数据包的目标地址设置为服务的 IP 和端口（172.30.0.1:80），根据规则匹配，将匹配到的地址和端口（172.30.0.1:80）替换为随机选中的 pod B2 的 IP 和端口，就好像客户端的 pod A 直接将数据包发送给 pod B，而不经过 Service。</p>
+<p>运行在每个节点上的 Proxy 进程实际上是一个智能的软件负载均衡器，内部实现了服务的负载均衡和会话保持机制。</p>
+<h2 id="外部连接的特性"><a class="markdownIt-Anchor" href="#外部连接的特性"></a> 外部连接的特性</h2>
+<p>当客户端通过节点端口连接到服务时，随机选择的 pod 并不一定在接收连接的同一节点上运行。例如，接收服务的 pod 运行在 node1，而服务在 node2，这会导致不必要的跳转。可以通过将服务配置为仅将外部通信重定向到接收连接的节点上运行的 pod。</p>
+<p>具体操作是将服务的 <code>spec.externalTrafficPolicy</code> 修改为 <code>Local</code>。如果节点上没有本地 pod 存在，则连接将挂起，因此需要确保负载均衡器将连接转发给至少具有一个 pod 的节点。</p>
+<p>然而，这种配置会引发一个问题，即原本均匀分配给 pod 的流量将按节点平均分配。例如，一个节点有一个 pod，另一个节点有两个 pod，原本每个 pod 接收的流量占比为 1/3。设置流量不转发后，一个 pod 承担了 1/2 的流量，而另外两个 pod 分别承担了 1/4 的流量。</p>
+<p>在没有配置流量不转发的情况下，当通过节点端口接收连接时，会对数据包执行源网络地址转换（SNAT），因此数据包的源 IP 地址会发生改变，后端的 pod 无法看到实际的客户端 IP 地址。而使用上述配置可以保留客户端 IP，因为接收连接的节点和目标 pod 节点之间没有额外的跳转。</p>
+<h2 id="排除连接故障"><a class="markdownIt-Anchor" href="#排除连接故障"></a> 排除连接故障</h2>
+<p>首先，确保从集群内部连接到服务时使用的是集群 IP，而不是从外部进行连接。</p>
+<p>请避免使用 ping 来判断服务是否可访问，因为服务的集群 IP 是虚拟的。</p>
+<p>如果已经定义了就绪探针，请确保探针返回成功，否则该 pod 将不会被视为服务的一部分。</p>
+<p>要确认某个容器是否属于服务，请使用 <code>get endpoints</code> 命令来检查相应的端点对象。</p>
+<p>如果通过完全限定域名（FQDN）无法访问服务，请尝试使用集群 IP 进行访问。</p>
+<p>可以尝试直接连接到 pod 的 IP 地址，以确认该 pod 是否正在正确的端口上接收连接。</p>
+<p>如果甚至无法通过 pod 的 IP 访问应用程序，请确保应用程序没有仅绑定到本地主机。</p>
+<h1 id="基本操作"><a class="markdownIt-Anchor" href="#基本操作"></a> 基本操作</h1>
+<p>服务（Services）使用标签（Labels）来选择 Pod。以下简称 SVC。</p>
+<h2 id="创建-svc"><a class="markdownIt-Anchor" href="#创建-svc"></a> 创建 SVC</h2>
+<p>假设已经启动了一组 Pod，其标签为 <code>app=kubia</code>，可以通过命令 <code>kubectl expose</code> 来创建服务。不过更推荐使用 YAML 文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubia
+spec:
+  ports:
+  - port: <span class="token number">80</span>
+    targetPort: <span class="token number">8080</span>
+  selector:
+    app: kubia<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中 80 端口用于对外访问，8080 映射到容器端口，并通过标签 <code>app=kubia</code> 选择 Pod。</p>
+<p>创建并查看服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-svc.yaml 
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get svc
+NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>   AGE
+kubernetes   ClusterIP   <span class="token number">10.96</span>.0.1        <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">443</span>/TCP   17h
+kubia        ClusterIP   <span class="token number">10.107</span>.244.106   <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>/TCP    8s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到服务已经分配了一个内部集群 IP 地址 <code>10.107.244.106</code>，访问端口为 80。</p>
+<h2 id="测试服务"><a class="markdownIt-Anchor" href="#测试服务"></a> 测试服务</h2>
+<p>由于是内部集群地址，只有集群中的 Pod 可以访问。可以使用 <code>kubectl exec</code> 命令在 Pod 中执行 <code>curl</code> 命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> kubiaex-f4wkw -- <span class="token function">curl</span> <span class="token parameter variable">-s</span> <span class="token number">10.107</span>.244.106
+You<span class="token string">'ve hit kubiaex-nj968
+[root@server4-master ~]$ kubectl exec kubiaex-f4wkw -- curl -s 10.107.244.106
+You'</span>ve hit kubiaex-ptws9<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>从结果可以看到请求连接到后端的随机一个 Pod。</p>
+<h2 id="亲和性"><a class="markdownIt-Anchor" href="#亲和性"></a> 亲和性</h2>
+<p>可以配置服务的会话亲和性，这样会使服务代理将同一 IP 的请求转发到同一个 Pod 中：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-svc.yaml
+spec:
+  sessionAffinity: ClientIP<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>亲和性配置 <code>sessionAffinity</code> 值默认为 <code>None</code>。由于 Kubernetes 服务不是在 HTTP 层面上工作，它只处理 TCP 和 UDP 包，所以会话亲和性不能基于 cookie。</p>
+<h2 id="暴露多端口"><a class="markdownIt-Anchor" href="#暴露多端口"></a> 暴露多端口</h2>
+<p>可以在服务中暴露多个端口。必须设置端口名称：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-svc.yaml
+spec:
+  ports:
+  - name: http
+    port: <span class="token number">80</span>
+    targetPort: <span class="token number">8080</span>
+  - name: https
+    port: <span class="token number">443</span>
+    targetPort: <span class="token number">8443</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="命名引用"><a class="markdownIt-Anchor" href="#命名引用"></a> 命名引用</h2>
+<p>如果 Pod 配置中对端口取了名：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-rs.yaml
+spec:
+  containers:
+    ports: 
+    - name: http
+      containerPort: <span class="token number">8080</span>
+    - name: https
+      containerPort: <span class="token number">8443</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>那么在服务配置中可以直接引用：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-svc.yaml
+spec:
+  ports:
+  - name: http
+    port: <span class="token number">80</span>
+    targetPort: http
+  - name: https
+    port: <span class="token number">443</span>
+    targetPort: https<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这样做的好处是，当容器更换端口号时，无须更改服务的配置。</p>
+<h1 id="服务发现"><a class="markdownIt-Anchor" href="#服务发现"></a> 服务发现</h1>
+<p>服务可以提供稳定的 IP 地址来访问 Pod，只要服务存在， IP 就不会变化。但客户端 Pod 要获得服务的 IP 和端口需要进行配置。</p>
+<h2 id="环境变量"><a class="markdownIt-Anchor" href="#环境变量"></a> 环境变量</h2>
+<p>如果服务先于 Pod 创建，Pod 创建时 Kubernetes 会初始化一系列环境变量，指向已存在的服务。Pod 上的进程可以根据环境变量获取服务的 IP 地址和端口号。</p>
+<p>重新运行 Pod 后再查看环境变量：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl delete <span class="token parameter variable">-f</span> kubia-rs.yaml 
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-rs.yaml 
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> kubiaex-5s68q -- <span class="token function">env</span>
+<span class="token assign-left variable">KUBIA_PORT</span><span class="token operator">=</span>tcp://10.107.244.106:80
+<span class="token assign-left variable">KUBIA_SERVICE_HOST</span><span class="token operator">=</span><span class="token number">10.107</span>.244.106
+<span class="token assign-left variable">KUBIA_SERVICE_PORT</span><span class="token operator">=</span><span class="token number">80</span>
+<span class="token assign-left variable">KUBIA_PORT_80_TCP_PROTO</span><span class="token operator">=</span>tcp
+<span class="token assign-left variable">KUBIA_PORT_80_TCP_ADDR</span><span class="token operator">=</span><span class="token number">10.107</span>.244.106
+<span class="token assign-left variable">KUBIA_PORT_80_TCP</span><span class="token operator">=</span>tcp://10.107.244.106:80
+<span class="token assign-left variable">KUBIA_PORT_80_TCP_PORT</span><span class="token operator">=</span><span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上面显示的环境变量是创建服务后才有的，它们指向了服务 <code>kubia</code> 的 IP 地址和端口。此外，还有 Kubernetes 服务的环境变量。</p>
+<h2 id="通过-dns-发现"><a class="markdownIt-Anchor" href="#通过-dns-发现"></a> 通过 DNS 发现</h2>
+<p>Kubernetes 使用 CoreDNS 作为默认的 DNS 服务。每个运行的 Pod 都会在 <code>/etc/resolv.conf</code> 中写入 DNS 服务的地址：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token parameter variable">-n</span> kube-system describe service/kube-dns
+IP:                <span class="token number">10.96</span>.0.10
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$  kubectl <span class="token builtin class-name">exec</span> <span class="token parameter variable">-it</span> kubiaex-5s68q -- <span class="token function">cat</span> /etc/resolv.conf 
+nameserver <span class="token number">10.96</span>.0.10
+search default.svc.cluster.local svc.cluster.local cluster.local
+options ndots:5<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Pod 是否使用内部 DNS 策略由 <code>spec.dnsPolicy</code> 来决定：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get po kubiaex-5s68q <span class="token parameter variable">-o</span> yaml
+spec:
+  dnsPolicy: ClusterFirst<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>客户端的 Pod 在知道服务名称的情况下，可以通过全限定域名（Fully Qualified Domain Name，FQDN）来访问，而不用依靠环境变量。例如，服务的全名是 <code>kubia.default.svc.cluster.local</code>，通过 Pod 中的容器访问这个地址：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">root@kubiaex-5s68q:/<span class="token comment"># curl http://kubia.default.svc.cluster.local</span>
+You've hit kubiaex-bwzb9<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>FQDN 分为三部分：<code>kubia</code> 为主机名，<code>default</code> 为对应的命名空间，<code>svc.cluster.local</code> 是所有集群本地服务名称中使用的可配置集群域后缀。</p>
+<p>如果要与同一命名空间下的资源通信，可以省略后缀，直接通过主机名进行通信：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">root@kubiaex-5s68q:/<span class="token comment"># curl http://kubia  </span>
+You've hit kubiaex-bwzb9
+root@kubiaex-5s68q:/<span class="token comment"># ping kubia</span>
+PING kubia.default.svc.cluster.local <span class="token punctuation">(</span><span class="token number">10.107</span>.244.106<span class="token punctuation">)</span>: <span class="token number">56</span> data bytes<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="暴露内部服务"><a class="markdownIt-Anchor" href="#暴露内部服务"></a> 暴露内部服务</h1>
+<p>服务主要作用是将集群内的服务向外公开，让外部客户端可以访问它们。如下图所示：</p>
+<p><img data-src="../../../images/%E5%B0%86%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2%E5%87%BA%E5%8E%BB.jpg" alt="将服务暴露出去" /></p>
+<p>有几种方式可以从外部访问服务：</p>
+<ul>
+<li>
+<p>将服务类型设置为 NodePort</p>
+<p>每个集群节点都会打开一个端口，并将流量转发重定向到基础服务。该服务只能在内部集群的 IP 和端口上访问，但也可以通过所有节点上的专用端口访问。</p>
+</li>
+<li>
+<p>将服务类型设置为 LoadBalancer</p>
+<p>LoadBalancer 是 NodePort 类型的一种扩展，它允许通过一个专用的负载均衡器来访问服务，该负载均衡器由云基础设施提供。负载均衡器将流量重定向到跨所有节点的节点端口，客户端可以通过负载均衡器的 IP 连接到服务。</p>
+</li>
+<li>
+<p>创建一个 Ingress 资源</p>
+<p>Ingress 资源可以通过一个 IP 地址公开多个服务，它运行在 HTTP 层（第 7 层），因此可以提供更多的功能。</p>
+</li>
+</ul>
+<p>最常用的端口暴露方式是 NodePort。一般的应用端口可以通过 Nginx 做反向代理，而不需要直接暴露出去。</p>
+<h2 id="nodeport"><a class="markdownIt-Anchor" href="#nodeport"></a> NodePort</h2>
+<p>NodePort 类型的服务可以通过任何节点的 IP 和端口进行访问，同时也可以通过服务的内部集群 IP 进行访问，两者互不冲突。默认情况下，NodePort 可用的端口范围是从 30000 到 32767。示意图如下所示：</p>
+<p><img data-src="../../../images/%E9%80%9A%E8%BF%87NodePort%E6%9A%B4%E9%9C%B2%E7%AB%AF%E5%8F%A3.jpg" alt="通过NodePort暴露端口" /></p>
+<p>创建服务配置文件时，除了将类型设置为 NodePort，还需要定义三个端口：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-np.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubia-nodeport
+spec:
+  type: NodePort
+  ports:
+  - port: <span class="token number">80</span>
+    targetPort: <span class="token number">8080</span>
+    nodePort: <span class="token number">30123</span>
+  selector:
+    app: kubia<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中，port 端口 80 代表集群内部访问端口，targetPort 端口 8080 代表 Pod 中服务监听的端口，这两个端口的定义与普通服务相同。而额外的 nodePort 端口 30123 是用于外部访问的端口。如果不设置 nodePort，Kubernetes 会使用随机端口。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-np.yaml
+service/kubia-nodeport created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>启动后，可以通过浏览器访问地址 <a target="_blank" rel="noopener external nofollow noreferrer" href="http://xn--ip-dh3cr99d42rrmy:30123/">http://任意节点 IP:30123/</a> 来打开服务。可以使用 JSONPath 选择器来获取所有节点的 IP：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get nodes <span class="token parameter variable">-o</span> <span class="token assign-left variable">jsonpath</span><span class="token operator">=</span><span class="token string">'&#123;.items[*].status.addresses[?(@.type=="InternalIP")].address&#125;'</span>
+<span class="token number">192.168</span>.2.204 <span class="token number">192.168</span>.2.205 <span class="token number">192.168</span>.2.206<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>需要注意的是，当节点发生故障时，无法访问该节点。因此，在选择端口暴露方式时，应优先考虑使用 LoadBalancer。</p>
+<h2 id="loadbalance"><a class="markdownIt-Anchor" href="#loadbalance"></a> LoadBalance</h2>
+<p>负载均衡器具有唯一的 IP 地址，并将所有连接重定向到服务。LoadBalancer 服务是 NodePort 服务的扩展，如果 Kubernetes 在不支持负载均衡器服务的环境中运行，服务仍将以 NodePort 模式工作。其工作原理如下图所示：</p>
+<p><img data-src="../../../images/%E9%80%9A%E8%BF%87%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E6%9A%B4%E9%9C%B2%E7%AB%AF%E5%8F%A3.jpg" alt="通过负载均衡暴露端口" /></p>
+<p>可以创建一个 LoadBalancer 类型的服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-lb.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubia-loadbalancer
+spec:
+  type: LoadBalancer
+  ports:
+  - port: <span class="token number">80</span>
+    targetPort: <span class="token number">8080</span>
+  selector:
+    app: kubia
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-lb.yaml 
+service/kubia-loadbalancer created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>只需将服务类型设置为 LoadBalancer，服务将从集群基础架构中获取负载均衡器，并将其 IP 地址写入服务的 EXTERNAL-IP 字段。</p>
+<p>通过浏览器访问时，您会发现每次都会连接到同一个 Pod，这是因为服务在连接级别上工作。因此，首次建立连接时会选择一个随机集群，之后所有的数据包都会发送到同一个集群，直到连接关闭。</p>
+<h2 id="ingress"><a class="markdownIt-Anchor" href="#ingress"></a> Ingress</h2>
+<p>使用 Ingress 只需要一个公网 IP 地址就能为所有服务提供访问，Ingress 会根据请求的主机名和路径决定转发到的服务。</p>
+<p>Ingress 作用在网络第七层，因此能实现基于 cookie 的会话亲和性等功能，但相对于作用在第四层协议的服务，转发效率较低。</p>
+<p>Ingress 的工作原理如下图所示：</p>
+<p><img data-src="../../../images/%E9%80%9A%E8%BF%87Ingress%E8%AE%BF%E9%97%AEpod.jpg" alt="通过Ingress访问pod" /></p>
+<p>要让 Ingress 资源正常工作，需要配合 Ingress 控制器。可以通过官方提供的 YAML 文件直接部署 Ingress，可以选择基于 Nginx、Envoy、Haproxy、Vulcand 和 Traefik 等作为反向代理：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl apply <span class="token parameter variable">-f</span> https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml
+namespace/ingress-nginx created
+configmap/nginx-configuration created
+configmap/tcp-services created
+configmap/udp-services created
+serviceaccount/nginx-ingress-serviceaccount created
+clusterrole.rbac.authorization.k8s.io/nginx-ingress-clusterrole created
+role.rbac.authorization.k8s.io/nginx-ingress-role created
+rolebinding.rbac.authorization.k8s.io/nginx-ingress-role-nisa-binding created
+clusterrolebinding.rbac.authorization.k8s.io/nginx-ingress-clusterrole-nisa-binding created
+deployment.apps/nginx-ingress-controller created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>查看 YAML 内容后，将自动创建一个属于 ingress-nginx 命名空间的 nginx-ingress-controller 控制器的 Pod，然后创建服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl get pods --all-namespaces <span class="token parameter variable">-l</span> app.kubernetes.io/name<span class="token operator">=</span>ingress-nginx <span class="token parameter variable">--watch</span>
+NAMESPACE       NAME                                        READY   STATUS              RESTARTS   AGE
+ingress-nginx   nginx-ingress-controller-7995bd9c47-8v8rj   <span class="token number">0</span>/1     ContainerCreating   <span class="token number">0</span>          75s
+ingress-nginx   nginx-ingress-controller-7995bd9c47-8v8rj   <span class="token number">0</span>/1     Running             <span class="token number">0</span>          88s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>接着创建服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl apply <span class="token parameter variable">-f</span> https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/baremetal/service-nodeport.yaml
+service/ingress-nginx created
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get pods <span class="token parameter variable">-n</span> ingress-nginx
+NAME                                        READY   STATUS    RESTARTS   AGE
+nginx-ingress-controller-7995bd9c47-8v8rj   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          3h6m
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get svc <span class="token parameter variable">-n</span> ingress-nginx
+NAME            TYPE       CLUSTER-IP     EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>                      AGE
+ingress-nginx   NodePort   <span class="token number">10.98</span>.41.161   <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>:30112/TCP,443:30970/TCP   105m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>建立 YAML 文件来绑定后端服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-ingress.yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kubia-ingress
+spec:
+  rules:
+  - host: kubia.exp.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kubia
+          servicePort: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>将虚拟域名 <code>kubia.exp.com</code> 映射到 Ingress 控制器的节点 IP（192.168.2.113-115 <code>kubia.exp.com</code>）。配置将所有请求发送到 kubia 服务的 80 端口。云服务商要求 Ingress 指向一个 NodePort 服务，但实际上可以指向任意服务。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-ingress.yaml 
+ingress.extensions/kubia-ingress created
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl get ingresses
+NAME            HOSTS           ADDRESS   PORTS   AGE
+kubia-ingress   kubia.exp.com             <span class="token number">80</span>      59s
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl describe ingress kubia-ingress
+Name:             kubia-ingress
+Namespace:        default
+Address:          
+Default backend:  default-http-backend:80 <span class="token punctuation">(</span><span class="token operator">&lt;</span>none<span class="token operator">></span><span class="token punctuation">)</span>
+Rules:
+  Host           Path  Backends
+  ----           ----  --------
+  kubia.exp.com  
+                 /   kubia:80 <span class="token punctuation">(</span><span class="token number">10.244</span>.1.28:8080,10.244.2.43:8080,10.244.2.44:8080<span class="token punctuation">)</span>
+Annotations:
+Events:
+  Type    Reason  Age    From                      Message
+  ----    ------  ----   ----                      -------
+  Normal  CREATE  2m22s  nginx-ingress-controller  Ingress default/kubia-ingress<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>通过浏览器访问 <code>kubia.exp.com:30112</code> 即可访问 kubia 服务。</p>
+<p>客户端与控制器之间的通信采用 HTTPS 加密，而控制器与后端 Pod 之间的通信则不需要加密。运行在 Pod 上的应用程序不需要支持 TLS。例如，如果 Pod 上运行着 Web 服务器，它只需要接收 HTTP 通信，并让 Ingress 控制器负责处理与 TLS 相关的所有内容。只需将证书和私钥附加到 Ingress 上，这两个资源存储在 Secret 中，然后在 Ingress 的配置文件中引用它们：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ openssl genrsa <span class="token parameter variable">-out</span> tls.key <span class="token number">2048</span>
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ openssl req <span class="token parameter variable">-new</span> <span class="token parameter variable">-x509</span> <span class="token parameter variable">-key</span> tls.key <span class="token parameter variable">-out</span> tls.crt <span class="token parameter variable">-subj</span> /C<span class="token operator">=</span>CN/ST<span class="token operator">=</span>Beijing/L<span class="token operator">=</span>Beijing/O<span class="token operator">=</span>DevOps/CN<span class="token operator">=</span>kubia.exp.com
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl create secret tls kubia-secret <span class="token parameter variable">--cert</span><span class="token operator">=</span>tls.crt <span class="token parameter variable">--key</span><span class="token operator">=</span>tls.key
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get secret
+NAME                    TYPE                                  DATA   AGE
+default-token-5wkq2     kubernetes.io/service-account-token   <span class="token number">3</span>      25h
+kubia-secret            kubernetes.io/tls                     <span class="token number">2</span>      30s
+tomcat-ingress-secret   kubernetes.io/tls                     <span class="token number">2</span>      55m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>重新创建 Ingress，使用 HTTPS 协议将 kubia 绑定到 <code>kubia.exp.com</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-tls.yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-kubia
+  namespace: default
+spec:
+  tls:
+  - hosts:
+    - kubia.exp.com
+    secretName: kubia-secret
+  rules:
+  - host: kubia.exp.com
+    http:
+      paths:
+      - path:
+        backend:
+          serviceName: kubia
+          servicePort: <span class="token number">8080</span>
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-tls.yaml 
+ingress.extensions/ingress-kubia created
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get ingress
+NAME                 HOSTS              ADDRESS   PORTS     AGE
+ingress-kubia        kubia.exp.com                <span class="token number">80</span>, <span class="token number">443</span>   29s
+ingress-myapp        myapp.along.com              <span class="token number">80</span>        65m
+ingress-tomcat       tomcat.along.com             <span class="token number">80</span>        60m
+ingress-tomcat-tls   tomcat.along.com             <span class="token number">80</span>, <span class="token number">443</span>   58m
+kubia-ingress        kubia.exp.com                <span class="token number">80</span>        10m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用浏览器访问 HTTPS 地址：<a target="_blank" rel="noopener external nofollow noreferrer" href="https://kubia.exp.com:30970/">https://kubia.exp.com:30970/</a> 进行验证。</p>
+<p>可以通过设置多个路径来将访问路径转发到不同的服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">..</span>.
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kubia
+          servicePort: <span class="token number">80</span>
+      - path: /admin
+        backend:
+          serviceName: admin
+          servicePort: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>同样，可以设置多个规则来将子域名转发到不同的服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kubia-ingress
+  namespace: default
+spec:
+  rules:
+  - host: kubia.exp.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kubia
+          servicePort: <span class="token number">80</span>
+  rules:
+  - host: app.exp.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: app
+          servicePort: <span class="token number">80</span>
+      - path: /api
+        backend:
+          serviceName: api
+          servicePort: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>除了使用 NodePort、LoadBalancer 等方式来暴露单个服务，还可以使用 Ingress 来暴露服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: my-ingress
+spec:
+  backend:
+    serviceName: my-svc
+    servicePort: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这样，通过外网访问 80 端口即可直接转发到 my-svc 服务。</p>
+<h1 id="指向外部服务"><a class="markdownIt-Anchor" href="#指向外部服务"></a> 指向外部服务</h1>
+<p>SVC 也可以将服务的地址重定向到集群外部网络的地址和端口，在集群中的 pod 可以像连接内部服务一样连接到外部服务。如下图所示：</p>
+<p><img data-src="../../../images/%E6%9C%8D%E5%8A%A1%E6%8C%87%E5%90%91%E5%A4%96%E9%83%A8%E5%9C%B0%E5%9D%80.jpg" alt="服务指向外部地址" /></p>
+<h2 id="endpoint"><a class="markdownIt-Anchor" href="#endpoint"></a> Endpoint</h2>
+<p>SVC 通过 Endpoint（以下简称 EP）资源与 pod 进行连接，一般指向 pod 的 IP 地址和端口列表：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl describe svc kubia
+Endpoints:         <span class="token number">10.244</span>.191.210:8080,10.244.191.211:8080,10.244.244.209:8080<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>也可以直接查询 EP 资源：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get endpoints kubia
+NAME    ENDPOINTS                                                     AGE
+kubia   <span class="token number">10.244</span>.191.210:8080,10.244.191.211:8080,10.244.244.209:8080   100m
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl describe endpoints kubia
+Name:         kubia
+Namespace:    default
+Labels:       <span class="token operator">&lt;</span>none<span class="token operator">></span>
+Annotations:  endpoints.kubernetes.io/last-change-trigger-time: <span class="token number">2021</span>-11-03T11:45:07Z
+Subsets:
+  Addresses:          <span class="token number">10.244</span>.191.210,10.244.191.211,10.244.244.209
+  NotReadyAddresses:  <span class="token operator">&lt;</span>none<span class="token operator">></span>
+  Ports:
+    Name     Port  Protocol
+    ----     ----  --------
+    <span class="token operator">&lt;</span>unset<span class="token operator">></span>  <span class="token number">8080</span>  TCP<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>EP 的作用是存储通过 pod 选择器获取的 pod 地址和端口，并提供给服务调用。</p>
+<h2 id="配置-ep"><a class="markdownIt-Anchor" href="#配置-ep"></a> 配置 EP</h2>
+<p>可以分别创建 SVC 和 EP 资源来自定义要转发到的地址列表。先创建一个没有选择器的服务，并指定 EP 的目标端口为 80：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> outside-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: outside
+spec:
+  ports:
+  - name: http
+    port: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>创建一个 EP 来指定地址列表。名称需要与 SVC 的一致：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> outside-ep.yaml
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: outside
+subsets:
+  - addresses:
+    - ip: <span class="token number">11.11</span>.11.11
+    - ip: <span class="token number">22.22</span>.22.22
+    ports:
+    - port: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>分别部署后，SVC 就具有了转发到外部服务的功能：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> outside-svc.yaml <span class="token parameter variable">-f</span> outside-ep.yaml <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>自定义 Endpoint 通常可用于服务迁移。当集群内的应用迁移到外部时，在 EP 资源中修改地址后，SVC 提供的访问 IP 地址可以保持不变。</p>
+<h2 id="配置别名"><a class="markdownIt-Anchor" href="#配置别名"></a> 配置别名</h2>
+<p>除了手动配置 EP 外，还可以设置域名作为转发目标。只需要在 SVC 配置文件中设置类型为 ExternalName 即可：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> ext-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: exten
+spec:
+  type: ExternalName
+  externalName: someapi.somecompany.com
+  ports:
+  - port: <span class="token number">80</span>
+    targetPort: <span class="token number">6379</span>
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> ext-svc.yaml 
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get svc exten 
+NAME    TYPE           CLUSTER-IP   EXTERNAL-IP               PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>   AGE
+exten   ExternalName   <span class="token operator">&lt;</span>none<span class="token operator">></span>       someapi.somecompany.com   <span class="token number">80</span>/TCP    29s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>之后，集群内的 pod 可以通过访问 <code>exten</code> 这个 SVC 就能连接到外部域名 <code>someapi.somecompany.com</code>。这样的好处是不需要关心外部域名的 IP 地址，即使 IP 有变动也不会影响 SVC 的运行。</p>
+<h1 id="无头服务"><a class="markdownIt-Anchor" href="#无头服务"></a> 无头服务</h1>
+<p>假如客户需要获取一组 pod IP，默认情况下查询服务会返回服务的集群 IP。通过把服务 IP 设为 None，客户端可以通过一个简单的 DNS A 记录查找获取到属于该服务的所有 pod IP。这种服务叫做无头服务。</p>
+<h2 id="创建服务"><a class="markdownIt-Anchor" href="#创建服务"></a> 创建服务</h2>
+<p>配置 YAML 并启动服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-headless.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubia-headless
+  namespace: default
+spec:
+  clusterIP: None
+  ports:
+  - port: <span class="token number">80</span>
+    targetPort: <span class="token number">8080</span>
+  selector:
+    app: kubia
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-headless.yaml 
+service/kubia-headless created
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get <span class="token function">service</span>
+NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>        AGE
+kubernetes       ClusterIP   <span class="token number">10.96</span>.0.1        <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">443</span>/TCP        130d
+kubia            ClusterIP   <span class="token number">10.107</span>.244.106   <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>/TCP         3h43m
+kubia-headless   ClusterIP   None             <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>/TCP         3s
+kubia-nodeport   NodePort    <span class="token number">10.99</span>.116.227    <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>:30123/TCP   148m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>创建完毕后，可以看到服务没有集群 IP。</p>
+<h2 id="通过-dns-查找"><a class="markdownIt-Anchor" href="#通过-dns-查找"></a> 通过 DNS 查找</h2>
+<p>拉取一个能够进行 DNS 查询的容器后，进入 pod 执行 DNS 查找：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl run dnsutils <span class="token parameter variable">--image</span><span class="token operator">=</span>tutum/dnsutils <span class="token parameter variable">--command</span> -- <span class="token function">sleep</span> infinity
+pod/dnsutils created
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> dnsutils <span class="token function">nslookup</span> kubia-headless
+Server:         <span class="token number">10.96</span>.0.10
+Address:        <span class="token number">10.96</span>.0.10<span class="token comment">#53</span>
+
+Name:   kubia-headless.default.svc.cluster.local
+Address: <span class="token number">10.244</span>.1.38
+Name:   kubia-headless.default.svc.cluster.local
+Address: <span class="token number">10.244</span>.2.57
+Name:   kubia-headless.default.svc.cluster.local
+Address: <span class="token number">10.244</span>.2.58<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>结果返回了 pod 的 IP，这与普通服务不同，比如 kubia 服务返回服务的集群 IP：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> dnsutils <span class="token function">nslookup</span> kubia
+Server:         <span class="token number">10.96</span>.0.10
+Address:        <span class="token number">10.96</span>.0.10<span class="token comment">#53</span>
+
+Name:   kubia.default.svc.cluster.local
+Address: <span class="token number">10.102</span>.7.149
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get svc
+NAME             TYPE        CLUSTER-IP     EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>   AGE
+kubernetes       ClusterIP   <span class="token number">10.96</span>.0.1      <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">443</span>/TCP   24h
+kubia            ClusterIP   <span class="token number">10.102</span>.7.149   <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>/TCP    64s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>无头服务使用上与普通服务一样，客户也可以通过连接服务的 DNS 名称来连接到 pod 上，不过客户端直连到 pod 上，而不是通过服务代理。</p>
+<p>无头服务仍然提供跨 pod 的负载平衡，通过 DNS 轮询机制实现。</p>
+<h2 id="发现所有-pod"><a class="markdownIt-Anchor" href="#发现所有-pod"></a> 发现所有 Pod</h2>
+<p>如果希望 pod 没有准备就绪也能被发现，可以在服务配置中添加注解：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">metadata:
+  name: kubia-headless
+  namespace: default
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: <span class="token string">"true"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/3045985343/" title="K8s 服务资源">https://blog.x2b.net/3045985343/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../3341501969/" rel="prev" title="Docker 基础概念">
+                  <i class="fa fa-chevron-left"></i> Docker 基础概念
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../3401119197/" rel="next" title="K8s 控制器">
+                  K8s 控制器 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">244k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">13:34</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@next-theme/pjax@0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://unpkg.com/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://unpkg.com/katex@0.16.4/dist/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/3045985343/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://unpkg.com/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'blog.x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>
