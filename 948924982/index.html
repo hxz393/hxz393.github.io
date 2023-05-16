@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="高级调度 Kubernetes（k8s）是一个强大的容器编排平台，具备许多高级调度功能，以优化容器的资源利用和性能。以下是一些常见的 k8s 高级调度功能：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="K8s 资源管理">
+<meta property="og:url" content="https://blog.x2b.net/948924982/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="高级调度 Kubernetes（k8s）是一个强大的容器编排平台，具备许多高级调度功能，以优化容器的资源利用和性能。以下是一些常见的 k8s 高级调度功能：">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-22T09:05:42.000Z">
+<meta property="article:modified_time" content="2023-05-16T07:41:41.444Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/948924982/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/948924982/","path":"948924982/","title":"K8s 资源管理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>K8s 资源管理 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">13</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">83</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%AB%98%E7%BA%A7%E8%B0%83%E5%BA%A6"><span class="nav-number">1.</span> <span class="nav-text"> 高级调度</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A6%81%E6%AD%A2%E8%B0%83%E5%BA%A6"><span class="nav-number">1.1.</span> <span class="nav-text"> 禁止调度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B1%A1%E7%82%B9%E5%92%8C%E5%AE%B9%E5%BF%8D%E5%BA%A6"><span class="nav-number">1.2.</span> <span class="nav-text"> 污点和容忍度</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%A1%E7%82%B9%E6%95%88%E6%9E%9C"><span class="nav-number">1.2.1.</span> <span class="nav-text"> 污点效果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%B1%A1%E7%82%B9"><span class="nav-number">1.2.2.</span> <span class="nav-text"> 添加污点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%A1%E7%82%B9%E5%AE%B9%E5%BF%8D%E5%BA%A6"><span class="nav-number">1.2.3.</span> <span class="nav-text"> 污点容忍度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E6%B1%A1%E7%82%B9"><span class="nav-number">1.2.4.</span> <span class="nav-text"> 删除污点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%B2%E7%BC%98%E6%80%A7"><span class="nav-number">1.3.</span> <span class="nav-text"> 亲缘性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8A%82%E7%82%B9%E4%BA%B2%E7%BC%98%E6%80%A7"><span class="nav-number">1.3.1.</span> <span class="nav-text"> 节点亲缘性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pod-%E4%BA%B2%E7%BC%98%E6%80%A7"><span class="nav-number">1.3.2.</span> <span class="nav-text"> Pod 亲缘性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8D%E4%BA%B2%E7%BC%98%E6%80%A7"><span class="nav-number">1.3.3.</span> <span class="nav-text"> 反亲缘性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B5%84%E6%BA%90%E8%AF%B7%E6%B1%82%E5%92%8C%E9%99%90%E5%88%B6"><span class="nav-number">2.</span> <span class="nav-text"> 资源请求和限制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E8%B5%84%E6%BA%90%E8%AF%B7%E6%B1%82"><span class="nav-number">2.1.</span> <span class="nav-text"> 使用资源请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%84%E6%BA%90%E8%AF%B7%E6%B1%82%E5%AF%B9%E8%B0%83%E5%BA%A6%E5%BD%B1%E5%93%8D"><span class="nav-number">2.2.</span> <span class="nav-text"> 资源请求对调度影响</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cpu-%E5%AE%9E%E9%99%85%E5%88%86%E9%85%8D%E5%8E%9F%E5%88%99"><span class="nav-number">2.3.</span> <span class="nav-text"> CPU 实际分配原则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E8%87%AA%E5%AE%9A%E4%B9%89%E8%B5%84%E6%BA%90"><span class="nav-number">2.4.</span> <span class="nav-text"> 使用自定义资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E8%B5%84%E6%BA%90%E9%99%90%E5%88%B6"><span class="nav-number">2.5.</span> <span class="nav-text"> 设置资源限制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B6%85%E8%BF%87%E8%B5%84%E6%BA%90%E9%99%90%E5%88%B6"><span class="nav-number">2.6.</span> <span class="nav-text"> 超过资源限制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#limitrange"><span class="nav-number">3.</span> <span class="nav-text"> LimitRange</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-limitrange-%E8%B5%84%E6%BA%90"><span class="nav-number">3.1.</span> <span class="nav-text"> 创建 LimitRange 资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E9%99%90%E5%88%B6%E5%80%BC"><span class="nav-number">3.2.</span> <span class="nav-text"> 测试限制值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E9%99%90%E5%88%B6%E9%BB%98%E8%AE%A4%E5%80%BC"><span class="nav-number">3.3.</span> <span class="nav-text"> 应用限制默认值</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#resourcequota"><span class="nav-number">4.</span> <span class="nav-text"> ResourceQuota</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E9%85%8D%E9%A2%9D"><span class="nav-number">4.1.</span> <span class="nav-text"> 创建配额</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E9%85%8D%E9%A2%9D"><span class="nav-number">4.2.</span> <span class="nav-text"> 测试配额</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%82%A8%E5%AD%98%E9%85%8D%E9%A2%9D"><span class="nav-number">4.3.</span> <span class="nav-text"> 储存配额</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%90%E5%88%B6%E5%AF%B9%E8%B1%A1%E6%95%B0%E9%87%8F"><span class="nav-number">4.4.</span> <span class="nav-text"> 限制对象数量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E9%85%8D%E9%85%8D%E9%A2%9D"><span class="nav-number">4.5.</span> <span class="nav-text"> 分配配额</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#qos-%E7%AD%89%E7%BA%A7"><span class="nav-number">5.</span> <span class="nav-text"> QoS 等级</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#besteffort-%E7%AD%89%E7%BA%A7"><span class="nav-number">5.1.</span> <span class="nav-text"> BestEffort 等级</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#guaranteed-%E7%AD%89%E7%BA%A7"><span class="nav-number">5.2.</span> <span class="nav-text"> Guaranteed 等级</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#burstable-%E7%AD%89%E7%BA%A7"><span class="nav-number">5.3.</span> <span class="nav-text"> Burstable 等级</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E7%9B%B8%E5%90%8C-qos-%E7%AD%89%E7%BA%A7%E5%AE%B9%E5%99%A8"><span class="nav-number">5.4.</span> <span class="nav-text"> 处理相同 QoS 等级容器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E4%BC%B8%E7%BC%A9"><span class="nav-number">6.</span> <span class="nav-text"> 自动伸缩</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E-cpu-%E4%BD%BF%E7%94%A8%E7%8E%87"><span class="nav-number">6.1.</span> <span class="nav-text"> 基于 CPU 使用率</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E5%86%85%E5%AD%98%E4%BD%BF%E7%94%A8"><span class="nav-number">6.2.</span> <span class="nav-text"> 基于内存使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E5%85%B6%E4%BB%96%E5%BA%A6%E9%87%8F"><span class="nav-number">6.3.</span> <span class="nav-text"> 基于其他度量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%B5%E5%90%91%E8%87%AA%E5%8A%A8%E4%BC%B8%E7%BC%A9"><span class="nav-number">6.4.</span> <span class="nav-text"> 纵向自动伸缩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8A%82%E7%82%B9%E8%87%AA%E5%8A%A8%E4%BC%B8%E7%BC%A9"><span class="nav-number">6.5.</span> <span class="nav-text"> 节点自动伸缩</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">83</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/948924982/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="K8s 资源管理 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          K8s 资源管理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-03-22 17:05:42" itemprop="dateCreated datePublished" datetime="2022-03-22T17:05:42+08:00">2022-03-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-16 15:41:41" itemprop="dateModified" datetime="2023-05-16T15:41:41+08:00">2023-05-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Kubernets/" itemprop="url" rel="index"><span itemprop="name">Kubernets</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Kubernets/1-%E5%B8%B8%E7%94%A8%E8%B5%84%E6%BA%90/" itemprop="url" rel="index"><span itemprop="name">1.常用资源</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>27 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="高级调度"><a class="markdownIt-Anchor" href="#高级调度"></a> 高级调度</h1>
+<p>Kubernetes（k8s）是一个强大的容器编排平台，具备许多高级调度功能，以优化容器的资源利用和性能。以下是一些常见的 k8s 高级调度功能：</p>
+<ol>
+<li>亲和性调度（Affinity Scheduling）：通过亲和性调度规则，将容器调度到具有特定标签或节点上，以满足应用程序的需求。亲和性调度可以实现容器之间的亲和关系，如将相关的容器调度到相同的节点上，或将某个容器调度到特定类型的节点上。</li>
+<li>反亲和性调度（Anti-Affinity Scheduling）：与亲和性调度相反，反亲和性调度可以将容器调度到具有特定标签或节点上的不同节点，以提高容器的高可用性和容错性。</li>
+<li>资源限制（Resource Limits）：可以为容器设置资源限制，如 CPU 和内存限制，以确保容器在运行时不会超出预定义的资源限制，从而避免资源竞争和意外的崩溃。</li>
+<li>资源配额（Resource Quotas）：通过资源配额，可以限制命名空间中的容器使用的总资源量，包括 CPU、内存、存储等。资源配额可以帮助确保不同应用程序之间的资源隔离和公平分配。</li>
+<li>亲和性互斥（Affinity Preemption）：通过亲和性互斥规则，可以防止容器被调度到具有相同亲和性规则的其他容器所在的节点上。这可以避免容器之间的资源冲突和干扰。</li>
+<li>水平 Pod 自动伸缩（Horizontal Pod Autoscaling）：根据应用程序的负载和性能需求，可以自动调整 Pod 的副本数量。水平 Pod 自动伸缩功能可根据预定义的规则自动扩展或缩减 Pod 的数量，以满足应用程序的需求。</li>
+<li>优先级和预选调度（Priority and Preemption Scheduling）：可以为容器设置优先级和预选条件，以确保重要任务或紧急任务得到优先调度。如果节点资源不足以满足高优先级任务的需求，则可以通过预选调度功能，暂时剥夺低优先级任务的资源，以满足高优先级任务的需求。</li>
+<li>自定义调度器（Custom Scheduler）：Kubernetes 允许用户编写自定义调度器，根据特定的调度算法和策略，将容器调度到节点上。自定义调度器可以根据应用程序的特定需求进行优化和定制化。</li>
+</ol>
+<h2 id="禁止调度"><a class="markdownIt-Anchor" href="#禁止调度"></a> 禁止调度</h2>
+<p>有时候需要手动标记节点为不可调度状态来进行维护工作，可以使用 <code>cordon</code> 命令来标记节点不再接收新的 Pod 请求：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl cordon server5-node1
+node/server5-node1 cordoned<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>同时，可以使用 <code>drain</code> 命令在停止调度后将节点上的 Pod 转移到其他节点上：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl drain server5-node1 
+node/server5-node1 already cordoned
+DEPRECATED WARNING: Aborting the drain <span class="token builtin class-name">command</span> <span class="token keyword">in</span> a list of nodes will be deprecated <span class="token keyword">in</span> v1.23.
+The new behavior will <span class="token function">make</span> the drain <span class="token builtin class-name">command</span> go through all nodes even <span class="token keyword">if</span> one or <span class="token function">more</span> nodes failed during the drain.
+For now, <span class="token function">users</span> can try such experience via: --ignore-errors
+error: unable to drain <span class="token function">node</span> <span class="token string">"server5-node1"</span>, aborting command<span class="token punctuation">..</span>.
+
+There are pending nodes to be drained:
+ server5-node1
+cannot delete Pods not managed by ReplicationController, ReplicaSet, Job, DaemonSet or StatefulSet <span class="token punctuation">(</span>use <span class="token parameter variable">--force</span> to override<span class="token punctuation">)</span>: bar/test, default/host-pid, default/pod-host-network, default/pod-privileged, foo/test
+cannot delete DaemonSet-managed Pods <span class="token punctuation">(</span>use --ignore-daemonsets to ignore<span class="token punctuation">)</span>: calico-system/calico-node-2cp86, kube-system/kube-proxy-fnvff
+cannot delete Pods with <span class="token builtin class-name">local</span> storage <span class="token punctuation">(</span>use --delete-emptydir-data to override<span class="token punctuation">)</span>: default/pod-readonly<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>根据提示，可以添加一些参数，例如 <code>--force</code> 用于覆盖，<code>--ignore-daemonsets</code> 用于忽略守护进程集等，以忽略警告信息。</p>
+<p>如果想解除不可调度状态，可以使用 <code>uncordon</code> 命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl uncordon server5-node1
+node/server5-node1 uncordoned<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="污点和容忍度"><a class="markdownIt-Anchor" href="#污点和容忍度"></a> 污点和容忍度</h2>
+<p>在使用 kubeadm 建立集群时，主节点会自动设置污点，不允许在其上部署 Pod。可以通过 describe 命令查看污点信息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl describe <span class="token function">node</span> server4-master 
+Taints:             node-role.kubernetes.io/master<span class="token operator">=</span>true:NoSchedule<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>其中 Taints 选项包含键、值和生效规则。主节点上的污点信息键为 <code>node-role.kubernetes.io/master</code>，值为 <code>true</code>，生效规则为 NoSchedule。这个污点将阻止 Pod 被调度到该节点上，除非有 Pod 能够容忍该污点。通常，容忍该污点的 Pod 是系统级别的 Pod，例如 kube-proxy：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl describe po kube-proxy-wkgjf <span class="token parameter variable">-n</span> kube-system
+Tolerations:                 <span class="token assign-left variable">op</span><span class="token operator">=</span>Exists
+                             node.kubernetes.io/disk-pressure:NoSchedule <span class="token assign-left variable">op</span><span class="token operator">=</span>Exists
+                             node.kubernetes.io/memory-pressure:NoSchedule <span class="token assign-left variable">op</span><span class="token operator">=</span>Exists
+                             node.kubernetes.io/network-unavailable:NoSchedule <span class="token assign-left variable">op</span><span class="token operator">=</span>Exists
+                             node.kubernetes.io/not-ready:NoExecute <span class="token assign-left variable">op</span><span class="token operator">=</span>Exists
+                             node.kubernetes.io/pid-pressure:NoSchedule <span class="token assign-left variable">op</span><span class="token operator">=</span>Exists
+                             node.kubernetes.io/unreachable:NoExecute <span class="token assign-left variable">op</span><span class="token operator">=</span>Exists
+                             node.kubernetes.io/unschedulable:NoSchedule <span class="token assign-left variable">op</span><span class="token operator">=</span>Exists<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="污点效果"><a class="markdownIt-Anchor" href="#污点效果"></a> 污点效果</h3>
+<p>每个污点都关联一个生效规则，共有三种规则：</p>
+<ul>
+<li>
+<p>NoSchedule（不可调度）</p>
+<p>如果 Pod 不能容忍这些污点，则 Pod 将无法被调度到包含这些污点的节点上。</p>
+</li>
+<li>
+<p>PreferNoSchedule（优先不调度）</p>
+<p>表示尽量不将 Pod 调度到具有该污点的节点上。只有在没有其他可用节点时，才会将 Pod 调度到该节点上。</p>
+</li>
+<li>
+<p>NoExecute（不执行）</p>
+<p>这个规则会影响节点上运行的 Pod。如果节点上添加了 NoExecute 污点，那些正在该节点上运行的 Pod 将会从该节点上移除。</p>
+</li>
+</ul>
+<h3 id="添加污点"><a class="markdownIt-Anchor" href="#添加污点"></a> 添加污点</h3>
+<p>在生产环境的节点上，可以添加污点来拒绝部署：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl taint <span class="token function">node</span> server4-master node-type<span class="token operator">=</span>prod:NoSchedule
+node/server4-master tainted
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl describe <span class="token function">node</span> server4-master 
+Taints:             node-type<span class="token operator">=</span>prod:NoSchedule<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>此命令会给节点添加一个污点，其中键为 <code>node-type</code>，值为 <code>prod</code>，效果为 NoSchedule。</p>
+<h3 id="污点容忍度"><a class="markdownIt-Anchor" href="#污点容忍度"></a> 污点容忍度</h3>
+<p>如果需要在有污点的节点上部署 Pod，可以在 Pod 的 <code>spec.template.spec.tolerations</code> 中添加污点容忍度：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> dp.yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubia
+spec:
+  replicas: <span class="token number">3</span>
+  selector:
+    matchLabels:
+      app: kubia
+  template:
+    metadata:
+      name: kubia
+      labels:
+        app: kubia
+    spec:
+      containers:
+      - name: nodejs
+        image: luksa/kubia
+        ports:
+        - name: http
+          containerPort: <span class="token number">8080</span>
+        resources:
+          requests:
+            cpu: 100m
+      tolerations:
+      - key: node-type
+        operator: Equal
+        value: prod
+        effect: NoSchedule<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以根据需求灵活配置节点失效（unready 或 unreachable）状态下，Pod 重新调度之前的等待时间：</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">tolerations</span><span class="token punctuation">:</span>
+<span class="token punctuation">-</span> <span class="token key atrule">key</span><span class="token punctuation">:</span> node.alphakubernetes.io/notReady
+  <span class="token key atrule">operator</span><span class="token punctuation">:</span> Exists
+  <span class="token key atrule">tolerationSeconds</span><span class="token punctuation">:</span> <span class="token number">30</span>
+  <span class="token key atrule">effect</span><span class="token punctuation">:</span> NoExecute
+<span class="token punctuation">-</span> <span class="token key atrule">key</span><span class="token punctuation">:</span> node.alphakubernetes.io/unreachable
+  <span class="token key atrule">operator</span><span class="token punctuation">:</span> Exists
+  <span class="token key atrule">tolerationSeconds</span><span class="token punctuation">:</span> <span class="token number">300</span>
+  <span class="token key atrule">effect</span><span class="token punctuation">:</span> NoExecute<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果没有定义这两个容忍度，它们会自动添加到 Pod 上，初始等待时间为 300 秒。可以缩短值以减少等待时间。</p>
+<h3 id="删除污点"><a class="markdownIt-Anchor" href="#删除污点"></a> 删除污点</h3>
+<p>如果需要删除添加的污点，只需在添加污点的命令后加上减号 <code>-</code> 即可：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl taint <span class="token function">node</span> server5-node1 node-type<span class="token operator">=</span>prod:NoSchedule-
+node/server5-node1 untainted<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="亲缘性"><a class="markdownIt-Anchor" href="#亲缘性"></a> 亲缘性</h2>
+<p>在 Kubernetes（k8s）中，亲缘性（Affinity）是一种调度策略，用于指定容器与节点或其他容器之间的关系。亲缘性可通过标签选择器和节点选择器来定义。</p>
+<h3 id="节点亲缘性"><a class="markdownIt-Anchor" href="#节点亲缘性"></a> 节点亲缘性</h3>
+<p>节点亲缘性（Node Affinity）允许 Kubernetes 将 Pod 只调度到某个节点子集上。</p>
+<p>节点亲缘性规则用于取代节点选择器，其写法如下：</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">affinity</span><span class="token punctuation">:</span>
+    <span class="token key atrule">nodeAffinity</span><span class="token punctuation">:</span>
+      <span class="token key atrule">requiredDuringSchedulingIgnoredDuringExecution</span><span class="token punctuation">:</span>
+        <span class="token key atrule">nodeSelectorTerms</span><span class="token punctuation">:</span>
+          <span class="token punctuation">-</span> <span class="token key atrule">matchExpressions</span><span class="token punctuation">:</span>
+            <span class="token punctuation">-</span> <span class="token key atrule">key</span><span class="token punctuation">:</span> gpu
+              <span class="token key atrule">operator</span><span class="token punctuation">:</span> in
+              <span class="token key atrule">values</span><span class="token punctuation">:</span>
+              <span class="token punctuation">-</span> <span class="token string">"true"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中，<code>requiredDuringSchedulingIgnoredDuringExecution</code> 用于表示强制性规则，不影响已经在节点上运行的 Pod。规则为 Pod 只会调度到包含 <code>gpu=true</code> 标签的节点上。</p>
+<p>可以通过 <code>preferredDuringSchedulingIgnoredDuringExecution</code> 设置软性规则，指定多个节点并调整优先级：</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">affinity</span><span class="token punctuation">:</span>
+    <span class="token key atrule">nodeAffinity</span><span class="token punctuation">:</span>
+      <span class="token key atrule">preferredDuringSchedulingIgnoredDuringExecution</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">weight</span><span class="token punctuation">:</span> <span class="token number">80</span>
+        <span class="token key atrule">preference</span><span class="token punctuation">:</span>
+            <span class="token key atrule">matchExpressions</span><span class="token punctuation">:</span>
+            <span class="token punctuation">-</span> <span class="token key atrule">key</span><span class="token punctuation">:</span> gpu
+              <span class="token key atrule">operator</span><span class="token punctuation">:</span> In
+              <span class="token key atrule">values</span><span class="token punctuation">:</span>
+              <span class="token punctuation">-</span> <span class="token string">"true"</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">weight</span><span class="token punctuation">:</span> <span class="token number">20</span>
+        <span class="token key atrule">preference</span><span class="token punctuation">:</span>
+            <span class="token key atrule">matchExpressions</span><span class="token punctuation">:</span>
+            <span class="token punctuation">-</span> <span class="token key atrule">key</span><span class="token punctuation">:</span> zone
+              <span class="token key atrule">operator</span><span class="token punctuation">:</span> In
+              <span class="token key atrule">values</span><span class="token punctuation">:</span>
+              <span class="token punctuation">-</span> <span class="token string">"cn"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中，节点亲缘性优先级设置了 Pod 被优先调度到标签为 <code>gpu=true</code> 和 <code>zone=cn</code> 的节点上，其次是拥有 <code>gpu=true</code> 但 <code>zone</code> 值不为 <code>cn</code> 的节点，再次是 <code>zone=cn</code> 的节点，最后是优先级最低的其他节点。</p>
+<p>对 <code>node1</code> 打上 <code>gpu=true</code> 和 <code>zone=cn</code> 标签：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl label <span class="token function">node</span> server5-node1 <span class="token assign-left variable">gpu</span><span class="token operator">=</span>true
+node/server5-node1 labeled
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl label <span class="token function">node</span> server5-node1 <span class="token assign-left variable">zone</span><span class="token operator">=</span>cn
+node/server5-node1 labeled<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 Deployment 发布一个有 5 个副本的应用，并查看 Pod 分布：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> deploy.label.yaml 
+deployment.apps/kubia created
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get po <span class="token parameter variable">-o</span> wide
+NAME                    READY   STATUS    RESTARTS   AGE   IP               NODE         kubia-6f84b588d-8b6dn   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          9s    <span class="token number">10.244</span>.191.247   server6-node2 
+kubia-6f84b588d-kbrks   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          9s    <span class="token number">10.244</span>.191.250   server5-node1 
+kubia-6f84b588d-kf6p2   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          9s    <span class="token number">10.244</span>.191.251   server5-node1 
+kubia-6f84b588d-pbf7p   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          9s    <span class="token number">10.244</span>.191.248   server5-node1 
+kubia-6f84b588d-sfqv4   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          9s    <span class="token number">10.244</span>.191.249   server5-node1 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到，5 个 Pod 中有 4 个被部署到了 <code>node1</code>，另外 1 个部署到了 <code>node2</code>。这是因为使用了 <code>Selector SpreadPriority</code> 函数，它确保属于同一个 ReplicaSet 或 Service 的 Pod 分布到不同节点，避免单节点故障导致服务不可用。</p>
+<h3 id="pod-亲缘性"><a class="markdownIt-Anchor" href="#pod-亲缘性"></a> Pod 亲缘性</h3>
+<p>如果是协同工作的两个 Pod，可以设置 Pod 亲缘性，将它们尽可能部署到同一节点：</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">affinity</span><span class="token punctuation">:</span>
+    <span class="token key atrule">podAffinity</span><span class="token punctuation">:</span>
+      <span class="token key atrule">requiredDuringSchedulingIgnoredDuringExecution</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">topologyKey</span><span class="token punctuation">:</span> kubernetes.io/hostname
+        <span class="token key atrule">labelSelector</span><span class="token punctuation">:</span>
+          <span class="token key atrule">matchLabels</span><span class="token punctuation">:</span>
+            <span class="token key atrule">app</span><span class="token punctuation">:</span> backend<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>此部署将创建一个包含强制性要求的 Pod，其中要求该 Pod 尽可能调度到与其他包含标签 <code>app=backend</code> 的 Pod 相同的节点上（通过 <code>topologyKey</code> 字段指定）。</p>
+<h3 id="反亲缘性"><a class="markdownIt-Anchor" href="#反亲缘性"></a> 反亲缘性</h3>
+<p>除了能让调度器对 Pod 进行协同部署，还可以让 Pod 之间远离彼此。通过 <code>podAntiAffinity</code> 字段来配置，这将导致调度器永远不会选择那些具有与 <code>podAntiAffinity</code> 匹配标签的 Pod 所在节点。</p>
+<p>通常用于分离同样消耗大量系统资源的 Pod，或者将 Pod 分布在不同的可用区，以提高服务的可用性。以下是一个反亲缘性的示例：</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">affinity</span><span class="token punctuation">:</span>
+    <span class="token key atrule">podAntiAffinity</span><span class="token punctuation">:</span>
+      <span class="token key atrule">requiredDuringSchedulingIgnoredDuringExecution</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">labelSelector</span><span class="token punctuation">:</span>
+          <span class="token key atrule">matchExpressions</span><span class="token punctuation">:</span>
+          <span class="token punctuation">-</span> <span class="token key atrule">key</span><span class="token punctuation">:</span> app
+            <span class="token key atrule">operator</span><span class="token punctuation">:</span> In
+            <span class="token key atrule">values</span><span class="token punctuation">:</span>
+            <span class="token punctuation">-</span> frontend
+        <span class="token key atrule">topologyKey</span><span class="token punctuation">:</span> <span class="token string">"kubernetes.io/hostname"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="资源请求和限制"><a class="markdownIt-Anchor" href="#资源请求和限制"></a> 资源请求和限制</h1>
+<p>资源请求和限制是在 Kubernetes 中用于管理 Pod 资源分配和控制的重要概念。通过设置资源请求和限制，可以确保集群中的容器能够按预期方式运行，并有效地利用可用资源。</p>
+<h2 id="使用资源请求"><a class="markdownIt-Anchor" href="#使用资源请求"></a> 使用资源请求</h2>
+<p>在创建 Pod 时，可以指定容器对 CPU 和内存资源的请求量（requests）和资源限制量（limits）。下面创建一个 Pod，并指定容器对 CPU 和内存资源的请求量：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> pod-requests.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: requests-pod
+spec:
+  containers:
+  - image: busybox
+    command: <span class="token punctuation">[</span><span class="token string">"dd"</span>, <span class="token string">"if=/dev/zero"</span>, <span class="token string">"of=/dev/null"</span><span class="token punctuation">]</span>
+    name: main
+    resources:
+      requests:
+        cpu: 200m
+        memory: 100Mi
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> pod-requests.yaml 
+pod/requests-pod created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在上述配置中，声明容器需要 200 毫核（1 核 = 1000m）的 CPU 才能正常运行。在没有设置 CPU 资源请求的情况下，该进程可能无法分配到足够的 CPU 资源（当其他进程对 CPU 的需求很大时）。</p>
+<p>另外，还配置了容器请求内存为 100MB，表示期望容器内的进程最多使用 100MB 的内存，实际占用可能会小于这个值。</p>
+<p>运行容器后，可以使用 <code>top</code> 命令查看 CPU 使用情况：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> <span class="token parameter variable">-it</span> requests-pod -- <span class="token function">top</span>
+Mem: 7796064K used, 193976K free, 62492K shrd, 4240K buff, 6155012K cached
+CPU:  <span class="token number">1.2</span>% usr  <span class="token number">5.6</span>% sys  <span class="token number">0.0</span>% nic <span class="token number">93.1</span>% idle  <span class="token number">0.0</span>% io  <span class="token number">0.0</span>% irq  <span class="token number">0.0</span>% sirq
+Load average: <span class="token number">0.83</span> <span class="token number">0.39</span> <span class="token number">0.20</span> <span class="token number">3</span>/895 <span class="token number">19</span>
+  PID  <span class="token environment constant">PPID</span> <span class="token environment constant">USER</span>     STAT   VSZ %VSZ CPU %CPU COMMAND
+    <span class="token number">1</span>     <span class="token number">0</span> root     R     <span class="token number">1304</span>  <span class="token number">0.0</span>   <span class="token number">0</span>  <span class="token number">6.8</span> <span class="token function">dd</span> <span class="token keyword">if</span> /dev/zero of /dev/null
+   <span class="token number">14</span>     <span class="token number">0</span> root     R     <span class="token number">1312</span>  <span class="token number">0.0</span>   <span class="token number">2</span>  <span class="token number">0.0</span> <span class="token function">top</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>dd</code> 命令会消耗所有 CPU，但由于它是单线程运行，所以最多只能使用一个核心的资源。进程对 CPU 使用率远远超过了 Pod 定义申请的 1/5 核，因为 <code>requests</code> 不会限制容器可以使用的 CPU 总量。</p>
+<h2 id="资源请求对调度影响"><a class="markdownIt-Anchor" href="#资源请求对调度影响"></a> 资源请求对调度影响</h2>
+<p>通过设置 <code>requests</code> 指定 Pod 对资源需求的最小值，调度器在将 Pod 调度到节点的过程中会使用该信息。</p>
+<p>每个节点可分配资源是一定的，调度器只考虑那些未分配资源量满足 Pod 需求量的节点，而不会将 Pod 调度到无法满足需求的节点。此外，调度器计算的资源量是节点上所有 Pod 的资源请求量之和，与实际资源使用量无关。</p>
+<p>调度器基于资源请求量的优先级排序有两个函数：LeastRequestedPriority 和 MostRequestedPriority。前者优先将 Pod 调度到资源请求量较少的节点上，后者则相反。通常在可动态调整节点的云基础设施上使用 MostRequestedPriority，以确保 Kubernetes 尽可能少使用节点。</p>
+<p>通过查看节点描述，可以了解节点的资源总量、可分配资源量以及已使用资源量等信息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl describe nodes
+Addresses:
+  InternalIP:  <span class="token number">192.168</span>.2.206
+  Hostname:    server6-node2
+Capacity:
+  cpu:                <span class="token number">16</span>
+  ephemeral-storage:  66678Mi
+  hugepages-2Mi:      <span class="token number">0</span>
+  memory:             7990040Ki
+  pods:               <span class="token number">110</span>
+Allocatable:
+  cpu:                <span class="token number">16</span>
+  ephemeral-storage:  <span class="token number">62925255372</span>
+  hugepages-2Mi:      <span class="token number">0</span>
+  memory:             7887640Ki
+  pods:               <span class="token number">110</span>
+Allocated resources:
+  <span class="token punctuation">(</span>Total limits may be over <span class="token number">100</span> percent, i.e., overcommitted.<span class="token punctuation">)</span>
+  Resource           Requests    Limits
+  --------           --------    ------
+  cpu                200m <span class="token punctuation">(</span><span class="token number">1</span>%<span class="token punctuation">)</span>   200m <span class="token punctuation">(</span><span class="token number">1</span>%<span class="token punctuation">)</span>
+  memory             100Mi <span class="token punctuation">(</span><span class="token number">1</span>%<span class="token punctuation">)</span>  100Mi <span class="token punctuation">(</span><span class="token number">1</span>%<span class="token punctuation">)</span>
+  ephemeral-storage  <span class="token number">0</span> <span class="token punctuation">(</span><span class="token number">0</span>%<span class="token punctuation">)</span>      <span class="token number">0</span> <span class="token punctuation">(</span><span class="token number">0</span>%<span class="token punctuation">)</span>
+  hugepages-2Mi      <span class="token number">0</span> <span class="token punctuation">(</span><span class="token number">0</span>%<span class="token punctuation">)</span>      <span class="token number">0</span> <span class="token punctuation">(</span><span class="token number">0</span>%<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以创建一个请求 CPU 核数大于节点提供的 CPU 核数的 Pod：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> pod-requests.yaml
+    resources:
+      requests:
+        cpu: <span class="token number">20</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>由于目前没有服务器可以提供 20 核 CPU 资源，因此该 Pod 无法被创建，会一直处于 Pending 状态。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get po 
+NAME               READY   STATUS    RESTARTS     AGE
+requests-pod       <span class="token number">0</span>/1     Pending   <span class="token number">0</span>            63s
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl describe po requests-pod
+Events:
+  Type     Reason            Age   From               Message
+  ----     ------            ----  ----               -------
+  Warning  FailedScheduling  17s   default-scheduler  <span class="token number">0</span>/3 nodes are available: <span class="token number">3</span> Insufficient cpu.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>只有在释放足够的 CPU 资源后，新的 Pod 才能被正常调度。</p>
+<h2 id="cpu-实际分配原则"><a class="markdownIt-Anchor" href="#cpu-实际分配原则"></a> CPU 实际分配原则</h2>
+<p>CPU 请求不仅在调度时起作用，还决定了剩余的 CPU 时间如何在 Pod 之间分配。</p>
+<p>假设有两个 Pod，一个请求 20% 的 CPU，另一个请求 80% 的 CPU，并且两个 Pod 都能够使用满额的 CPU。在没有限制 CPU 使用量的情况下，这两个 Pod 最终会分别占用 20% 和 80% 的 CPU 使用率。</p>
+<p>当第一个 Pod 停止消耗 CPU 时，第二个 Pod 会占满 CPU，直到第一个 Pod 重新开始运行。这样，CPU 分配率又会回到 20% 和 80% 的比例。</p>
+<p>通过设置 CPU 请求量，可以在调度时控制 Pod 对 CPU 的分配情况。</p>
+<h2 id="使用自定义资源"><a class="markdownIt-Anchor" href="#使用自定义资源"></a> 使用自定义资源</h2>
+<p>除了内存和处理器，Kubernetes 还可以添加自定义资源（例如 GPU 单元数）进行分配。需要将自定义资源添加到节点的 API 对象的 capacity 属性中，可以通过执行 HTTP 的 PATCH 请求来完成。</p>
+<p>自定义资源的名称可以是任意值，不必以 <code>kubernetes.io</code> 域名开头，例如 <code>example.org/myresource</code>。数量必须是整数。这个值会自动从 capacity 字段复制到 allocatable 字段。</p>
+<p>之后，在创建 Pod 时，可以通过设置 <code>spec.resources.requests</code> 字段来指定自定义资源的名称和申请量。</p>
+<h2 id="设置资源限制"><a class="markdownIt-Anchor" href="#设置资源限制"></a> 设置资源限制</h2>
+<p>请求量只是保证每个容器能够获得所需资源的最小量，而限制值则是容器能够消耗资源的最大量。</p>
+<p>CPU 是一种可压缩的资源，可以在不对进程产生不利影响的情况下对使用量进行限制。但内存不能被压缩，一旦系统为进程分配了一块内存，该内存在进程主动释放之前将无法回收。因此，需要限制容器的最大内存分配量。</p>
+<p>创建一个带有资源限制的 Pod 与设置资源请求基本相同：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> pod-requests2.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: requests-pod2
+spec:
+  containers:
+  - image: busybox
+    command: <span class="token punctuation">[</span><span class="token string">"dd"</span>, <span class="token string">"if=/dev/zero"</span>, <span class="token string">"of=/dev/null"</span><span class="token punctuation">]</span>
+    name: main
+    resources:
+      limits:
+        cpu: 200m
+        memory: 100Mi
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> pod-requests2.yaml
+pod/requests-pod2 created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>由于没有指定 requests，它将被设置为与 limits 相同的值。通过 <code>top</code> 命令查看是否生效：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> <span class="token parameter variable">-it</span> requests-pod2 -- <span class="token function">top</span>
+Mem: 7802620K used, 187420K free, 62492K shrd, 4240K buff, 6155304K cached
+CPU:  <span class="token number">0.6</span>% usr  <span class="token number">1.8</span>% sys  <span class="token number">0.0</span>% nic <span class="token number">97.5</span>% idle  <span class="token number">0.0</span>% io  <span class="token number">0.0</span>% irq  <span class="token number">0.0</span>% sirq
+Load average: <span class="token number">0.11</span> <span class="token number">0.14</span> <span class="token number">0.28</span> <span class="token number">3</span>/896 <span class="token number">24</span>
+    PID <span class="token environment constant">USER</span>      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND    
+<span class="token number">1743839</span> root      <span class="token number">20</span>   <span class="token number">0</span>    <span class="token number">1304</span>      <span class="token number">4</span>      <span class="token number">0</span> R  <span class="token number">19.9</span>  <span class="token number">0.0</span>   <span class="token number">0</span>:38.53 <span class="token function">dd</span>  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>现在，CPU 使用量被限制在了 20.4%。</p>
+<h2 id="超过资源限制"><a class="markdownIt-Anchor" href="#超过资源限制"></a> 超过资源限制</h2>
+<p>与资源请求不同，资源限制不受可分配资源量的约束。所有 limits 的总和允许超过节点资源总量的 100%。如果节点资源使用量超过 100%，某些容器将被终止。</p>
+<p>对于 CPU 限额，进程只会被限制在规定数值以下。然而，内存限额的表现有所不同。如果进程尝试申请超过限额的内存，容器将因为内存不足而被终止（OOMKilled）。如果重启策略为 OnFailure 或 Always，进程会立即重启。如果在重启后再次超过限额，系统将增加下次重启的间隔时间，间隔时间最多增加到 300 秒。这将导致 pod 的状态显示为 CrashLoopBackOff，系统将以每 5 分钟重启一次的频率进行重启，直到容器运行成功或被删除。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> pod-requests2.yaml
+    resources:
+      limits:
+        cpu: 200m
+        memory: 2Mi
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> pod-requests2.yaml
+pod/requests-pod2 created
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get po <span class="token parameter variable">--watch</span>
+NAME               READY   STATUS              RESTARTS      AGE
+requests-pod2      <span class="token number">0</span>/1     ContainerCreating   <span class="token number">0</span>             3s
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl describe po requests-pod2
+Events:
+  Type     Reason                  Age                 From               Message
+  ----     ------                  ----                ----               -------
+  Warning  FailedCreatePodSandBox  20s <span class="token punctuation">(</span>x12 over 33s<span class="token punctuation">)</span>  kubelet            Failed to create pod sandbox: rpc error: code <span class="token operator">=</span> Unknown desc <span class="token operator">=</span> failed to start sandbox container <span class="token keyword">for</span> pod <span class="token string">"requests-pod2"</span><span class="token builtin class-name">:</span> Error response from daemon: failed to create shim: OCI runtime create failed: container_linux.go:380: starting container process caused: process_linux.go:722: waiting <span class="token keyword">for</span> init preliminary setup caused: <span class="token builtin class-name">read</span> init-p: connection reset by peer: unknown
+  Normal   SandboxChanged          20s <span class="token punctuation">(</span>x12 over 32s<span class="token punctuation">)</span>  kubelet            Pod sandbox changed, it will be killed and re-created.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在容器中使用 <code>top</code> 命令可以查看到整个节点的资源使用量。</p>
+<h1 id="limitrange"><a class="markdownIt-Anchor" href="#limitrange"></a> LimitRange</h1>
+<p>可以通过创建一个 <code>LimitRange</code> 资源来为命名空间中的容器配置最大和最小限额，同时给没有指定限制的容器设置默认值。</p>
+<p><code>LimitRange</code> 资源被 <code>LimitRanger</code> 准入控制插件控制。当 API 服务器接收带有 Pod 描述信息的 POST 请求时，会检查设置的限制值是否在范围内，以决定是否创建资源，避免调度失败。</p>
+<p><code>LimitRange</code> 作用于同一命名空间中的每个独立 Pod、容器或其他类型对象。它不会限制命名空间中所有 Pod 可用资源的总量，总量是通过 <code>ResourceQuota</code> 对象指定。</p>
+<h2 id="创建-limitrange-资源"><a class="markdownIt-Anchor" href="#创建-limitrange-资源"></a> 创建 LimitRange 资源</h2>
+<p>下面的配置展示了一个 <code>LimitRange</code> 资源的完整定义：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> LR-example.yaml
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: example
+spec:
+  limits:
+  - type: Pod      <span class="token comment">##指定了资源类型为Pod</span>
+    min:           <span class="token comment">##Pod中所有容器的CPU和内存请求量之和的最小值</span>
+      cpu: 50m
+      memory: 5Mi
+    max:           <span class="token comment">##Pod中所有容器的CPU和内存请求量之和的最大值</span>
+      cpu: <span class="token number">1</span>
+      memory: 1Gi
+  - type: Container <span class="token comment">##指定了资源类型为Container</span>
+    defaultRequest: <span class="token comment">##容器没有指定请求量时设置的默认值</span>
+      cpu: 100m
+      memory: 10Mi
+    default:        <span class="token comment">##容器没有指定限制量时设置的默认值</span>
+      cpu: 200m
+      memory: 100Mi
+    min:            <span class="token comment">##容器requests和limits的最小值</span>
+      cpu: 50m
+      memory: 5Mi
+    max:            <span class="token comment">##容器requests和limits的最大值</span>
+      cpu: <span class="token number">1</span>
+      memory: 1Gi
+    maxLimitRequestRatio: <span class="token comment">##每种资源requests与limits的最大比值</span>
+      cpu: <span class="token number">4</span>
+      memory: <span class="token number">10</span>
+  - type: PersistentVolumeClaim  <span class="token comment">##指定请求PVC储存容量的最小最大值</span>
+    min:
+      storage: 1Gi
+    max:
+      storage: 10Gi
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> LR-example.yaml
+limitrange/example created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在上面的示例中，<code>defaultRequest</code> 和 <code>default</code> 字段指定了容器的默认请求和限制。<code>type</code> 字段指定了限制类型为容器。<code>maxLimitRequestRatio</code> 字段指定了 CPU 和内存的最大限制请求比例。<code>min</code> 字段和 <code>max</code> 字段分别指定了 CPU 和内存的最小和最大限制。设置 CPU 为 4，表示容器的 CPU limits 不能超过 requests 的 4 倍，内存同理。</p>
+<p>上面新建的 <code>LimitRange</code> 对象包含了对所有资源的限制，也可以将其分割为多个对象。多个 <code>LimitRange</code> 对象的限制会在校验 Pod 或 PVC 合法性时进行合并。</p>
+<p>对 <code>LimitRange</code> 进行修改时，已经存在的 Pod 和 PVC 不会受到影响。</p>
+<h2 id="测试限制值"><a class="markdownIt-Anchor" href="#测试限制值"></a> 测试限制值</h2>
+<p>尝试创建一个 CPU 申请量大于 <code>LimitRange</code> 允许值的 Pod：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> pod-2.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-2
+spec:
+  containers:
+  - image: busybox
+    command: <span class="token punctuation">[</span><span class="token string">"dd"</span>, <span class="token string">"if=/dev/zero"</span>, <span class="token string">"of=/dev/null"</span><span class="token punctuation">]</span>
+    name: main
+    resources:
+      limits:
+        cpu: <span class="token number">2</span>
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> pod-2.yaml 
+Error from server <span class="token punctuation">(</span>Forbidden<span class="token punctuation">)</span>: error when creating <span class="token string">"pod-2.yaml"</span><span class="token builtin class-name">:</span> pods <span class="token string">"pod-2"</span> is forbidden: <span class="token punctuation">[</span>maximum cpu usage per Pod is <span class="token number">1</span>, but limit is <span class="token number">2</span>, maximum cpu usage per Container is <span class="token number">1</span>, but limit is <span class="token number">2</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>服务器将返回拒绝创建 Pod 的原因，因为每个 Pod 和容器的最大 CPU 请求量限制为 1 核，但此处容器申请了 2 核。</p>
+<h2 id="应用限制默认值"><a class="markdownIt-Anchor" href="#应用限制默认值"></a> 应用限制默认值</h2>
+<p>测试资源没有指定 <code>requests</code> 和 <code>limits</code> 的情况下分配到的默认值：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> pod-drop.yaml
+pod/pod-drop created
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl describe po pod-drop
+    Limits:
+      cpu:     200m
+      memory:  100Mi
+    Requests:
+      cpu:        100m
+      memory:     10Mi<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>容器的 <code>requests</code> 和 <code>limits</code> 与 <code>LimitRange</code> 对象中设置的一致。</p>
+<p>可以在另一个命名空间中指定不同的 <code>LimitRange</code>，以适应不同的使用场景。</p>
+<h1 id="resourcequota"><a class="markdownIt-Anchor" href="#resourcequota"></a> ResourceQuota</h1>
+<p>可以通过 <code>ResourceQuota</code> 对象来限制命名空间中可用资源的总量。</p>
+<p><code>ResourceQuota</code> 的准入控制插件会检查将要创建的 pod 是否会导致总资源量超出限制。如果超出限制，请求会被拒绝。</p>
+<p>资源配额不仅限制了命名空间中 pod 和 PVC（持久化卷声明）可以使用的最大资源总量，还可以限制用户在该命名空间中创建 pod、PVC 以及其他 API 对象的数量。</p>
+<h2 id="创建配额"><a class="markdownIt-Anchor" href="#创建配额"></a> 创建配额</h2>
+<p>创建一个 <code>ResourceQuota</code> 资源来限制命名空间中所有 pod 允许使用的 CPU 和内存总量：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> quota-1.yaml
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: cpu-and-mem
+spec:
+  hard:
+    requests.cpu: 440m
+    requests.memory: 200Mi
+    limits.cpu: <span class="token number">2</span>
+    limits.memory: 500Mi
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> quota-1.yaml 
+resourcequota/cpu-and-mem created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>创建后，命名空间内所有 pod 合计可申请的 CPU 数量为 440m，限制总量为 2 核；可申请的内存大小为 440MB，限制内存总量为 500MB。</p>
+<h2 id="测试配额"><a class="markdownIt-Anchor" href="#测试配额"></a> 测试配额</h2>
+<p>新建一个 pod 进行测试：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> pod-readonly.yaml 
+Error from server <span class="token punctuation">(</span>Forbidden<span class="token punctuation">)</span>: error when creating <span class="token string">"pod-readonly.yaml"</span><span class="token builtin class-name">:</span> pods <span class="token string">"pod-readonly"</span> is forbidden: failed quota: cpu-and-mem: must specify limits.cpu,limits.memory,requests.cpu,requests.memory<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>API 服务器提示必须为 pod 设置 <code>limits</code> 和 <code>requests</code> 属性才能建立。设置 <code>limits</code> 后再次尝试建立：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> pod-requests2.yaml 
+Error from server <span class="token punctuation">(</span>Forbidden<span class="token punctuation">)</span>: error when creating <span class="token string">"pod-requests2.yaml"</span><span class="token builtin class-name">:</span> pods <span class="token string">"requests-pod2"</span> is forbidden: exceeded quota: cpu-and-mem, requested: <span class="token assign-left variable">requests.memory</span><span class="token operator">=</span>400Mi, used: <span class="token assign-left variable">requests.memory</span><span class="token operator">=</span>10Mi, limited: <span class="token assign-left variable">requests.memory</span><span class="token operator">=</span>200Mi<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>这次提示配额不足。查看命名空间 <code>default</code> 下的配额使用量和限制：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl describe <span class="token function">quota</span> <span class="token parameter variable">-n</span> default
+Name:            cpu-and-mem
+Namespace:       default
+Resource         Used   Hard
+--------         ----   ----
+limits.cpu       200m   <span class="token number">2</span>
+limits.memory    100Mi  500Mi
+requests.cpu     100m   440m
+requests.memory  10Mi   200Mi<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="储存配额"><a class="markdownIt-Anchor" href="#储存配额"></a> 储存配额</h2>
+<p><code>ResourceQuota</code> 对象同样可以限制命名空间中最多可以声明的持久化储存总量：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> quota-2.yaml
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: storage
+spec:
+  hard:
+    requests.storage: 500Gi
+    ssd.storageclass.storage.k8s.io/requests.storage: 300Gi
+    standard.storageclass.storage.k8s.io/requests.storage: 1Ti
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> quota-2.yaml 
+resourcequota/storage created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上述设置中，对命名空间内所有可申请的 PVC 总量限制为 500GB，名为 <code>ssd</code> 的存储类总量限制为 300GB，名为 <code>standard</code> 的标准存储类总量限制为 1TB。</p>
+<h2 id="限制对象数量"><a class="markdownIt-Anchor" href="#限制对象数量"></a> 限制对象数量</h2>
+<p>可以限制单个命名空间中 pod、RC（副本控制器）、SVC（服务）等对象的个数：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> quota-3.yaml
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: objects
+spec:
+  hard:
+    pods: <span class="token number">10</span>
+    services: <span class="token number">5</span>
+    services.nodeports: <span class="token number">2</span>                   
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> quota-3.yaml 
+resourcequota/objects created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上述声明限制了命名空间中最多可以运行 10 个 pod，5 个 Service。其中，最多可以有两个类型为 <code>NodePort</code> 的 Service。</p>
+<h2 id="分配配额"><a class="markdownIt-Anchor" href="#分配配额"></a> 分配配额</h2>
+<p>通过 <code>spec.scopes</code> 属性，可以限制配额的作用范围，有四种范围：</p>
+<ul>
+<li>
+<p><code>BestEffort</code> 和 <code>NotBestEffort</code> 范围决定配额作用于 QoS 的最低优先级与其他优先级；</p>
+</li>
+<li>
+<p><code>Terminating</code> 和 <code>NotTerminating</code> 范围作用于配置了 <code>activeDeadlineSeconds</code> 或未配置的 pod。</p>
+</li>
+</ul>
+<p><code>BestEffort</code> 范围只允许限制 pod 的个数，其他范围可以限制所有资源。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> quota-4.yaml
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: besteffort-pods
+spec:
+  scopes:
+  - BestEffort
+  - NotTerminating
+  hard:
+    pods: <span class="token number">10</span>
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> quota-4.yaml 
+resourcequota/besteffort-pods created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这个配额只会应用于最低优先级以及没有设置有效期的 pod 上，这样的 pod 最多只允许存在 10 个。</p>
+<h1 id="qos-等级"><a class="markdownIt-Anchor" href="#qos-等级"></a> QoS 等级</h1>
+<p>假设节点中的两个 Pod 已经完全消耗了系统资源，当 Pod 申请更多资源时，必须终止一个 Pod。可以通过 QoS 等级确定优先级较低的 Pod 进行退让。优先级从低到高有三种（BestEffort、Burstable、Guaranteed）。</p>
+<p>QoS 等级源自 Pod 包含容器的资源请求和限制配置。</p>
+<h2 id="besteffort-等级"><a class="markdownIt-Anchor" href="#besteffort-等级"></a> BestEffort 等级</h2>
+<p>分配给未设置任何资源请求和限制的 Pod，它们可能无法分配到任何 CPU 资源，并且在需要为其他 Pod 释放内存时，这些容器将被优先终止。</p>
+<p>但是由于没有配置内存限制，在资源充足的情况下可以分配任意数量的内存。</p>
+<h2 id="guaranteed-等级"><a class="markdownIt-Anchor" href="#guaranteed-等级"></a> Guaranteed 等级</h2>
+<p>分配给所有资源请求和限制相等的 Pod。以下条件决定了 Guaranteed 等级：</p>
+<ul>
+<li>CPU 和内存都必须设置请求和限制。</li>
+<li>每个容器都需要设置资源量。</li>
+<li>请求和限制必须相等。</li>
+</ul>
+<p>可以简单地只指定限制字段，这样默认请求与限制相同。但是这些 Pod 容器无法消耗超过限制的资源。</p>
+<h2 id="burstable-等级"><a class="markdownIt-Anchor" href="#burstable-等级"></a> Burstable 等级</h2>
+<p>所有其他 Pod 都属于这个等级，包括只定义了请求或限制的单容器 Pod，以及多个容器没有完全指定请求或限制的 Pod。</p>
+<p>可以通过使用 describe 命令查看 Pod 中的 QoS Class 字段来获取 QoS 等级：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl describe po pod-drop
+QoS Class:                   BestEffort<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="处理相同-qos-等级容器"><a class="markdownIt-Anchor" href="#处理相同-qos-等级容器"></a> 处理相同 QoS 等级容器</h2>
+<p>在相同的 QoS 等级下，每个运行中的进程都有一个 OOM（OutOfMemory）分数的值，当需要释放内存时，分数最高的进程将被终止。</p>
+<p>OOM 分数由进程已消耗内存百分比和容器内存请求量固定的 OOM 分数调节因子计算。</p>
+<p>例如，Pod A 使用了 1GB 内存，Pod B 使用了 2GB 内存，但是 Pod A 的限制是 2GB，Pod B 的限制是 5GB，根据内存占比，Pod A 大于 Pod B，因此 Pod A 会被优先终止。</p>
+<h1 id="自动伸缩"><a class="markdownIt-Anchor" href="#自动伸缩"></a> 自动伸缩</h1>
+<p>Horizontal Pod Autoscaling (HPA) 是一种管理由控制器管理的 Pod 副本数量的横向自动伸缩方法，根据当前的负载情况自动触发水平扩展或缩容的行为。</p>
+<p>自动伸缩的过程可以分为三个步骤：</p>
+<ul>
+<li>
+<p>获取被伸缩资源对象所管理的所有 Pod 的度量值。</p>
+<p>Autoscaler 本身不收集 Pod 的度量数据，而是从 cAdvisor agent 获取数据，并由 Heapster 进行聚合，供 HPA 请求调用。</p>
+</li>
+<li>
+<p>计算使度量值达到（或接近）目标值所需的 Pod 数量。</p>
+<p>一旦 Autoscaler 获取了它所调整的资源所管理的所有 Pod 的度量值，它将利用这些度量值来计算所需的副本数量。</p>
+<p>当只有一个度量值时，计算副本数量只需将所有 Pod 的度量值求和后除以目标值，再向上取整即可。</p>
+<p>当有多个度量值时，将分别计算每个度量值所需的副本数量，并取最大值。</p>
+</li>
+<li>
+<p>更新被伸缩资源的 replicas 字段。</p>
+<p>Autoscaler 控制器通过 Scale 子资源来修改被伸缩资源的 replicas 字段，从而启动更多的 Pod 或删除多余的 Pod。</p>
+</li>
+</ul>
+<p>HPA 不允许将最小副本数设置为 0。</p>
+<h2 id="基于-cpu-使用率"><a class="markdownIt-Anchor" href="#基于-cpu-使用率"></a> 基于 CPU 使用率</h2>
+<p>对于 Autoscaler 来说，CPU 使用率是通过比较 Pod 的 CPU 请求量和实际使用量来确定的，因此必须设置 CPU 的请求量：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> dp.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubia
+spec:
+  replicas: <span class="token number">3</span>
+  selector:
+    matchLabels:
+      app: kubia
+  template:
+    metadata:
+      name: kubia
+      labels:
+        app: kubia
+    spec:
+      containers:
+      - name: nodejs
+        image: luksa/kubia
+        ports:
+        - name: http
+          containerPort: <span class="token number">8080</span>
+        resources:
+          requests:
+            cpu: 100m
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> dp.yaml
+deployment.apps/kubia created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>创建一个 HPA 对象，将其指向该 Deployment。在 HPA 中设置目标 CPU 使用率为 30%，并指定副本的最小和最大数量。Autoscaler 将持续调整 Deployment 上的副本数量，以使 CPU 使用率接近 30%：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl autoscale deployment kubia --cpu-percent<span class="token operator">=</span><span class="token number">30</span> <span class="token parameter variable">--min</span><span class="token operator">=</span><span class="token number">1</span> <span class="token parameter variable">--max</span><span class="token operator">=</span><span class="token number">5</span>
+horizontalpodautoscaler.autoscaling/kubia autoscaled
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get hpa
+NAME    REFERENCE          TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
+kubia   Deployment/kubia   <span class="token operator">&lt;</span>unknown<span class="token operator">></span>/30%   <span class="token number">1</span>         <span class="token number">5</span>         <span class="token number">3</span>          63s
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get deployment
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+kubia   <span class="token number">3</span>/3     <span class="token number">3</span>            <span class="token number">3</span>           2m13s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>由于三个 Pod 没有活动，CPU 使用率接近于 0。等待 5 分钟后，Autoscaler 将其缩减到 1 个副本。自动扩容操作的等待时间为 3 分钟。</p>
+<h2 id="基于内存使用"><a class="markdownIt-Anchor" href="#基于内存使用"></a> 基于内存使用</h2>
+<p>基于内存的自动伸缩比基于 CPU 的困难得多，主要原因是扩容后原有的 Pod 需要有一种方式来释放内存。这只能由应用程序完成，系统无法代劳。</p>
+<p>系统只能终止并重新启动应用程序，希望它在重新启动后占用较少的内存。在 Autoscaler 上，将持续进行扩容操作，直到达到配置的最大 Pod 数量。</p>
+<h2 id="基于其他度量"><a class="markdownIt-Anchor" href="#基于其他度量"></a> 基于其他度量</h2>
+<p>定义 HPA 需要三个要素的配合：定义度量类型、被监控的资源类型以及资源的目标使用量。</p>
+<p>可以在 HPA 对象中使用三种度量：</p>
+<ul>
+<li>
+<p>Resource 度量类型</p>
+<p>Resource 类型基于资源度量来做出自动伸缩决策。</p>
+<p>例如，基于 CPU 使用量作为度量：</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">maxReplicas</span><span class="token punctuation">:</span> <span class="token number">5</span>
+  <span class="token key atrule">metrics</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">resource</span><span class="token punctuation">:</span>
+      <span class="token key atrule">name</span><span class="token punctuation">:</span> cpu
+      <span class="token key atrule">targetAverageUtilization</span><span class="token punctuation">:</span> <span class="token number">30</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li>
+<p>Pods 度量类型</p>
+<p>Pods 类型用于引用与 Pod 直接相关的任何其他类型（包括自定义的度量），例如每秒查询次数（QPS）或消息队列中的消息数量。</p>
+<p>例如，使 HPA 控制的 ReplicaSet 控制器下所有 Pod 的平均 QPS 维持在 100 的水平：</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">metrics</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">type</span><span class="token punctuation">:</span> Pods
+    <span class="token key atrule">resource</span><span class="token punctuation">:</span>
+      <span class="token key atrule">name</span><span class="token punctuation">:</span> qps
+      <span class="token key atrule">targetAverageValue</span><span class="token punctuation">:</span> <span class="token number">100</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li>
+<p>Object 度量类型</p>
+<p>Object 度量类型用于指定与 Pod 非直接关联的度量，例如 Ingress 对象。在使用 Object 度量类型时，Autoscaler 只会从该单个对象中获取单个度量数据。</p>
+<p>例如，使用 Ingress 对象 frontend 的 latencyMillis 作为度量，如果度量超过目标值太多，则会对 Deployment 资源进行扩容：</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">metrics</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">type</span><span class="token punctuation">:</span> Object
+    <span class="token key atrule">resource</span><span class="token punctuation">:</span>
+      <span class="token key atrule">metricName</span><span class="token punctuation">:</span> latencyMillis
+      <span class="token key atrule">target</span><span class="token punctuation">:</span>
+        <span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> extensions/v1beta1
+        <span class="token key atrule">kind</span><span class="token punctuation">:</span> Ingress
+        <span class="token key atrule">name</span><span class="token punctuation">:</span> frontend
+        <span class="token key atrule">targetValue</span><span class="token punctuation">:</span> <span class="token number">20</span>
+      <span class="token key atrule">scaleTargetRef</span><span class="token punctuation">:</span>
+        <span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> extensions/v1beta1
+        <span class="token key atrule">kind</span><span class="token punctuation">:</span> Deployment
+        <span class="token key atrule">name</span><span class="token punctuation">:</span> hpans<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+<p>并非所有的度量都适合作为自动伸缩的基础。在决定基于自定义度量进行伸缩时，需要考虑 Pod 数量变化对度量值的影响。</p>
+<h2 id="纵向自动伸缩"><a class="markdownIt-Anchor" href="#纵向自动伸缩"></a> 纵向自动伸缩</h2>
+<p>并非所有应用都可以进行横向伸缩。例如，某些 Pod 运行在特定的单节点上，这时需要进行纵向伸缩。</p>
+<p>纵向伸缩通过更改 Pod 的配置文件字段来配置 Pod 的资源请求。可以从官方的 GitHub 上下载部署文件。以下是一个 VPA 的示例：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">apiVersion: autoscaling.k8s.io/v1beta2
+kind: VerticalPodAutoscaler
+metadata:
+  name: nginx-vpa
+  namespace: vpa
+spec:
+  targetRef:
+    apiVersion: <span class="token string">"apps/v1"</span>
+    kind: Deployment
+    name: nginx
+  updatePolicy:
+    updateMode: <span class="token string">"Off"</span>
+  resourcePolicy:
+    containerPolicies:
+    - containerName: <span class="token string">"nginx"</span>
+      minAllowed:
+        cpu: <span class="token string">"250m"</span>
+        memory: <span class="token string">"100Mi"</span>
+      maxAllowed:
+        cpu: <span class="token string">"2000m"</span>
+        memory: <span class="token string">"2048Mi"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>VPA 还需要与 Metrics Server 配合使用，不能与 HPA 同时使用。</p>
+<h2 id="节点自动伸缩"><a class="markdownIt-Anchor" href="#节点自动伸缩"></a> 节点自动伸缩</h2>
+<p>集群自动伸缩器（Cluster Autoscaler）负责在节点资源不足时自动部署新节点，并在节点长时间使用率低下时下线节点。目前节点自动伸缩支持 GKE、GCE、AWS 和 AZURE。</p>
+<p>显然，并非任意一个节点都能满足 Pod 的需求，因此云服务提供商通常将具有相同特性的节点聚合成组。当请求新节点时，需要指明节点的类型。</p>
+<p>节点的下线是通过监视所有节点上的 CPU 和内存请求来实现的。如果系统中的 Pod 在该节点上运行（不包括 DaemonSet 部署的服务），则该节点不会被释放。也就是说，只有集群自动伸缩器知道在该节点上运行的 Pod 能够调度到其他节点时，该节点才能被释放。在释放节点之前，该节点会被标记为不可调度，并将其中的 Pod 疏散到其他节点。</p>
+<p>如果在下线节点的过程中需要指定最少需要保持运行的 Pod 数量，可以使用 PodDisruptionBudget 资源来进行控制。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/948924982/" title="K8s 资源管理">https://blog.x2b.net/948924982/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../3406984642/" rel="prev" title="K8s 安全资源">
+                  <i class="fa fa-chevron-left"></i> K8s 安全资源
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">267k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">14:51</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@next-theme/pjax@0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://unpkg.com/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://unpkg.com/katex@0.16.4/dist/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://unpkg.com/quicklink@2.3.0/dist/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/948924982/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://unpkg.com/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+
+        <script src="//cdn.jsdelivr.net/npm/js-base64/base64.min.js"></script>
+        <script>
+        const hasAttr = (e,a) => a.some(_=> e.attr(_)!==undefined);
+        $('a').each(function() {
+          const $this = $(this);
+          if(hasAttr($this,["data-fancybox","ignore-external-link"])) return;
+          const href = $this.attr('href');
+          if (href && href.match('^((http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms)://)')) {
+            const strs = href.split('/');
+            if (strs.length >= 3) {
+                const host = strs[2];
+                if (host !== 'blog.x2b.net' || window.location.host) {
+                    $this.attr('href', '/go.html?u='+Base64.encode(href)+'').attr('rel', 'external nofollow noopener noreferrer');
+                    if (true) {
+                        $this.attr('target', '_blank');
+                    }
+                }
+            }
+          }
+        });
+        </script></body>
+</html>
