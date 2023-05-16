@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://blog.x2b.net/images/PV%E5%92%8CPVC.jpg">
 <meta property="og:image" content="https://blog.x2b.net/images/%E8%8E%B7%E5%8F%96%E5%8A%A8%E6%80%81%E6%8C%81%E4%B9%85%E5%8D%B7.jpg">
 <meta property="article:published_time" content="2022-03-20T01:01:17.000Z">
-<meta property="article:modified_time" content="2023-05-16T03:28:34.782Z">
+<meta property="article:modified_time" content="2023-05-16T03:31:57.515Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python">
 <meta name="twitter:card" content="summary">
@@ -98,7 +98,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">13</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">81</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">13</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">82</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -164,7 +164,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="../archives/">
-          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-count">82</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -259,7 +259,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-16 11:28:34" itemprop="dateModified" datetime="2023-05-16T11:28:34+08:00">2023-05-16</time>
+      <time title="修改时间：2023-05-16 11:31:57" itemprop="dateModified" datetime="2023-05-16T11:31:57+08:00">2023-05-16</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -335,7 +335,7 @@
 <p>PersistentVolumeClaim：一种使用预配置或动态配置的持久存储类型。</p>
 </li>
 <li>
-<p>cinder、cephfs、iscsi、flocker、glusterfs、quobyte、rbd、flexVolume、vsphere-Volume、photoPersistentDisk：用于挂载其他类型的网络存储。</p>
+<p>cinder、Cephas、iscsi、flocker、glusterfs、quobyte、rbd、flexVolume、vsphere-Volume、photoPersistentDisk：用于挂载其他类型的网络存储。</p>
 </li>
 </ul>
 <h1 id="emptydir-卷"><a class="markdownIt-Anchor" href="#emptydir-卷"></a> emptyDir 卷</h1>
@@ -419,7 +419,7 @@ pod/volume-pod created<span aria-hidden="true" class="line-numbers-rows"><span><
 <p>一个典型的应用场景是存放网站的静态 HTML 文件，并创建一个包含 Web 服务器容器和 gitRepo 卷的 Pod。当 Pod 创建时，会拉取网站的最新版本并启动 Web 服务。不过，每次有新版本时需要删除 Pod 才能更新。</p>
 <h2 id="使用-gitrepo-卷"><a class="markdownIt-Anchor" href="#使用-gitrepo-卷"></a> 使用 gitRepo 卷</h2>
 <p>下面是一个使用 Nginx 容器和 gitRepo 卷的示例：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>vi gitrepo-pod.yaml
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> gitrepo-pod.yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -465,22 +465,22 @@ pod/gitrepo-volume-pod created<span aria-hidden="true" class="line-numbers-rows"
   <span class="token function">sleep</span> <span class="token variable">$INTERVAL</span>
 <span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>想要在 Kubernetes 中设置自定义参数，可以在 <code>spec.containers.env</code> 中声明：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">spec:
-  containers:
-  - image: fortune
-    env:
-    - name: INTERVAL
-      value: <span class="token string">"30"</span>
-    name: html-generator<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">containers</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">image</span><span class="token punctuation">:</span> fortune
+    <span class="token key atrule">env</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> INTERVAL
+      <span class="token key atrule">value</span><span class="token punctuation">:</span> <span class="token string">"30"</span>
+    <span class="token key atrule">name</span><span class="token punctuation">:</span> html<span class="token punctuation">-</span>generator<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>也可以使用 <code>$(VAR)</code> 语法在环境变量值中引用其他环境变量：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">spec:
-  containers:
-  - image: fortune
-    env:
-    - name: FIRST_VAR
-      value: <span class="token string">"foobar"</span>
-    - name: SECOND_VAR
-      value: <span class="token string">"<span class="token variable"><span class="token variable">$(</span>FIRST_VAR<span class="token variable">)</span></span>2000"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">containers</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">image</span><span class="token punctuation">:</span> fortune
+    <span class="token key atrule">env</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> FIRST_VAR
+      <span class="token key atrule">value</span><span class="token punctuation">:</span> <span class="token string">"foobar"</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> SECOND_VAR
+      <span class="token key atrule">value</span><span class="token punctuation">:</span> <span class="token string">"$(FIRST_VAR)2000"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="创建-configmap"><a class="markdownIt-Anchor" href="#创建-configmap"></a> 创建 ConfigMap</h2>
 <p>可以直接通过命令行来创建一个最简单的 ConfigMap：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create configmap fortune-config --from-literal<span class="token operator">=</span>sleep-interval<span class="token operator">=</span><span class="token number">5</span>
@@ -501,42 +501,42 @@ configmap/my-config-dir created<span aria-hidden="true" class="line-numbers-rows
 <li>
 <p>通过环境变量传递键值</p>
 <p>需要在 <code>spec.containers.env.valueFrom</code> 字段中指定：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">spec:
-  containers:
-  - image: fortune
-    env:
-    - name: INTERVAL
-      valueFrom:
-        configMapKeyRef:
-          name: fortune-config
-          key: sleep-interval<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">containers</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">image</span><span class="token punctuation">:</span> fortune
+    <span class="token key atrule">env</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> INTERVAL
+      <span class="token key atrule">valueFrom</span><span class="token punctuation">:</span>
+        <span class="token key atrule">configMapKeyRef</span><span class="token punctuation">:</span>
+          <span class="token key atrule">name</span><span class="token punctuation">:</span> fortune<span class="token punctuation">-</span>config
+          <span class="token key atrule">key</span><span class="token punctuation">:</span> sleep<span class="token punctuation">-</span>interval<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>这里传递了一个环境变量 <code>INTERVAL</code>，值取自 <code>fortune-config</code> 中键 <code>sleep-interval</code> 的值，然后由容器内的进程读取。</p>
 </li>
 <li>
 <p>传递整个 ConfigMap 中的键值</p>
 <p>在 <code>spec.containers</code> 中加入 <code>envFrom</code> 字段来传递整个 ConfigMap 中的键值对：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">spec:
-  containers:
-  - image: fortune
-    envFrom:
-    - prefix: CONFIG_
-      configMapRef:
-        name: my-cofig-map<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">containers</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">image</span><span class="token punctuation">:</span> fortune
+    <span class="token key atrule">envFrom</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">prefix</span><span class="token punctuation">:</span> CONFIG_
+      <span class="token key atrule">configMapRef</span><span class="token punctuation">:</span>
+        <span class="token key atrule">name</span><span class="token punctuation">:</span> my<span class="token punctuation">-</span>cofig<span class="token punctuation">-</span>map<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>上面设置了所有导入的环境变量包含前缀 <code>CONFIG_</code>，若不设置前缀，环境变量的名称与 ConfigMap 中的键名相同。若键名不合法时不会自动转换。</p>
 </li>
 <li>
 <p>传递 ConfigMap 条目作为命令行参数</p>
 <p>在字段 <code>spec.containers.args</code> 中无法直接引用 ConfigMap 的条目，但可以利用 ConfigMap 条目初始化某个环境变量，然后再在参数字段中引用该变量：</p>
-<pre class="line-numbers language-none"><code class="language-none">spec:
-  containers:
-  - image: fortune
-    env:
-    - name: INTERVAL
-      valueFrom:
-        configMapKeyRef:
-          name: fortune-config
-          key: sleep-interval
-    args: [&quot;$(INTERVAL)&quot;]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">containers</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">image</span><span class="token punctuation">:</span> fortune
+    <span class="token key atrule">env</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> INTERVAL
+      <span class="token key atrule">valueFrom</span><span class="token punctuation">:</span>
+        <span class="token key atrule">configMapKeyRef</span><span class="token punctuation">:</span>
+          <span class="token key atrule">name</span><span class="token punctuation">:</span> fortune<span class="token punctuation">-</span>config
+          <span class="token key atrule">key</span><span class="token punctuation">:</span> sleep<span class="token punctuation">-</span>interval
+    <span class="token key atrule">args</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">"$(INTERVAL)"</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 </li>
 </ul>
 <h2 id="使用-configmap-卷"><a class="markdownIt-Anchor" href="#使用-configmap-卷"></a> 使用 ConfigMap 卷</h2>
@@ -574,44 +574,44 @@ metadata:
   resourceVersion: <span class="token string">"580367"</span>
   uid: 9a4c9cb4-c2d2-424c-9d57-ac3fe1851260<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>将 ConfigMap 卷内的文件挂载到 <code>/etc/nginx/conf.d/</code> 目录下：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">spec:
-  containers:
-  - image: nginx:alpine
-    name: web-server
-	volumeMounts:
-	- name: config
-	  mountPath: /etc/nginx/conf.d
-	  readOnly: <span class="token boolean">true</span>
-  volumes:
-    - name: config
-	  configMap:
-	    name: fortune-config<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">containers</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">image</span><span class="token punctuation">:</span> nginx<span class="token punctuation">:</span>alpine
+    <span class="token key atrule">name</span><span class="token punctuation">:</span> web<span class="token punctuation">-</span>server
+	<span class="token key atrule">volumeMounts</span><span class="token punctuation">:</span>
+	<span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> config
+	  <span class="token key atrule">mountPath</span><span class="token punctuation">:</span> /etc/nginx/conf.d
+	  <span class="token key atrule">readOnly</span><span class="token punctuation">:</span> <span class="token boolean important">true</span>
+  <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> config
+	  <span class="token key atrule">configMap</span><span class="token punctuation">:</span>
+	    <span class="token key atrule">name</span><span class="token punctuation">:</span> fortune<span class="token punctuation">-</span>config<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>也可以单独指定需要挂载的 ConfigMap 卷内文件。这里将 ConfigMap 卷内的配置文件 <code>advertise-task.iot.com.conf</code> 重命名为 <code>at.conf</code> 并挂载到指定目录下：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">spec:
-  volumes:
-    - name: config
-	  configMap:
-	    name: fortune-config
-	    items:
-	    - key: advertise-task.iot.com.conf
-	      path: at.conf<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> config
+	  <span class="token key atrule">configMap</span><span class="token punctuation">:</span>
+	    <span class="token key atrule">name</span><span class="token punctuation">:</span> fortune<span class="token punctuation">-</span>config
+	    <span class="token key atrule">items</span><span class="token punctuation">:</span>
+	    <span class="token punctuation">-</span> <span class="token key atrule">key</span><span class="token punctuation">:</span> advertise<span class="token punctuation">-</span>task.iot.com.conf
+	      <span class="token key atrule">path</span><span class="token punctuation">:</span> at.conf<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>使用上述方法挂载卷时，容器内原有的同名目录会被隐藏，被挂载的目录会替代之。如果想要单独挂载文件而不是目录，需要在 <code>spec.containers.volumeMounts</code> 下面加入 <code>subPath</code> 字段：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">spec:
-  containers:
-  - image: nginx:alpine
-    name: web-server
-	volumeMounts:
-	- name: config
-	  mountPath: /etc/nginx/conf.d/advertise-task.iot.com.conf
-	  subPath: advertise-task.iot.com.conf
-	  readOnly: <span class="token boolean">true</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">containers</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">image</span><span class="token punctuation">:</span> nginx<span class="token punctuation">:</span>alpine
+    <span class="token key atrule">name</span><span class="token punctuation">:</span> web<span class="token punctuation">-</span>server
+	<span class="token key atrule">volumeMounts</span><span class="token punctuation">:</span>
+	<span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> config
+	  <span class="token key atrule">mountPath</span><span class="token punctuation">:</span> /etc/nginx/conf.d/advertise<span class="token punctuation">-</span>task.iot.com.conf
+	  <span class="token key atrule">subPath</span><span class="token punctuation">:</span> advertise<span class="token punctuation">-</span>task.iot.com.conf
+	  <span class="token key atrule">readOnly</span><span class="token punctuation">:</span> <span class="token boolean important">true</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>ConfigMap 卷中所有文件的默认权限是 644，可以在 <code>spec.volumes.configMap</code> 中加入 <code>defaultMode</code> 来改变默认权限：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">spec:
-  volumes:
-    - name: config
-	  configMap:
-	    name: fortune-config
-	    defaultMod: <span class="token string">"6600"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> config
+	  <span class="token key atrule">configMap</span><span class="token punctuation">:</span>
+	    <span class="token key atrule">name</span><span class="token punctuation">:</span> fortune<span class="token punctuation">-</span>config
+	    <span class="token key atrule">defaultMod</span><span class="token punctuation">:</span> <span class="token string">"6600"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>将 ConfigMap 作为卷挂载可以实现配置的热更新效果，无需重启或重建 Pod。在修改了 ConfigMap 的配置后，可以通过 <code>kubectl exec</code> 命令来手动载入更新的配置：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl edit configmap fortune-config
 <span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> fortune <span class="token parameter variable">-c</span> web-server -- nginx <span class="token parameter variable">-s</span> reload<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
@@ -663,26 +663,26 @@ data:
 <p>注意，<code>stringData</code> 字段只可写入。</p>
 <h2 id="使用-secret"><a class="markdownIt-Anchor" href="#使用-secret"></a> 使用 Secret</h2>
 <p>将 Secret 通过 Secret 卷暴露给容器后，Secret 条目的值将解码为实际形式（纯文本或二进制），并写入相应的文件中。同样，通过环境变量暴露 Secret 条目也是如此。在这两种情况下，应用程序无需手动解码，可以直接读取文件内容或查找环境变量：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">spec:
-  containers:
-	volumeMounts:
-	- name: certs
-	  mountPath: /etc/nginx/certs/
-	  readOnly: <span class="token boolean">true</span>
-  volumes:
-    - name: certs
-	  secret:
-	    secretame: ngx-https<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">containers</span><span class="token punctuation">:</span>
+	<span class="token key atrule">volumeMounts</span><span class="token punctuation">:</span>
+	<span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> certs
+	  <span class="token key atrule">mountPath</span><span class="token punctuation">:</span> /etc/nginx/certs/
+	  <span class="token key atrule">readOnly</span><span class="token punctuation">:</span> <span class="token boolean important">true</span>
+  <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> certs
+	  <span class="token key atrule">secret</span><span class="token punctuation">:</span>
+	    <span class="token key atrule">secretame</span><span class="token punctuation">:</span> ngx<span class="token punctuation">-</span>https<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>与 ConfigMap 卷相同，Secret 卷同样支持使用 <code>defaultModes</code> 属性指定卷中文件的默认权限。</p>
 <p>Secret 条目也可以暴露为环境变量：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">spec:
-  containers:
-    env:
-    - name: INTERVAL
-      valueFrom:
-	    secretKeyRef:
-		  name: ngx-https
-		  key: foo<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">containers</span><span class="token punctuation">:</span>
+    <span class="token key atrule">env</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> INTERVAL
+      <span class="token key atrule">valueFrom</span><span class="token punctuation">:</span>
+	    <span class="token key atrule">secretKeyRef</span><span class="token punctuation">:</span>
+		  <span class="token key atrule">name</span><span class="token punctuation">:</span> ngx<span class="token punctuation">-</span>https
+		  <span class="token key atrule">key</span><span class="token punctuation">:</span> foo<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>可以创建一个类型为 <code>docker-registry</code> 的 Secret，名称为 <code>dockerhubsecret</code>，其中包含 Docker 镜像仓库证书，并在拉取镜像时进行引用：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master <span class="token number">2</span><span class="token punctuation">]</span>$ kubectl create secret docker-registry dockerhubsecret <span class="token punctuation">\</span>
  --docker-username<span class="token operator">=</span>myusername --docker-password<span class="token operator">=</span>mypasswd <span class="token punctuation">\</span>
@@ -702,10 +702,10 @@ spec:
 <p>在 Kubernetes 中，底层持久化存储是一个重要的组件，用于存储应用程序的持久化数据，并确保数据的安全性和持久性。</p>
 <h2 id="hostpath-卷"><a class="markdownIt-Anchor" href="#hostpath-卷"></a> hostPath 卷</h2>
 <p>hostPath 卷用于指向节点文件系统中的特定文件或目录。由于文件存储在特定节点的文件系统中，因此当 Pod 被重新调度到另一个节点时，可能无法访问数据。在 Kubernetes 的系统级服务 Pod 中，通常使用 hostPath 卷来访问节点的日志、配置文件或 CA 证书，但不推荐将其用于存储数据：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">volumes:
-- name: <span class="token string">"hostpath"</span>
-  hostPath:
-    path: <span class="token string">"/data"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+<span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> <span class="token string">"hostpath"</span>
+  <span class="token key atrule">hostPath</span><span class="token punctuation">:</span>
+    <span class="token key atrule">path</span><span class="token punctuation">:</span> <span class="token string">"/data"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>此外，还可以使用 <code>type</code> 参数来指定卷的类型：</p>
 <ul>
 <li><code>DirectoryOrCreate</code>：如果指定的路径不存在，则自动创建一个权限为 0755 的空目录，所有者为 kubelet。</li>
@@ -719,25 +719,25 @@ spec:
 <p>根据实际需求选择合适的 <code>type</code> 参数来配置 hostPath 卷。请注意，使用 hostPath 卷时需要谨慎，确保数据的可靠性和安全性。</p>
 <h2 id="gce-持久储存"><a class="markdownIt-Anchor" href="#gce-持久储存"></a> GCE 持久储存</h2>
 <p>如果集群运行在 Google Kubernetes Engine 中，你可以选择使用 GCE 持久化磁盘作为底层存储机制。首先，在同一区域的 Kubernetes 集群中创建一个 GCE 持久化磁盘，例如在 “europe-west” 区域，然后创建一个带有 GCE 持久化磁盘卷的 Pod：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">apiVersion: v1
-kind: Pod
-metadata:
-  name: mongodb
-spec:
-  containers:
-  - image: mongo
-    name: mongodb
-    volumeMounts:
-    - name: mongodb-data
-      mountPath: /data.db
-    ports:
-    - containerPort: <span class="token number">27017</span>
-      protocol: TCP
-  volumes:
-  - name: mongodb-data
-    gcePersistentDisk:
-      pdName: mongodb
-      fsType: ext4<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> Pod
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> mongodb
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">containers</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">image</span><span class="token punctuation">:</span> mongo
+    <span class="token key atrule">name</span><span class="token punctuation">:</span> mongodb
+    <span class="token key atrule">volumeMounts</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> mongodb<span class="token punctuation">-</span>data
+      <span class="token key atrule">mountPath</span><span class="token punctuation">:</span> /data.db
+    <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">containerPort</span><span class="token punctuation">:</span> <span class="token number">27017</span>
+      <span class="token key atrule">protocol</span><span class="token punctuation">:</span> TCP
+  <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> mongodb<span class="token punctuation">-</span>data
+    <span class="token key atrule">gcePersistentDisk</span><span class="token punctuation">:</span>
+      <span class="token key atrule">pdName</span><span class="token punctuation">:</span> mongodb
+      <span class="token key atrule">fsType</span><span class="token punctuation">:</span> ext4<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>定义名称和文件系统类型为 ext4，接着向 mongodb 写入数据：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>kubectl <span class="token builtin class-name">exec</span> <span class="token parameter variable">-it</span> mongodb mongo
 <span class="token punctuation">[</span>root@mongodb ~<span class="token punctuation">]</span>use mystore
@@ -752,26 +752,26 @@ spec:
 <p>如果数据仍然存在，则说明持久化成功。</p>
 <h2 id="其他持久化储存卷"><a class="markdownIt-Anchor" href="#其他持久化储存卷"></a> 其他持久化储存卷</h2>
 <p>根据不同的基础设施，可以选择使用不同类型的持久化存储卷。例如，在 Amazon 上可以使用 awsElasticBlockStore 卷，在 Microsoft Azure 上可以使用 azureFile 或 azureDisk 卷。下面是一个使用 AWS 的示例：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">apiVersion: v1
-kind: Pod
-metadata:
-  name: mongodb
-spec:
-  volumes:
-  - name: mongodb-data
-    awsElasticBlockStore:
-      volumeID: mongodb
-      fsType: ext4
-<span class="token punctuation">..</span>.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> Pod
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> mongodb
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> mongodb<span class="token punctuation">-</span>data
+    <span class="token key atrule">awsElasticBlockStore</span><span class="token punctuation">:</span>
+      <span class="token key atrule">volumeID</span><span class="token punctuation">:</span> mongodb
+      <span class="token key atrule">fsType</span><span class="token punctuation">:</span> ext4
+<span class="token punctuation">...</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>对于 NFS 共享，只需要指定 NFS 服务器的 IP 地址和共享路径即可：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">..</span>.
-spec:
-  volumes:
-  - name: mongodb-data
-    nfs:
-      server: <span class="token number">1.2</span>.3.4
-      path: /some/path
-<span class="token punctuation">..</span>.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token punctuation">...</span>
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> mongodb<span class="token punctuation">-</span>data
+    <span class="token key atrule">nfs</span><span class="token punctuation">:</span>
+      <span class="token key atrule">server</span><span class="token punctuation">:</span> 1.2.3.4
+      <span class="token key atrule">path</span><span class="token punctuation">:</span> /some/path
+<span class="token punctuation">...</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>要了解每种卷类型所需的属性设置，可以查询 Kubernetes API 文档，或使用 <code>kubectl explain</code> 命令。</p>
 <p>需要注意的是，将这些基础设施类型放在 Pod 的配置中意味着该 Pod 的设置与特定集群强耦合，这样无法在另一个 Pod 中重复使用相同的设置。因此，在设计和配置持久化存储时需要谨慎考虑。</p>
 <h1 id="持久卷和持久卷声明"><a class="markdownIt-Anchor" href="#持久卷和持久卷声明"></a> 持久卷和持久卷声明</h1>
@@ -1159,8 +1159,8 @@ drwxrwxrwx <span class="token number">2</span> root root <span class="token numb
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="../1457906456/" rel="prev" title="K8s 组件介绍">
-                  <i class="fa fa-chevron-left"></i> K8s 组件介绍
+                <a href="../4120596009/" rel="prev" title="K8s 基本资源">
+                  <i class="fa fa-chevron-left"></i> K8s 基本资源
                 </a>
             </div>
             <div class="post-nav-item">
@@ -1199,13 +1199,13 @@ drwxrwxrwx <span class="token number">2</span> root root <span class="token numb
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">250k</span>
+    <span title="站点总字数">259k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">13:55</span>
+    <span title="站点阅读时长">14:24</span>
   </span>
 </div>
 <div class="busuanzi-count">
