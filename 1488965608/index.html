@@ -30,7 +30,7 @@
 <meta property="og:description" content="快速入门 通过 Minikube 快速体验 Kubernetes 系统。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-03-20T01:01:17.000Z">
-<meta property="article:modified_time" content="2023-05-16T15:18:08.242Z">
+<meta property="article:modified_time" content="2023-05-17T01:08:38.773Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python">
 <meta name="twitter:card" content="summary">
@@ -145,7 +145,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8"><span class="nav-number">1.</span> <span class="nav-text"> 快速入门</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker-%E5%9F%BA%E7%A1%80"><span class="nav-number">1.1.</span> <span class="nav-text"> Docker 基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-nodejs-%E5%BA%94%E7%94%A8"><span class="nav-number">1.1.1.</span> <span class="nav-text"> 创建 Node.js 应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-dockerfile"><span class="nav-number">1.1.2.</span> <span class="nav-text"> 创建 Dockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E5%AE%B9%E5%99%A8%E9%95%9C%E5%83%8F"><span class="nav-number">1.1.3.</span> <span class="nav-text"> 构建容器镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E5%AE%B9%E5%99%A8%E9%95%9C%E5%83%8F"><span class="nav-number">1.1.4.</span> <span class="nav-text"> 运行容器镜像</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%90%AD%E5%BB%BA-minikube"><span class="nav-number">1.2.</span> <span class="nav-text"> 搭建 Minikube</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">1.2.1.</span> <span class="nav-text"> 安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8"><span class="nav-number">1.2.2.</span> <span class="nav-text"> 启动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B"><span class="nav-number">1.2.3.</span> <span class="nav-text"> 查看</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B-pod"><span class="nav-number">1.2.4.</span> <span class="nav-text"> 建立 pod</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9A%B4%E9%9C%B2%E7%AB%AF%E5%8F%A3"><span class="nav-number">1.2.5.</span> <span class="nav-text"> 暴露端口</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2"><span class="nav-number">2.</span> <span class="nav-text"> 高可用集群部署</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#kubeadm"><span class="nav-number">2.1.</span> <span class="nav-text"> Kubeadm</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#kubeadm-init"><span class="nav-number">2.1.1.</span> <span class="nav-text"> kubeadm init</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kubeadm-join"><span class="nav-number">2.1.2.</span> <span class="nav-text"> kubeadm join</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="nav-number">2.2.</span> <span class="nav-text"> 准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E4%B8%BB%E6%9C%BA%E5%90%8D"><span class="nav-number">2.2.1.</span> <span class="nav-text"> 修改主机名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A6%81%E7%94%A8%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98"><span class="nav-number">2.2.2.</span> <span class="nav-text"> 禁用虚拟内存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%90%AF%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91"><span class="nav-number">2.2.3.</span> <span class="nav-text"> 开启端口转发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%97%AD%E9%98%B2%E7%81%AB%E5%A2%99"><span class="nav-number">2.2.4.</span> <span class="nav-text"> 关闭防火墙</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E7%BB%84%E4%BB%B6"><span class="nav-number">2.3.</span> <span class="nav-text"> 安装组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E8%8A%82%E7%82%B9%E9%85%8D%E7%BD%AE"><span class="nav-number">2.4.</span> <span class="nav-text"> 主节点配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2-keepalived"><span class="nav-number">2.4.1.</span> <span class="nav-text"> 部署 keepalived</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2-haproxy"><span class="nav-number">2.4.2.</span> <span class="nav-text"> 部署 HAproxy</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E9%9B%86%E7%BE%A4"><span class="nav-number">2.5.</span> <span class="nav-text"> 建立集群</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%BB%E8%8A%82%E7%82%B9"><span class="nav-number">2.5.1.</span> <span class="nav-text"> 初始化主节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-kubectl"><span class="nav-number">2.5.2.</span> <span class="nav-text"> 配置 Kubectl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E7%BD%91%E7%BB%9C"><span class="nav-number">2.5.3.</span> <span class="nav-text"> 部署网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E7%BD%91%E7%BB%9C"><span class="nav-number">2.5.4.</span> <span class="nav-text"> 删除网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E5%AE%8C%E6%AF%95"><span class="nav-number">2.5.5.</span> <span class="nav-text"> 建立完毕</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E5%85%A5%E9%9B%86%E7%BE%A4"><span class="nav-number">2.6.</span> <span class="nav-text"> 加入集群</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%8F%82%E6%95%B0"><span class="nav-number">2.6.1.</span> <span class="nav-text"> 获取参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E5%85%A5%E4%BB%8E%E8%8A%82%E7%82%B9"><span class="nav-number">2.6.2.</span> <span class="nav-text"> 加入从节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E5%85%A5%E4%B8%BB%E8%8A%82%E7%82%B9"><span class="nav-number">2.6.3.</span> <span class="nav-text"> 加入主节点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A7%BB%E9%99%A4%E8%8A%82%E7%82%B9"><span class="nav-number">2.7.</span> <span class="nav-text"> 移除节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE"><span class="nav-number">2.8.</span> <span class="nav-text"> 修改配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E6%94%BE%E6%9D%83%E9%99%90"><span class="nav-number">2.8.1.</span> <span class="nav-text"> 开放权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%81%E8%AE%B8%E4%B8%BB%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2"><span class="nav-number">2.8.2.</span> <span class="nav-text"> 允许主节点部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E6%9A%B4%E9%9C%B2%E7%AB%AF%E5%8F%A3%E8%8C%83%E5%9B%B4"><span class="nav-number">2.8.3.</span> <span class="nav-text"> 修改暴露端口范围</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%81%A2%E5%A4%8D%E5%81%A5%E5%BA%B7%E6%A3%80%E6%9F%A5"><span class="nav-number">2.8.4.</span> <span class="nav-text"> 恢复健康检查</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E5%8D%87%E7%BA%A7"><span class="nav-number">2.9.</span> <span class="nav-text"> 集群升级</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86"><span class="nav-number">2.10.</span> <span class="nav-text"> 故障处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B2%A1%E6%9C%89-pod-network-cidr"><span class="nav-number">2.10.1.</span> <span class="nav-text"> 没有 pod-network-cidr</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B2%A1%E6%9C%89-controlplaneendpoint"><span class="nav-number">2.10.2.</span> <span class="nav-text"> 没有 controlPlaneEndpoint</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#token-%E8%BF%87%E6%9C%9F"><span class="nav-number">2.10.3.</span> <span class="nav-text"> Token 过期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%81%E4%B9%A6%E8%BF%87%E6%9C%9F"><span class="nav-number">2.10.4.</span> <span class="nav-text"> 证书过期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%81%E4%B9%A6%E4%B8%8D%E7%AC%A6"><span class="nav-number">2.10.5.</span> <span class="nav-text"> 证书不符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cni0-%E5%9C%B0%E5%9D%80%E9%94%99%E8%AF%AF"><span class="nav-number">2.10.6.</span> <span class="nav-text"> cni0 地址错误</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#etcd-%E9%94%99%E8%AF%AF"><span class="nav-number">2.10.7.</span> <span class="nav-text"> etcd 错误</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%BF%E9%87%8C%E4%BA%91%E9%83%A8%E7%BD%B2"><span class="nav-number">2.11.</span> <span class="nav-text"> 阿里云部署</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D"><span class="nav-number">3.</span> <span class="nav-text"> 备份恢复</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B-etcd-%E9%85%8D%E7%BD%AE"><span class="nav-number">3.1.</span> <span class="nav-text"> 查看 etcd 配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-etcd-%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">3.2.</span> <span class="nav-text"> 安装 etcd 客户端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B-etcd-%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">3.3.</span> <span class="nav-text"> 查看 etcd 数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D"><span class="nav-number">3.4.</span> <span class="nav-text"> 使用命令备份恢复</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%96%87%E4%BB%B6%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D"><span class="nav-number">3.5.</span> <span class="nav-text"> 使用文件备份恢复</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8"><span class="nav-number">1.</span> <span class="nav-text"> 快速入门</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker-%E5%9F%BA%E7%A1%80"><span class="nav-number">1.1.</span> <span class="nav-text"> Docker 基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-nodejs-%E5%BA%94%E7%94%A8"><span class="nav-number">1.1.1.</span> <span class="nav-text"> 创建 Node.js 应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-dockerfile"><span class="nav-number">1.1.2.</span> <span class="nav-text"> 创建 Dockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E5%AE%B9%E5%99%A8%E9%95%9C%E5%83%8F"><span class="nav-number">1.1.3.</span> <span class="nav-text"> 构建容器镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E5%AE%B9%E5%99%A8%E9%95%9C%E5%83%8F"><span class="nav-number">1.1.4.</span> <span class="nav-text"> 运行容器镜像</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%90%AD%E5%BB%BA-minikube"><span class="nav-number">1.2.</span> <span class="nav-text"> 搭建 Minikube</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">1.2.1.</span> <span class="nav-text"> 安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8"><span class="nav-number">1.2.2.</span> <span class="nav-text"> 启动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B"><span class="nav-number">1.2.3.</span> <span class="nav-text"> 查看</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B-pod"><span class="nav-number">1.2.4.</span> <span class="nav-text"> 建立 pod</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9A%B4%E9%9C%B2%E7%AB%AF%E5%8F%A3"><span class="nav-number">1.2.5.</span> <span class="nav-text"> 暴露端口</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E9%85%8D%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text"> 系统配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE"><span class="nav-number">2.1.</span> <span class="nav-text"> 网络配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B4%A6%E6%88%B7%E9%85%8D%E7%BD%AE"><span class="nav-number">2.2.</span> <span class="nav-text"> 账户配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93"><span class="nav-number">2.3.</span> <span class="nav-text"> 镜像仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E6%A0%B8%E5%8D%87%E7%BA%A7"><span class="nav-number">2.4.</span> <span class="nav-text"> 内核升级</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%86%85%E6%A0%B8"><span class="nav-number">2.4.1.</span> <span class="nav-text"> 查看内核</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%86%85%E6%A0%B8"><span class="nav-number">2.4.2.</span> <span class="nav-text"> 安装内核</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E5%BC%95%E5%AF%BC"><span class="nav-number">2.4.3.</span> <span class="nav-text"> 修改引导</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%99%8D%E7%BA%A7%E5%86%85%E6%A0%B8"><span class="nav-number">2.4.4.</span> <span class="nav-text"> 降级内核</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E5%86%85%E6%A0%B8"><span class="nav-number">2.4.5.</span> <span class="nav-text"> 删除内核</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E6%A0%B8%E8%B0%83%E6%95%B4"><span class="nav-number">2.5.</span> <span class="nav-text"> 内核调整</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A6%81%E7%94%A8%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98"><span class="nav-number">2.5.1.</span> <span class="nav-text"> 禁用虚拟内存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%90%AF%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91"><span class="nav-number">2.5.2.</span> <span class="nav-text"> 开启端口转发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%BB%E9%99%A4%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E9%99%90%E5%88%B6"><span class="nav-number">2.5.3.</span> <span class="nav-text"> 去除文件系统限制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E9%97%AD%E9%98%B2%E7%81%AB%E5%A2%99"><span class="nav-number">2.6.</span> <span class="nav-text"> 关闭防火墙</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%AA%E6%80%A7%E5%8C%96%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.7.</span> <span class="nav-text"> 个性化设置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E7%B3%BB%E7%BB%9F%E8%AF%AD%E8%A8%80"><span class="nav-number">2.7.1.</span> <span class="nav-text"> 修改系统语言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E4%B8%BB%E6%9C%BA%E5%90%8D"><span class="nav-number">2.7.2.</span> <span class="nav-text"> 修改主机名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E5%90%8C%E6%AD%A5"><span class="nav-number">2.7.3.</span> <span class="nav-text"> 时间同步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%B7%A5%E5%85%B7"><span class="nav-number">2.7.4.</span> <span class="nav-text"> 安装工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%99%90%E5%88%B6%E6%97%A5%E5%BF%97%E5%A4%A7%E5%B0%8F"><span class="nav-number">2.7.5.</span> <span class="nav-text"> 限制日志大小</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E5%8F%98%E9%87%8F"><span class="nav-number">2.7.6.</span> <span class="nav-text"> 设置变量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E7%AE%A1%E7%90%86"><span class="nav-number">2.8.</span> <span class="nav-text"> 磁盘管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">2.8.1.</span> <span class="nav-text"> 初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-pv"><span class="nav-number">2.8.2.</span> <span class="nav-text"> 创建 PV</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-vg"><span class="nav-number">2.8.3.</span> <span class="nav-text"> 创建 VG</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-lv"><span class="nav-number">2.8.4.</span> <span class="nav-text"> 创建 LV</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F%E5%8C%96"><span class="nav-number">2.8.5.</span> <span class="nav-text"> 格式化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E7%A3%81%E7%9B%98"><span class="nav-number">2.8.6.</span> <span class="nav-text"> 删除磁盘</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E5%90%AF"><span class="nav-number">2.9.</span> <span class="nav-text"> 重启</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2"><span class="nav-number">3.</span> <span class="nav-text"> 高可用集群部署</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#kubeadm"><span class="nav-number">3.1.</span> <span class="nav-text"> Kubeadm</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#kubeadm-init"><span class="nav-number">3.1.1.</span> <span class="nav-text"> kubeadm init</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kubeadm-join"><span class="nav-number">3.1.2.</span> <span class="nav-text"> kubeadm join</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E7%BB%84%E4%BB%B6"><span class="nav-number">3.2.</span> <span class="nav-text"> 安装组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E8%8A%82%E7%82%B9%E9%85%8D%E7%BD%AE"><span class="nav-number">3.3.</span> <span class="nav-text"> 主节点配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2-keepalived"><span class="nav-number">3.3.1.</span> <span class="nav-text"> 部署 keepalived</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2-haproxy"><span class="nav-number">3.3.2.</span> <span class="nav-text"> 部署 HAproxy</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E9%9B%86%E7%BE%A4"><span class="nav-number">3.4.</span> <span class="nav-text"> 建立集群</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%BB%E8%8A%82%E7%82%B9"><span class="nav-number">3.4.1.</span> <span class="nav-text"> 初始化主节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-kubectl"><span class="nav-number">3.4.2.</span> <span class="nav-text"> 配置 Kubectl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E7%BD%91%E7%BB%9C"><span class="nav-number">3.4.3.</span> <span class="nav-text"> 部署网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E7%BD%91%E7%BB%9C"><span class="nav-number">3.4.4.</span> <span class="nav-text"> 删除网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E5%AE%8C%E6%AF%95"><span class="nav-number">3.4.5.</span> <span class="nav-text"> 建立完毕</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E5%85%A5%E9%9B%86%E7%BE%A4"><span class="nav-number">3.5.</span> <span class="nav-text"> 加入集群</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%8F%82%E6%95%B0"><span class="nav-number">3.5.1.</span> <span class="nav-text"> 获取参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E5%85%A5%E4%BB%8E%E8%8A%82%E7%82%B9"><span class="nav-number">3.5.2.</span> <span class="nav-text"> 加入从节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E5%85%A5%E4%B8%BB%E8%8A%82%E7%82%B9"><span class="nav-number">3.5.3.</span> <span class="nav-text"> 加入主节点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A7%BB%E9%99%A4%E8%8A%82%E7%82%B9"><span class="nav-number">3.6.</span> <span class="nav-text"> 移除节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE"><span class="nav-number">3.7.</span> <span class="nav-text"> 修改配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E6%94%BE%E6%9D%83%E9%99%90"><span class="nav-number">3.7.1.</span> <span class="nav-text"> 开放权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%81%E8%AE%B8%E4%B8%BB%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2"><span class="nav-number">3.7.2.</span> <span class="nav-text"> 允许主节点部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E6%9A%B4%E9%9C%B2%E7%AB%AF%E5%8F%A3%E8%8C%83%E5%9B%B4"><span class="nav-number">3.7.3.</span> <span class="nav-text"> 修改暴露端口范围</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%81%A2%E5%A4%8D%E5%81%A5%E5%BA%B7%E6%A3%80%E6%9F%A5"><span class="nav-number">3.7.4.</span> <span class="nav-text"> 恢复健康检查</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E5%8D%87%E7%BA%A7"><span class="nav-number">3.8.</span> <span class="nav-text"> 集群升级</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86"><span class="nav-number">3.9.</span> <span class="nav-text"> 故障处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B2%A1%E6%9C%89-pod-network-cidr"><span class="nav-number">3.9.1.</span> <span class="nav-text"> 没有 pod-network-cidr</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B2%A1%E6%9C%89-controlplaneendpoint"><span class="nav-number">3.9.2.</span> <span class="nav-text"> 没有 controlPlaneEndpoint</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#token-%E8%BF%87%E6%9C%9F"><span class="nav-number">3.9.3.</span> <span class="nav-text"> Token 过期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%81%E4%B9%A6%E8%BF%87%E6%9C%9F"><span class="nav-number">3.9.4.</span> <span class="nav-text"> 证书过期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%81%E4%B9%A6%E4%B8%8D%E7%AC%A6"><span class="nav-number">3.9.5.</span> <span class="nav-text"> 证书不符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cni0-%E5%9C%B0%E5%9D%80%E9%94%99%E8%AF%AF"><span class="nav-number">3.9.6.</span> <span class="nav-text"> cni0 地址错误</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#etcd-%E9%94%99%E8%AF%AF"><span class="nav-number">3.9.7.</span> <span class="nav-text"> etcd 错误</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%BF%E9%87%8C%E4%BA%91%E9%83%A8%E7%BD%B2"><span class="nav-number">3.10.</span> <span class="nav-text"> 阿里云部署</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D"><span class="nav-number">4.</span> <span class="nav-text"> 备份恢复</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B-etcd-%E9%85%8D%E7%BD%AE"><span class="nav-number">4.1.</span> <span class="nav-text"> 查看 etcd 配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-etcd-%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">4.2.</span> <span class="nav-text"> 安装 etcd 客户端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B-etcd-%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">4.3.</span> <span class="nav-text"> 查看 etcd 数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D"><span class="nav-number">4.4.</span> <span class="nav-text"> 使用命令备份恢复</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%96%87%E4%BB%B6%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D"><span class="nav-number">4.5.</span> <span class="nav-text"> 使用文件备份恢复</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -255,7 +255,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-16 23:18:08" itemprop="dateModified" datetime="2023-05-16T23:18:08+08:00">2023-05-16</time>
+      <time title="修改时间：2023-05-17 09:08:38" itemprop="dateModified" datetime="2023-05-17T09:08:38+08:00">2023-05-17</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -285,14 +285,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>9.6k</span>
+      <span>12k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>32 分钟</span>
+      <span>40 分钟</span>
     </span>
 </div>
 
@@ -424,6 +424,370 @@ kubia-http   LoadBalancer   <span class="token number">10.108</span>.108.14   <s
 <span class="token operator">|</span> default   <span class="token operator">|</span> kubia-http <span class="token operator">|</span>        <span class="token number">8080</span> <span class="token operator">|</span> http://192.168.49.2:31003 <span class="token operator">|</span>
 <span class="token operator">|</span>-----------<span class="token operator">|</span>------------<span class="token operator">|</span>-------------<span class="token operator">|</span>---------------------------<span class="token operator">|</span>
 * Opening <span class="token function">service</span> default/kubia-http <span class="token keyword">in</span> default browser<span class="token punctuation">..</span>.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="系统配置"><a class="markdownIt-Anchor" href="#系统配置"></a> 系统配置</h1>
+<p>以 CentOS 7 系统作为例子。</p>
+<h2 id="网络配置"><a class="markdownIt-Anchor" href="#网络配置"></a> 网络配置</h2>
+<p>要修改 IP 地址，通过 <code>nmcli</code> 命令，或者修改 <code>/etc/sysconfig/network-scripts/</code> 下面的网卡配置文件都可：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># nmcli connection modify ens32 connection.autoconnect yes ipv4.method manual ipv4.addresses 192.168.1.101/24 ipv4.gateway 192.168.1.1 ipv4.dns 8.8.8.8</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># nmcli connection up ens32</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>上面修改网卡 <code>ens32</code> 的 IP 地址为 <code>192.168.1.101</code>，网关地址 <code>192.168.1.1</code>，DNS 地址 <code>8.8.8.8</code>。并立即生效。</p>
+<h2 id="账户配置"><a class="markdownIt-Anchor" href="#账户配置"></a> 账户配置</h2>
+<p>刚刚开通的阿里云服务器，无法通过 <code>ssh</code> 直接连接。可以通过阿里云管理平台，点击远程连接，选择发送命令来配置主机。</p>
+<p>例如修改 <code>ssh</code> 默认端口由 22 改为 2222，并允许使用账号密码登录。重启 sshd 服务来生效：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#!/bin/bash</span>
+<span class="token function">sed</span> <span class="token parameter variable">-i</span> <span class="token string">"s/#Port 22/Port 2222/g"</span> /etc/ssh/sshd_config
+<span class="token function">sed</span> <span class="token parameter variable">-i</span> <span class="token string">"s/PasswordAuthentication no/PasswordAuthentication yes/g"</span> /etc/ssh/sshd_config
+systemctl restart sshd<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>通过发送脚本的方式修改 root 账号密码：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#!/bin/bash</span>
+<span class="token builtin class-name">echo</span> <span class="token string">"qv4YB7#x9WhPj?i4E1DRgu1dlOWR"</span> <span class="token operator">|</span> <span class="token function">passwd</span> root <span class="token parameter variable">--stdin</span> <span class="token operator">></span> /dev/null <span class="token operator"><span class="token file-descriptor important">2</span>></span><span class="token file-descriptor important">&amp;1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>添加用户 alice 并设置密码。密码是 <code>/etc/shadow</code> 中哈希值：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#!/bin/bash</span>
+<span class="token function">useradd</span> <span class="token parameter variable">-p</span> <span class="token punctuation">\</span><span class="token variable">$6</span><span class="token punctuation">\</span><span class="token variable">$YVLnCcQL</span><span class="token punctuation">\</span><span class="token variable">$NlbdFMzHHzw9Byk2EFjl4BNCm0riq22HnJKTVcccZv</span>/FQ/Y2HgvSeavPCUbdgzTmA3T3ksn7SYkq96An12oBW0 alice<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>最后要记得调整安全组策略。在云服务器 ECS 的安全组中，为自定义的 sshd 端口 2222 设置白名单，这样才能使用 <code>ssh</code> 远程连接。</p>
+<h2 id="镜像仓库"><a class="markdownIt-Anchor" href="#镜像仓库"></a> 镜像仓库</h2>
+<p>修改 <code>yum</code> 仓库地址为阿里云镜像仓库，提升软件安装和更新速度：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># yum install -y wget</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># mv /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel.repo.backup</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># mv /etc/yum.repos.d/epel-testing.repo /etc/yum.repos.d/epel-testing.repo.backup</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># cd /etc/yum.repos.d/ &amp;&amp; wget http://mirrors.aliyun.com/repo/Centos-7.repo &amp;&amp; wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo &amp;&amp; cd -</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># yum clean all</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># yum makecache</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>虽然阿里云镜像仓库下载速度被限制成 500 kB/s，但胜在稳定。</p>
+<h2 id="内核升级"><a class="markdownIt-Anchor" href="#内核升级"></a> 内核升级</h2>
+<p>CentOS 7 安装镜像自带的 3.10 内核已太旧，很多应用需要的内核功能支持不了。装好后第一时间升级内核。</p>
+<h3 id="查看内核"><a class="markdownIt-Anchor" href="#查看内核"></a> 查看内核</h3>
+<p>查看当前运行的内核版本:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># uname -sr</span>
+Linux <span class="token number">3.10</span>.0-1160.el7.x86_64<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h3 id="安装内核"><a class="markdownIt-Anchor" href="#安装内核"></a> 安装内核</h3>
+<p>导入 ELRepo 软件仓库的公共秘钥，安装 yum 源：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># yum install -y https://www.elrepo.org/elrepo-release-7.el7.elrepo.noarch.rpm</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>列出当前最新内核版本：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># yum --disablerepo="*" --enablerepo="elrepo-kernel" list available</span>
+Available Packages
+kernel-lt.x86_64    <span class="token number">5.4</span>.242-1.el7.elrepo   elrepo-kernel
+kernel-ml-devel.x86 <span class="token number">5.4</span>.242-1.el7.elrepo   elrepo-kernel
+kernel-ml.x86_64    <span class="token number">6.3</span>.2-1.el7.elrepo     elrepo-kernel<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中 <code>kernel-lt</code> 表示 long-term（长期支持版本）,<code>kernel-ml</code> 表示 latest mainline（最新主线版本）。选择安装 <code>kernel-lt.x86_64</code> 版本。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># yum install -y kernel-lt-5.4.242-1.el7.elrepo --enablerepo=elrepo-kernel</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="修改引导"><a class="markdownIt-Anchor" href="#修改引导"></a> 修改引导</h3>
+<p>查看已安装系统内核。正常情况下会保留旧内核，升级失败时可以回滚：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># awk -F\' '$1=="menuentry " &#123;print i++ " : " $2&#125;' /etc/grub2.cfg</span>
+<span class="token number">0</span> <span class="token builtin class-name">:</span> CentOS Linux <span class="token punctuation">(</span><span class="token number">5.4</span>.242-1.el7.elrepo.x86_64<span class="token punctuation">)</span> <span class="token number">7</span> <span class="token punctuation">(</span>Core<span class="token punctuation">)</span>
+<span class="token number">1</span> <span class="token builtin class-name">:</span> CentOS Linux <span class="token punctuation">(</span><span class="token number">3.10</span>.0-1160.el7.x86_64<span class="token punctuation">)</span> <span class="token number">7</span> <span class="token punctuation">(</span>Core<span class="token punctuation">)</span>
+<span class="token number">2</span> <span class="token builtin class-name">:</span> CentOS Linux <span class="token punctuation">(</span><span class="token number">0</span>-rescue-e175a587657a4fae8ab45bb178e24c22<span class="token punctuation">)</span> <span class="token number">7</span> <span class="token punctuation">(</span>Core<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果引导方式是 UEFI，则需要查看 <code>/etc/grub2-efi.cfg</code> 文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># awk -F\' '$1=="menuentry " &#123;print i++ " : " $2&#125;' /etc/grub2-efi.cfg</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>设置内核启动顺序，需要重新生成引导文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># grub2-set-default 0</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># grub2-mkconfig -o /boot/grub2/grub.cfg</span>
+Generating grub configuration <span class="token function">file</span> <span class="token punctuation">..</span>.
+Found linux image: /boot/vmlinuz-5.4.242-1.el7.elrepo.x86_64
+Found initrd image: /boot/initramfs-5.4.242-1.el7.elrepo.x86_64.img
+Found linux image: /boot/vmlinuz-3.10.0-1160.el7.x86_64
+Found initrd image: /boot/initramfs-3.10.0-1160.el7.x86_64.img
+Found linux image: /boot/vmlinuz-0-rescue-e175a587657a4fae8ab45bb178e24c22
+Found initrd image: /boot/initramfs-0-rescue-e175a587657a4fae8ab45bb178e24c22.img
+<span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>UEFI 启动配置文件位置的位置不同：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># grub2-set-default 0</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># grub2-mkconfig -o /boot/efi/EFI/centos/grub.cfg</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h3 id="降级内核"><a class="markdownIt-Anchor" href="#降级内核"></a> 降级内核</h3>
+<p>内核降级和升级步骤一样，用 <code>yum</code> 安装指定内核版本后，修改引导配置文件并重启。</p>
+<h3 id="删除内核"><a class="markdownIt-Anchor" href="#删除内核"></a> 删除内核</h3>
+<p>重启后如果新内核运作正常，可以删除旧内核：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># yum remove -y kernel-lt-3.10.0-1160.el7.elrepo.x86_64</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="内核调整"><a class="markdownIt-Anchor" href="#内核调整"></a> 内核调整</h2>
+<p>需要修改内核参数,否则安装运行K8s会失败.</p>
+<h3 id="禁用虚拟内存"><a class="markdownIt-Anchor" href="#禁用虚拟内存"></a> 禁用虚拟内存</h3>
+<p>虽然安装系统时已经去除了 swap 分区，但保险起见，还是对开机挂载配置文件 <code>/etc/fstab</code> 进行重写。然后重新挂载根目录：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># swapoff -a</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># yes | cp /etc/fstab /etc/fstab_bak</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># cat /etc/fstab_bak |grep -v swap > /etc/fstab</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># mount -n -o remount,rw /</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># echo "vm.swappiness = 0" >> /etc/sysctl.conf</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="开启端口转发"><a class="markdownIt-Anchor" href="#开启端口转发"></a> 开启端口转发</h3>
+<p>首先要确认网卡 MAC 地址没有冲突，然后确保 <code>br_netfilter</code> 和 <code>overlay</code> 模块被加载：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># echo "br_netfilter" >> /etc/modules-load.d/k8s.conf</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># echo "overlay" >> /etc/modules-load.d/k8s.conf</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># modprobe br_netfilter</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># modprobe overlay</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># lsmod | grep 'br_netfilter\|overlay'</span>
+br_netfilter           <span class="token number">28672</span>  <span class="token number">0</span> 
+overlay               <span class="token number">114688</span>  <span class="token number">35</span> 
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># modprobe ip_vs</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># modprobe ip_vs_rr</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># modprobe ip_vs_wrr</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># modprobe ip_vs_sh</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># echo "net.ipv4.ip_nonlocal_bind = 1" >> /etc/sysctl.conf</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># echo "net.ipv4.ip_local_port_range = 1024 65535" >> /etc/sysctl.conf</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># echo "net.bridge.bridge-nf-call-ip6tables = 1" >> /etc/sysctl.conf</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># echo "net.bridge.bridge-nf-call-iptables = 1" >> /etc/sysctl.conf</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># echo "10000 65535" > /proc/sys/net/ipv4/ip_local_port_range</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="去除文件系统限制"><a class="markdownIt-Anchor" href="#去除文件系统限制"></a> 去除文件系统限制</h3>
+<p>根据硬件情况，对文件系统限制调大。最后使用 <code>sysctl --system</code> 命令来使配置生效：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># ulimit -SHn 65536</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># echo "* soft nofile 655350" >> /etc/security/limits.conf</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># echo "* hard nofile 655350" >> /etc/security/limits.conf</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># echo "vm.max_map_count = 524288" >> /etc/sysctl.conf</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># echo "fs.file-max = 655350" >> /etc/sysctl.conf</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># echo "fs.inotify.max_user_instances=8192" >> /etc/sysctl.conf</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># sysctl --system</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="关闭防火墙"><a class="markdownIt-Anchor" href="#关闭防火墙"></a> 关闭防火墙</h2>
+<p>关闭防火墙和 SELinux，否则容器访问主机文件系统会不正常：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># service iptables stop</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># chkconfig iptables off</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># systemctl stop firewalld</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># systemctl disable firewalld</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># setenforce 0</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># sed -i 's/^SELINUX=enforcing$/SELINUX=disabled/' /etc/selinux/config</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># getenforce #</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="个性化设置"><a class="markdownIt-Anchor" href="#个性化设置"></a> 个性化设置</h2>
+<p>一些按照喜好来设置的系统调整。</p>
+<h3 id="修改系统语言"><a class="markdownIt-Anchor" href="#修改系统语言"></a> 修改系统语言</h3>
+<p>修改系统语言为英语：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># echo 'LANG="en_US.UTF-8"' > /etc/locale.conf</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="修改主机名"><a class="markdownIt-Anchor" href="#修改主机名"></a> 修改主机名</h3>
+<p>修改节点上的主机名，例如 k8s-master-1、k8s-m1-pro、k8s-250 等，尽量取有意义的名字：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># hostnamectl set-hostname k8s-101</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>将主机名添加到本地域名解析 <code>/etc/hosts</code> 文件中：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># echo "127.0.0.1   $(hostname)" >> /etc/hosts</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="时间同步"><a class="markdownIt-Anchor" href="#时间同步"></a> 时间同步</h3>
+<p>设置网络时间同步。若服务器时间不对，可能会遇到一些莫名其妙的验证方面问题：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># timedatectl set-timezone "Asia/Shanghai"</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># yum -y install ntp ntpdate</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># ntpdate cn.pool.ntp.org</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># hwclock --systohc</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># hwclock -w</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># date</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="安装工具"><a class="markdownIt-Anchor" href="#安装工具"></a> 安装工具</h3>
+<p>安装一些常用系统维护工具：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># yum install -y git wget net-tools bind-utils vim bash-completion nfs-utils jq nc telnet lvm2 unzip iftop lsof</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="限制日志大小"><a class="markdownIt-Anchor" href="#限制日志大小"></a> 限制日志大小</h3>
+<p>限制系统 journal 日志保留时常为1周，免得磁盘被大量日志挤占空间：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># journalctl --vacuum-time=1w</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="设置变量"><a class="markdownIt-Anchor" href="#设置变量"></a> 设置变量</h3>
+<p>修改 <code>/etc/profile</code> 文件，添加一些常用变量：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># echo "export HISTTIMEFORMAT='`whoami` : %F %T :'" >> /etc/profile</span>
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># echo "export NFS_SERVER=192.168.1.253" >> /etc/profile</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="磁盘管理"><a class="markdownIt-Anchor" href="#磁盘管理"></a> 磁盘管理</h2>
+<p>一般建议把容器工作目录和数据储存同系统根目录分开挂载，免得影响系统运行稳定性。下面以新增一块储存盘为例，演示磁盘管理操作。</p>
+<h3 id="初始化"><a class="markdownIt-Anchor" href="#初始化"></a> 初始化</h3>
+<p>服务器上新增一块固态硬盘 sdb，需要初始化后才能使用：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span><span class="token comment"># lsblk</span>
+NAME            MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+sda               <span class="token number">8</span>:0    <span class="token number">0</span> <span class="token number">223</span>.6G  <span class="token number">0</span> disk 
+├─sda1            <span class="token number">8</span>:1    <span class="token number">0</span>   200M  <span class="token number">0</span> part /boot/efi
+├─sda2            <span class="token number">8</span>:2    <span class="token number">0</span>     1G  <span class="token number">0</span> part /boot
+└─sda3            <span class="token number">8</span>:3    <span class="token number">0</span> <span class="token number">222</span>.4G  <span class="token number">0</span> part 
+  └─centos-root <span class="token number">253</span>:0    <span class="token number">0</span> <span class="token number">222</span>.4G  <span class="token number">0</span> lvm  /
+sdb               <span class="token number">8</span>:16   <span class="token number">0</span> <span class="token number">931</span>.5G  <span class="token number">0</span> disk <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 <code>fdisk</code> 命令来管理磁盘：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span><span class="token comment"># fdisk /dev/sdb</span>
+Welcome to <span class="token function">fdisk</span> <span class="token punctuation">(</span>util-linux <span class="token number">2.23</span>.2<span class="token punctuation">)</span>.
+
+Changes will remain <span class="token keyword">in</span> memory only, <span class="token keyword">until</span> you decide to <span class="token function">write</span> them.
+Be careful before using the <span class="token function">write</span> command.
+
+Device does not contain a recognized partition table
+Building a new DOS disklabel with disk identifier 0x50398e42.
+
+Command <span class="token punctuation">(</span>m <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: p
+
+Disk /dev/sdb: <span class="token number">1000.2</span> GB, <span class="token number">1000204886016</span> bytes, <span class="token number">1953525168</span> sectors
+Units <span class="token operator">=</span> sectors of <span class="token number">1</span> * <span class="token number">512</span> <span class="token operator">=</span> <span class="token number">512</span> bytes
+Sector size <span class="token punctuation">(</span>logical/physical<span class="token punctuation">)</span>: <span class="token number">512</span> bytes / <span class="token number">512</span> bytes
+I/O size <span class="token punctuation">(</span>minimum/optimal<span class="token punctuation">)</span>: <span class="token number">512</span> bytes / <span class="token number">512</span> bytes
+Disk label type: dos
+Disk identifier: 0x50398e42
+
+   Device Boot      Start         End      Blocks   Id  System<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>先使用初始化并分区：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">Command <span class="token punctuation">(</span>m <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: n
+Partition type:
+   p   primary <span class="token punctuation">(</span><span class="token number">0</span> primary, <span class="token number">0</span> extended, <span class="token number">4</span> <span class="token function">free</span><span class="token punctuation">)</span>
+   e   extended
+Select <span class="token punctuation">(</span>default p<span class="token punctuation">)</span>: p
+Partition number <span class="token punctuation">(</span><span class="token number">1</span>-4, default <span class="token number">1</span><span class="token punctuation">)</span>: 
+First sector <span class="token punctuation">(</span><span class="token number">2048</span>-1953525167, default <span class="token number">2048</span><span class="token punctuation">)</span>: 
+Using default value <span class="token number">2048</span>
+Last sector, +sectors or +size<span class="token punctuation">&#123;</span>K,M,G<span class="token punctuation">&#125;</span> <span class="token punctuation">(</span><span class="token number">2048</span>-1953525167, default <span class="token number">1953525167</span><span class="token punctuation">)</span>: 
+Using default value <span class="token number">1953525167</span>
+Partition <span class="token number">1</span> of <span class="token builtin class-name">type</span> Linux and of size <span class="token number">931.5</span> GiB is <span class="token builtin class-name">set</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>修改分区 <code>system ID</code> 为 <code>lvm</code> ：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">Command <span class="token punctuation">(</span>m <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: t
+Selected partition <span class="token number">1</span>
+Hex code <span class="token punctuation">(</span>type L to list all codes<span class="token punctuation">)</span>: 8e
+Changed <span class="token builtin class-name">type</span> of partition <span class="token string">'Linux'</span> to <span class="token string">'Linux LVM'</span>
+Command <span class="token punctuation">(</span>m <span class="token keyword">for</span> <span class="token builtin class-name">help</span><span class="token punctuation">)</span>: w
+The partition table has been altered<span class="token operator">!</span>
+
+Calling ioctl<span class="token punctuation">(</span><span class="token punctuation">)</span> to re-read partition table.
+Syncing disks.
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span><span class="token comment"># partprobe</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="创建-pv"><a class="markdownIt-Anchor" href="#创建-pv"></a> 创建 PV</h3>
+<p>使用 <code>pvcreate</code> 命令来创建 PV：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-103 ~<span class="token punctuation">]</span><span class="token comment"># pvcreate /dev/sdb1</span>
+  Physical volume <span class="token string">"/dev/sdb1"</span> successfully created.
+<span class="token punctuation">[</span>root@k8s-103 ~<span class="token punctuation">]</span><span class="token comment"># pvscan</span>
+  PV /dev/sda2   VG centos          lvm2 <span class="token punctuation">[</span><span class="token operator">&lt;</span><span class="token number">49.00</span> GiB / <span class="token number">0</span>    free<span class="token punctuation">]</span>
+  PV /dev/sdb1                      lvm2 <span class="token punctuation">[</span><span class="token operator">&lt;</span><span class="token number">200.00</span> GiB<span class="token punctuation">]</span>
+  Total: <span class="token number">2</span> <span class="token punctuation">[</span><span class="token operator">&lt;</span><span class="token number">249.00</span> GiB<span class="token punctuation">]</span> / <span class="token keyword">in</span> use: <span class="token number">1</span> <span class="token punctuation">[</span><span class="token operator">&lt;</span><span class="token number">49.00</span> GiB<span class="token punctuation">]</span> / <span class="token keyword">in</span> no VG: <span class="token number">1</span> <span class="token punctuation">[</span><span class="token operator">&lt;</span><span class="token number">200.00</span> GiB<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>查询刚创建的 PV 详细信息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-103 ~<span class="token punctuation">]</span><span class="token comment"># pvdisplay</span>
+  --- Physical volume ---
+  PV Name               /dev/sda2
+  VG Name               centos
+  PV Size               <span class="token operator">&lt;</span><span class="token number">49.00</span> GiB / not usable <span class="token number">3.00</span> MiB
+  Allocatable           <span class="token function">yes</span> <span class="token punctuation">(</span>but full<span class="token punctuation">)</span>
+  PE Size               <span class="token number">4.00</span> MiB
+  Total PE              <span class="token number">12543</span>
+  Free PE               <span class="token number">0</span>
+  Allocated PE          <span class="token number">12543</span>
+  PV UUID               FOgL5t-v6EE-neHA-Kdpy-ynt0-yzXr-Tin7Am
+   
+  <span class="token string">"/dev/sdb1"</span> is a new physical volume of <span class="token string">"&lt;200.00 GiB"</span>
+  --- NEW Physical volume ---
+  PV Name               /dev/sdb1
+  VG Name               
+  PV Size               <span class="token operator">&lt;</span><span class="token number">200.00</span> GiB
+  Allocatable           NO
+  PE Size               <span class="token number">0</span>   
+  Total PE              <span class="token number">0</span>
+  Free PE               <span class="token number">0</span>
+  Allocated PE          <span class="token number">0</span>
+  PV UUID               rxkppt-GxSK-igDI-NgI1-3CZw-F3r2-YtXIU9<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="创建-vg"><a class="markdownIt-Anchor" href="#创建-vg"></a> 创建 VG</h3>
+<p>声明变量：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-103 ~<span class="token punctuation">]</span><span class="token comment"># export DIR=ssd</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>新建 VG：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-103 ~<span class="token punctuation">]</span><span class="token comment"># vgcreate $&#123;DIR&#125; /dev/sdb1</span>
+  Volume group <span class="token string">"ssd"</span> successfully created
+<span class="token punctuation">[</span>root@k8s-103 ~<span class="token punctuation">]</span><span class="token comment"># vgscan</span>
+  Reading volume <span class="token function">groups</span> from cache.
+  Found volume group <span class="token string">"centos"</span> using metadata <span class="token builtin class-name">type</span> lvm2
+  Found volume group <span class="token string">"ssd"</span> using metadata <span class="token builtin class-name">type</span> lvm2
+<span class="token punctuation">[</span>root@k8s-103 ~<span class="token punctuation">]</span><span class="token comment"># vgdisplay</span>
+  --- Volume group ---
+  VG Name               centos
+  System ID             
+  Format                lvm2
+  Metadata Areas        <span class="token number">1</span>
+  Metadata Sequence No  <span class="token number">2</span>
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                <span class="token number">0</span>
+  Cur LV                <span class="token number">1</span>
+  Open LV               <span class="token number">1</span>
+  Max PV                <span class="token number">0</span>
+  Cur PV                <span class="token number">1</span>
+  Act PV                <span class="token number">1</span>
+  VG Size               <span class="token operator">&lt;</span><span class="token number">49.00</span> GiB
+  PE Size               <span class="token number">4.00</span> MiB
+  Total PE              <span class="token number">12543</span>
+  Alloc PE / Size       <span class="token number">12543</span> / <span class="token operator">&lt;</span><span class="token number">49.00</span> GiB
+  Free  PE / Size       <span class="token number">0</span> / <span class="token number">0</span>   
+  VG UUID               xuRCcF-ROBb-5OhK-4BAY-fuBi-EvlU-uqxs9T
+   
+  --- Volume group ---
+  VG Name               ssd
+  System ID             
+  Format                lvm2
+  Metadata Areas        <span class="token number">1</span>
+  Metadata Sequence No  <span class="token number">1</span>
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                <span class="token number">0</span>
+  Cur LV                <span class="token number">0</span>
+  Open LV               <span class="token number">0</span>
+  Max PV                <span class="token number">0</span>
+  Cur PV                <span class="token number">1</span>
+  Act PV                <span class="token number">1</span>
+  VG Size               <span class="token operator">&lt;</span><span class="token number">200.00</span> GiB
+  PE Size               <span class="token number">4.00</span> MiB
+  Total PE              <span class="token number">51199</span>
+  Alloc PE / Size       <span class="token number">0</span> / <span class="token number">0</span>   
+  Free  PE / Size       <span class="token number">51199</span> / <span class="token operator">&lt;</span><span class="token number">200.00</span> GiB
+  VG UUID               yq6LIQ-D4Xm-hPGZ-2Zqi-Bdsc-vz3Y-cvuAmC<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="创建-lv"><a class="markdownIt-Anchor" href="#创建-lv"></a> 创建 LV</h3>
+<p>建立名为 ssd 的LV，使用参数 <code>-l</code> 指定分配 free PE 数量:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-103 ~<span class="token punctuation">]</span><span class="token comment"># lvcreate -l +100%FREE -n $&#123;DIR&#125; $&#123;DIR&#125;</span>
+  Logical volume <span class="token string">"ssd"</span> created.
+<span class="token punctuation">[</span>root@k8s-103 ~<span class="token punctuation">]</span><span class="token comment"># lvdisplay</span>
+  --- Logical volume ---
+  LV Path                /dev/centos/root
+  LV Name                root
+  VG Name                centos
+  LV UUID                GySaQs-a1ni-kiUg-Ys86-j287-Sqpu-9PWECL
+  LV Write Access        read/write
+  LV Creation host, <span class="token function">time</span> localhost, <span class="token number">2023</span>-05-17 08:02:19 +0800
+  LV Status              available
+  <span class="token comment"># open                 1</span>
+  LV Size                <span class="token operator">&lt;</span><span class="token number">49.00</span> GiB
+  Current LE             <span class="token number">12543</span>
+  Segments               <span class="token number">1</span>
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently <span class="token builtin class-name">set</span> to     <span class="token number">8192</span>
+  Block device           <span class="token number">253</span>:0
+   
+  --- Logical volume ---
+  LV Path                /dev/ssd/ssd
+  LV Name                ssd
+  VG Name                ssd
+  LV UUID                EkAIWn-ad01-3nsX-cfBN-rpgV-dSwk-Pc1MJI
+  LV Write Access        read/write
+  LV Creation host, <span class="token function">time</span> k8s-103, <span class="token number">2023</span>-05-17 02:28:34 +0800
+  LV Status              available
+  <span class="token comment"># open                 0</span>
+  LV Size                <span class="token operator">&lt;</span><span class="token number">200.00</span> GiB
+  Current LE             <span class="token number">51199</span>
+  Segments               <span class="token number">1</span>
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently <span class="token builtin class-name">set</span> to     <span class="token number">8192</span>
+  Block device           <span class="token number">253</span>:1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="格式化"><a class="markdownIt-Anchor" href="#格式化"></a> 格式化</h3>
+<p>格式化成 xfs 格式，并挂载到指定目录下面：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-103 ~<span class="token punctuation">]</span><span class="token comment"># mkfs.xfs /dev/$&#123;DIR&#125;/$&#123;DIR&#125;</span>
+meta-data<span class="token operator">=</span>/dev/ssd/ssd           <span class="token assign-left variable">isize</span><span class="token operator">=</span><span class="token number">512</span>    <span class="token assign-left variable">agcount</span><span class="token operator">=</span><span class="token number">4</span>, <span class="token assign-left variable">agsize</span><span class="token operator">=</span><span class="token number">13106944</span> blks
+         <span class="token operator">=</span>                       <span class="token assign-left variable">sectsz</span><span class="token operator">=</span><span class="token number">512</span>   <span class="token assign-left variable">attr</span><span class="token operator">=</span><span class="token number">2</span>, <span class="token assign-left variable">projid32bit</span><span class="token operator">=</span><span class="token number">1</span>
+         <span class="token operator">=</span>                       <span class="token assign-left variable">crc</span><span class="token operator">=</span><span class="token number">1</span>        <span class="token assign-left variable">finobt</span><span class="token operator">=</span><span class="token number">0</span>, <span class="token assign-left variable">sparse</span><span class="token operator">=</span><span class="token number">0</span>
+data     <span class="token operator">=</span>                       <span class="token assign-left variable">bsize</span><span class="token operator">=</span><span class="token number">4096</span>   <span class="token assign-left variable">blocks</span><span class="token operator">=</span><span class="token number">52427776</span>, <span class="token assign-left variable">imaxpct</span><span class="token operator">=</span><span class="token number">25</span>
+         <span class="token operator">=</span>                       <span class="token assign-left variable">sunit</span><span class="token operator">=</span><span class="token number">0</span>      <span class="token assign-left variable">swidth</span><span class="token operator">=</span><span class="token number">0</span> blks
+naming   <span class="token operator">=</span>version <span class="token number">2</span>              <span class="token assign-left variable">bsize</span><span class="token operator">=</span><span class="token number">4096</span>   ascii-ci<span class="token operator">=</span><span class="token number">0</span> <span class="token assign-left variable">ftype</span><span class="token operator">=</span><span class="token number">1</span>
+log      <span class="token operator">=</span>internal log           <span class="token assign-left variable">bsize</span><span class="token operator">=</span><span class="token number">4096</span>   <span class="token assign-left variable">blocks</span><span class="token operator">=</span><span class="token number">25599</span>, <span class="token assign-left variable">version</span><span class="token operator">=</span><span class="token number">2</span>
+         <span class="token operator">=</span>                       <span class="token assign-left variable">sectsz</span><span class="token operator">=</span><span class="token number">512</span>   <span class="token assign-left variable">sunit</span><span class="token operator">=</span><span class="token number">0</span> blks, lazy-count<span class="token operator">=</span><span class="token number">1</span>
+realtime <span class="token operator">=</span>none                   <span class="token assign-left variable">extsz</span><span class="token operator">=</span><span class="token number">4096</span>   <span class="token assign-left variable">blocks</span><span class="token operator">=</span><span class="token number">0</span>, <span class="token assign-left variable">rtextents</span><span class="token operator">=</span><span class="token number">0</span>         <span class="token assign-left variable">extsz</span><span class="token operator">=</span><span class="token number">4096</span>   <span class="token assign-left variable">blocks</span><span class="token operator">=</span><span class="token number">0</span>, <span class="token assign-left variable">rtextents</span><span class="token operator">=</span><span class="token number">0</span>
+<span class="token punctuation">[</span>root@k8s-103 ~<span class="token punctuation">]</span><span class="token comment"># mkdir /$&#123;DIR&#125;</span>
+<span class="token punctuation">[</span>root@k8s-103 ~<span class="token punctuation">]</span><span class="token comment"># mount /dev/$&#123;DIR&#125;/$&#123;DIR&#125; /$&#123;DIR&#125;/</span>
+<span class="token punctuation">[</span>root@k8s-103 ~<span class="token punctuation">]</span><span class="token comment"># echo "/dev/mapper/$&#123;DIR&#125;-$&#123;DIR&#125; /$&#123;DIR&#125; xfs defaults 0 0" >> /etc/fstab</span>
+<span class="token punctuation">[</span>root@k8s-103 ~<span class="token punctuation">]</span><span class="token comment"># df -hT</span>
+Filesystem              Type      Size  Used Avail Use% Mounted on
+devtmpfs                devtmpfs  <span class="token number">3</span>.9G     <span class="token number">0</span>  <span class="token number">3</span>.9G   <span class="token number">0</span>% /dev
+tmpfs                   tmpfs     <span class="token number">3</span>.9G     <span class="token number">0</span>  <span class="token number">3</span>.9G   <span class="token number">0</span>% /dev/shm
+tmpfs                   tmpfs     <span class="token number">3</span>.9G  <span class="token number">9</span>.0M  <span class="token number">3</span>.9G   <span class="token number">1</span>% /run
+tmpfs                   tmpfs     <span class="token number">3</span>.9G     <span class="token number">0</span>  <span class="token number">3</span>.9G   <span class="token number">0</span>% /sys/fs/cgroup
+/dev/mapper/centos-root xfs        49G  <span class="token number">2</span>.2G   47G   <span class="token number">5</span>% /
+/dev/sda1               xfs      1014M  184M  831M  <span class="token number">19</span>% /boot
+tmpfs                   tmpfs     793M     <span class="token number">0</span>  793M   <span class="token number">0</span>% /run/user/0
+/dev/mapper/ssd-ssd     xfs       200G   33M  200G   <span class="token number">1</span>% /ssd<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="删除磁盘"><a class="markdownIt-Anchor" href="#删除磁盘"></a> 删除磁盘</h3>
+<p>删除磁盘则是逆序操作。下面使删除挂载卷例子：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-249 ~<span class="token punctuation">]</span><span class="token comment"># vi /etc/fstab</span>
+<span class="token punctuation">[</span>root@k8s-249 ~<span class="token punctuation">]</span><span class="token comment"># umount /databases</span>
+<span class="token punctuation">[</span>root@k8s-249 ~<span class="token punctuation">]</span><span class="token comment"># yes | lvremove /dev/databases/databases</span>
+<span class="token punctuation">[</span>root@k8s-249 ~<span class="token punctuation">]</span><span class="token comment"># vgremove databases</span>
+<span class="token punctuation">[</span>root@k8s-249 ~<span class="token punctuation">]</span><span class="token comment"># pvremove /dev/sdb1</span>
+<span class="token punctuation">[</span>root@k8s-248 ~<span class="token punctuation">]</span><span class="token comment"># systemctl daemon-reload </span>
+<span class="token punctuation">[</span>root@k8s-249 ~<span class="token punctuation">]</span><span class="token comment"># systemctl restart proc-fs-nfsd.mount</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="重启"><a class="markdownIt-Anchor" href="#重启"></a> 重启</h2>
+<p>最后重启服务器，让改动生效：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># reboot</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h1 id="高可用集群部署"><a class="markdownIt-Anchor" href="#高可用集群部署"></a> 高可用集群部署</h1>
 <p>以部署三主节点高可用集群示例，系统为 CentOS 7，K8s 版本为 1.22.3。</p>
 <h2 id="kubeadm"><a class="markdownIt-Anchor" href="#kubeadm"></a> Kubeadm</h2>
@@ -459,52 +823,6 @@ total <span class="token number">16</span>
 <p>最后是安装默认插件，包括 kube-proxy 和 DNS 插件，用于提供整个集群的服务发现和 DNS 功能。</p>
 <h3 id="kubeadm-join"><a class="markdownIt-Anchor" href="#kubeadm-join"></a> kubeadm join</h3>
 <p>加入集群时，需要使用主节点初始化时生成的令牌（token），该令牌用于进行一次性身份验证。工作节点在获取 ConfigMap 中的证书后，将使用证书进行安全通信。</p>
-<h2 id="准备工作"><a class="markdownIt-Anchor" href="#准备工作"></a> 准备工作</h2>
-<p>首先需要先安装好 Docker，系统版本为 CentOS 7。</p>
-<h3 id="修改主机名"><a class="markdownIt-Anchor" href="#修改主机名"></a> 修改主机名</h3>
-<p>修改所有节点上的主机名，例如 server4-master，server5-node1，server6-node2：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ hostnamectl set-hostname k8s-204<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>将主机名添加到 <code>/etc/hosts</code> 中：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token string">"127.0.0.1   <span class="token variable"><span class="token variable">$(</span><span class="token function">hostname</span><span class="token variable">)</span></span>"</span> <span class="token operator">>></span> /etc/hosts<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h3 id="禁用虚拟内存"><a class="markdownIt-Anchor" href="#禁用虚拟内存"></a> 禁用虚拟内存</h3>
-<p>调整开机挂载选项，并重新挂载根目录：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ swapoff <span class="token parameter variable">-a</span>
-<span class="token punctuation">[</span>root@server7-master ~<span class="token punctuation">]</span>$ <span class="token function">yes</span> <span class="token operator">|</span> <span class="token function">cp</span> /etc/fstab /etc/fstab_bak
-<span class="token punctuation">[</span>root@server7-master ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/fstab_bak <span class="token operator">|</span><span class="token function">grep</span> <span class="token parameter variable">-v</span> swap <span class="token operator">></span> /etc/fstab
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">mount</span> <span class="token parameter variable">-n</span> <span class="token parameter variable">-o</span> remount,rw /
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-i</span> <span class="token string">'s/.*swap.*/#&amp;/'</span> /etc/fstab<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="开启端口转发"><a class="markdownIt-Anchor" href="#开启端口转发"></a> 开启端口转发</h3>
-<p>首先要确认网卡 MAC 地址没有冲突，然后确保 <code>br_netfilter</code> 和 <code>overlay</code> 模块被加载：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-m1-pro ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> <span class="token operator">&lt;&lt;</span><span class="token string">EOF<span class="token bash punctuation"> <span class="token operator">|</span> <span class="token function">sudo</span> <span class="token function">tee</span> /etc/modules-load.d/k8s.conf</span>
-overlay
-br_netfilter
-EOF</span>
-<span class="token punctuation">[</span>root@k8s-m1-pro ~<span class="token punctuation">]</span>$ modprobe overlay
-<span class="token punctuation">[</span>root@k8s-m1-pro ~<span class="token punctuation">]</span>$ modprobe br_netfilter
-<span class="token punctuation">[</span>root@k8s-m1-pro ~<span class="token punctuation">]</span>$ lsmod <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">'br_netfilter\|overlay'</span>
-br_netfilter           <span class="token number">28672</span>  <span class="token number">0</span> 
-overlay               <span class="token number">114688</span>  <span class="token number">35</span> 
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ modprobe ip_vs
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ modprobe ip_vs_rr
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ modprobe ip_vs_wrr
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ modprobe ip_vs_sh
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> <span class="token operator">&lt;&lt;</span><span class="token string">EOF<span class="token bash punctuation"> <span class="token operator">></span>  /etc/sysctl.d/k8s.conf</span>
-net.bridge.bridge-nf-call-ip6tables = 1
-net.bridge.bridge-nf-call-iptables = 1
-net.ipv4.ip_nonlocal_bind = 1
-net.ipv4.ip_forward = 1
-vm.swappiness=0
-EOF</span>
-<span class="token punctuation">[</span>root@server6-node2 ~<span class="token punctuation">]</span>$ <span class="token function">sysctl</span> <span class="token parameter variable">--system</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="关闭防火墙"><a class="markdownIt-Anchor" href="#关闭防火墙"></a> 关闭防火墙</h3>
-<p>关闭防火墙和 SELinux，否则容器访问主机文件系统会不正常：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-204 ~<span class="token punctuation">]</span>$ <span class="token function">service</span> iptables stop
-<span class="token punctuation">[</span>root@k8s-204 ~<span class="token punctuation">]</span>$ <span class="token function">chkconfig</span> iptables off
-<span class="token punctuation">[</span>root@k8s-204 ~<span class="token punctuation">]</span>$ systemctl stop firewalld
-<span class="token punctuation">[</span>root@k8s-204 ~<span class="token punctuation">]</span>$ systemctl disable firewalld
-<span class="token punctuation">[</span>root@k8s-204 ~<span class="token punctuation">]</span>$ setenforce <span class="token number">0</span>
-<span class="token punctuation">[</span>root@k8s-204 ~<span class="token punctuation">]</span>$ <span class="token function">sed</span> <span class="token parameter variable">-i</span> <span class="token string">'s/^SELINUX=enforcing$/SELINUX=disabled/'</span> /etc/selinux/config
-<span class="token punctuation">[</span>root@k8s-204 ~<span class="token punctuation">]</span>$ getenforce <span class="token comment">#</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="安装组件"><a class="markdownIt-Anchor" href="#安装组件"></a> 安装组件</h2>
 <p>kubelet 是唯一没有以容器形式运行的 K8s 组件，它通过 systemd 服务运行。kubeadm 用来创建 K8s 集群，kubectl 是用来执行 K8s 命令的工具。其他 K8s 的系统组件都以容器化运行，并被放到 kube-system namespaces 中，例如 coredns、etcd、apiserver、controller-manager。</p>
 <p>在所有要加入 K8s 集群的主机中安装 kubelet、kubeadm 和 kubectl 1.22.3 版本：</p>
@@ -1296,8 +1614,8 @@ namespace/pro created<span aria-hidden="true" class="line-numbers-rows"><span></
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="../1711004813/" rel="prev" title="K8s 储存资源">
-                  <i class="fa fa-chevron-left"></i> K8s 储存资源
+                <a href="../4120596009/" rel="prev" title="K8s 基本资源">
+                  <i class="fa fa-chevron-left"></i> K8s 基本资源
                 </a>
             </div>
             <div class="post-nav-item">
@@ -1336,13 +1654,13 @@ namespace/pro created<span aria-hidden="true" class="line-numbers-rows"><span></
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">270k</span>
+    <span title="站点总字数">272k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">14:59</span>
+    <span title="站点阅读时长">15:07</span>
   </span>
 </div>
 <div class="busuanzi-count">
