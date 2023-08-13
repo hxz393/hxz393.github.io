@@ -22,15 +22,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="js/config.js"></script>
 
-    <meta name="description" content="上海南软客户服务部的客户经理葛弦，麻烦帮他开通BPM系统，谢谢！     葛弦2023.7.20           所属公司  所属部门   上海南软  上海南软客户管理部        入职岗位 岗位原人员处理方式 岗位原兼岗人及处理方式   客户经理          直属领导 直接领导姓名 直接领导是否兼任    张杨 否        直属员工(全部)     无">
+    <meta name="description" content="您的 Jenkins 流水线脚本已经相当完整且复杂。然而，还是有一些地方可以优化和改进：  1. 参数和环境变量的管理 可以将部分环境变量与参数化内容单独存放于文件中，使用文件的方式来引入。这将增加可维护性，并便于管理多个环境下的配置。  2. 代码冗余 部分脚本中存在重复的逻辑，例如 sed 命令的多次调用，可以考虑用函数封装起来，降低重复和提高可读性。  3. 错误处理 在某些步骤中，可以添加">
 <meta property="og:type" content="website">
 <meta property="og:title" content="X to Bytes">
 <meta property="og:url" content="https://blog.x2b.net/Untitled.html">
 <meta property="og:site_name" content="X to Bytes">
-<meta property="og:description" content="上海南软客户服务部的客户经理葛弦，麻烦帮他开通BPM系统，谢谢！     葛弦2023.7.20           所属公司  所属部门   上海南软  上海南软客户管理部        入职岗位 岗位原人员处理方式 岗位原兼岗人及处理方式   客户经理          直属领导 直接领导姓名 直接领导是否兼任    张杨 否        直属员工(全部)     无">
+<meta property="og:description" content="您的 Jenkins 流水线脚本已经相当完整且复杂。然而，还是有一些地方可以优化和改进：  1. 参数和环境变量的管理 可以将部分环境变量与参数化内容单独存放于文件中，使用文件的方式来引入。这将增加可维护性，并便于管理多个环境下的配置。  2. 代码冗余 部分脚本中存在重复的逻辑，例如 sed 命令的多次调用，可以考虑用函数封装起来，降低重复和提高可读性。  3. 错误处理 在某些步骤中，可以添加">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-07-21T03:30:11.330Z">
-<meta property="article:modified_time" content="2023-07-21T03:30:11.330Z">
+<meta property="article:published_time" content="2023-08-08T09:30:23.098Z">
+<meta property="article:modified_time" content="2023-08-08T09:30:23.098Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python">
 <meta name="twitter:card" content="summary">
@@ -133,7 +133,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -146,6 +146,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%8F%82%E6%95%B0%E5%92%8C%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E7%9A%84%E7%AE%A1%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text"> 1. 参数和环境变量的管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%BB%A3%E7%A0%81%E5%86%97%E4%BD%99"><span class="nav-number">2.</span> <span class="nav-text"> 2. 代码冗余</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text"> 3. 错误处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%AF%86%E7%A0%81%E5%92%8C%E6%95%8F%E6%84%9F%E4%BF%A1%E6%81%AF%E7%AE%A1%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text"> 4. 密码和敏感信息管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5"><span class="nav-number">5.</span> <span class="nav-text"> 5. 持续集成的最佳实践</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E6%97%A5%E5%BF%97%E5%92%8C%E6%96%87%E6%A1%A3"><span class="nav-number">6.</span> <span class="nav-text"> 6. 日志和文档</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E6%B2%A1%E6%9C%89%E6%B5%8B%E8%AF%95%E9%98%B6%E6%AE%B5"><span class="nav-number">7.</span> <span class="nav-text"> 7. 没有测试阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8%E5%85%B1%E4%BA%AB%E5%BA%93"><span class="nav-number">8.</span> <span class="nav-text"> 8. 可以使用共享库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-%E4%BB%A3%E7%A0%81%E6%95%B4%E6%B4%81"><span class="nav-number">9.</span> <span class="nav-text"> 9. 代码整洁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">10.</span> <span class="nav-text"> 总结</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -227,78 +228,27 @@
       
       
       <div class="post-body">
-          <p>上海南软客户服务部的客户经理葛弦，麻烦帮他开通BPM系统，谢谢！</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>葛弦2023.7.20</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>所属公司</td>
-<td></td>
-<td>所属部门</td>
-</tr>
-<tr>
-<td>上海南软</td>
-<td></td>
-<td>上海南软客户管理部</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>入职岗位</td>
-<td>岗位原人员处理方式</td>
-<td>岗位原兼岗人及处理方式</td>
-</tr>
-<tr>
-<td>客户经理</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>直属领导</td>
-<td>直接领导姓名</td>
-<td>直接领导是否兼任</td>
-</tr>
-<tr>
-<td></td>
-<td>张杨</td>
-<td>否</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>直属员工(全部)</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>无</td>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
+          <p>您的 Jenkins 流水线脚本已经相当完整且复杂。然而，还是有一些地方可以优化和改进：</p>
+<h3 id="1-参数和环境变量的管理"><a class="markdownIt-Anchor" href="#1-参数和环境变量的管理"></a> 1. 参数和环境变量的管理</h3>
+<p>可以将部分环境变量与参数化内容单独存放于文件中，使用文件的方式来引入。这将增加可维护性，并便于管理多个环境下的配置。</p>
+<h3 id="2-代码冗余"><a class="markdownIt-Anchor" href="#2-代码冗余"></a> 2. 代码冗余</h3>
+<p>部分脚本中存在重复的逻辑，例如 sed 命令的多次调用，可以考虑用函数封装起来，降低重复和提高可读性。</p>
+<h3 id="3-错误处理"><a class="markdownIt-Anchor" href="#3-错误处理"></a> 3. 错误处理</h3>
+<p>在某些步骤中，可以添加更多的错误处理逻辑。例如，在 git 拉取、构建镜像等环节，如果遇到问题应该有明确的错误处理和报告。</p>
+<h3 id="4-密码和敏感信息管理"><a class="markdownIt-Anchor" href="#4-密码和敏感信息管理"></a> 4. 密码和敏感信息管理</h3>
+<p>在脚本中直接暴露密码和敏感信息可能存在安全风险。建议将这些信息存放在 Jenkins 的 Credentials 管理中，或者使用 Kubernetes 的 Secret 对象。</p>
+<h3 id="5-持续集成的最佳实践"><a class="markdownIt-Anchor" href="#5-持续集成的最佳实践"></a> 5. 持续集成的最佳实践</h3>
+<p>尽量遵循持续集成和持续交付的最佳实践，如将构建、测试、部署分离成不同的流程或者 Job，并通过不同的触发器来启动，这样可以增加流程的灵活性和可控性。</p>
+<h3 id="6-日志和文档"><a class="markdownIt-Anchor" href="#6-日志和文档"></a> 6. 日志和文档</h3>
+<p>在合适的地方增加更多的注释和日志，有助于后续的维护和排错。</p>
+<h3 id="7-没有测试阶段"><a class="markdownIt-Anchor" href="#7-没有测试阶段"></a> 7. 没有测试阶段</h3>
+<p>通常在代码编译后添加自动化测试阶段来保证代码质量。如果有相关测试，建议加入到流水线中。</p>
+<h3 id="8-可以使用共享库"><a class="markdownIt-Anchor" href="#8-可以使用共享库"></a> 8. 可以使用共享库</h3>
+<p>如果有很多类似的 Jenkins Job，可以考虑使用 Jenkins 的共享库功能，把一些通用的步骤或者逻辑封装到共享库中。</p>
+<h3 id="9-代码整洁"><a class="markdownIt-Anchor" href="#9-代码整洁"></a> 9. 代码整洁</h3>
+<p>部分环境的判断逻辑较为复杂，可以考虑提取到单独的函数或者脚本文件中，使主流水线代码更加简洁和清晰。</p>
+<h3 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h3>
+<p>您的 Jenkins 流水线脚本已经很完整，但通过上述的一些优化，可以让代码更加可维护、可读，还可以增强灵活性和安全性。</p>
 
       </div>
       
