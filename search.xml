@@ -3864,736 +3864,6 @@ rolebinding.rbac.authorization.k8s.io/view-test created
       </categories>
   </entry>
   <entry>
-    <title>Docker 基础概念</title>
-    <url>/3341501969/</url>
-    <content><![CDATA[<h1 id="虚拟化技术"><a class="markdownIt-Anchor" href="#虚拟化技术"></a> 虚拟化技术</h1>
-<p>虚拟化技术是一种计算机资源管理技术，它控制计算机硬件资源并将其抽象化，以统一的形式呈现给应用程序。对于用户而言，虚拟化只是定义了隐藏真实环境的方式，而要实现虚拟化，还需要具体执行虚拟化过程的程序。</p>
-<p>虚拟化技术可分为基于硬件的虚拟化和基于软件的虚拟化。</p>
-<ul>
-<li>
-<p>硬件虚拟化需要使用专门的硬件平台，与普通硬件设备存在兼容性问题，但其优点是可以更高效地利用硬件资源。</p>
-</li>
-<li>
-<p>软件虚拟化通常在应用程序和硬件资源之间建立一个 Hypervisor 层，应用程序通过该虚拟化环境中提供的调用接口来操作资源。例如，Java 虚拟机（JVM，Java Virtual Machine）通过这种方式实现了跨平台运行。</p>
-</li>
-</ul>
-<p>从对象所在的层次来看，软件虚拟化又可分为应用虚拟化（如手机模拟器、Wine 等）和平台虚拟化。常见的平台虚拟化包括以下几类：</p>
-<ul>
-<li>
-<p>完全虚拟化</p>
-<p>虚拟机模拟了完整的底层硬件环境和特权指令的执行过程，例如 VMware Workstation、VirtualBox、QEMU 等。</p>
-</li>
-<li>
-<p>硬件辅助虚拟化</p>
-<p>利用 CPU 的辅助支持（如 Intel-VT、AMD-V）来处理敏感指令，实现完全虚拟化的功能，例如 VMware、Xen、KVM 等。</p>
-</li>
-<li>
-<p>部分虚拟化</p>
-<p>只对部分硬件资源进行虚拟化，需要修改客户操作系统。</p>
-</li>
-<li>
-<p>超虚拟化（Paravirtualization）</p>
-<p>以软件形式提供部分硬件接口给客户机操作系统，例如早期的 Xen。</p>
-</li>
-<li>
-<p>操作系统级虚拟化</p>
-<p>通过创建多个虚拟的操作系统实例来隔离不同的进程，例如容器相关技术。</p>
-</li>
-</ul>
-<p>传统基于硬件层实现的虚拟化需要额外的虚拟机管理应用和虚拟机操作系统层。而 Docker 容器是在操作系统层面上实现虚拟化，直接复用本地主机的操作系统，因此被称为轻量级虚拟化。</p>
-<h1 id="云服务类型"><a class="markdownIt-Anchor" href="#云服务类型"></a> 云服务类型</h1>
-<p>提供云服务的公司总体可以归为以下几大类的一种或多种：</p>
-<ul>
-<li>
-<p>IaaS</p>
-<p>基础设施即服务（IaaS，Infrastructure as a Service）指在云端为用户提供基础设施，如虚拟机、服务器、存储、负载均衡和网络等，代表有 AWS 和阿里云。</p>
-</li>
-<li>
-<p>PaaS</p>
-<p>平台即服务（PaaS，Platform as a Service）指在云端为用户提供可执行环境、数据库、网站服务器和开发工具等，代表有 OpenShift、Google App Engine、dotCloud 等。</p>
-</li>
-<li>
-<p>SaaS</p>
-<p>软件即服务（SaaS，Software as a Service）指在云端为用户提供软件，如 CRM 系统、邮件系统、在线办公等。代表有微软 Office 365、有道、Tower 等。</p>
-</li>
-<li>
-<p>CaaS</p>
-<p>容器即服务（CaaS，Container as a Service）是虚拟云主机的升级版，使用容器替代虚拟机的服务模式。</p>
-</li>
-</ul>
-<p>IaaS、PaaS 和 SaaS 是云计算最基本的三种服务模式，客户通过云客户端来访问上述服务。</p>
-<h1 id="docker-运行基础"><a class="markdownIt-Anchor" href="#docker-运行基础"></a> Docker 运行基础</h1>
-<p>Docker 主要使用的技术有 Libcontainer、Namespaces、CGroups 和 AUFS。</p>
-<h2 id="namespaces"><a class="markdownIt-Anchor" href="#namespaces"></a> Namespaces</h2>
-<p>内核命名空间（Namespaces）是 Linux 下的资源隔离机制。它从内核层面将进程、进程组、IPC、网络、内存等资源分属于某个特定的命名空间，不同命名空间之间的资源相互隔离且不可见。</p>
-<p>Docker 使用以下 6 种类型的命名空间：</p>
-<ul>
-<li>PID Namespace：用于进程隔离，使容器具有独立的一套 PID。在宿主机上可以看到容器中的进程。</li>
-<li>NET Namespace：用于虚拟网络环境，使容器拥有自己独立的网络协议栈视图，包括网卡、IP、路由、防火墙规则和套接字等。</li>
-<li>IPC Namespace：用于隔离进程间的通信资源，使容器拥有自己的共享内存和 semaphore。</li>
-<li>MNT Namespace：用于管理挂载点，使容器看起来拥有整个文件系统，类似于 chroot。</li>
-<li>UTS Namespace：用于隔离主机名和域名，使容器拥有独立的主机名。</li>
-<li>USER Namespace：用于隔离用户和组，使容器拥有独立于宿主机的用户和组。</li>
-</ul>
-<p>被隔离在命名空间中的程序虽然无法感知命名空间外的程序的存在，但仍可以直接访问宿主机系统内核的功能和部分内核文件，只是在程序看来自己是独占系统的。</p>
-<h2 id="cgroups"><a class="markdownIt-Anchor" href="#cgroups"></a> CGroups</h2>
-<p>控制组（CGroups, Control Groups）可以限制、记录和调整进程组所使用的物理资源，例如给某个进程分配更多的 CPU 资源或限制内存使用上限。它能确保各个容器可以公平地共享主机的物理资源，并在容器内部资源使用紧张时不会影响到宿主机。</p>
-<p>控制组提供以下功能：</p>
-<ul>
-<li>资源限制（Resource Limiting）：可以为组设置一定的内存使用上限，超过限制时可能会出现 OOM（Out of Memory）。</li>
-<li>优先级（Prioritization）：通过调整组的优先级来分配 CPU 资源。</li>
-<li>资源审计（Accounting）：统计系统资源的使用情况。</li>
-<li>隔离（Isolation）：为组隔离命名空间。</li>
-<li>控制（Control）：执行挂起、恢复和重启等操作。</li>
-</ul>
-<p>Docker 中的控制组相关配置保存在 <code>/sys/fs/cgroup/</code> 目录下，该目录下有许多子目录，也称为子系统，如 <code>cpu</code>、<code>memory</code>、<code>blkio</code> 等。这些子系统是可以通过控制组进行资源限制的种类。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> /sys/fs/cgroup/
-blkio/            cpu,cpuacct/      freezer/          net_cls/          perf_event/       
-cpu/              cpuset/           hugetlb/          net_cls,net_prio/ pids/             
-cpuacct/          devices/          memory/           net_prio/         systemd/ <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>每个子系统对应的资源种类下，可以查看这些资源的具体限制方法：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> /sys/fs/cgroup/cpu/
-cgroup.clone_children  cpuacct.usage          cpu.rt_runtime_us      system.slice/
-cgroup.event_control   cpuacct.usage_percpu   cpu.shares             tasks
-cgroup.procs           cpu.cfs_period_us      cpu.stat               user.slice/
-cgroup.sane_behavior   cpu.cfs_quota_us       notify_on_release      
-cpuacct.stat           cpu.rt_period_us       release_agent  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>在 <code>cpu</code> 子系统下创建一个目录进行测试：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> /sys/fs/cgroup/cpu/mytest
-<span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> /sys/fs/cgroup/cpu/mytest
-cgroup.clone_children  cpuacct.stat          cpu.cfs_period_us  cpu.rt_runtime_us  notify_on_release
-cgroup.event_control   cpuacct.usage         cpu.cfs_quota_us   cpu.shares         tasks
-cgroup.procs           cpuacct.usage_percpu  cpu.rt_period_us   cpu.stat<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以看到目录中自动生成了一些资源限制文件，该目录也被称为一个控制组。</p>
-<p>接下来，在后台执行一个会占满 CPU 的脚本：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token keyword">while</span> <span class="token builtin class-name">:</span> <span class="token punctuation">;</span> <span class="token keyword">do</span> <span class="token builtin class-name">:</span> <span class="token punctuation">;</span> <span class="token keyword">done</span> <span class="token operator">&amp;</span>
-<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token number">4195</span>
-<span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">top</span>
-   PID <span class="token environment constant">USER</span>      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND             
-  <span class="token number">4195</span> root      <span class="token number">20</span>   <span class="token number">0</span>  <span class="token number">116208</span>   <span class="token number">1260</span>    <span class="token number">152</span> R  <span class="token number">92.3</span>  <span class="token number">0.0</span>   <span class="token number">0</span>:31.78 <span class="token function">bash</span>  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>此时系统已经负载满，因为默认情况下 CPU 的 quota（配额）没有任何限制，而 CPU 的 period（周期）默认为 100ms。它们组合起来用来限制进程可以分配到的 CPU 时间：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /sys/fs/cgroup/cpu/mytest/cpu.cfs_quota_us 
-<span class="token parameter variable">-1</span>
-<span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /sys/fs/cgroup/cpu/mytest/cpu.cfs_period_us 
-<span class="token number">100000</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>手动将 <code>cpu.cfs_quota_us</code> 参数改为 20000（20ms）。这意味着在每个 100ms 的时间内，被该控制组限制的进程只能使用 20ms 的 CPU 时间，相当于 20% 的 CPU 使用率：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token number">20000</span> <span class="token operator">></span> /sys/fs/cgroup/cpu/mytest/cpu.cfs_quota_us <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>接下来，将被限制的进程的 PID 写入 <code>tasks</code> 文件来生效：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token number">4195</span> <span class="token operator">></span> /sys/fs/cgroup/cpu/mytest/tasks
-<span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">top</span>
-   PID <span class="token environment constant">USER</span>      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND             
-  <span class="token number">4195</span> root      <span class="token number">20</span>   <span class="token number">0</span>  <span class="token number">116208</span>   <span class="token number">1260</span>    <span class="token number">152</span> R  <span class="token number">20.0</span>  <span class="token number">0.0</span>   <span class="token number">9</span>:06.83 <span class="token function">bash</span>  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>此时再次使用 <code>top</code> 命令查看，可以看到进程的 CPU 使用率被限制在预期的范围内。</p>
-<p>简而言之，控制组就是一个子系统目录加上一组资源限制文件的组合。Docker 在每个子系统下为每个容器创建一个控制组（即创建新目录），然后在启动容器进程后，将进程的 PID 写入相应控制组的 <code>tasks</code> 文件中，以实现资源的限制：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> run <span class="token parameter variable">-it</span> --cpu-period<span class="token operator">=</span><span class="token number">100000</span> --cpu-quota<span class="token operator">=</span><span class="token number">20000</span> ubuntu /bin/bash
-<span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">ps</span> aux <span class="token operator">|</span> <span class="token function">grep</span> ubuntu
-root       <span class="token number">4297</span>  <span class="token number">0.0</span>  <span class="token number">0.5</span> <span class="token number">1359472</span> <span class="token number">46268</span> pts/1   Sl+  <span class="token number">14</span>:41   <span class="token number">0</span>:00 <span class="token function">docker</span> run <span class="token parameter variable">-it</span> --cpu-period<span class="token operator">=</span><span class="token number">100000</span> --cpu-quota<span class="token operator">=</span><span class="token number">20000</span> ubuntu /bin/bash
-<span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /sys/fs/cgroup/cpu/docker/9c8d7b7f5f71198e07/cpu.cfs_period_us 
-<span class="token number">100000</span>
-<span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /sys/fs/cgroup/cpu/docker/9c8d7b7f5f71198e07/cpu.cfs_quota_us 
-<span class="token number">20000</span>
-<span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /sys/fs/cgroup/cpu/docker/9c8d7b7f5f71198e07/tasks 
-<span class="token number">4379</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="lxc"><a class="markdownIt-Anchor" href="#lxc"></a> LXC</h2>
-<p>Linux 容器 (LXC, Linux Containers) 就是基于 Linux 内核通过调用 CGroups 和 Namespaces 来实现容器轻量级虚拟化的技术。同时，LXC 也是一组面向 Linux 内核容器的用户态 API 接口。用户通过 LXC 提供的功能可以创建一套完整且互相隔离的虚拟应用运行环境。</p>
-<p>在 LXC 的实现中，运行在容器中的程序访问的是真实物理机系统，与通过虚拟机实现的虚拟化比，消除了 Hypervisor 层，大大提高了运行效率。</p>
-<h2 id="libcontainer"><a class="markdownIt-Anchor" href="#libcontainer"></a> Libcontainer</h2>
-<p>Docker 采用 libcontainer 作为默认容器，取代了之前的 LXC。libcontainer 的隔离性主要是内核的命名空间来实现的，具体有 pid、net、ipc、mnt 和 uts 等命名空间，它们将容器的进程、网络、消息、文件系统和主机名进行隔离。</p>
-<h2 id="ufs"><a class="markdownIt-Anchor" href="#ufs"></a> UFS</h2>
-<p>UnionFS（Union File System）是一个堆栈式的联合文件系统，能够把多个目录挂载成同一个目录的文件系统。</p>
-<h1 id="docker-应用范围"><a class="markdownIt-Anchor" href="#docker-应用范围"></a> Docker 应用范围</h1>
-<p>Docker 是基于 Go 语言实现的容器项目，由 dotCloud 于 2013 年正式开源，2015 年开始大规模应用。</p>
-<h2 id="云平台"><a class="markdownIt-Anchor" href="#云平台"></a> 云平台</h2>
-<p>目前，Docker 主要应用于云平台。在 Docker 出现之前，各个云平台之间存在不兼容性，而 Docker 则屏蔽了硬件层的差异，提供了统一的用户应用层。因此，企业产品可以自由迁移至各种云平台。</p>
-<h2 id="devops"><a class="markdownIt-Anchor" href="#devops"></a> Devops</h2>
-<p>Docker 的另一个应用领域是 DevOps。只需使用相同的数据镜像，就不需要考虑环境问题，减少了代码运行的差异，使开发团队能够专注于产品开发，而无需关注流程。</p>
-<p>Docker 的标准化规范弥补了开发、业务和运维之间的需求差异，可以无缝地将产品在开发、测试和生产环境之间自由移动。</p>
-<h1 id="docker-优缺点"><a class="markdownIt-Anchor" href="#docker-优缺点"></a> Docker 优缺点</h1>
-<p>总的来看，Docker 的缺点暂不构成问题，可以放心使用。</p>
-<h2 id="优点"><a class="markdownIt-Anchor" href="#优点"></a> 优点</h2>
-<p>使用 Docker 的优点有：</p>
-<ul>
-<li>
-<p><strong>高资源利用率</strong></p>
-<p>传统虚拟机的硬件资源独立不共享，而 Docker 中所有容器共享同一个系统内核和硬件资源，对资源的利用率比虚拟机高得多。在 Docker 容器中，CPU 的损耗为 0%，磁盘 IO 的损耗小于 5%，网络在使用桥接模式时损耗为 15%。</p>
-</li>
-<li>
-<p><strong>支持跨节点部署</strong></p>
-<p>借助 Docker 定义的标准镜像数据格式，可以在不同操作系统和物理硬件环境中使用。</p>
-</li>
-<li>
-<p><strong>版本可控，组件可复用</strong></p>
-<p>Docker 利用 AUFS 文件系统的特性，使得镜像与镜像之间可以互相借用组合，产生不同的镜像。并借助标签功能对镜像进行标注，实现版本控制。</p>
-</li>
-<li>
-<p><strong>共享镜像</strong></p>
-<p>Docker 作为开源软件，构建出的镜像可以自由分发和共享（主要通过 Docker Hub）。</p>
-</li>
-<li>
-<p><strong>轻量级，易维护</strong></p>
-<p>Docker 在 Linux 系统中表现为一个普通的进程，因此管理非常容易。</p>
-</li>
-</ul>
-<h2 id="缺点"><a class="markdownIt-Anchor" href="#缺点"></a> 缺点</h2>
-<p>Docker 的缺点有：</p>
-<ul>
-<li>
-<p><strong>宿主资源没有完全做到隔离</strong></p>
-<p>虽然容器使用的系统资源相互隔离，但仍有一些内核资源未被隔离开。例如 <code>/proc</code>、<code>/sys</code> 这些目录以及 SELinux、syslog 这些内核功能。因此，容器与宿主机共用内核版本，容器内无法升级内核，对内核版本有要求的应用可能与 Docker 不兼容。</p>
-</li>
-<li>
-<p><strong>Go 语言尚不成熟</strong></p>
-<p>由于 Docker 全部采用 Go 语言编写，而 Go 语言还比较年轻，难保不会发生大的变动。这可能对 Docker 产生连带影响。</p>
-</li>
-<li>
-<p><strong>控制权问题</strong></p>
-<p>虽然 Docker 现在是开源的，但实际上被一家公司所控制，并不像其他大型开源项目那样由公共基金会管理。因此，后续可能变为收费闭源项目。</p>
-</li>
-</ul>
-<h1 id="docker-构架"><a class="markdownIt-Anchor" href="#docker-构架"></a> Docker 构架</h1>
-<p>Docker 是一个客户端/服务器 (C/S) 架构的程序。客户端只需要通过 Socket 向服务器或守护进程（Docker 引擎）发送请求，服务器或守护进程将完成所有工作并返回结果。</p>
-<p>Docker 提供了一个命令行工具 <code>docker</code> 以及一套 RESTful API 来与守护进程交互。用户可以在一台主机上运行 Docker 守护进程和客户端，也可以从本地 Docker 客户端连接到运行在另一台主机上的远程 Docker 守护进程。</p>
-<h2 id="服务端"><a class="markdownIt-Anchor" href="#服务端"></a> 服务端</h2>
-<p>Docker 服务端一般在宿主机后台运行，<code>dockerd</code> 作为服务端接收来自客户端的请求，并通过 <code>containerd</code> 具体处理与容器相关的请求。服务端主要包括四个组件：</p>
-<ul>
-<li>
-<p><code>dockerd</code></p>
-<p>为客户端提供 RESTful API，响应来自客户端的请求。采用模块化的架构，通过专门的 Engine 模块来分发管理各个来自客户端的任务。</p>
-</li>
-<li>
-<p><code>docker-proxy</code></p>
-<p><code>dockerd</code> 的子进程，配置容器端口映射功能。</p>
-</li>
-<li>
-<p><code>containerd</code></p>
-<p><code>dockerd</code> 的子进程，提供 gRPC 接口响应来自 <code>dockerd</code> 的请求，对底层管理 <code>runC</code> 镜像和容器环境。</p>
-</li>
-<li>
-<p><code>containerd-shim</code></p>
-<p><code>containerd</code> 的子进程，为 <code>runC</code> 容器提供支持，同时作为容器内进程的根进程。</p>
-</li>
-</ul>
-<h2 id="客户端"><a class="markdownIt-Anchor" href="#客户端"></a> 客户端</h2>
-<p>用户使用 Docker 可执行命令即为客户端程序，<code>docker</code> 程序能将命令转为 API 请求再发送到服务端。客户端在命令执行结束后会立即退出。</p>
-<p>可以通过 <code>-H</code> 参数显式指定服务端地址，例如：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> <span class="token parameter variable">-H</span> tcp:192.168.2.241:5999 info<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h1 id="docker-储存"><a class="markdownIt-Anchor" href="#docker-储存"></a> Docker 储存</h1>
-<p>Docker 支持的存储文件系统如下：</p>
-<ul>
-<li>AUFS：最早支持的文件系统，对 Debian/Ubuntu 支持度好。</li>
-<li>Btrfs：参考 ZFS 等特性设计的文件系统，试图用来取代 Device Mapper。</li>
-<li>Device Mapper：RHEL 用来支持 Docker 开发的文件系统。</li>
-<li>Overlay：类似 AUFS 的分层文件系统，性能更好。</li>
-<li>Overlay 2：原生支持 128 层，效率比 Overlay 高。</li>
-<li>VFS：基于普通文件系统（ext、nfs 等）的中间层抽象。</li>
-<li>ZFS：为 Solaris 上专用的写时文件系统，在 Linux 上可以使用 ZFS on Linux。</li>
-</ul>
-<p>它们都能实现分层的架构，同时又有各自的特性。Docker 安装时会根据当前系统配置选择默认最适合的驱动。</p>
-<h2 id="aufs"><a class="markdownIt-Anchor" href="#aufs"></a> AUFS</h2>
-<p>AUFS（Another UnionFS 的简称）是对 UnionFS 的补充。随着 AUFS 的发展，它更名为 Advanced Multi Layered Unification Filesystem（高级多层次统一文件系统）。简单来说，AUFS 可以将分布在不同位置的目录挂载到同一个虚拟文件系统中。</p>
-<p>Docker 参考 Linux 启动过程，首先将一个只读的 bootfs（虚拟文件系统）挂载到容器文件系统中，然后将只读的 rootfs（根目录文件系统）添加到 bootfs 之上。之后每次挂载一个只读的文件层（FS 文件层），将用户所需的文件内容挂载到 rootfs 之上。</p>
-<p>这些文件层就是堆栈式文件系统中所保存的数据，在 AUFS 中，每个文件层被称为一个分支，整个文件系统称为联合文件系统。而 AUFS 则是用来管理和使用这些文件层的文件系统。</p>
-<p>Docker 利用 AUFS 加载完最高层后，在顶部再添加一个具有读写权限的文件系统层。容器内部的应用对当前文件系统的所有写操作都会保存在这个文件系统层中。当使用 commit 命令后，Docker 将会将该文件系统层中的数据作为单独的一个文件层保存在 AUFS 中。</p>
-<p>镜像（Image）可以理解为特定文件系统层的集合。从镜像启动容器（Container）时，Docker 会依次加载基础镜像（Base Image）及其上层镜像。通过将镜像划分为 AUFS 的文件层，使得所有容器可以共享文件层而不会发生写冲突。</p>
-<p>当使用 AUFS 作为存储驱动时，镜像和容器都保存在宿主机的 <code>/var/lib/docker/aufs</code> 目录下：</p>
-<ul>
-<li>/var/lib/docker/aufs/diff：镜像层数据保存目录。</li>
-<li>/var/lib/docker/aufs/layers：镜像层的元数据文件，其中的内容记录了该层之下所有镜像层的名称。</li>
-<li>/var/lib/docker/aufs/mnt：容器运行时容器中的文件系统挂载目录。</li>
-</ul>
-<h2 id="device-mapper"><a class="markdownIt-Anchor" href="#device-mapper"></a> Device Mapper</h2>
-<p>Device Mapper 是 Docker 中支持的第二种存储驱动，在 Red Hat 发行版中存在。其特点是对块设备进行操作，而不是整个文件，在宿主机上很难区分镜像层和容器层。</p>
-<p>Device Mapper 使用的数据块大小为 64KB，在大量小数据写操作时性能不如 AUFS。</p>
-<p>创建镜像的流程与 AUFS 有一些不同：</p>
-<ol>
-<li>创建一个 thin pool，该 pool 可以创建在块设备上，也可以创建在 sparse 文件上。</li>
-<li>创建一个按需分配的基础设备，并在该设备上创建文件系统。</li>
-<li>在创建镜像时，会在基础设备上进行快照，每创建一个镜像层，就会进行一次快照。在快照创建时不会占用空间，只有在内容发生变化时才会在 thin pool 中分配存储空间来保存数据。</li>
-</ol>
-<p>在容器中读取数据的流程如下：</p>
-<ol>
-<li>容器中的程序发起读请求，要访问指定地址的数据块。容器层只是镜像层的一个快照，它保存了数据块映射表，而不保存实际的数据。通过指针，它指向镜像层中真正的数据块。</li>
-<li>程序通过映射表读取对应镜像层中的数据块，并将其复制到容器的内存区域。</li>
-</ol>
-<p>在容器中修改数据的流程与 AUFS 类似，不同之处在于 AUFS 会将整个文件复制到容器层，而 Device Mapper 通过定位需要修改的数据块并分配新的存储区域，将需要修改的数据块复制到新分配的存储区域，然后由程序进行更新。</p>
-<h2 id="btrfs"><a class="markdownIt-Anchor" href="#btrfs"></a> Btrfs</h2>
-<p>Docker 使用 Btrfs 中的子卷和快照技术来管理镜像和容器。Btrfs 中的子卷类似于 UNIX 文件系统，每个子卷都有自己的目录结构。</p>
-<p>Btrfs 中的快照会复制整个子卷，并且快照是可读写的。快照保存在子卷中，也可以对快照进行递归的快照操作。</p>
-<p>Btrfs 使用写时复制技术为子卷和快照分配底层存储空间，块大小通常为 1 GB。</p>
-<p>Btrfs 将镜像的基础层作为一个子卷进行保存，其他镜像层和容器层则以快照的形式保存。</p>
-<p>Btrfs 中的读写操作与 Device Mapper 类似，但是工作在文件层而不是数据块层。在修改文件时，Btrfs 不会直接修改原文件，而是在容器层中分配新的存储空间来保存修改后的数据，然后在元数据中更新数据的指向地址。</p>
-<h2 id="zfs"><a class="markdownIt-Anchor" href="#zfs"></a> ZFS</h2>
-<p>在 Docker 中使用了三种 ZFS DataSet，包括文件系统、快照和克隆。其中，快照是只读的，克隆是从快照上创建而来，可读写。</p>
-<p>镜像的基础层是一个 ZFS 文件系统，其他镜像层是一个 ZFS 克隆。在启动容器后，会在顶部增加一个读写层。</p>
-<h2 id="overlayoverlay2"><a class="markdownIt-Anchor" href="#overlayoverlay2"></a> Overlay/Overlay2</h2>
-<p>OverlayFS 是一种联合文件系统，类似于 AUFS，使用两个目录进行分层，分别保存镜像层（lowerdir）和容器层（upperdir）。</p>
-<p>在运行容器时，Overlay 会将所有镜像层对应的目录组合起来（merged/diff），并在顶层添加一个容器层。而 Overlay2 原生支持多个 lowerdir，因此在保存多层镜像时更具优势。</p>
-<p>在 Overlay 中读取文件时，优先从容器层读取，如果容器层没有，则从镜像层读取。</p>
-<p>在 Overlay 中修改文件时，会将文件从镜像层复制到容器层，并将所有的修改保存在容器层中。</p>
-<p>在 Overlay 中删除文件时，会在容器层中新建一个 without（白障）文件，用于隐藏镜像层中的目标文件。删除目录时，会在容器层中新建一个 opaque 目录，用于隐藏镜像层中的目标目录。镜像层中的文件和目录不会被直接删除。</p>
-<h1 id="docker-网络"><a class="markdownIt-Anchor" href="#docker-网络"></a> Docker 网络</h1>
-<p>Docker 的本地网络实现利用了 Linux 上的网络命名空间和虚拟网络设备。</p>
-<p>Docker 中的网络接口默认都是虚拟接口。它通过在内核中进行数据复制来实现虚拟接口之间的数据转发，发送接口的发送缓存中的数据包直接被复制到接收接口缓存中，而无需通过外部物理网络设备进行交换。</p>
-<h2 id="网络模型"><a class="markdownIt-Anchor" href="#网络模型"></a> 网络模型</h2>
-<p>libnetwork 中的容器网络模型（CNM，Container Networking Model）非常简洁和抽象，可以让其上层使用网络功能的容器最大程度地忽略底层具体实现。</p>
-<p>容器网络模型包括三种元素：</p>
-<ul>
-<li>沙盒（Sandbox）：代表容器的网络栈，包括网卡、路由和 DNS 设置。Linux 网络命名空间是沙盒的标准实现。沙盒可以包含来自不同网络的接入点。</li>
-<li>接入点（Endpoint）：作用是将沙盒接入网络。代表网络上可以挂载容器的接口，例如 veth pair，会分配 IP 地址。</li>
-<li>网络（Network）：可以连通多个接入点的一个子网，例如 Bridge 或 VLAN 等。</li>
-</ul>
-<p>对于 CNM 的容器管理系统来说，具体底层网络如何实现，不同子网如何隔离，都不关心。只要插件能提供网络和接入点，剩下的都是插件驱动的工作，这样就解耦了容器和网络功能。</p>
-<h1 id="docker-镜像"><a class="markdownIt-Anchor" href="#docker-镜像"></a> Docker 镜像</h1>
-<p>镜像类似于虚拟机的镜像，可以将其理解为一个只读模板，保存着容器需要的环境和应用的执行代码。</p>
-<p>镜像是创建 Docker 容器的基础，不同的镜像对应着不同的应用程序或服务。</p>
-<h2 id="镜像名称"><a class="markdownIt-Anchor" href="#镜像名称"></a> 镜像名称</h2>
-<p>镜像名称的格式如下：<code>[命名空间|仓库地址]/镜像名:标签</code></p>
-<ul>
-<li>
-<p>命名空间（Namespace）</p>
-<p>用于区别构建镜像的组织或个人，一般为 Docker Hub 上的用户名。没有命名空间的镜像代表由官方提供，由可靠且权威的第三方组织或机构维护的官方镜像。</p>
-</li>
-<li>
-<p>仓库地址（URL）</p>
-<p>如果镜像放置在第三方或私有仓库中，命名空间部分使用仓库 URL 路径来命名。</p>
-</li>
-<li>
-<p>镜像名（Repository）</p>
-<p>通常采用镜像中所包含的应用程序或服务的名称作为镜像名。</p>
-</li>
-<li>
-<p>标签（Tag）</p>
-<p>习惯采用镜像包含的应用程序或服务的版本作为镜像标签。</p>
-</li>
-</ul>
-<h2 id="镜像分层"><a class="markdownIt-Anchor" href="#镜像分层"></a> 镜像分层</h2>
-<p>Docker 的镜像是一个多层结构，每一层都在原有层基础上进行改动，这称为镜像分层框架（image-layering framework）：</p>
-<ul>
-<li>镜像最底层为启动文件系统（bootfs）镜像。</li>
-<li>往上一层是根镜像（rootfs），通常包含操作系统。它不包含内核，因此可以非常小。</li>
-<li>用户镜像构建于根镜像之上，可以由多个层组成。</li>
-<li>再往上一层是初始化（init）层，存放一些定制化文件，如 /etc/hosts 和 /etc/resolv.conf。</li>
-<li>最后是用户可读写的操作层。</li>
-</ul>
-<p>类似于 Git 的原理，每一层镜像都可以视为一个提交，并拥有独立的 ID，最顶层的 ID 被视为镜像 ID（Image ID）。镜像 ID 使用 64 个十六进制字符串（256 比特）来表示。当不同的镜像包含相同的层时，本地仅保留一份相同内容的副本。</p>
-<p>当上层和下层有相同的文件和配置时，上层会覆盖下层，以上层的数据为准。用户看到的是一个叠加之后的文件系统。</p>
-<h2 id="写时复制"><a class="markdownIt-Anchor" href="#写时复制"></a> 写时复制</h2>
-<p>写时复制指的是在复制某个数组或对象时，并不立即进行复制，而是先进行一些标记动作，只有在需要修改复制的数组或对象时，才真正复制出该变量的副本。</p>
-<p>在 Docker 中，当通过镜像运行容器时，并不立即将镜像内容复制到沙盒环境，而是直接在镜像的基础上建立沙盒环境。容器运行的沙盒环境是位于镜像之上的一层临时可读写的镜像层，也被称为 thin 类型容器层。镜像层以只读方式堆叠在容器层的下方。</p>
-<p>只有在发生文件修改时，才会将原始镜像中需要修改的文件复制到容器层中，并直接保存在容器层中。在 AUFS 文件系统中，删除文件是通过在容器层中生成一个空白文件来替代镜像层对应文件的方式，实现逻辑上的删除操作。</p>
-<h1 id="docker-容器"><a class="markdownIt-Anchor" href="#docker-容器"></a> Docker 容器</h1>
-<p>容器是从镜像创建的应用运行实例，包含独立运行的一个或一组应用，以及运行环境。可以在容器中装入任何应用，所有应用的运行方式都一样，可以启动、开始、停止、删除等。同时可以在任何环境中运行容器，容器之间互相隔离。</p>
-<p>从操作系统角度看，容器是运行在操作系统上的一个特殊进程，只不过加入了对资源的隔离和限制。在 Windows 和 Mac 上的 Docker 实现基于虚拟化技术实现，和 Linux 容器不同。</p>
-<h2 id="容器设计"><a class="markdownIt-Anchor" href="#容器设计"></a> 容器设计</h2>
-<p>虽然容器中能运行多个进程或多个不同的程序，但容器只会绑定一个进程。所以容器设计上应该以一个应用程序为主体，其他程序作为主体程序的支援。</p>
-<p>这样容器启动时，主体程序也会被启动，Docker 会监视这个程序的主进程。进程退出时，容器也会停止运行。同样通过命令停止容器运行时，Docker 会发送停止信号给主体程序，让程序结束。</p>
-<h2 id="启动流程"><a class="markdownIt-Anchor" href="#启动流程"></a> 启动流程</h2>
-<p>使用 <code>docker run</code> 命令创建启动容器的流程如下：</p>
-<ol>
-<li>执行 <code>docker run</code> 命令后，Docker 会在本地搜索所需镜像，如果没找到则从远程仓库中搜索并下载到本地，如果找到了，直接使用本地镜像。</li>
-<li>Docker 使用指定镜像创建一个新容器并启动。启动后在只读镜像文件层上挂载一层可读写的容器层，用来记录改变的数据。</li>
-<li>Docker 为容器分配一个虚拟网络接口，并通过网桥的方式将该网络接口桥接到宿主机上去。然后从网桥地址池取出一个 IP 地址分配给容器虚拟网络接口。</li>
-<li>Docker 在新容器中运行指定的命令或程序，执行完毕后被自动终止。</li>
-</ol>
-<h1 id="docker-仓库"><a class="markdownIt-Anchor" href="#docker-仓库"></a> Docker 仓库</h1>
-<p>Docker 仓库是集中存放镜像文件的场所。</p>
-<p>仓库注册服务器（Registry）是存放仓库的地方，往往有多个仓库地址，用来存放不同类型的资源。</p>
-<h2 id="仓库分类"><a class="markdownIt-Anchor" href="#仓库分类"></a> 仓库分类</h2>
-<p>根据所在位置，仓库可以分为本地仓库和远程仓库。</p>
-<p>根据储存镜像公开分享与否，仓库可以分为公开仓库（Public）和私有仓库（Private）。</p>
-<h2 id="仓库组成"><a class="markdownIt-Anchor" href="#仓库组成"></a> 仓库组成</h2>
-<p>镜像仓库主要由两部分组成：</p>
-<ul>
-<li>镜像管理系统为镜像仓库提供类似代码库式的镜像存取和管理方式。</li>
-<li>用户系统为镜像仓库中的镜像管理操作的授权提供支持。</li>
-</ul>
-<h2 id="仓库角色"><a class="markdownIt-Anchor" href="#仓库角色"></a> 仓库角色</h2>
-<p>一般网络上的镜像仓库包含三个角色：</p>
-<ul>
-<li>Index（索引）：负责维护用户账号、镜像校验及公共命名空间等信息。</li>
-<li>Registry（库）：镜像和图标的仓库。</li>
-<li>Client（客户端）：用户通过客户端与仓库进行通信、鉴权、推送和拉取。</li>
-</ul>
-<h2 id="下载流程"><a class="markdownIt-Anchor" href="#下载流程"></a> 下载流程</h2>
-<p>以 Docker Hub 为例，下载镜像的流程如下：</p>
-<ol>
-<li>客户端向 Index 发送下载某个镜像的请求。</li>
-<li>Index 返回三个信息：镜像位置、镜像所有层的校验信息、授权令牌。</li>
-<li>用户使用授权 token 向目标 Registry 发出请求。</li>
-<li>Registry 向 Index 核实 token 是否授权。</li>
-<li>Index 返回授权验证结果，如果合法，则通过下载请求。</li>
-</ol>
-<h2 id="上传流程"><a class="markdownIt-Anchor" href="#上传流程"></a> 上传流程</h2>
-<p>以 Docker Hub 为例，上传镜像的流程如下：</p>
-<ol>
-<li>用户发送带有证书的请求到 Index，要求分配库名。</li>
-<li>在成功认证并确定命名空间和库名都能分配后，Index 返回一个临时 token。</li>
-<li>镜像带着临时 token 向 Registry 发起推送请求。</li>
-<li>Registry 向 Index 检验该 token 的有效性，认证成功后开始读取客户端的数据流。</li>
-<li>Index 更新此次镜像的校验信息。</li>
-</ol>
-<h1 id="相关链接"><a class="markdownIt-Anchor" href="#相关链接"></a> 相关链接</h1>
-<p>和 Docker 相关的资源网站：</p>
-<ul>
-<li><a href="https://www.docker.com/">Docker 官网</a></li>
-<li><a href="https://docs.docker.com/">Docker 官方文档</a></li>
-<li><a href="https://hub.docker.com/">Docker Hub</a></li>
-<li><a href="https://github.com/docker">Docker 源码</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>Docker</category>
-        <category>1.基本操作</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>K8s 系统介绍</title>
-    <url>/376871778/</url>
-    <content><![CDATA[<h1 id="系统构架简介"><a class="markdownIt-Anchor" href="#系统构架简介"></a> 系统构架简介</h1>
-<p>系统架构根据不同的设计原则和需求，可以分为多种类型。</p>
-<h2 id="单体应用"><a class="markdownIt-Anchor" href="#单体应用"></a> 单体应用</h2>
-<p>单体应用由很多个组件组成，这些组件紧密地耦合在一起，由于它们在同一个操作系统进程中运行，所以在开发、部署和管理时必须以同一个实体进行。</p>
-<p>对单体应用来说，即使是某个组件的一个小修改，都需要重新部署整个应用。组件之间缺乏严格边界，互相依赖，系统复杂度逐渐提升。</p>
-<p>运行一个单体应用，通常需要一台能为整个应用提供足够资源的高性能服务器。为了应对不断增长的系统负荷，需要垂直扩展，对服务器硬件进行升级，或者增加更多服务器进行水平扩展。垂直扩展通常会遇到性能瓶颈，水平扩展可能需要对原本应用程序代码进行大量改动。</p>
-<h2 id="微服务"><a class="markdownIt-Anchor" href="#微服务"></a> 微服务</h2>
-<p>微服务架构旨在解决大型单体应用程序臃肿的问题，将单体应用拆分为小而可独立部署的微服务组件。每个微服务都以独立的进程运行，并通过简单且定义良好的 API 接口与其他微服务进行通信。</p>
-<p>服务器之间使用类似 HTTP 的同步协议或者像 AMQP 这样的异步协议进行通信。使用这些标准化协议使得微服务可以使用任意开发语言进行实现。只要提供相对稳定的 API，对一个微服务进行修改不会对其他微服务产生影响。</p>
-<p>使用微服务的另一个好处是可以根据需要针对单个组件进行水平扩展，对无法水平扩展的组件进行垂直扩展，灵活组合以适应不同的环境。</p>
-<p>然而，微服务也存在一些缺点。随着组件数量的增加，组件部署和依赖的组合数也在增加，配置工作变得冗杂且容易出错。由于微服务涉及多个进程和服务器，调试代码和定位异常调用变得更加困难。</p>
-<h2 id="k8s-系统"><a class="markdownIt-Anchor" href="#k8s-系统"></a> K8s 系统</h2>
-<p>Kubernetes 源于谷歌内部的 Borg，是一个面向应用的容器集群部署和管理系统。Kubernetes 的目标是消除管理计算、网络和存储等基础设施的负担，通过对底层基础设施进行抽象，简化应用的开发、部署以及对开发和运维团队的管理。K8s 还提供基础平台，用于构建定制化的工作流程和高级的自动化任务。</p>
-<p>从运维角度来看，只需在服务器上部署 K8s，就可以运行应用程序，无需安装其他依赖服务。Kubernetes 具有以下几个重要特性：</p>
-<ul>
-<li>
-<p>自动装箱</p>
-<p>构建于容器之上，基于资源依赖和其他约束自动完成容器部署，不影响容器的可用性。通过调度机制，将关键和非关键应用的工作负载混合在同一节点上，提高资源利用率。在 K8s 中，所有工作节点被公开为一个部署平台，开发人员无需了解组成集群的服务器。如果需要将程序运行在特定类型的节点上，可以通过节点标签进行选择。</p>
-</li>
-<li>
-<p>健康检查和自我修复</p>
-<p>K8s 监控应用程序组件和运行节点，支持容器故障后的自动重启、节点故障后的重新调度容器、健康状态检查失败后的重新创建等自愈机制。</p>
-</li>
-<li>
-<p>水平扩展</p>
-<p>支持通过简单的命令手动进行水平扩展，并且基于硬件资源负载率的自动水平扩展机制。如果 K8s 运行在云基础设施上，可以根据程序使用的资源情况和需求自动添加或缩减节点。</p>
-</li>
-<li>
-<p>服务发现和负载均衡</p>
-<p>K8s 通过 KubeDNS（或 CoreDNS）为系统内置了服务发现功能。它为每个服务配置了 DNS 名称，允许集群内的客户端直接使用名称进行访问，而服务则通过 iptables 或 ipvs 内置了负载均衡机制。</p>
-</li>
-<li>
-<p>自动发布和回滚</p>
-<p>K8s 支持灰度更新应用程序或配置信息。它确保实例不会同时停止，一旦发生故障，会立即自动执行回滚操作。</p>
-</li>
-<li>
-<p>密钥和配置管理</p>
-<p>K8s 的 ConfigMap 实现了配置数据与 Docker 镜像的分离，无需重构镜像即可对配置进行更改。此外，对于敏感数据如密码和密钥等，有专门的 Secret 对象用于存放。</p>
-</li>
-<li>
-<p>存储编排</p>
-<p>K8s 支持按需自动挂载不同类型的存储系统到 Pod 对象中，包括本地存储、云存储和网络存储系统。</p>
-</li>
-<li>
-<p>批量处理执行</p>
-<p>除了服务型应用，K8s 还支持批处理作业和持续集成。它提供了丰富的工具和功能，用于管理和执行大规模的数据处理和计算任务。</p>
-</li>
-</ul>
-<p>通过这些特性和功能，Kubernetes 提供了一个强大而灵活的容器管理平台，为应用程序的部署、扩展、监控和管理提供了全面的解决方案。无论是在本地环境还是云环境中，K8s 都能够有效地管理和调度容器化的应用程序，提供稳定可靠的服务。</p>
-<h1 id="资源对象-节点和组件"><a class="markdownIt-Anchor" href="#资源对象-节点和组件"></a> 资源对象、节点和组件</h1>
-<p>在 Kubernetes（K8s）中，节点和组件共同协作，使得 Kubernetes 能够实现容器化应用程序的高效部署、自动伸缩和弹性管理。</p>
-<h2 id="资源对象"><a class="markdownIt-Anchor" href="#资源对象"></a> 资源对象</h2>
-<p>K8s 中的基本概念和术语大多围绕着资源对象（Resource Object）展开。资源对象可分为两类：</p>
-<ul>
-<li>某种资源的对象，例如 Node、Pod、Service、Volume 等。</li>
-<li>与资源对象相关的事物和动作，例如 Label、Namespace、PVC、HPA 等。</li>
-</ul>
-<p>资源对象一般包括几个通用属性：</p>
-<ul>
-<li>版本：包括此对象所属的资源组信息，不同版本可能有不同的资源对象属性。</li>
-<li>类别：定义资源对象的类型。</li>
-<li>名称：资源对象的名称必须唯一。</li>
-<li>标签：用于标识资源对象的特征类别，可以通过标签对不同的资源对象进行筛选和操作。</li>
-<li>注解：一种特殊的标签，常用于自定义扩展资源对象的属性。</li>
-</ul>
-<h2 id="节点"><a class="markdownIt-Anchor" href="#节点"></a> 节点</h2>
-<p>节点是集群的工作单元，用于运行容器化应用程序。每个节点都是一个独立的机器，可以是物理服务器或虚拟机。节点上安装了容器运行时环境，例如 Docker、containerd 等，以便运行和管理容器。</p>
-<p>K8s 集群通常包含多个节点，它们协同工作以提供高可用性和可扩展性。以下是两种节点类型：</p>
-<ul>
-<li>
-<p>主节点（Master）： 集群的控制节点，负责控制和管理整个集群系统。主节点承载任务如为用户暴露 API、跟踪其他服务器的健康状态、以最优的方式调度工作负载以及编排其他组件之间的通信等。可以运行多个主节点以提高可用性。</p>
-</li>
-<li>
-<p>工作节点（Node）： 工作节点负责运行用户实际部署的应用，由主节点进行管理。它接收来自主节点的工作指令，并根据指令创建或销毁 Pod 对象，以及调整网络规划以合理地路由和转发流量。</p>
-</li>
-</ul>
-<p>节点可以在运行期间动态加入到集群中，K8s 将所有节点的资源集结在一起，形成一台超级服务器。当用户将应用部署在集群上时，主节点会使用调度算法将其自动指派给某个特定的工作节点运行。</p>
-<p>主节点和工作节点中的组件联系如下图所示：</p>
-<p><img data-src="../../../images/%E8%8A%82%E7%82%B9%E7%BB%84%E4%BB%B6.jpg" alt="节点组件" /></p>
-<h3 id="主节点"><a class="markdownIt-Anchor" href="#主节点"></a> 主节点</h3>
-<p>主节点的控制面板负责控制并使整个集群正常运转。它包含多个组件，这些组件可以运行在单个主节点上，也可以通过副本部署在多个主节点上以确保高可用性。这些组件包括：</p>
-<ul>
-<li>API 服务器（kube-apiserver）： 负责控制面板组件之间的通信，提供关键的 HTTP REST 接口服务，是集群的前端接口。</li>
-<li>Scheduler 调度器（kube-scheduler）： 负责调度应用程序，为每个可部署组件分配工作节点。</li>
-<li>Controller Manager 控制器管理器（kube-controller-manager）： 执行集群级别的功能，如复制组件、持续跟踪工作节点、处理节点失败等，以确保资源处于预期状态。</li>
-<li>etcd 分布式持久化存储： 一个可靠的分布式数据存储，用于持久化存储群集配置和各种资源的状态信息。当数据发生变化时，etcd 会快速通知相关组件。</li>
-</ul>
-<p>可以通过 API 服务器暴露的 ComponentStatus 的 API 资源查询这些组件的状态：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get componentstatuses
-Warning: v1 ComponentStatus is deprecated <span class="token keyword">in</span> v1.19+
-NAME                 STATUS      MESSAGE                         ERROR
-scheduler            Healthy     ok 
-controller-manager   Healthy     ok     
-etcd-0               Healthy     <span class="token punctuation">&#123;</span><span class="token string">"health"</span><span class="token builtin class-name">:</span><span class="token string">"true"</span>,<span class="token string">"reason"</span><span class="token builtin class-name">:</span><span class="token string">""</span><span class="token punctuation">&#125;</span>    <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="工作节点"><a class="markdownIt-Anchor" href="#工作节点"></a> 工作节点</h3>
-<p>工作节点是运行容器化应用程序的机器。它负责运行、监控和管理应用服务，以下是工作节点中的组件：</p>
-<ul>
-<li>容器运行时（Container runtime）： 负责镜像管理以及 Pod 和容器的实际运行，使用容器运行时接口（CRI）。默认使用 Docker Engine，也可以使用其他类型的容器引擎。</li>
-<li>Kubelet（kubelet）： 与 API 服务器通信，并管理所在节点的容器，与容器运行时进行交互，是工作节点的客户端。调度器确定在某个节点上运行 Pod 后，会将具体配置信息发送给 Kubelet，以创建和运行容器，并向主节点报告运行状态。同时，Kubelet 还负责卷（CSI）和网络（CNI）的管理。</li>
-<li>代理服务（kube-proxy）： 每个节点上都运行代理服务，它负责将对服务的访问流量转发到后端容器（服务发现）。如果有多个 Pod 副本，代理服务还负责组件之间的负载均衡和网络流量转发。</li>
-</ul>
-<p>可以使用 <code>kubectl describe</code> 命令查询工作节点的详细信息：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master manifests<span class="token punctuation">]</span>$ kubectl describe <span class="token function">node</span> server4-master 
-Name:               server4-master
-Roles:              control-plane,master
-Labels:             beta.kubernetes.io/arch<span class="token operator">=</span>amd64
-                    beta.kubernetes.io/os<span class="token operator">=</span>linux
-                    kubernetes.io/arch<span class="token operator">=</span>amd64
-                    kubernetes.io/hostname<span class="token operator">=</span>server4-master
-                    kubernetes.io/os<span class="token operator">=</span>linux<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="组件"><a class="markdownIt-Anchor" href="#组件"></a> 组件</h2>
-<p>除了控制面板和运行在节点上的组件，K8s 集群还依赖第三方组件以提供完整的功能。以下是主要的组件：</p>
-<ul>
-<li>CoreDNS：提供集群的服务注册和服务发现的 DNS 解析服务。</li>
-<li>Dashboard：用于通过 Web 用户界面管理集群中的应用程序和集群本身。</li>
-<li>Heapster：已被弃用的容器和节点性能监控分析系统，现已由 Prometheus 结合其他组件取代。</li>
-<li>Ingress：在应用层实现 HTTP 负载均衡机制，它是一组路由规则的集合，需要通过 Ingress Controller 来实现功能。</li>
-<li>容器网络接口插件：常用的插件有 Flannel 和 Calico。</li>
-</ul>
-<p>K8s 系统组件之间的通信主要通过 API 服务器进行。API 服务器和其他组件的连接大多由组件发起。只有在使用 kubectl 获取日志、attach 到容器上（即连接到容器中运行的主进程）或者运行 kubectl 端口转发时，API 服务器才会与 Kubelet 建立连接。</p>
-<p>控制面板的组件可以简单地部署在多台服务器上，多个实例可以并行工作以提高可用性。但是调度器和控制器管理器在任意时刻只能有一个实例起作用，其他实例处于待命状态。</p>
-<p>控制面板的组件可以作为 Pod 运行，而 Kubelet 是唯一一个作为常规系统组件运行的组件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get po <span class="token parameter variable">-o</span> custom-columns<span class="token operator">=</span>组件:metadata.name,节点:spec.nodeName --sort-by spec.nodeName <span class="token parameter variable">-n</span> kube-system 
-组件                                       节点
-coredns-7f6cbbb7b8-jtqxp                 server4-master
-coredns-7f6cbbb7b8-vvtxz                 server4-master
-etcd-server4-master                      server4-master
-kube-apiserver-server4-master            server4-master
-kube-controller-manager-server4-master   server4-master
-kube-proxy-d455c                         server4-master
-kube-scheduler-server4-master            server4-master
-kube-proxy-fnvff                         server5-node1
-kube-proxy-wkgjf                         server6-node2
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get po <span class="token parameter variable">-o</span> custom-columns<span class="token operator">=</span>组件:metadata.name,节点:spec.nodeName --sort-by spec.nodeName <span class="token parameter variable">-n</span> calico-system
-组件                                         节点
-calico-kube-controllers-767ddd5576-b7dpp   server4-master
-calico-node-qfsms                          server4-master
-calico-typha-7b6f4887f8-mkf7m              server4-master
-calico-node-2cp86                          server5-node1
-calico-typha-7b6f4887f8-8755m              server5-node1
-calico-node-gnfth                          server6-node2
-calico-typha-7b6f4887f8-7qmzm              server6-node2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>如上所示，所有控制面板组件作为 Pod 运行在主节点上。每个工作节点运行 kube-proxy，并使用 calico-system 命名空间的网络插件。</p>
-<h1 id="k8s-网络"><a class="markdownIt-Anchor" href="#k8s-网络"></a> K8s 网络</h1>
-<p>在 Kubernetes（K8s）集群中，网络是一个重要的组成部分，它允许不同的容器和节点之间进行通信，并提供应用程序之间的连接和负载均衡。</p>
-<h2 id="网络插件"><a class="markdownIt-Anchor" href="#网络插件"></a> 网络插件</h2>
-<p>在 K8s 中，网络由 CNI（Container Network Interface）插件建立。CNI 插件定义了容器如何加入和离开网络，以及如何与其他容器进行通信。这些插件可以部署在 K8s 集群之外。无论使用哪种网络技术，都要满足 Pod 之间可以跨工作节点进行通信，并且通信时会保留源和目标 IP 地址，不使用 NAT（网络地址转换）操作。</p>
-<p>Pod 和节点之间的通信也采用了无 NAT 通信，只有 Pod 和互联网上的服务通信时，才会将发送包的源地址改为节点的 IP 地址。</p>
-<p>常用的 CNI 插件包括 Calico、Flannel、Romana、Weave Net 等。要使用 CNI 插件，需要在启动 Kubelet 时添加 <code>--network-plugin=cni</code> 参数。</p>
-<p>安装一个网络插件只需部署一个包含 DaemonSet 和其他支持资源的 YAML 文件。DaemonSet 会在所有集群节点上部署一个网络代理，并将 CNI 接口绑定到节点上。</p>
-<h2 id="ip-地址"><a class="markdownIt-Anchor" href="#ip-地址"></a> IP 地址</h2>
-<p>K8s 中存在三种网络地址，它们之间的通信采用特殊的路由规则：</p>
-<ul>
-<li>
-<p>Node IP（节点 IP）</p>
-<p>每个节点的物理网卡上都有一个 IP 地址。当 K8s 集群外的节点访问集群内的服务时，必须通过节点 IP 进行通信。</p>
-</li>
-<li>
-<p>Pod IP</p>
-<p>每个 Pod 都有一个 IP 地址，由 Docker 引擎根据 Docker0 网桥的 IP 地址段进行分配。这通常是一个虚拟的二层网络。</p>
-<p>Pod 之间可以直接通信，而真实的流量通过节点 IP 所在的物理网卡流出。</p>
-</li>
-<li>
-<p>Cluster IP（集群 IP）</p>
-<p>Service 上的集群 IP 是一个虚拟 IP，来源于集群 IP 地址池，仅在 Service 对象上有效。</p>
-<p>集群 IP 无法通过 PING 进行通信，因为没有实际的网络对象来响应。它只能与 Service 端口结合使用，形成一个具体的通信端口。单独的 IP 本身没有通信能力。</p>
-</li>
-</ul>
-<h2 id="同节点-pod-通信"><a class="markdownIt-Anchor" href="#同节点-pod-通信"></a> 同节点 Pod 通信</h2>
-<p>在基础容器（Pause 容器）启动之前，会为容器创建一对虚拟网络接口（veth pair），其中一个接口保留在主机的命名空间中（命名为 vethXXX，在节点上可直接查看），而另一个接口被移入容器的网络命名空间，并被重命名为 eth0。这两个虚拟接口就像管道的两端。</p>
-<p>主机的网络命名空间接口会绑定到容器运行时配置使用的网络桥接上，从桥接的地址段中获取 IP 地址并赋值给容器内的 eth0 网络接口。所有容器的数据都通过 eth0 发送到桥接，然后再传递给目标 Pod。</p>
-<p>如下图所示：</p>
-<p><img data-src="../../../images/%E8%99%9A%E6%8B%9F%E6%8E%A5%E5%8F%A3%E5%AF%B9.jpg" alt="虚拟接口对" /></p>
-<p>如果 Pod A 发送网络包给 Pod B，数据包将通过 Pod A 的 veth 对到达桥接，然后经过 Pod B 的 veth 对。所有节点上的容器都连接到同一个桥接上。</p>
-<h2 id="跨节点-pod-通信"><a class="markdownIt-Anchor" href="#跨节点-pod-通信"></a> 跨节点 Pod 通信</h2>
-<p>在连接不同节点的网桥方式中，可以使用覆盖网络（overlay）或底层网络（underlay），或者采用常规的三层路由。</p>
-<p>跨整个集群的 Pod 的 IP 地址必须是唯一的，因此跨节点的网桥必须使用非重叠的地址段，以避免 IP 地址冲突。例如，节点 A 上的网桥可以使用 10.1.1.0/24 地址段，而节点 B 上的网桥可以使用 10.1.2.0/24 地址段。</p>
-<p>通过三层网络来支持跨节点通信，两个节点的路由表会被配置成下图所示的方式：</p>
-<p><img data-src="../../../images/%E8%B7%A8%E8%8A%82%E7%82%B9%E9%80%9A%E4%BF%A1.jpg" alt="跨节点通信" /></p>
-<p>上述方案仅在节点之间连通到相同网关且没有其他路由时有效。否则，路由器会丢弃数据包，因为源和目标 IP 都是私有 IP 地址。</p>
-<p>使用软件定义网络（SDN）技术可以简化问题，让节点忽略底层网络拓扑，就像连接到同一个网关。从 Pod 发出的报文会被封装，在网络上发送到其他 Pod 所在的网络，然后解封装以原始格式传递给目标 Pod。</p>
-<h1 id="高可用集群"><a class="markdownIt-Anchor" href="#高可用集群"></a> 高可用集群</h1>
-<p>高可用集群是指在计算机系统或网络中采用冗余设计和自动故障恢复机制，以提高系统的可用性和稳定性。在高可用集群中，多个节点协同工作，共同承担服务的负载和功能，并能够在节点故障或其他异常情况下自动进行故障转移，确保服务的持续可用性。</p>
-<h2 id="应用高可用"><a class="markdownIt-Anchor" href="#应用高可用"></a> 应用高可用</h2>
-<p>在 K8s 上运行应用的最重要目标是保证应用的持续运行，尽量减少由人工操作基础设置导致的宕机。</p>
-<p>最常见的做法是使用 Deploy 资源来运行应用，配置适量的副本集，其余的交由 K8s 来处理。即使应用本身不支持水平扩展，仍然可以使用 Deploy 来发布单个副本。当应用不可用时，K8s 会快速替换为一个新的副本。</p>
-<p>此外，还可以同时运行一个活跃的应用和一个附加的非活跃复制集，通过领导选举机制来确保只有一个副本处于活跃状态。这样，在领导者发生宕机时，非活跃复制集会立即接替领导者的角色。</p>
-<h2 id="集群高可用性"><a class="markdownIt-Anchor" href="#集群高可用性"></a> 集群高可用性</h2>
-<p>在整个 K8s 中，Master 控制节点的重要性不言而喻。如果 Master 所在的服务器宕机，将导致整个 K8s 集群不可用。因此，可以通过运行多个主节点来提高可用性。以下是三个主节点构成的高可用集群示意图：</p>
-<p><img data-src="../../../images/%E4%B8%89%E4%B8%BB%E8%8A%82%E7%82%B9%E9%9B%86%E7%BE%A4.jpg" alt="三主节点集群" /></p>
-<h2 id="etcd-集群"><a class="markdownIt-Anchor" href="#etcd-集群"></a> Etcd 集群</h2>
-<p>由于 etcd 本身就是为分布式系统设计的，因此只需在适量的机器上运行 etcd，使它们能够相互感知即可。实现方法是修改每个实例的配置，包含其他实例的列表，etcd 会在实例之间进行数据复制。</p>
-<p>3 个节点允许其中 1 个节点宕机，最佳实践是使用 5 到 7 个节点，这样集群可以容忍 2 或 3 个节点的宕机。超过 7 个节点的数量反而会影响性能。</p>
-<h2 id="多实例-api-服务器"><a class="markdownIt-Anchor" href="#多实例-api-服务器"></a> 多实例 API 服务器</h2>
-<p>API 服务器是无状态的，因为数据存储在 etcd 中，API 服务器不进行缓存。因此，可以运行任意数量的 API 服务器，它们之间不需要感知对方的存在。</p>
-<p>通常，一个 API 服务器会与每个 etcd 实例配对，因为每个 API 服务器仅与本地的 etcd 实例通信。这样，etcd 实例就无需使用任何负载均衡器，只需要对 API 服务器进行负载均衡即可。</p>
-<h2 id="控制器和调度器的高可用性"><a class="markdownIt-Anchor" href="#控制器和调度器的高可用性"></a> 控制器和调度器的高可用性</h2>
-<p>由于控制器和调度器都会主动监听集群状态，并在发生变更时采取相应的操作，因此在多个实例中运行这些组件可能导致它们执行相同的操作并产生竞争状态，从而导致意外的影响。</p>
-<p>因此，在运行这些组件的多个实例时，同一时间只有一个实例处于活动状态。它们通过选举机制确定活跃实例（默认情况下使用 <code>--leader-elect</code> 选项），其他实例处于待命状态。只有当领导者发生故障时，剩余的实例才会选举出新的领导者来接管工作。</p>
-<p>控制器和调度器可以与 API 服务器和 etcd 配对运行。如果它们运行在不同的机器上，需要通过负载均衡器连接到 API 服务器。</p>
-<h2 id="领导者选举机制"><a class="markdownIt-Anchor" href="#领导者选举机制"></a> 领导者选举机制</h2>
-<p>控制平面组件使用的领导者选举机制不需要组件之间进行通信。其实现方式是在 API 服务器中创建一个资源，例如 Endpoint 资源：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server7-master ~<span class="token punctuation">]</span>$ kubectl get endpoints kube-scheduler <span class="token parameter variable">-n</span> kube-system <span class="token parameter variable">-o</span> yaml
-apiVersion: v1
-kind: Endpoints
-metadata:
-  annotations:
-    control-plane.alpha.kubernetes.io/leader: <span class="token string">'&#123;"holderIdentity":"server7-master_6725412a-94ed-4d16-ae7f-3f6cd7543c40","leaseDurationSeconds":15,"acquireTime":"2021-11-03T07:46:00Z","renewTime":"2021-11-03T08:09:49Z","leaderTransitions":1&#125;'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>在资源的注解中，包含了一个名为 <code>control-plane.alpha.kubernetes.io/leader</code> 的字段，其中的 <code>holderIdentity</code> 字段包含了当前领导者的名称。</p>
-<p>该机制的原理是通过乐观锁来确保如果多个实例尝试向资源中写入内容，只有一个实例会成功。第一个成功将自己的名称填入 <code>holderIdentity</code> 字段的实例将成为领导者。</p>
-<p>一旦成为领导者，它默认每 2 秒必须更新 <code>holderIdentity</code> 字段，以便其他实例知道它仍在工作。一旦停止更新一段时间，其他实例将尝试将自己的名称写入资源中，以取代领导者的角色。</p>
-<h1 id="k8s-中应用发布流程"><a class="markdownIt-Anchor" href="#k8s-中应用发布流程"></a> K8s 中应用发布流程</h1>
-<p>在 Kubernetes（K8s）中，应用发布是一个关键的流程，它确保应用程序能够在集群中顺利运行并具备高可用性。</p>
-<h2 id="应用发布流程"><a class="markdownIt-Anchor" href="#应用发布流程"></a> 应用发布流程</h2>
-<p>在 Kubernetes 中发布应用的流程如下：</p>
-<ul>
-<li>打包应用：首先，需要将应用程序打包到一个或多个容器镜像中。</li>
-<li>推送镜像：将打包好的镜像推送到镜像仓库中。</li>
-<li>发布应用描述：将应用的描述发布到 API 服务器。</li>
-<li>调度容器：API 服务器通过调度器，指示可用的工作节点上的 Kubelet 拉取镜像并运行容器。</li>
-</ul>
-<p>下图提供了一个简单的示例来说明该流程：</p>
-<p><img data-src="../../../images/%E5%8F%91%E5%B8%83%E6%B5%81%E7%A8%8B.jpg" alt="发布流程" /></p>
-<h2 id="事件链"><a class="markdownIt-Anchor" href="#事件链"></a> 事件链</h2>
-<p>以一个包含 Deployment 清单的 YAML 文件举例，各控制器协同工作如下：</p>
-<p><img data-src="../../../images/%E9%83%A8%E7%BD%B2%E8%BF%87%E7%A8%8B.jpg" alt="部署过程" /></p>
-<ul>
-<li>创建 Deployment 资源：kubectl 通过 HTTP POST 请求将清单发送到 API 服务器。API 服务器检查 Deployment 的定义，创建 Deployment 资源，并将其存储到 etcd，然后返回响应给 kubectl。</li>
-<li>Deployment 控制器生成 ReplicaSet：当 Deployment 控制器监听到 API 服务器的新 Deployment 对象通知时，根据当前 Deployment 的定义，发送创建 ReplicaSet 的请求给 API 服务器，创建 ReplicaSet 资源。</li>
-<li>ReplicaSet 控制器创建 Pod 资源：当 ReplicaSet 控制器接收到新的 ReplicaSet 对象通知时，根据 replica 数量和 Pod 选择器，检查是否有足够满足选择器的 Pod。然后，基于 ReplicaSet 的 Pod 模板，发送创建 Pod 的请求给 API 服务器，创建 Pod 资源。</li>
-<li>调度器分配节点给新的 Pod：新创建的 Pod 目前保存在 etcd 中，没有关联的运行节点。调度器监控到这样的 Pod 后，为其选择最佳节点分配，并将该节点分配给 Pod。Pod 的定义现在包含了它应该运行在哪个节点上。</li>
-<li>Kubelet 运行 Pod 容器：在节点上，Kubelet 通过 API 服务器监听 Pod 的变更。当发现有分配到本节点的 Pod 后，Kubelet 检查 Pod 的定义，然后命令容器运行时启动 Pod 容器。</li>
-</ul>
-<h2 id="集群事件"><a class="markdownIt-Anchor" href="#集群事件"></a> 集群事件</h2>
-<p>在控制面板组件和 Kubelet 执行动作时，它们会向 API 服务器发送事件。通过创建事件资源来实现事件的发送。可以使用 <code>kubectl get events</code> 命令获取事件信息。</p>
-<p>更常见的方式是使用 <code>--watch</code> 参数，在发布后持续观察事件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl delete <span class="token parameter variable">-f</span> kubia-st.yaml 
-statefulset.apps <span class="token string">"kubia"</span> deleted
-<span class="token punctuation">[</span>root@server4-master manifests<span class="token punctuation">]</span>$ kubectl get events <span class="token parameter variable">--watch</span>
-LAST SEEN   TYPE     REASON    OBJECT        MESSAGE
-0s          Normal   Killing   pod/kubia-0   Stopping container kubia
-0s          Normal   Killing   pod/kubia-1   Stopping container kubia
-0s          Normal   Killing   pod/kubia-2   Stopping container kubia
-0s          Warning   FailedToUpdateEndpoint   endpoints/kubia-public   Failed to update endpoint default/kubia-public: Operation cannot be fulfilled on endpoints <span class="token string">"kubia-public"</span><span class="token builtin class-name">:</span> the object has been modified<span class="token punctuation">;</span> please apply your changes to the latest version and try again<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="发布后工作"><a class="markdownIt-Anchor" href="#发布后工作"></a> 发布后工作</h2>
-<p>应用程序在 Kubernetes 中运行后，以下是 Kubernetes 的工作：</p>
-<ul>
-<li>API 服务器会持续确认应用的部署状态是否与描述一致。如果其中一个实例停止正常工作，例如进程崩溃或停止响应，Kubernetes 将自动重新启动该实例。</li>
-<li>如果整个工作节点宕机无法访问，故障节点上运行的所有容器将被调度到新节点上运行。</li>
-<li>在程序运行期间，可以手动随时调整副本数量，也可以根据节点的实时状态指标自动调整副本数。</li>
-<li>当容器在集群中频繁调度时，服务代理将确保服务始终可用。</li>
-</ul>
-<h1 id="k8s-中应用更新流程"><a class="markdownIt-Anchor" href="#k8s-中应用更新流程"></a> K8s 中应用更新流程</h1>
-<p>Kubernetes 提供多种灵活和可控的方式来更新应用，保证应用在更新过程中的可用性和稳定性。</p>
-<h2 id="手动更新-pod-内应用"><a class="markdownIt-Anchor" href="#手动更新-pod-内应用"></a> 手动更新 Pod 内应用</h2>
-<p>假设 Pod 使用 ReplicaSet（RS）控制器来创建和管理，并且客户端通过 Service 来访问 Pod。如果要对 Pod 内的镜像进行升级，可以采取以下方式。</p>
-<h3 id="全量更新"><a class="markdownIt-Anchor" href="#全量更新"></a> 全量更新</h3>
-<p>直接删除所有现有的 Pod，然后创建新的 Pod。流程图如下：</p>
-<p><img data-src="../../../images/%E6%89%8B%E5%8A%A8%E5%8D%87%E7%BA%A7.jpg" alt="手动升级" /></p>
-<p>当使用 RS 控制器时，通过修改 RS 内的 Pod 模板镜像，然后删除旧的 Pod 实例，RS 会使用修改后的镜像来创建新的实例。</p>
-<p>这种方式会导致应用在一定的时间内不可用。</p>
-<h3 id="蓝绿部署"><a class="markdownIt-Anchor" href="#蓝绿部署"></a> 蓝绿部署</h3>
-<p>先创建新的 Pod，成功运行后再删除旧的 Pod。流程图如下：</p>
-<p><img data-src="../../../images/%E8%93%9D%E7%BB%BF%E9%83%A8%E7%BD%B2.jpg" alt="蓝绿部署" /></p>
-<p>同样，先修改 RS 内的 Pod 模板镜像，创建新版本的 Pod 并确保正常运行后，可以修改 Service 的标签选择器（使用命令 <code>kubectl set selector</code>），将流量切换到新的 Pod，最后再删除旧版本的 Pod。这也叫做蓝绿部署，适用于不能中断服务的场景。</p>
-<p>这种方法需要应用程序支持同时提供两个版本的服务，并且新版本应用不应对原有的关键数据格式或数据本身进行修改，以免导致之前版本的程序运行异常。</p>
-<h3 id="金丝雀发布"><a class="markdownIt-Anchor" href="#金丝雀发布"></a> 金丝雀发布</h3>
-<p>执行滚动升级操作流程图如下：</p>
-<p><img data-src="../../../images/%E6%BB%9A%E5%8A%A8%E5%8D%87%E7%BA%A7.jpg" alt="滚动升级" /></p>
-<p>还可以执行滚动升级操作来逐步替代原有的 Pod，而不是同时创建新的 Pod 和删除旧的 Pod。具体操作是逐步缩减旧版本的 RS 控制器中的 Pod 数量，并扩展新版本的 RS 控制器中的 Pod 数量，以逐渐调整新旧版本 Pod 的比例。这就是金丝雀发布。同时，服务的选择器应包含两个版本的 Pod。</p>
-<p>需要注意的是，手动执行滚动升级操作时容易出错，需要谨慎操作。</p>
-<h2 id="使用-rc-自动滚动升级"><a class="markdownIt-Anchor" href="#使用-rc-自动滚动升级"></a> 使用 RC 自动滚动升级</h2>
-<p>首先，创建一个 RC（Replication Controller）和服务，并使用 v1 版本的镜像：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-v1.yaml
-apiVersion: v1
-kind: ReplicationController
-metadata:
-  name: kubia-v1
-spec:
-  replicas: <span class="token number">3</span>
-  template:
-    metadata:
-      name: kubia
-      labels:
-        app: kubia
-    spec:
-      containers:
-      - image: luksa/kubia:v1
-        name: nodejs
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: kubia
-spec:
-  type: NodePort
-  selector:
-    app: kubia
-  ports:
-  - port: <span class="token number">80</span>
-    targetPort: <span class="token number">8080</span>
-    nodePort: <span class="token number">30002</span>
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-v1.yaml
-replicationcontroller/kubia-v1 created
-service/kubia created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>发布成功后，将有 3 个 v1 版本的 pod 和相应的服务开始运行。通过浏览器访问 30002 端口，并保持输出：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token keyword">while</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token keyword">do</span> <span class="token function">curl</span> http://192.168.2.204:30002<span class="token punctuation">;</span> <span class="token function">sleep</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token keyword">done</span>
-This is v1 running <span class="token keyword">in</span> pod kubia-v1-9ql94
-This is v1 running <span class="token keyword">in</span> pod kubia-v1-52pvf
-You<span class="token string">'ve hit kubia-k2l4p
-You'</span>ve hit kubia-k2l4p
-This is v1 running <span class="token keyword">in</span> pod kubia-v1-52pvf
-You've hit kubia-p9wp5<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>使用 <code>kubectl rolling-update</code> 命令（已废弃）直接替换掉镜像，进行滚动更新：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master <span class="token number">4</span><span class="token punctuation">]</span>$ kubectl rolling-update kubia-v1 kubia-v2 <span class="token parameter variable">--image</span><span class="token operator">=</span>luksa/kubia:v2
-Command <span class="token string">"rolling-update"</span> is deprecated, use <span class="token string">"rollout"</span> instead
-Created kubia-v2
-Scaling up kubia-v2 from <span class="token number">0</span> to <span class="token number">3</span>, scaling down kubia-v1 from <span class="token number">3</span> to <span class="token number">0</span> <span class="token punctuation">(</span>keep <span class="token number">3</span> pods available, don't exceed <span class="token number">4</span> pods<span class="token punctuation">)</span>
-Scaling kubia-v2 up to <span class="token number">1</span>
-Scaling kubia-v1 down to <span class="token number">2</span>
-Scaling kubia-v2 up to <span class="token number">2</span>
-Scaling kubia-v1 down to <span class="token number">1</span>
-Scaling kubia-v2 up to <span class="token number">3</span>
-Scaling kubia-v1 down to <span class="token number">0</span>
-Update succeeded. Deleting kubia-v1
-replicationcontroller/kubia-v2 rolling updated to <span class="token string">"kubia-v2"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>在开发过程中，经常会推送修改后的应用到同一个镜像标签，这可能导致镜像不会被重新拉取。或者在没有拉取过旧版本镜像的节点上，会拉取新的镜像，因此可能会同时运行两个不同版本的 pod。</p>
-<p>为了确保始终使用最新的镜像，可以将容器的 <code>imagePullPolicy</code> 属性设置为 <code>Always</code>。如果不指定镜像标签，即默认使用 <code>latest</code> 标签，则策略默认为 <code>Always</code>，但如果指定了其他标签，则策略默认为 <code>IfNotPresent</code>。</p>
-<p>自动滚动升级的步骤如下：</p>
-<ul>
-<li>通过复制 RC 控制器 <code>kubia-v1</code> 创建一个名为 <code>kubia-v2</code> 的 RC 控制器，并在 <code>kubia-v2</code> 的模板中将镜像版本改为 <code>kubia:v2</code>。</li>
-<li>立即创建 RC 控制器 <code>kubia-v2</code>，并将初始期望副本数设置为 0。</li>
-<li>修改 <code>kubia-v1</code> 和 <code>kubia-v2</code> 的标签选择器，添加一个额外的 <code>deployment</code> 标签。</li>
-<li>修改旧版本 pod 的标签，添加一个额外的 <code>deployment</code> 标签。</li>
-<li>以每次 1 个单位的步长，缩减 <code>kubia-v1</code> 的 pod 数量，并同时扩展 <code>kubia-v2</code> 的 pod 数量，新的 pod 也带有一个额外的 <code>deployment</code> 标签。</li>
-<li>最终，旧版本的 pod 数量被缩减到 0，全部被新版本的 pod 替代，旧的 RC 控制器 <code>kubia-v1</code> 被删除。</li>
-</ul>
-<p>通过这种滚动升级的方式，所有的伸缩请求都由 <code>kubectl</code> 客户端而不是主节点执行。一旦 <code>kubectl</code> 在执行升级时失去连接，升级过程将被中断，pod 和 RC 最终会处于中间状态。一种更先进的方式是使用 Deployment 资源进行部署。</p>
-]]></content>
-      <categories>
-        <category>Kubernets</category>
-        <category>0.基本知识</category>
-      </categories>
-  </entry>
-  <entry>
     <title>K8s 组件介绍</title>
     <url>/1457906456/</url>
     <content><![CDATA[<h1 id="api-服务器"><a class="markdownIt-Anchor" href="#api-服务器"></a> API 服务器</h1>
@@ -5175,6 +4445,353 @@ spec:
 <h2 id="ingress-控制器"><a class="markdownIt-Anchor" href="#ingress-控制器"></a> Ingress 控制器</h2>
 <p>Ingress 控制器运行一个反向代理服务器，类似于 Nginx。它根据集群中定义的 Ingress、Service 和 Endpoint 资源来配置该控制器。因此，需要订阅这些资源，并在发生变化时更新代理服务器的配置。</p>
 <p>尽管 Ingress 资源的定义指向一个 Service，但是 Ingress 控制器会直接将流量转发到服务的 Pod，而不经过服务的 IP。当外部客户端通过 Ingress 控制器连接时，会保存客户端的 IP，而 Service 本身无法实现这一点。</p>
+]]></content>
+      <categories>
+        <category>Kubernets</category>
+        <category>0.基本知识</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>K8s 系统介绍</title>
+    <url>/376871778/</url>
+    <content><![CDATA[<h1 id="系统构架简介"><a class="markdownIt-Anchor" href="#系统构架简介"></a> 系统构架简介</h1>
+<p>系统架构根据不同的设计原则和需求，可以分为多种类型。</p>
+<h2 id="单体应用"><a class="markdownIt-Anchor" href="#单体应用"></a> 单体应用</h2>
+<p>单体应用由很多个组件组成，这些组件紧密地耦合在一起，由于它们在同一个操作系统进程中运行，所以在开发、部署和管理时必须以同一个实体进行。</p>
+<p>对单体应用来说，即使是某个组件的一个小修改，都需要重新部署整个应用。组件之间缺乏严格边界，互相依赖，系统复杂度逐渐提升。</p>
+<p>运行一个单体应用，通常需要一台能为整个应用提供足够资源的高性能服务器。为了应对不断增长的系统负荷，需要垂直扩展，对服务器硬件进行升级，或者增加更多服务器进行水平扩展。垂直扩展通常会遇到性能瓶颈，水平扩展可能需要对原本应用程序代码进行大量改动。</p>
+<h2 id="微服务"><a class="markdownIt-Anchor" href="#微服务"></a> 微服务</h2>
+<p>微服务架构旨在解决大型单体应用程序臃肿的问题，将单体应用拆分为小而可独立部署的微服务组件。每个微服务都以独立的进程运行，并通过简单且定义良好的 API 接口与其他微服务进行通信。</p>
+<p>服务器之间使用类似 HTTP 的同步协议或者像 AMQP 这样的异步协议进行通信。使用这些标准化协议使得微服务可以使用任意开发语言进行实现。只要提供相对稳定的 API，对一个微服务进行修改不会对其他微服务产生影响。</p>
+<p>使用微服务的另一个好处是可以根据需要针对单个组件进行水平扩展，对无法水平扩展的组件进行垂直扩展，灵活组合以适应不同的环境。</p>
+<p>然而，微服务也存在一些缺点。随着组件数量的增加，组件部署和依赖的组合数也在增加，配置工作变得冗杂且容易出错。由于微服务涉及多个进程和服务器，调试代码和定位异常调用变得更加困难。</p>
+<h2 id="k8s-系统"><a class="markdownIt-Anchor" href="#k8s-系统"></a> K8s 系统</h2>
+<p>Kubernetes 源于谷歌内部的 Borg，是一个面向应用的容器集群部署和管理系统。Kubernetes 的目标是消除管理计算、网络和存储等基础设施的负担，通过对底层基础设施进行抽象，简化应用的开发、部署以及对开发和运维团队的管理。K8s 还提供基础平台，用于构建定制化的工作流程和高级的自动化任务。</p>
+<p>从运维角度来看，只需在服务器上部署 K8s，就可以运行应用程序，无需安装其他依赖服务。Kubernetes 具有以下几个重要特性：</p>
+<ul>
+<li>
+<p>自动装箱</p>
+<p>构建于容器之上，基于资源依赖和其他约束自动完成容器部署，不影响容器的可用性。通过调度机制，将关键和非关键应用的工作负载混合在同一节点上，提高资源利用率。在 K8s 中，所有工作节点被公开为一个部署平台，开发人员无需了解组成集群的服务器。如果需要将程序运行在特定类型的节点上，可以通过节点标签进行选择。</p>
+</li>
+<li>
+<p>健康检查和自我修复</p>
+<p>K8s 监控应用程序组件和运行节点，支持容器故障后的自动重启、节点故障后的重新调度容器、健康状态检查失败后的重新创建等自愈机制。</p>
+</li>
+<li>
+<p>水平扩展</p>
+<p>支持通过简单的命令手动进行水平扩展，并且基于硬件资源负载率的自动水平扩展机制。如果 K8s 运行在云基础设施上，可以根据程序使用的资源情况和需求自动添加或缩减节点。</p>
+</li>
+<li>
+<p>服务发现和负载均衡</p>
+<p>K8s 通过 KubeDNS（或 CoreDNS）为系统内置了服务发现功能。它为每个服务配置了 DNS 名称，允许集群内的客户端直接使用名称进行访问，而服务则通过 iptables 或 ipvs 内置了负载均衡机制。</p>
+</li>
+<li>
+<p>自动发布和回滚</p>
+<p>K8s 支持灰度更新应用程序或配置信息。它确保实例不会同时停止，一旦发生故障，会立即自动执行回滚操作。</p>
+</li>
+<li>
+<p>密钥和配置管理</p>
+<p>K8s 的 ConfigMap 实现了配置数据与 Docker 镜像的分离，无需重构镜像即可对配置进行更改。此外，对于敏感数据如密码和密钥等，有专门的 Secret 对象用于存放。</p>
+</li>
+<li>
+<p>存储编排</p>
+<p>K8s 支持按需自动挂载不同类型的存储系统到 Pod 对象中，包括本地存储、云存储和网络存储系统。</p>
+</li>
+<li>
+<p>批量处理执行</p>
+<p>除了服务型应用，K8s 还支持批处理作业和持续集成。它提供了丰富的工具和功能，用于管理和执行大规模的数据处理和计算任务。</p>
+</li>
+</ul>
+<p>通过这些特性和功能，Kubernetes 提供了一个强大而灵活的容器管理平台，为应用程序的部署、扩展、监控和管理提供了全面的解决方案。无论是在本地环境还是云环境中，K8s 都能够有效地管理和调度容器化的应用程序，提供稳定可靠的服务。</p>
+<h1 id="资源对象-节点和组件"><a class="markdownIt-Anchor" href="#资源对象-节点和组件"></a> 资源对象、节点和组件</h1>
+<p>在 Kubernetes（K8s）中，节点和组件共同协作，使得 Kubernetes 能够实现容器化应用程序的高效部署、自动伸缩和弹性管理。</p>
+<h2 id="资源对象"><a class="markdownIt-Anchor" href="#资源对象"></a> 资源对象</h2>
+<p>K8s 中的基本概念和术语大多围绕着资源对象（Resource Object）展开。资源对象可分为两类：</p>
+<ul>
+<li>某种资源的对象，例如 Node、Pod、Service、Volume 等。</li>
+<li>与资源对象相关的事物和动作，例如 Label、Namespace、PVC、HPA 等。</li>
+</ul>
+<p>资源对象一般包括几个通用属性：</p>
+<ul>
+<li>版本：包括此对象所属的资源组信息，不同版本可能有不同的资源对象属性。</li>
+<li>类别：定义资源对象的类型。</li>
+<li>名称：资源对象的名称必须唯一。</li>
+<li>标签：用于标识资源对象的特征类别，可以通过标签对不同的资源对象进行筛选和操作。</li>
+<li>注解：一种特殊的标签，常用于自定义扩展资源对象的属性。</li>
+</ul>
+<h2 id="节点"><a class="markdownIt-Anchor" href="#节点"></a> 节点</h2>
+<p>节点是集群的工作单元，用于运行容器化应用程序。每个节点都是一个独立的机器，可以是物理服务器或虚拟机。节点上安装了容器运行时环境，例如 Docker、containerd 等，以便运行和管理容器。</p>
+<p>K8s 集群通常包含多个节点，它们协同工作以提供高可用性和可扩展性。以下是两种节点类型：</p>
+<ul>
+<li>
+<p>主节点（Master）： 集群的控制节点，负责控制和管理整个集群系统。主节点承载任务如为用户暴露 API、跟踪其他服务器的健康状态、以最优的方式调度工作负载以及编排其他组件之间的通信等。可以运行多个主节点以提高可用性。</p>
+</li>
+<li>
+<p>工作节点（Node）： 工作节点负责运行用户实际部署的应用，由主节点进行管理。它接收来自主节点的工作指令，并根据指令创建或销毁 Pod 对象，以及调整网络规划以合理地路由和转发流量。</p>
+</li>
+</ul>
+<p>节点可以在运行期间动态加入到集群中，K8s 将所有节点的资源集结在一起，形成一台超级服务器。当用户将应用部署在集群上时，主节点会使用调度算法将其自动指派给某个特定的工作节点运行。</p>
+<p>主节点和工作节点中的组件联系如下图所示：</p>
+<p><img data-src="../../../images/%E8%8A%82%E7%82%B9%E7%BB%84%E4%BB%B6.jpg" alt="节点组件" /></p>
+<h3 id="主节点"><a class="markdownIt-Anchor" href="#主节点"></a> 主节点</h3>
+<p>主节点的控制面板负责控制并使整个集群正常运转。它包含多个组件，这些组件可以运行在单个主节点上，也可以通过副本部署在多个主节点上以确保高可用性。这些组件包括：</p>
+<ul>
+<li>API 服务器（kube-apiserver）： 负责控制面板组件之间的通信，提供关键的 HTTP REST 接口服务，是集群的前端接口。</li>
+<li>Scheduler 调度器（kube-scheduler）： 负责调度应用程序，为每个可部署组件分配工作节点。</li>
+<li>Controller Manager 控制器管理器（kube-controller-manager）： 执行集群级别的功能，如复制组件、持续跟踪工作节点、处理节点失败等，以确保资源处于预期状态。</li>
+<li>etcd 分布式持久化存储： 一个可靠的分布式数据存储，用于持久化存储群集配置和各种资源的状态信息。当数据发生变化时，etcd 会快速通知相关组件。</li>
+</ul>
+<p>可以通过 API 服务器暴露的 ComponentStatus 的 API 资源查询这些组件的状态：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get componentstatuses
+Warning: v1 ComponentStatus is deprecated <span class="token keyword">in</span> v1.19+
+NAME                 STATUS      MESSAGE                         ERROR
+scheduler            Healthy     ok 
+controller-manager   Healthy     ok     
+etcd-0               Healthy     <span class="token punctuation">&#123;</span><span class="token string">"health"</span><span class="token builtin class-name">:</span><span class="token string">"true"</span>,<span class="token string">"reason"</span><span class="token builtin class-name">:</span><span class="token string">""</span><span class="token punctuation">&#125;</span>    <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="工作节点"><a class="markdownIt-Anchor" href="#工作节点"></a> 工作节点</h3>
+<p>工作节点是运行容器化应用程序的机器。它负责运行、监控和管理应用服务，以下是工作节点中的组件：</p>
+<ul>
+<li>容器运行时（Container runtime）： 负责镜像管理以及 Pod 和容器的实际运行，使用容器运行时接口（CRI）。默认使用 Docker Engine，也可以使用其他类型的容器引擎。</li>
+<li>Kubelet（kubelet）： 与 API 服务器通信，并管理所在节点的容器，与容器运行时进行交互，是工作节点的客户端。调度器确定在某个节点上运行 Pod 后，会将具体配置信息发送给 Kubelet，以创建和运行容器，并向主节点报告运行状态。同时，Kubelet 还负责卷（CSI）和网络（CNI）的管理。</li>
+<li>代理服务（kube-proxy）： 每个节点上都运行代理服务，它负责将对服务的访问流量转发到后端容器（服务发现）。如果有多个 Pod 副本，代理服务还负责组件之间的负载均衡和网络流量转发。</li>
+</ul>
+<p>可以使用 <code>kubectl describe</code> 命令查询工作节点的详细信息：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master manifests<span class="token punctuation">]</span>$ kubectl describe <span class="token function">node</span> server4-master 
+Name:               server4-master
+Roles:              control-plane,master
+Labels:             beta.kubernetes.io/arch<span class="token operator">=</span>amd64
+                    beta.kubernetes.io/os<span class="token operator">=</span>linux
+                    kubernetes.io/arch<span class="token operator">=</span>amd64
+                    kubernetes.io/hostname<span class="token operator">=</span>server4-master
+                    kubernetes.io/os<span class="token operator">=</span>linux<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="组件"><a class="markdownIt-Anchor" href="#组件"></a> 组件</h2>
+<p>除了控制面板和运行在节点上的组件，K8s 集群还依赖第三方组件以提供完整的功能。以下是主要的组件：</p>
+<ul>
+<li>CoreDNS：提供集群的服务注册和服务发现的 DNS 解析服务。</li>
+<li>Dashboard：用于通过 Web 用户界面管理集群中的应用程序和集群本身。</li>
+<li>Heapster：已被弃用的容器和节点性能监控分析系统，现已由 Prometheus 结合其他组件取代。</li>
+<li>Ingress：在应用层实现 HTTP 负载均衡机制，它是一组路由规则的集合，需要通过 Ingress Controller 来实现功能。</li>
+<li>容器网络接口插件：常用的插件有 Flannel 和 Calico。</li>
+</ul>
+<p>K8s 系统组件之间的通信主要通过 API 服务器进行。API 服务器和其他组件的连接大多由组件发起。只有在使用 kubectl 获取日志、attach 到容器上（即连接到容器中运行的主进程）或者运行 kubectl 端口转发时，API 服务器才会与 Kubelet 建立连接。</p>
+<p>控制面板的组件可以简单地部署在多台服务器上，多个实例可以并行工作以提高可用性。但是调度器和控制器管理器在任意时刻只能有一个实例起作用，其他实例处于待命状态。</p>
+<p>控制面板的组件可以作为 Pod 运行，而 Kubelet 是唯一一个作为常规系统组件运行的组件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get po <span class="token parameter variable">-o</span> custom-columns<span class="token operator">=</span>组件:metadata.name,节点:spec.nodeName --sort-by spec.nodeName <span class="token parameter variable">-n</span> kube-system 
+组件                                       节点
+coredns-7f6cbbb7b8-jtqxp                 server4-master
+coredns-7f6cbbb7b8-vvtxz                 server4-master
+etcd-server4-master                      server4-master
+kube-apiserver-server4-master            server4-master
+kube-controller-manager-server4-master   server4-master
+kube-proxy-d455c                         server4-master
+kube-scheduler-server4-master            server4-master
+kube-proxy-fnvff                         server5-node1
+kube-proxy-wkgjf                         server6-node2
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get po <span class="token parameter variable">-o</span> custom-columns<span class="token operator">=</span>组件:metadata.name,节点:spec.nodeName --sort-by spec.nodeName <span class="token parameter variable">-n</span> calico-system
+组件                                         节点
+calico-kube-controllers-767ddd5576-b7dpp   server4-master
+calico-node-qfsms                          server4-master
+calico-typha-7b6f4887f8-mkf7m              server4-master
+calico-node-2cp86                          server5-node1
+calico-typha-7b6f4887f8-8755m              server5-node1
+calico-node-gnfth                          server6-node2
+calico-typha-7b6f4887f8-7qmzm              server6-node2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如上所示，所有控制面板组件作为 Pod 运行在主节点上。每个工作节点运行 kube-proxy，并使用 calico-system 命名空间的网络插件。</p>
+<h1 id="k8s-网络"><a class="markdownIt-Anchor" href="#k8s-网络"></a> K8s 网络</h1>
+<p>在 Kubernetes（K8s）集群中，网络是一个重要的组成部分，它允许不同的容器和节点之间进行通信，并提供应用程序之间的连接和负载均衡。</p>
+<h2 id="网络插件"><a class="markdownIt-Anchor" href="#网络插件"></a> 网络插件</h2>
+<p>在 K8s 中，网络由 CNI（Container Network Interface）插件建立。CNI 插件定义了容器如何加入和离开网络，以及如何与其他容器进行通信。这些插件可以部署在 K8s 集群之外。无论使用哪种网络技术，都要满足 Pod 之间可以跨工作节点进行通信，并且通信时会保留源和目标 IP 地址，不使用 NAT（网络地址转换）操作。</p>
+<p>Pod 和节点之间的通信也采用了无 NAT 通信，只有 Pod 和互联网上的服务通信时，才会将发送包的源地址改为节点的 IP 地址。</p>
+<p>常用的 CNI 插件包括 Calico、Flannel、Romana、Weave Net 等。要使用 CNI 插件，需要在启动 Kubelet 时添加 <code>--network-plugin=cni</code> 参数。</p>
+<p>安装一个网络插件只需部署一个包含 DaemonSet 和其他支持资源的 YAML 文件。DaemonSet 会在所有集群节点上部署一个网络代理，并将 CNI 接口绑定到节点上。</p>
+<h2 id="ip-地址"><a class="markdownIt-Anchor" href="#ip-地址"></a> IP 地址</h2>
+<p>K8s 中存在三种网络地址，它们之间的通信采用特殊的路由规则：</p>
+<ul>
+<li>
+<p>Node IP（节点 IP）</p>
+<p>每个节点的物理网卡上都有一个 IP 地址。当 K8s 集群外的节点访问集群内的服务时，必须通过节点 IP 进行通信。</p>
+</li>
+<li>
+<p>Pod IP</p>
+<p>每个 Pod 都有一个 IP 地址，由 Docker 引擎根据 Docker0 网桥的 IP 地址段进行分配。这通常是一个虚拟的二层网络。</p>
+<p>Pod 之间可以直接通信，而真实的流量通过节点 IP 所在的物理网卡流出。</p>
+</li>
+<li>
+<p>Cluster IP（集群 IP）</p>
+<p>Service 上的集群 IP 是一个虚拟 IP，来源于集群 IP 地址池，仅在 Service 对象上有效。</p>
+<p>集群 IP 无法通过 PING 进行通信，因为没有实际的网络对象来响应。它只能与 Service 端口结合使用，形成一个具体的通信端口。单独的 IP 本身没有通信能力。</p>
+</li>
+</ul>
+<h2 id="同节点-pod-通信"><a class="markdownIt-Anchor" href="#同节点-pod-通信"></a> 同节点 Pod 通信</h2>
+<p>在基础容器（Pause 容器）启动之前，会为容器创建一对虚拟网络接口（veth pair），其中一个接口保留在主机的命名空间中（命名为 vethXXX，在节点上可直接查看），而另一个接口被移入容器的网络命名空间，并被重命名为 eth0。这两个虚拟接口就像管道的两端。</p>
+<p>主机的网络命名空间接口会绑定到容器运行时配置使用的网络桥接上，从桥接的地址段中获取 IP 地址并赋值给容器内的 eth0 网络接口。所有容器的数据都通过 eth0 发送到桥接，然后再传递给目标 Pod。</p>
+<p>如下图所示：</p>
+<p><img data-src="../../../images/%E8%99%9A%E6%8B%9F%E6%8E%A5%E5%8F%A3%E5%AF%B9.jpg" alt="虚拟接口对" /></p>
+<p>如果 Pod A 发送网络包给 Pod B，数据包将通过 Pod A 的 veth 对到达桥接，然后经过 Pod B 的 veth 对。所有节点上的容器都连接到同一个桥接上。</p>
+<h2 id="跨节点-pod-通信"><a class="markdownIt-Anchor" href="#跨节点-pod-通信"></a> 跨节点 Pod 通信</h2>
+<p>在连接不同节点的网桥方式中，可以使用覆盖网络（overlay）或底层网络（underlay），或者采用常规的三层路由。</p>
+<p>跨整个集群的 Pod 的 IP 地址必须是唯一的，因此跨节点的网桥必须使用非重叠的地址段，以避免 IP 地址冲突。例如，节点 A 上的网桥可以使用 10.1.1.0/24 地址段，而节点 B 上的网桥可以使用 10.1.2.0/24 地址段。</p>
+<p>通过三层网络来支持跨节点通信，两个节点的路由表会被配置成下图所示的方式：</p>
+<p><img data-src="../../../images/%E8%B7%A8%E8%8A%82%E7%82%B9%E9%80%9A%E4%BF%A1.jpg" alt="跨节点通信" /></p>
+<p>上述方案仅在节点之间连通到相同网关且没有其他路由时有效。否则，路由器会丢弃数据包，因为源和目标 IP 都是私有 IP 地址。</p>
+<p>使用软件定义网络（SDN）技术可以简化问题，让节点忽略底层网络拓扑，就像连接到同一个网关。从 Pod 发出的报文会被封装，在网络上发送到其他 Pod 所在的网络，然后解封装以原始格式传递给目标 Pod。</p>
+<h1 id="高可用集群"><a class="markdownIt-Anchor" href="#高可用集群"></a> 高可用集群</h1>
+<p>高可用集群是指在计算机系统或网络中采用冗余设计和自动故障恢复机制，以提高系统的可用性和稳定性。在高可用集群中，多个节点协同工作，共同承担服务的负载和功能，并能够在节点故障或其他异常情况下自动进行故障转移，确保服务的持续可用性。</p>
+<h2 id="应用高可用"><a class="markdownIt-Anchor" href="#应用高可用"></a> 应用高可用</h2>
+<p>在 K8s 上运行应用的最重要目标是保证应用的持续运行，尽量减少由人工操作基础设置导致的宕机。</p>
+<p>最常见的做法是使用 Deploy 资源来运行应用，配置适量的副本集，其余的交由 K8s 来处理。即使应用本身不支持水平扩展，仍然可以使用 Deploy 来发布单个副本。当应用不可用时，K8s 会快速替换为一个新的副本。</p>
+<p>此外，还可以同时运行一个活跃的应用和一个附加的非活跃复制集，通过领导选举机制来确保只有一个副本处于活跃状态。这样，在领导者发生宕机时，非活跃复制集会立即接替领导者的角色。</p>
+<h2 id="集群高可用性"><a class="markdownIt-Anchor" href="#集群高可用性"></a> 集群高可用性</h2>
+<p>在整个 K8s 中，Master 控制节点的重要性不言而喻。如果 Master 所在的服务器宕机，将导致整个 K8s 集群不可用。因此，可以通过运行多个主节点来提高可用性。以下是三个主节点构成的高可用集群示意图：</p>
+<p><img data-src="../../../images/%E4%B8%89%E4%B8%BB%E8%8A%82%E7%82%B9%E9%9B%86%E7%BE%A4.jpg" alt="三主节点集群" /></p>
+<h2 id="etcd-集群"><a class="markdownIt-Anchor" href="#etcd-集群"></a> Etcd 集群</h2>
+<p>由于 etcd 本身就是为分布式系统设计的，因此只需在适量的机器上运行 etcd，使它们能够相互感知即可。实现方法是修改每个实例的配置，包含其他实例的列表，etcd 会在实例之间进行数据复制。</p>
+<p>3 个节点允许其中 1 个节点宕机，最佳实践是使用 5 到 7 个节点，这样集群可以容忍 2 或 3 个节点的宕机。超过 7 个节点的数量反而会影响性能。</p>
+<h2 id="多实例-api-服务器"><a class="markdownIt-Anchor" href="#多实例-api-服务器"></a> 多实例 API 服务器</h2>
+<p>API 服务器是无状态的，因为数据存储在 etcd 中，API 服务器不进行缓存。因此，可以运行任意数量的 API 服务器，它们之间不需要感知对方的存在。</p>
+<p>通常，一个 API 服务器会与每个 etcd 实例配对，因为每个 API 服务器仅与本地的 etcd 实例通信。这样，etcd 实例就无需使用任何负载均衡器，只需要对 API 服务器进行负载均衡即可。</p>
+<h2 id="控制器和调度器的高可用性"><a class="markdownIt-Anchor" href="#控制器和调度器的高可用性"></a> 控制器和调度器的高可用性</h2>
+<p>由于控制器和调度器都会主动监听集群状态，并在发生变更时采取相应的操作，因此在多个实例中运行这些组件可能导致它们执行相同的操作并产生竞争状态，从而导致意外的影响。</p>
+<p>因此，在运行这些组件的多个实例时，同一时间只有一个实例处于活动状态。它们通过选举机制确定活跃实例（默认情况下使用 <code>--leader-elect</code> 选项），其他实例处于待命状态。只有当领导者发生故障时，剩余的实例才会选举出新的领导者来接管工作。</p>
+<p>控制器和调度器可以与 API 服务器和 etcd 配对运行。如果它们运行在不同的机器上，需要通过负载均衡器连接到 API 服务器。</p>
+<h2 id="领导者选举机制"><a class="markdownIt-Anchor" href="#领导者选举机制"></a> 领导者选举机制</h2>
+<p>控制平面组件使用的领导者选举机制不需要组件之间进行通信。其实现方式是在 API 服务器中创建一个资源，例如 Endpoint 资源：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server7-master ~<span class="token punctuation">]</span>$ kubectl get endpoints kube-scheduler <span class="token parameter variable">-n</span> kube-system <span class="token parameter variable">-o</span> yaml
+apiVersion: v1
+kind: Endpoints
+metadata:
+  annotations:
+    control-plane.alpha.kubernetes.io/leader: <span class="token string">'&#123;"holderIdentity":"server7-master_6725412a-94ed-4d16-ae7f-3f6cd7543c40","leaseDurationSeconds":15,"acquireTime":"2021-11-03T07:46:00Z","renewTime":"2021-11-03T08:09:49Z","leaderTransitions":1&#125;'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在资源的注解中，包含了一个名为 <code>control-plane.alpha.kubernetes.io/leader</code> 的字段，其中的 <code>holderIdentity</code> 字段包含了当前领导者的名称。</p>
+<p>该机制的原理是通过乐观锁来确保如果多个实例尝试向资源中写入内容，只有一个实例会成功。第一个成功将自己的名称填入 <code>holderIdentity</code> 字段的实例将成为领导者。</p>
+<p>一旦成为领导者，它默认每 2 秒必须更新 <code>holderIdentity</code> 字段，以便其他实例知道它仍在工作。一旦停止更新一段时间，其他实例将尝试将自己的名称写入资源中，以取代领导者的角色。</p>
+<h1 id="k8s-中应用发布流程"><a class="markdownIt-Anchor" href="#k8s-中应用发布流程"></a> K8s 中应用发布流程</h1>
+<p>在 Kubernetes（K8s）中，应用发布是一个关键的流程，它确保应用程序能够在集群中顺利运行并具备高可用性。</p>
+<h2 id="应用发布流程"><a class="markdownIt-Anchor" href="#应用发布流程"></a> 应用发布流程</h2>
+<p>在 Kubernetes 中发布应用的流程如下：</p>
+<ul>
+<li>打包应用：首先，需要将应用程序打包到一个或多个容器镜像中。</li>
+<li>推送镜像：将打包好的镜像推送到镜像仓库中。</li>
+<li>发布应用描述：将应用的描述发布到 API 服务器。</li>
+<li>调度容器：API 服务器通过调度器，指示可用的工作节点上的 Kubelet 拉取镜像并运行容器。</li>
+</ul>
+<p>下图提供了一个简单的示例来说明该流程：</p>
+<p><img data-src="../../../images/%E5%8F%91%E5%B8%83%E6%B5%81%E7%A8%8B.jpg" alt="发布流程" /></p>
+<h2 id="事件链"><a class="markdownIt-Anchor" href="#事件链"></a> 事件链</h2>
+<p>以一个包含 Deployment 清单的 YAML 文件举例，各控制器协同工作如下：</p>
+<p><img data-src="../../../images/%E9%83%A8%E7%BD%B2%E8%BF%87%E7%A8%8B.jpg" alt="部署过程" /></p>
+<ul>
+<li>创建 Deployment 资源：kubectl 通过 HTTP POST 请求将清单发送到 API 服务器。API 服务器检查 Deployment 的定义，创建 Deployment 资源，并将其存储到 etcd，然后返回响应给 kubectl。</li>
+<li>Deployment 控制器生成 ReplicaSet：当 Deployment 控制器监听到 API 服务器的新 Deployment 对象通知时，根据当前 Deployment 的定义，发送创建 ReplicaSet 的请求给 API 服务器，创建 ReplicaSet 资源。</li>
+<li>ReplicaSet 控制器创建 Pod 资源：当 ReplicaSet 控制器接收到新的 ReplicaSet 对象通知时，根据 replica 数量和 Pod 选择器，检查是否有足够满足选择器的 Pod。然后，基于 ReplicaSet 的 Pod 模板，发送创建 Pod 的请求给 API 服务器，创建 Pod 资源。</li>
+<li>调度器分配节点给新的 Pod：新创建的 Pod 目前保存在 etcd 中，没有关联的运行节点。调度器监控到这样的 Pod 后，为其选择最佳节点分配，并将该节点分配给 Pod。Pod 的定义现在包含了它应该运行在哪个节点上。</li>
+<li>Kubelet 运行 Pod 容器：在节点上，Kubelet 通过 API 服务器监听 Pod 的变更。当发现有分配到本节点的 Pod 后，Kubelet 检查 Pod 的定义，然后命令容器运行时启动 Pod 容器。</li>
+</ul>
+<h2 id="集群事件"><a class="markdownIt-Anchor" href="#集群事件"></a> 集群事件</h2>
+<p>在控制面板组件和 Kubelet 执行动作时，它们会向 API 服务器发送事件。通过创建事件资源来实现事件的发送。可以使用 <code>kubectl get events</code> 命令获取事件信息。</p>
+<p>更常见的方式是使用 <code>--watch</code> 参数，在发布后持续观察事件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl delete <span class="token parameter variable">-f</span> kubia-st.yaml 
+statefulset.apps <span class="token string">"kubia"</span> deleted
+<span class="token punctuation">[</span>root@server4-master manifests<span class="token punctuation">]</span>$ kubectl get events <span class="token parameter variable">--watch</span>
+LAST SEEN   TYPE     REASON    OBJECT        MESSAGE
+0s          Normal   Killing   pod/kubia-0   Stopping container kubia
+0s          Normal   Killing   pod/kubia-1   Stopping container kubia
+0s          Normal   Killing   pod/kubia-2   Stopping container kubia
+0s          Warning   FailedToUpdateEndpoint   endpoints/kubia-public   Failed to update endpoint default/kubia-public: Operation cannot be fulfilled on endpoints <span class="token string">"kubia-public"</span><span class="token builtin class-name">:</span> the object has been modified<span class="token punctuation">;</span> please apply your changes to the latest version and try again<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="发布后工作"><a class="markdownIt-Anchor" href="#发布后工作"></a> 发布后工作</h2>
+<p>应用程序在 Kubernetes 中运行后，以下是 Kubernetes 的工作：</p>
+<ul>
+<li>API 服务器会持续确认应用的部署状态是否与描述一致。如果其中一个实例停止正常工作，例如进程崩溃或停止响应，Kubernetes 将自动重新启动该实例。</li>
+<li>如果整个工作节点宕机无法访问，故障节点上运行的所有容器将被调度到新节点上运行。</li>
+<li>在程序运行期间，可以手动随时调整副本数量，也可以根据节点的实时状态指标自动调整副本数。</li>
+<li>当容器在集群中频繁调度时，服务代理将确保服务始终可用。</li>
+</ul>
+<h1 id="k8s-中应用更新流程"><a class="markdownIt-Anchor" href="#k8s-中应用更新流程"></a> K8s 中应用更新流程</h1>
+<p>Kubernetes 提供多种灵活和可控的方式来更新应用，保证应用在更新过程中的可用性和稳定性。</p>
+<h2 id="手动更新-pod-内应用"><a class="markdownIt-Anchor" href="#手动更新-pod-内应用"></a> 手动更新 Pod 内应用</h2>
+<p>假设 Pod 使用 ReplicaSet（RS）控制器来创建和管理，并且客户端通过 Service 来访问 Pod。如果要对 Pod 内的镜像进行升级，可以采取以下方式。</p>
+<h3 id="全量更新"><a class="markdownIt-Anchor" href="#全量更新"></a> 全量更新</h3>
+<p>直接删除所有现有的 Pod，然后创建新的 Pod。流程图如下：</p>
+<p><img data-src="../../../images/%E6%89%8B%E5%8A%A8%E5%8D%87%E7%BA%A7.jpg" alt="手动升级" /></p>
+<p>当使用 RS 控制器时，通过修改 RS 内的 Pod 模板镜像，然后删除旧的 Pod 实例，RS 会使用修改后的镜像来创建新的实例。</p>
+<p>这种方式会导致应用在一定的时间内不可用。</p>
+<h3 id="蓝绿部署"><a class="markdownIt-Anchor" href="#蓝绿部署"></a> 蓝绿部署</h3>
+<p>先创建新的 Pod，成功运行后再删除旧的 Pod。流程图如下：</p>
+<p><img data-src="../../../images/%E8%93%9D%E7%BB%BF%E9%83%A8%E7%BD%B2.jpg" alt="蓝绿部署" /></p>
+<p>同样，先修改 RS 内的 Pod 模板镜像，创建新版本的 Pod 并确保正常运行后，可以修改 Service 的标签选择器（使用命令 <code>kubectl set selector</code>），将流量切换到新的 Pod，最后再删除旧版本的 Pod。这也叫做蓝绿部署，适用于不能中断服务的场景。</p>
+<p>这种方法需要应用程序支持同时提供两个版本的服务，并且新版本应用不应对原有的关键数据格式或数据本身进行修改，以免导致之前版本的程序运行异常。</p>
+<h3 id="金丝雀发布"><a class="markdownIt-Anchor" href="#金丝雀发布"></a> 金丝雀发布</h3>
+<p>执行滚动升级操作流程图如下：</p>
+<p><img data-src="../../../images/%E6%BB%9A%E5%8A%A8%E5%8D%87%E7%BA%A7.jpg" alt="滚动升级" /></p>
+<p>还可以执行滚动升级操作来逐步替代原有的 Pod，而不是同时创建新的 Pod 和删除旧的 Pod。具体操作是逐步缩减旧版本的 RS 控制器中的 Pod 数量，并扩展新版本的 RS 控制器中的 Pod 数量，以逐渐调整新旧版本 Pod 的比例。这就是金丝雀发布。同时，服务的选择器应包含两个版本的 Pod。</p>
+<p>需要注意的是，手动执行滚动升级操作时容易出错，需要谨慎操作。</p>
+<h2 id="使用-rc-自动滚动升级"><a class="markdownIt-Anchor" href="#使用-rc-自动滚动升级"></a> 使用 RC 自动滚动升级</h2>
+<p>首先，创建一个 RC（Replication Controller）和服务，并使用 v1 版本的镜像：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-v1.yaml
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: kubia-v1
+spec:
+  replicas: <span class="token number">3</span>
+  template:
+    metadata:
+      name: kubia
+      labels:
+        app: kubia
+    spec:
+      containers:
+      - image: luksa/kubia:v1
+        name: nodejs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubia
+spec:
+  type: NodePort
+  selector:
+    app: kubia
+  ports:
+  - port: <span class="token number">80</span>
+    targetPort: <span class="token number">8080</span>
+    nodePort: <span class="token number">30002</span>
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-v1.yaml
+replicationcontroller/kubia-v1 created
+service/kubia created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>发布成功后，将有 3 个 v1 版本的 pod 和相应的服务开始运行。通过浏览器访问 30002 端口，并保持输出：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token keyword">while</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token keyword">do</span> <span class="token function">curl</span> http://192.168.2.204:30002<span class="token punctuation">;</span> <span class="token function">sleep</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token keyword">done</span>
+This is v1 running <span class="token keyword">in</span> pod kubia-v1-9ql94
+This is v1 running <span class="token keyword">in</span> pod kubia-v1-52pvf
+You<span class="token string">'ve hit kubia-k2l4p
+You'</span>ve hit kubia-k2l4p
+This is v1 running <span class="token keyword">in</span> pod kubia-v1-52pvf
+You've hit kubia-p9wp5<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 <code>kubectl rolling-update</code> 命令（已废弃）直接替换掉镜像，进行滚动更新：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master <span class="token number">4</span><span class="token punctuation">]</span>$ kubectl rolling-update kubia-v1 kubia-v2 <span class="token parameter variable">--image</span><span class="token operator">=</span>luksa/kubia:v2
+Command <span class="token string">"rolling-update"</span> is deprecated, use <span class="token string">"rollout"</span> instead
+Created kubia-v2
+Scaling up kubia-v2 from <span class="token number">0</span> to <span class="token number">3</span>, scaling down kubia-v1 from <span class="token number">3</span> to <span class="token number">0</span> <span class="token punctuation">(</span>keep <span class="token number">3</span> pods available, don't exceed <span class="token number">4</span> pods<span class="token punctuation">)</span>
+Scaling kubia-v2 up to <span class="token number">1</span>
+Scaling kubia-v1 down to <span class="token number">2</span>
+Scaling kubia-v2 up to <span class="token number">2</span>
+Scaling kubia-v1 down to <span class="token number">1</span>
+Scaling kubia-v2 up to <span class="token number">3</span>
+Scaling kubia-v1 down to <span class="token number">0</span>
+Update succeeded. Deleting kubia-v1
+replicationcontroller/kubia-v2 rolling updated to <span class="token string">"kubia-v2"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在开发过程中，经常会推送修改后的应用到同一个镜像标签，这可能导致镜像不会被重新拉取。或者在没有拉取过旧版本镜像的节点上，会拉取新的镜像，因此可能会同时运行两个不同版本的 pod。</p>
+<p>为了确保始终使用最新的镜像，可以将容器的 <code>imagePullPolicy</code> 属性设置为 <code>Always</code>。如果不指定镜像标签，即默认使用 <code>latest</code> 标签，则策略默认为 <code>Always</code>，但如果指定了其他标签，则策略默认为 <code>IfNotPresent</code>。</p>
+<p>自动滚动升级的步骤如下：</p>
+<ul>
+<li>通过复制 RC 控制器 <code>kubia-v1</code> 创建一个名为 <code>kubia-v2</code> 的 RC 控制器，并在 <code>kubia-v2</code> 的模板中将镜像版本改为 <code>kubia:v2</code>。</li>
+<li>立即创建 RC 控制器 <code>kubia-v2</code>，并将初始期望副本数设置为 0。</li>
+<li>修改 <code>kubia-v1</code> 和 <code>kubia-v2</code> 的标签选择器，添加一个额外的 <code>deployment</code> 标签。</li>
+<li>修改旧版本 pod 的标签，添加一个额外的 <code>deployment</code> 标签。</li>
+<li>以每次 1 个单位的步长，缩减 <code>kubia-v1</code> 的 pod 数量，并同时扩展 <code>kubia-v2</code> 的 pod 数量，新的 pod 也带有一个额外的 <code>deployment</code> 标签。</li>
+<li>最终，旧版本的 pod 数量被缩减到 0，全部被新版本的 pod 替代，旧的 RC 控制器 <code>kubia-v1</code> 被删除。</li>
+</ul>
+<p>通过这种滚动升级的方式，所有的伸缩请求都由 <code>kubectl</code> 客户端而不是主节点执行。一旦 <code>kubectl</code> 在执行升级时失去连接，升级过程将被中断，pod 和 RC 最终会处于中间状态。一种更先进的方式是使用 Deployment 资源进行部署。</p>
 ]]></content>
       <categories>
         <category>Kubernets</category>
@@ -6870,6 +6487,389 @@ namespace/pro created<span aria-hidden="true" class="line-numbers-rows"><span></
       </categories>
   </entry>
   <entry>
+    <title>Docker 基础概念</title>
+    <url>/3341501969/</url>
+    <content><![CDATA[<h1 id="虚拟化技术"><a class="markdownIt-Anchor" href="#虚拟化技术"></a> 虚拟化技术</h1>
+<p>虚拟化技术是一种计算机资源管理技术，它控制计算机硬件资源并将其抽象化，以统一的形式呈现给应用程序。对于用户而言，虚拟化只是定义了隐藏真实环境的方式，而要实现虚拟化，还需要具体执行虚拟化过程的程序。</p>
+<p>虚拟化技术可分为基于硬件的虚拟化和基于软件的虚拟化。</p>
+<ul>
+<li>
+<p>硬件虚拟化需要使用专门的硬件平台，与普通硬件设备存在兼容性问题，但其优点是可以更高效地利用硬件资源。</p>
+</li>
+<li>
+<p>软件虚拟化通常在应用程序和硬件资源之间建立一个 Hypervisor 层，应用程序通过该虚拟化环境中提供的调用接口来操作资源。例如，Java 虚拟机（JVM，Java Virtual Machine）通过这种方式实现了跨平台运行。</p>
+</li>
+</ul>
+<p>从对象所在的层次来看，软件虚拟化又可分为应用虚拟化（如手机模拟器、Wine 等）和平台虚拟化。常见的平台虚拟化包括以下几类：</p>
+<ul>
+<li>
+<p>完全虚拟化</p>
+<p>虚拟机模拟了完整的底层硬件环境和特权指令的执行过程，例如 VMware Workstation、VirtualBox、QEMU 等。</p>
+</li>
+<li>
+<p>硬件辅助虚拟化</p>
+<p>利用 CPU 的辅助支持（如 Intel-VT、AMD-V）来处理敏感指令，实现完全虚拟化的功能，例如 VMware、Xen、KVM 等。</p>
+</li>
+<li>
+<p>部分虚拟化</p>
+<p>只对部分硬件资源进行虚拟化，需要修改客户操作系统。</p>
+</li>
+<li>
+<p>超虚拟化（Paravirtualization）</p>
+<p>以软件形式提供部分硬件接口给客户机操作系统，例如早期的 Xen。</p>
+</li>
+<li>
+<p>操作系统级虚拟化</p>
+<p>通过创建多个虚拟的操作系统实例来隔离不同的进程，例如容器相关技术。</p>
+</li>
+</ul>
+<p>传统基于硬件层实现的虚拟化需要额外的虚拟机管理应用和虚拟机操作系统层。而 Docker 容器是在操作系统层面上实现虚拟化，直接复用本地主机的操作系统，因此被称为轻量级虚拟化。</p>
+<h1 id="云服务类型"><a class="markdownIt-Anchor" href="#云服务类型"></a> 云服务类型</h1>
+<p>提供云服务的公司总体可以归为以下几大类的一种或多种：</p>
+<ul>
+<li>
+<p>IaaS</p>
+<p>基础设施即服务（IaaS，Infrastructure as a Service）指在云端为用户提供基础设施，如虚拟机、服务器、存储、负载均衡和网络等，代表有 AWS 和阿里云。</p>
+</li>
+<li>
+<p>PaaS</p>
+<p>平台即服务（PaaS，Platform as a Service）指在云端为用户提供可执行环境、数据库、网站服务器和开发工具等，代表有 OpenShift、Google App Engine、dotCloud 等。</p>
+</li>
+<li>
+<p>SaaS</p>
+<p>软件即服务（SaaS，Software as a Service）指在云端为用户提供软件，如 CRM 系统、邮件系统、在线办公等。代表有微软 Office 365、有道、Tower 等。</p>
+</li>
+<li>
+<p>CaaS</p>
+<p>容器即服务（CaaS，Container as a Service）是虚拟云主机的升级版，使用容器替代虚拟机的服务模式。</p>
+</li>
+</ul>
+<p>IaaS、PaaS 和 SaaS 是云计算最基本的三种服务模式，客户通过云客户端来访问上述服务。</p>
+<h1 id="docker-运行基础"><a class="markdownIt-Anchor" href="#docker-运行基础"></a> Docker 运行基础</h1>
+<p>Docker 主要使用的技术有 Libcontainer、Namespaces、CGroups 和 AUFS。</p>
+<h2 id="namespaces"><a class="markdownIt-Anchor" href="#namespaces"></a> Namespaces</h2>
+<p>内核命名空间（Namespaces）是 Linux 下的资源隔离机制。它从内核层面将进程、进程组、IPC、网络、内存等资源分属于某个特定的命名空间，不同命名空间之间的资源相互隔离且不可见。</p>
+<p>Docker 使用以下 6 种类型的命名空间：</p>
+<ul>
+<li>PID Namespace：用于进程隔离，使容器具有独立的一套 PID。在宿主机上可以看到容器中的进程。</li>
+<li>NET Namespace：用于虚拟网络环境，使容器拥有自己独立的网络协议栈视图，包括网卡、IP、路由、防火墙规则和套接字等。</li>
+<li>IPC Namespace：用于隔离进程间的通信资源，使容器拥有自己的共享内存和 semaphore。</li>
+<li>MNT Namespace：用于管理挂载点，使容器看起来拥有整个文件系统，类似于 chroot。</li>
+<li>UTS Namespace：用于隔离主机名和域名，使容器拥有独立的主机名。</li>
+<li>USER Namespace：用于隔离用户和组，使容器拥有独立于宿主机的用户和组。</li>
+</ul>
+<p>被隔离在命名空间中的程序虽然无法感知命名空间外的程序的存在，但仍可以直接访问宿主机系统内核的功能和部分内核文件，只是在程序看来自己是独占系统的。</p>
+<h2 id="cgroups"><a class="markdownIt-Anchor" href="#cgroups"></a> CGroups</h2>
+<p>控制组（CGroups, Control Groups）可以限制、记录和调整进程组所使用的物理资源，例如给某个进程分配更多的 CPU 资源或限制内存使用上限。它能确保各个容器可以公平地共享主机的物理资源，并在容器内部资源使用紧张时不会影响到宿主机。</p>
+<p>控制组提供以下功能：</p>
+<ul>
+<li>资源限制（Resource Limiting）：可以为组设置一定的内存使用上限，超过限制时可能会出现 OOM（Out of Memory）。</li>
+<li>优先级（Prioritization）：通过调整组的优先级来分配 CPU 资源。</li>
+<li>资源审计（Accounting）：统计系统资源的使用情况。</li>
+<li>隔离（Isolation）：为组隔离命名空间。</li>
+<li>控制（Control）：执行挂起、恢复和重启等操作。</li>
+</ul>
+<p>Docker 中的控制组相关配置保存在 <code>/sys/fs/cgroup/</code> 目录下，该目录下有许多子目录，也称为子系统，如 <code>cpu</code>、<code>memory</code>、<code>blkio</code> 等。这些子系统是可以通过控制组进行资源限制的种类。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> /sys/fs/cgroup/
+blkio/            cpu,cpuacct/      freezer/          net_cls/          perf_event/       
+cpu/              cpuset/           hugetlb/          net_cls,net_prio/ pids/             
+cpuacct/          devices/          memory/           net_prio/         systemd/ <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>每个子系统对应的资源种类下，可以查看这些资源的具体限制方法：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> /sys/fs/cgroup/cpu/
+cgroup.clone_children  cpuacct.usage          cpu.rt_runtime_us      system.slice/
+cgroup.event_control   cpuacct.usage_percpu   cpu.shares             tasks
+cgroup.procs           cpu.cfs_period_us      cpu.stat               user.slice/
+cgroup.sane_behavior   cpu.cfs_quota_us       notify_on_release      
+cpuacct.stat           cpu.rt_period_us       release_agent  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在 <code>cpu</code> 子系统下创建一个目录进行测试：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> /sys/fs/cgroup/cpu/mytest
+<span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> /sys/fs/cgroup/cpu/mytest
+cgroup.clone_children  cpuacct.stat          cpu.cfs_period_us  cpu.rt_runtime_us  notify_on_release
+cgroup.event_control   cpuacct.usage         cpu.cfs_quota_us   cpu.shares         tasks
+cgroup.procs           cpuacct.usage_percpu  cpu.rt_period_us   cpu.stat<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到目录中自动生成了一些资源限制文件，该目录也被称为一个控制组。</p>
+<p>接下来，在后台执行一个会占满 CPU 的脚本：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token keyword">while</span> <span class="token builtin class-name">:</span> <span class="token punctuation">;</span> <span class="token keyword">do</span> <span class="token builtin class-name">:</span> <span class="token punctuation">;</span> <span class="token keyword">done</span> <span class="token operator">&amp;</span>
+<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token number">4195</span>
+<span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">top</span>
+   PID <span class="token environment constant">USER</span>      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND             
+  <span class="token number">4195</span> root      <span class="token number">20</span>   <span class="token number">0</span>  <span class="token number">116208</span>   <span class="token number">1260</span>    <span class="token number">152</span> R  <span class="token number">92.3</span>  <span class="token number">0.0</span>   <span class="token number">0</span>:31.78 <span class="token function">bash</span>  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>此时系统已经负载满，因为默认情况下 CPU 的 quota（配额）没有任何限制，而 CPU 的 period（周期）默认为 100ms。它们组合起来用来限制进程可以分配到的 CPU 时间：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /sys/fs/cgroup/cpu/mytest/cpu.cfs_quota_us 
+<span class="token parameter variable">-1</span>
+<span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /sys/fs/cgroup/cpu/mytest/cpu.cfs_period_us 
+<span class="token number">100000</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>手动将 <code>cpu.cfs_quota_us</code> 参数改为 20000（20ms）。这意味着在每个 100ms 的时间内，被该控制组限制的进程只能使用 20ms 的 CPU 时间，相当于 20% 的 CPU 使用率：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token number">20000</span> <span class="token operator">></span> /sys/fs/cgroup/cpu/mytest/cpu.cfs_quota_us <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>接下来，将被限制的进程的 PID 写入 <code>tasks</code> 文件来生效：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token number">4195</span> <span class="token operator">></span> /sys/fs/cgroup/cpu/mytest/tasks
+<span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">top</span>
+   PID <span class="token environment constant">USER</span>      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND             
+  <span class="token number">4195</span> root      <span class="token number">20</span>   <span class="token number">0</span>  <span class="token number">116208</span>   <span class="token number">1260</span>    <span class="token number">152</span> R  <span class="token number">20.0</span>  <span class="token number">0.0</span>   <span class="token number">9</span>:06.83 <span class="token function">bash</span>  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>此时再次使用 <code>top</code> 命令查看，可以看到进程的 CPU 使用率被限制在预期的范围内。</p>
+<p>简而言之，控制组就是一个子系统目录加上一组资源限制文件的组合。Docker 在每个子系统下为每个容器创建一个控制组（即创建新目录），然后在启动容器进程后，将进程的 PID 写入相应控制组的 <code>tasks</code> 文件中，以实现资源的限制：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> run <span class="token parameter variable">-it</span> --cpu-period<span class="token operator">=</span><span class="token number">100000</span> --cpu-quota<span class="token operator">=</span><span class="token number">20000</span> ubuntu /bin/bash
+<span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">ps</span> aux <span class="token operator">|</span> <span class="token function">grep</span> ubuntu
+root       <span class="token number">4297</span>  <span class="token number">0.0</span>  <span class="token number">0.5</span> <span class="token number">1359472</span> <span class="token number">46268</span> pts/1   Sl+  <span class="token number">14</span>:41   <span class="token number">0</span>:00 <span class="token function">docker</span> run <span class="token parameter variable">-it</span> --cpu-period<span class="token operator">=</span><span class="token number">100000</span> --cpu-quota<span class="token operator">=</span><span class="token number">20000</span> ubuntu /bin/bash
+<span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /sys/fs/cgroup/cpu/docker/9c8d7b7f5f71198e07/cpu.cfs_period_us 
+<span class="token number">100000</span>
+<span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /sys/fs/cgroup/cpu/docker/9c8d7b7f5f71198e07/cpu.cfs_quota_us 
+<span class="token number">20000</span>
+<span class="token punctuation">[</span>root@server6 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /sys/fs/cgroup/cpu/docker/9c8d7b7f5f71198e07/tasks 
+<span class="token number">4379</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="lxc"><a class="markdownIt-Anchor" href="#lxc"></a> LXC</h2>
+<p>Linux 容器 (LXC, Linux Containers) 就是基于 Linux 内核通过调用 CGroups 和 Namespaces 来实现容器轻量级虚拟化的技术。同时，LXC 也是一组面向 Linux 内核容器的用户态 API 接口。用户通过 LXC 提供的功能可以创建一套完整且互相隔离的虚拟应用运行环境。</p>
+<p>在 LXC 的实现中，运行在容器中的程序访问的是真实物理机系统，与通过虚拟机实现的虚拟化比，消除了 Hypervisor 层，大大提高了运行效率。</p>
+<h2 id="libcontainer"><a class="markdownIt-Anchor" href="#libcontainer"></a> Libcontainer</h2>
+<p>Docker 采用 libcontainer 作为默认容器，取代了之前的 LXC。libcontainer 的隔离性主要是内核的命名空间来实现的，具体有 pid、net、ipc、mnt 和 uts 等命名空间，它们将容器的进程、网络、消息、文件系统和主机名进行隔离。</p>
+<h2 id="ufs"><a class="markdownIt-Anchor" href="#ufs"></a> UFS</h2>
+<p>UnionFS（Union File System）是一个堆栈式的联合文件系统，能够把多个目录挂载成同一个目录的文件系统。</p>
+<h1 id="docker-应用范围"><a class="markdownIt-Anchor" href="#docker-应用范围"></a> Docker 应用范围</h1>
+<p>Docker 是基于 Go 语言实现的容器项目，由 dotCloud 于 2013 年正式开源，2015 年开始大规模应用。</p>
+<h2 id="云平台"><a class="markdownIt-Anchor" href="#云平台"></a> 云平台</h2>
+<p>目前，Docker 主要应用于云平台。在 Docker 出现之前，各个云平台之间存在不兼容性，而 Docker 则屏蔽了硬件层的差异，提供了统一的用户应用层。因此，企业产品可以自由迁移至各种云平台。</p>
+<h2 id="devops"><a class="markdownIt-Anchor" href="#devops"></a> Devops</h2>
+<p>Docker 的另一个应用领域是 DevOps。只需使用相同的数据镜像，就不需要考虑环境问题，减少了代码运行的差异，使开发团队能够专注于产品开发，而无需关注流程。</p>
+<p>Docker 的标准化规范弥补了开发、业务和运维之间的需求差异，可以无缝地将产品在开发、测试和生产环境之间自由移动。</p>
+<h1 id="docker-优缺点"><a class="markdownIt-Anchor" href="#docker-优缺点"></a> Docker 优缺点</h1>
+<p>总的来看，Docker 的缺点暂不构成问题，可以放心使用。</p>
+<h2 id="优点"><a class="markdownIt-Anchor" href="#优点"></a> 优点</h2>
+<p>使用 Docker 的优点有：</p>
+<ul>
+<li>
+<p><strong>高资源利用率</strong></p>
+<p>传统虚拟机的硬件资源独立不共享，而 Docker 中所有容器共享同一个系统内核和硬件资源，对资源的利用率比虚拟机高得多。在 Docker 容器中，CPU 的损耗为 0%，磁盘 IO 的损耗小于 5%，网络在使用桥接模式时损耗为 15%。</p>
+</li>
+<li>
+<p><strong>支持跨节点部署</strong></p>
+<p>借助 Docker 定义的标准镜像数据格式，可以在不同操作系统和物理硬件环境中使用。</p>
+</li>
+<li>
+<p><strong>版本可控，组件可复用</strong></p>
+<p>Docker 利用 AUFS 文件系统的特性，使得镜像与镜像之间可以互相借用组合，产生不同的镜像。并借助标签功能对镜像进行标注，实现版本控制。</p>
+</li>
+<li>
+<p><strong>共享镜像</strong></p>
+<p>Docker 作为开源软件，构建出的镜像可以自由分发和共享（主要通过 Docker Hub）。</p>
+</li>
+<li>
+<p><strong>轻量级，易维护</strong></p>
+<p>Docker 在 Linux 系统中表现为一个普通的进程，因此管理非常容易。</p>
+</li>
+</ul>
+<h2 id="缺点"><a class="markdownIt-Anchor" href="#缺点"></a> 缺点</h2>
+<p>Docker 的缺点有：</p>
+<ul>
+<li>
+<p><strong>宿主资源没有完全做到隔离</strong></p>
+<p>虽然容器使用的系统资源相互隔离，但仍有一些内核资源未被隔离开。例如 <code>/proc</code>、<code>/sys</code> 这些目录以及 SELinux、syslog 这些内核功能。因此，容器与宿主机共用内核版本，容器内无法升级内核，对内核版本有要求的应用可能与 Docker 不兼容。</p>
+</li>
+<li>
+<p><strong>Go 语言尚不成熟</strong></p>
+<p>由于 Docker 全部采用 Go 语言编写，而 Go 语言还比较年轻，难保不会发生大的变动。这可能对 Docker 产生连带影响。</p>
+</li>
+<li>
+<p><strong>控制权问题</strong></p>
+<p>虽然 Docker 现在是开源的，但实际上被一家公司所控制，并不像其他大型开源项目那样由公共基金会管理。因此，后续可能变为收费闭源项目。</p>
+</li>
+</ul>
+<h1 id="docker-构架"><a class="markdownIt-Anchor" href="#docker-构架"></a> Docker 构架</h1>
+<p>Docker 是一个客户端/服务器 (C/S) 架构的程序。客户端只需要通过 Socket 向服务器或守护进程（Docker 引擎）发送请求，服务器或守护进程将完成所有工作并返回结果。</p>
+<p>Docker 提供了一个命令行工具 <code>docker</code> 以及一套 RESTful API 来与守护进程交互。用户可以在一台主机上运行 Docker 守护进程和客户端，也可以从本地 Docker 客户端连接到运行在另一台主机上的远程 Docker 守护进程。</p>
+<h2 id="服务端"><a class="markdownIt-Anchor" href="#服务端"></a> 服务端</h2>
+<p>Docker 服务端一般在宿主机后台运行，<code>dockerd</code> 作为服务端接收来自客户端的请求，并通过 <code>containerd</code> 具体处理与容器相关的请求。服务端主要包括四个组件：</p>
+<ul>
+<li>
+<p><code>dockerd</code></p>
+<p>为客户端提供 RESTful API，响应来自客户端的请求。采用模块化的架构，通过专门的 Engine 模块来分发管理各个来自客户端的任务。</p>
+</li>
+<li>
+<p><code>docker-proxy</code></p>
+<p><code>dockerd</code> 的子进程，配置容器端口映射功能。</p>
+</li>
+<li>
+<p><code>containerd</code></p>
+<p><code>dockerd</code> 的子进程，提供 gRPC 接口响应来自 <code>dockerd</code> 的请求，对底层管理 <code>runC</code> 镜像和容器环境。</p>
+</li>
+<li>
+<p><code>containerd-shim</code></p>
+<p><code>containerd</code> 的子进程，为 <code>runC</code> 容器提供支持，同时作为容器内进程的根进程。</p>
+</li>
+</ul>
+<h2 id="客户端"><a class="markdownIt-Anchor" href="#客户端"></a> 客户端</h2>
+<p>用户使用 Docker 可执行命令即为客户端程序，<code>docker</code> 程序能将命令转为 API 请求再发送到服务端。客户端在命令执行结束后会立即退出。</p>
+<p>可以通过 <code>-H</code> 参数显式指定服务端地址，例如：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> <span class="token parameter variable">-H</span> tcp:192.168.2.241:5999 info<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="docker-储存"><a class="markdownIt-Anchor" href="#docker-储存"></a> Docker 储存</h1>
+<p>Docker 支持的存储文件系统如下：</p>
+<ul>
+<li>AUFS：最早支持的文件系统，对 Debian/Ubuntu 支持度好。</li>
+<li>Btrfs：参考 ZFS 等特性设计的文件系统，试图用来取代 Device Mapper。</li>
+<li>Device Mapper：RHEL 用来支持 Docker 开发的文件系统。</li>
+<li>Overlay：类似 AUFS 的分层文件系统，性能更好。</li>
+<li>Overlay 2：原生支持 128 层，效率比 Overlay 高。</li>
+<li>VFS：基于普通文件系统（ext、nfs 等）的中间层抽象。</li>
+<li>ZFS：为 Solaris 上专用的写时文件系统，在 Linux 上可以使用 ZFS on Linux。</li>
+</ul>
+<p>它们都能实现分层的架构，同时又有各自的特性。Docker 安装时会根据当前系统配置选择默认最适合的驱动。</p>
+<h2 id="aufs"><a class="markdownIt-Anchor" href="#aufs"></a> AUFS</h2>
+<p>AUFS（Another UnionFS 的简称）是对 UnionFS 的补充。随着 AUFS 的发展，它更名为 Advanced Multi Layered Unification Filesystem（高级多层次统一文件系统）。简单来说，AUFS 可以将分布在不同位置的目录挂载到同一个虚拟文件系统中。</p>
+<p>Docker 参考 Linux 启动过程，首先将一个只读的 bootfs（虚拟文件系统）挂载到容器文件系统中，然后将只读的 rootfs（根目录文件系统）添加到 bootfs 之上。之后每次挂载一个只读的文件层（FS 文件层），将用户所需的文件内容挂载到 rootfs 之上。</p>
+<p>这些文件层就是堆栈式文件系统中所保存的数据，在 AUFS 中，每个文件层被称为一个分支，整个文件系统称为联合文件系统。而 AUFS 则是用来管理和使用这些文件层的文件系统。</p>
+<p>Docker 利用 AUFS 加载完最高层后，在顶部再添加一个具有读写权限的文件系统层。容器内部的应用对当前文件系统的所有写操作都会保存在这个文件系统层中。当使用 commit 命令后，Docker 将会将该文件系统层中的数据作为单独的一个文件层保存在 AUFS 中。</p>
+<p>镜像（Image）可以理解为特定文件系统层的集合。从镜像启动容器（Container）时，Docker 会依次加载基础镜像（Base Image）及其上层镜像。通过将镜像划分为 AUFS 的文件层，使得所有容器可以共享文件层而不会发生写冲突。</p>
+<p>当使用 AUFS 作为存储驱动时，镜像和容器都保存在宿主机的 <code>/var/lib/docker/aufs</code> 目录下：</p>
+<ul>
+<li>/var/lib/docker/aufs/diff：镜像层数据保存目录。</li>
+<li>/var/lib/docker/aufs/layers：镜像层的元数据文件，其中的内容记录了该层之下所有镜像层的名称。</li>
+<li>/var/lib/docker/aufs/mnt：容器运行时容器中的文件系统挂载目录。</li>
+</ul>
+<h2 id="device-mapper"><a class="markdownIt-Anchor" href="#device-mapper"></a> Device Mapper</h2>
+<p>Device Mapper 是 Docker 中支持的第二种存储驱动，在 Red Hat 发行版中存在。其特点是对块设备进行操作，而不是整个文件，在宿主机上很难区分镜像层和容器层。</p>
+<p>Device Mapper 使用的数据块大小为 64KB，在大量小数据写操作时性能不如 AUFS。</p>
+<p>创建镜像的流程与 AUFS 有一些不同：</p>
+<ol>
+<li>创建一个 thin pool，该 pool 可以创建在块设备上，也可以创建在 sparse 文件上。</li>
+<li>创建一个按需分配的基础设备，并在该设备上创建文件系统。</li>
+<li>在创建镜像时，会在基础设备上进行快照，每创建一个镜像层，就会进行一次快照。在快照创建时不会占用空间，只有在内容发生变化时才会在 thin pool 中分配存储空间来保存数据。</li>
+</ol>
+<p>在容器中读取数据的流程如下：</p>
+<ol>
+<li>容器中的程序发起读请求，要访问指定地址的数据块。容器层只是镜像层的一个快照，它保存了数据块映射表，而不保存实际的数据。通过指针，它指向镜像层中真正的数据块。</li>
+<li>程序通过映射表读取对应镜像层中的数据块，并将其复制到容器的内存区域。</li>
+</ol>
+<p>在容器中修改数据的流程与 AUFS 类似，不同之处在于 AUFS 会将整个文件复制到容器层，而 Device Mapper 通过定位需要修改的数据块并分配新的存储区域，将需要修改的数据块复制到新分配的存储区域，然后由程序进行更新。</p>
+<h2 id="btrfs"><a class="markdownIt-Anchor" href="#btrfs"></a> Btrfs</h2>
+<p>Docker 使用 Btrfs 中的子卷和快照技术来管理镜像和容器。Btrfs 中的子卷类似于 UNIX 文件系统，每个子卷都有自己的目录结构。</p>
+<p>Btrfs 中的快照会复制整个子卷，并且快照是可读写的。快照保存在子卷中，也可以对快照进行递归的快照操作。</p>
+<p>Btrfs 使用写时复制技术为子卷和快照分配底层存储空间，块大小通常为 1 GB。</p>
+<p>Btrfs 将镜像的基础层作为一个子卷进行保存，其他镜像层和容器层则以快照的形式保存。</p>
+<p>Btrfs 中的读写操作与 Device Mapper 类似，但是工作在文件层而不是数据块层。在修改文件时，Btrfs 不会直接修改原文件，而是在容器层中分配新的存储空间来保存修改后的数据，然后在元数据中更新数据的指向地址。</p>
+<h2 id="zfs"><a class="markdownIt-Anchor" href="#zfs"></a> ZFS</h2>
+<p>在 Docker 中使用了三种 ZFS DataSet，包括文件系统、快照和克隆。其中，快照是只读的，克隆是从快照上创建而来，可读写。</p>
+<p>镜像的基础层是一个 ZFS 文件系统，其他镜像层是一个 ZFS 克隆。在启动容器后，会在顶部增加一个读写层。</p>
+<h2 id="overlayoverlay2"><a class="markdownIt-Anchor" href="#overlayoverlay2"></a> Overlay/Overlay2</h2>
+<p>OverlayFS 是一种联合文件系统，类似于 AUFS，使用两个目录进行分层，分别保存镜像层（lowerdir）和容器层（upperdir）。</p>
+<p>在运行容器时，Overlay 会将所有镜像层对应的目录组合起来（merged/diff），并在顶层添加一个容器层。而 Overlay2 原生支持多个 lowerdir，因此在保存多层镜像时更具优势。</p>
+<p>在 Overlay 中读取文件时，优先从容器层读取，如果容器层没有，则从镜像层读取。</p>
+<p>在 Overlay 中修改文件时，会将文件从镜像层复制到容器层，并将所有的修改保存在容器层中。</p>
+<p>在 Overlay 中删除文件时，会在容器层中新建一个 without（白障）文件，用于隐藏镜像层中的目标文件。删除目录时，会在容器层中新建一个 opaque 目录，用于隐藏镜像层中的目标目录。镜像层中的文件和目录不会被直接删除。</p>
+<h1 id="docker-网络"><a class="markdownIt-Anchor" href="#docker-网络"></a> Docker 网络</h1>
+<p>Docker 的本地网络实现利用了 Linux 上的网络命名空间和虚拟网络设备。</p>
+<p>Docker 中的网络接口默认都是虚拟接口。它通过在内核中进行数据复制来实现虚拟接口之间的数据转发，发送接口的发送缓存中的数据包直接被复制到接收接口缓存中，而无需通过外部物理网络设备进行交换。</p>
+<h2 id="网络模型"><a class="markdownIt-Anchor" href="#网络模型"></a> 网络模型</h2>
+<p>libnetwork 中的容器网络模型（CNM，Container Networking Model）非常简洁和抽象，可以让其上层使用网络功能的容器最大程度地忽略底层具体实现。</p>
+<p>容器网络模型包括三种元素：</p>
+<ul>
+<li>沙盒（Sandbox）：代表容器的网络栈，包括网卡、路由和 DNS 设置。Linux 网络命名空间是沙盒的标准实现。沙盒可以包含来自不同网络的接入点。</li>
+<li>接入点（Endpoint）：作用是将沙盒接入网络。代表网络上可以挂载容器的接口，例如 veth pair，会分配 IP 地址。</li>
+<li>网络（Network）：可以连通多个接入点的一个子网，例如 Bridge 或 VLAN 等。</li>
+</ul>
+<p>对于 CNM 的容器管理系统来说，具体底层网络如何实现，不同子网如何隔离，都不关心。只要插件能提供网络和接入点，剩下的都是插件驱动的工作，这样就解耦了容器和网络功能。</p>
+<h1 id="docker-镜像"><a class="markdownIt-Anchor" href="#docker-镜像"></a> Docker 镜像</h1>
+<p>镜像类似于虚拟机的镜像，可以将其理解为一个只读模板，保存着容器需要的环境和应用的执行代码。</p>
+<p>镜像是创建 Docker 容器的基础，不同的镜像对应着不同的应用程序或服务。</p>
+<h2 id="镜像名称"><a class="markdownIt-Anchor" href="#镜像名称"></a> 镜像名称</h2>
+<p>镜像名称的格式如下：<code>[命名空间|仓库地址]/镜像名:标签</code></p>
+<ul>
+<li>
+<p>命名空间（Namespace）</p>
+<p>用于区别构建镜像的组织或个人，一般为 Docker Hub 上的用户名。没有命名空间的镜像代表由官方提供，由可靠且权威的第三方组织或机构维护的官方镜像。</p>
+</li>
+<li>
+<p>仓库地址（URL）</p>
+<p>如果镜像放置在第三方或私有仓库中，命名空间部分使用仓库 URL 路径来命名。</p>
+</li>
+<li>
+<p>镜像名（Repository）</p>
+<p>通常采用镜像中所包含的应用程序或服务的名称作为镜像名。</p>
+</li>
+<li>
+<p>标签（Tag）</p>
+<p>习惯采用镜像包含的应用程序或服务的版本作为镜像标签。</p>
+</li>
+</ul>
+<h2 id="镜像分层"><a class="markdownIt-Anchor" href="#镜像分层"></a> 镜像分层</h2>
+<p>Docker 的镜像是一个多层结构，每一层都在原有层基础上进行改动，这称为镜像分层框架（image-layering framework）：</p>
+<ul>
+<li>镜像最底层为启动文件系统（bootfs）镜像。</li>
+<li>往上一层是根镜像（rootfs），通常包含操作系统。它不包含内核，因此可以非常小。</li>
+<li>用户镜像构建于根镜像之上，可以由多个层组成。</li>
+<li>再往上一层是初始化（init）层，存放一些定制化文件，如 /etc/hosts 和 /etc/resolv.conf。</li>
+<li>最后是用户可读写的操作层。</li>
+</ul>
+<p>类似于 Git 的原理，每一层镜像都可以视为一个提交，并拥有独立的 ID，最顶层的 ID 被视为镜像 ID（Image ID）。镜像 ID 使用 64 个十六进制字符串（256 比特）来表示。当不同的镜像包含相同的层时，本地仅保留一份相同内容的副本。</p>
+<p>当上层和下层有相同的文件和配置时，上层会覆盖下层，以上层的数据为准。用户看到的是一个叠加之后的文件系统。</p>
+<h2 id="写时复制"><a class="markdownIt-Anchor" href="#写时复制"></a> 写时复制</h2>
+<p>写时复制指的是在复制某个数组或对象时，并不立即进行复制，而是先进行一些标记动作，只有在需要修改复制的数组或对象时，才真正复制出该变量的副本。</p>
+<p>在 Docker 中，当通过镜像运行容器时，并不立即将镜像内容复制到沙盒环境，而是直接在镜像的基础上建立沙盒环境。容器运行的沙盒环境是位于镜像之上的一层临时可读写的镜像层，也被称为 thin 类型容器层。镜像层以只读方式堆叠在容器层的下方。</p>
+<p>只有在发生文件修改时，才会将原始镜像中需要修改的文件复制到容器层中，并直接保存在容器层中。在 AUFS 文件系统中，删除文件是通过在容器层中生成一个空白文件来替代镜像层对应文件的方式，实现逻辑上的删除操作。</p>
+<h1 id="docker-容器"><a class="markdownIt-Anchor" href="#docker-容器"></a> Docker 容器</h1>
+<p>容器是从镜像创建的应用运行实例，包含独立运行的一个或一组应用，以及运行环境。可以在容器中装入任何应用，所有应用的运行方式都一样，可以启动、开始、停止、删除等。同时可以在任何环境中运行容器，容器之间互相隔离。</p>
+<p>从操作系统角度看，容器是运行在操作系统上的一个特殊进程，只不过加入了对资源的隔离和限制。在 Windows 和 Mac 上的 Docker 实现基于虚拟化技术实现，和 Linux 容器不同。</p>
+<h2 id="容器设计"><a class="markdownIt-Anchor" href="#容器设计"></a> 容器设计</h2>
+<p>虽然容器中能运行多个进程或多个不同的程序，但容器只会绑定一个进程。所以容器设计上应该以一个应用程序为主体，其他程序作为主体程序的支援。</p>
+<p>这样容器启动时，主体程序也会被启动，Docker 会监视这个程序的主进程。进程退出时，容器也会停止运行。同样通过命令停止容器运行时，Docker 会发送停止信号给主体程序，让程序结束。</p>
+<h2 id="启动流程"><a class="markdownIt-Anchor" href="#启动流程"></a> 启动流程</h2>
+<p>使用 <code>docker run</code> 命令创建启动容器的流程如下：</p>
+<ol>
+<li>执行 <code>docker run</code> 命令后，Docker 会在本地搜索所需镜像，如果没找到则从远程仓库中搜索并下载到本地，如果找到了，直接使用本地镜像。</li>
+<li>Docker 使用指定镜像创建一个新容器并启动。启动后在只读镜像文件层上挂载一层可读写的容器层，用来记录改变的数据。</li>
+<li>Docker 为容器分配一个虚拟网络接口，并通过网桥的方式将该网络接口桥接到宿主机上去。然后从网桥地址池取出一个 IP 地址分配给容器虚拟网络接口。</li>
+<li>Docker 在新容器中运行指定的命令或程序，执行完毕后被自动终止。</li>
+</ol>
+<h1 id="docker-仓库"><a class="markdownIt-Anchor" href="#docker-仓库"></a> Docker 仓库</h1>
+<p>Docker 仓库是集中存放镜像文件的场所。</p>
+<p>仓库注册服务器（Registry）是存放仓库的地方，往往有多个仓库地址，用来存放不同类型的资源。</p>
+<h2 id="仓库分类"><a class="markdownIt-Anchor" href="#仓库分类"></a> 仓库分类</h2>
+<p>根据所在位置，仓库可以分为本地仓库和远程仓库。</p>
+<p>根据储存镜像公开分享与否，仓库可以分为公开仓库（Public）和私有仓库（Private）。</p>
+<h2 id="仓库组成"><a class="markdownIt-Anchor" href="#仓库组成"></a> 仓库组成</h2>
+<p>镜像仓库主要由两部分组成：</p>
+<ul>
+<li>镜像管理系统为镜像仓库提供类似代码库式的镜像存取和管理方式。</li>
+<li>用户系统为镜像仓库中的镜像管理操作的授权提供支持。</li>
+</ul>
+<h2 id="仓库角色"><a class="markdownIt-Anchor" href="#仓库角色"></a> 仓库角色</h2>
+<p>一般网络上的镜像仓库包含三个角色：</p>
+<ul>
+<li>Index（索引）：负责维护用户账号、镜像校验及公共命名空间等信息。</li>
+<li>Registry（库）：镜像和图标的仓库。</li>
+<li>Client（客户端）：用户通过客户端与仓库进行通信、鉴权、推送和拉取。</li>
+</ul>
+<h2 id="下载流程"><a class="markdownIt-Anchor" href="#下载流程"></a> 下载流程</h2>
+<p>以 Docker Hub 为例，下载镜像的流程如下：</p>
+<ol>
+<li>客户端向 Index 发送下载某个镜像的请求。</li>
+<li>Index 返回三个信息：镜像位置、镜像所有层的校验信息、授权令牌。</li>
+<li>用户使用授权 token 向目标 Registry 发出请求。</li>
+<li>Registry 向 Index 核实 token 是否授权。</li>
+<li>Index 返回授权验证结果，如果合法，则通过下载请求。</li>
+</ol>
+<h2 id="上传流程"><a class="markdownIt-Anchor" href="#上传流程"></a> 上传流程</h2>
+<p>以 Docker Hub 为例，上传镜像的流程如下：</p>
+<ol>
+<li>用户发送带有证书的请求到 Index，要求分配库名。</li>
+<li>在成功认证并确定命名空间和库名都能分配后，Index 返回一个临时 token。</li>
+<li>镜像带着临时 token 向 Registry 发起推送请求。</li>
+<li>Registry 向 Index 检验该 token 的有效性，认证成功后开始读取客户端的数据流。</li>
+<li>Index 更新此次镜像的校验信息。</li>
+</ol>
+<h1 id="相关链接"><a class="markdownIt-Anchor" href="#相关链接"></a> 相关链接</h1>
+<p>和 Docker 相关的资源网站：</p>
+<ul>
+<li><a href="https://www.docker.com/">Docker 官网</a></li>
+<li><a href="https://docs.docker.com/">Docker 官方文档</a></li>
+<li><a href="https://hub.docker.com/">Docker Hub</a></li>
+<li><a href="https://github.com/docker">Docker 源码</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Docker</category>
+        <category>1.基本操作</category>
+      </categories>
+  </entry>
+  <entry>
     <title>K8s 储存资源</title>
     <url>/1711004813/</url>
     <content><![CDATA[<h1 id="基本定义"><a class="markdownIt-Anchor" href="#基本定义"></a> 基本定义</h1>
@@ -8236,6 +8236,493 @@ kubia-fq6lt                      <span class="token number">1</span>/1     Runni
       </categories>
   </entry>
   <entry>
+    <title>K8s 服务资源</title>
+    <url>/3045985343/</url>
+    <content><![CDATA[<h1 id="服务概念"><a class="markdownIt-Anchor" href="#服务概念"></a> 服务概念</h1>
+<p>在 K8s 中，不再使用记录 pod IP 的方式来实现 pod 之间的通信，因为 pod 是活动的，会随着调度分配而更换 IP 地址。K8s 提供了一种名为服务（Service）的资源，用于解决 pod 之间的通信问题。每个服务实际上就是微服务架构中的一个微服务。</p>
+<p>服务的主要工作是通过标签选择器选取一组 pod 对象，并为这组 pod 提供一个固定的入口点（固定 IP），客户端通过访问该地址来访问这组 pod 中的任意一个对象。</p>
+<p>如果集群中存在 DNS 服务，它会在创建服务时为其自动配置一个 DNS 名称，该名称对应服务的 ClusterIP 地址，以便客户端进行服务发现。实质上，服务充当了一个四层代理服务器。</p>
+<h2 id="服务原理"><a class="markdownIt-Anchor" href="#服务原理"></a> 服务原理</h2>
+<p>每个 Service 都有自己稳定的 IP 地址和端口，客户端通过连接该 IP 和端口来使用服务。IP 地址是虚拟的，没有分配给任何网络接口，并且当数据包离开节点时，也不会被标记为数据包的源或目的地 IP 地址，因此无法使用 ping 命令连接到 Service 的 IP。</p>
+<p>与 Service 相关的所有事情都由运行在每个节点上的 kube-proxy 处理。在最初的实现中，代理模式采用用户空间代理，对于每个传入的连接，连接到一个 pod。</p>
+<p>现在采用的是 iptables 代理模式，具有更好的性能。当在 API 服务器中创建一个 Service 时，会立即分配虚拟 IP 地址。然后，API 服务器会通知所有节点上的 proxy 客户端有关新服务的信息。每个 proxy 都会在自己所在的节点上建立可寻址的服务。这是通过建立 iptables 规则来实现的，确保目标为服务的 IP/端口对的数据包被解析，目的地址被修改，从而将数据包重定向到支持该服务的一个 pod 上。</p>
+<p>除了监视 Service 的更改，proxy 还监视 Endpoint 对象的更改。Endpoint 对象会在每次新创建或删除 pod 时发生变化，以及 pod 的就绪状态或标签发生变化时，将其纳入或移出服务范畴。</p>
+<p>如下图所示，proxy 在 Service 中的作用：</p>
+<p><img data-src="../../../images/proxy%E7%9A%84%E4%BD%9C%E7%94%A8.jpg" alt="proxy的作用" /></p>
+<p>上述示例中，一个数据包从节点 A 的 pod A 发送到服务 B。节点 A 的 iptables 规则将数据包的目标地址设置为服务的 IP 和端口（172.30.0.1:80），根据规则匹配，将匹配到的地址和端口（172.30.0.1:80）替换为随机选中的 pod B2 的 IP 和端口，就好像客户端的 pod A 直接将数据包发送给 pod B，而不经过 Service。</p>
+<p>运行在每个节点上的 Proxy 进程实际上是一个智能的软件负载均衡器，内部实现了服务的负载均衡和会话保持机制。</p>
+<h2 id="外部连接的特性"><a class="markdownIt-Anchor" href="#外部连接的特性"></a> 外部连接的特性</h2>
+<p>当客户端通过节点端口连接到服务时，随机选择的 pod 并不一定在接收连接的同一节点上运行。例如，接收服务的 pod 运行在 node1，而服务在 node2，这会导致不必要的跳转。可以通过将服务配置为仅将外部通信重定向到接收连接的节点上运行的 pod。</p>
+<p>具体操作是将服务的 <code>spec.externalTrafficPolicy</code> 修改为 <code>Local</code>。如果节点上没有本地 pod 存在，则连接将挂起，因此需要确保负载均衡器将连接转发给至少具有一个 pod 的节点。</p>
+<p>然而，这种配置会引发一个问题，即原本均匀分配给 pod 的流量将按节点平均分配。例如，一个节点有一个 pod，另一个节点有两个 pod，原本每个 pod 接收的流量占比为 1/3。设置流量不转发后，一个 pod 承担了 1/2 的流量，而另外两个 pod 分别承担了 1/4 的流量。</p>
+<p>在没有配置流量不转发的情况下，当通过节点端口接收连接时，会对数据包执行源网络地址转换（SNAT），因此数据包的源 IP 地址会发生改变，后端的 pod 无法看到实际的客户端 IP 地址。而使用上述配置可以保留客户端 IP，因为接收连接的节点和目标 pod 节点之间没有额外的跳转。</p>
+<h2 id="排除连接故障"><a class="markdownIt-Anchor" href="#排除连接故障"></a> 排除连接故障</h2>
+<p>首先，确保从集群内部连接到服务时使用的是集群 IP，而不是从外部进行连接。</p>
+<p>请避免使用 ping 来判断服务是否可访问，因为服务的集群 IP 是虚拟的。</p>
+<p>如果已经定义了就绪探针，请确保探针返回成功，否则该 pod 将不会被视为服务的一部分。</p>
+<p>要确认某个容器是否属于服务，请使用 <code>get endpoints</code> 命令来检查相应的端点对象。</p>
+<p>如果通过完全限定域名（FQDN）无法访问服务，请尝试使用集群 IP 进行访问。</p>
+<p>可以尝试直接连接到 pod 的 IP 地址，以确认该 pod 是否正在正确的端口上接收连接。</p>
+<p>如果甚至无法通过 pod 的 IP 访问应用程序，请确保应用程序没有仅绑定到本地主机。</p>
+<h1 id="基本操作"><a class="markdownIt-Anchor" href="#基本操作"></a> 基本操作</h1>
+<p>服务（Services）使用标签（Labels）来选择 Pod。以下简称 SVC。</p>
+<h2 id="创建-svc"><a class="markdownIt-Anchor" href="#创建-svc"></a> 创建 SVC</h2>
+<p>假设已经启动了一组 Pod，其标签为 <code>app=kubia</code>，可以通过命令 <code>kubectl expose</code> 来创建服务。不过更推荐使用 YAML 文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubia
+spec:
+  ports:
+  - port: <span class="token number">80</span>
+    targetPort: <span class="token number">8080</span>
+  selector:
+    app: kubia<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中 80 端口用于对外访问，8080 映射到容器端口，并通过标签 <code>app=kubia</code> 选择 Pod。</p>
+<p>创建并查看服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-svc.yaml 
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get svc
+NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>   AGE
+kubernetes   ClusterIP   <span class="token number">10.96</span>.0.1        <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">443</span>/TCP   17h
+kubia        ClusterIP   <span class="token number">10.107</span>.244.106   <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>/TCP    8s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到服务已经分配了一个内部集群 IP 地址 <code>10.107.244.106</code>，访问端口为 80。</p>
+<h2 id="测试服务"><a class="markdownIt-Anchor" href="#测试服务"></a> 测试服务</h2>
+<p>由于是内部集群地址，只有集群中的 Pod 可以访问。可以使用 <code>kubectl exec</code> 命令在 Pod 中执行 <code>curl</code> 命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> kubiaex-f4wkw -- <span class="token function">curl</span> <span class="token parameter variable">-s</span> <span class="token number">10.107</span>.244.106
+You<span class="token string">'ve hit kubiaex-nj968
+[root@server4-master ~]$ kubectl exec kubiaex-f4wkw -- curl -s 10.107.244.106
+You'</span>ve hit kubiaex-ptws9<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>从结果可以看到请求连接到后端的随机一个 Pod。</p>
+<h2 id="亲和性"><a class="markdownIt-Anchor" href="#亲和性"></a> 亲和性</h2>
+<p>可以配置服务的会话亲和性，这样会使服务代理将同一 IP 的请求转发到同一个 Pod 中：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-svc.yaml
+spec:
+  sessionAffinity: ClientIP<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>亲和性配置 <code>sessionAffinity</code> 值默认为 <code>None</code>。由于 Kubernetes 服务不是在 HTTP 层面上工作，它只处理 TCP 和 UDP 包，所以会话亲和性不能基于 cookie。</p>
+<h2 id="暴露多端口"><a class="markdownIt-Anchor" href="#暴露多端口"></a> 暴露多端口</h2>
+<p>可以在服务中暴露多个端口。必须设置端口名称：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-svc.yaml
+spec:
+  ports:
+  - name: http
+    port: <span class="token number">80</span>
+    targetPort: <span class="token number">8080</span>
+  - name: https
+    port: <span class="token number">443</span>
+    targetPort: <span class="token number">8443</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="命名引用"><a class="markdownIt-Anchor" href="#命名引用"></a> 命名引用</h2>
+<p>如果 Pod 配置中对端口取了名：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-rs.yaml
+spec:
+  containers:
+    ports: 
+    - name: http
+      containerPort: <span class="token number">8080</span>
+    - name: https
+      containerPort: <span class="token number">8443</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>那么在服务配置中可以直接引用：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-svc.yaml
+spec:
+  ports:
+  - name: http
+    port: <span class="token number">80</span>
+    targetPort: http
+  - name: https
+    port: <span class="token number">443</span>
+    targetPort: https<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这样做的好处是，当容器更换端口号时，无须更改服务的配置。</p>
+<h1 id="服务发现"><a class="markdownIt-Anchor" href="#服务发现"></a> 服务发现</h1>
+<p>服务可以提供稳定的 IP 地址来访问 Pod，只要服务存在， IP 就不会变化。但客户端 Pod 要获得服务的 IP 和端口需要进行配置。</p>
+<h2 id="环境变量"><a class="markdownIt-Anchor" href="#环境变量"></a> 环境变量</h2>
+<p>如果服务先于 Pod 创建，Pod 创建时 Kubernetes 会初始化一系列环境变量，指向已存在的服务。Pod 上的进程可以根据环境变量获取服务的 IP 地址和端口号。</p>
+<p>重新运行 Pod 后再查看环境变量：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl delete <span class="token parameter variable">-f</span> kubia-rs.yaml 
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-rs.yaml 
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> kubiaex-5s68q -- <span class="token function">env</span>
+<span class="token assign-left variable">KUBIA_PORT</span><span class="token operator">=</span>tcp://10.107.244.106:80
+<span class="token assign-left variable">KUBIA_SERVICE_HOST</span><span class="token operator">=</span><span class="token number">10.107</span>.244.106
+<span class="token assign-left variable">KUBIA_SERVICE_PORT</span><span class="token operator">=</span><span class="token number">80</span>
+<span class="token assign-left variable">KUBIA_PORT_80_TCP_PROTO</span><span class="token operator">=</span>tcp
+<span class="token assign-left variable">KUBIA_PORT_80_TCP_ADDR</span><span class="token operator">=</span><span class="token number">10.107</span>.244.106
+<span class="token assign-left variable">KUBIA_PORT_80_TCP</span><span class="token operator">=</span>tcp://10.107.244.106:80
+<span class="token assign-left variable">KUBIA_PORT_80_TCP_PORT</span><span class="token operator">=</span><span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上面显示的环境变量是创建服务后才有的，它们指向了服务 <code>kubia</code> 的 IP 地址和端口。此外，还有 Kubernetes 服务的环境变量。</p>
+<h2 id="通过-dns-发现"><a class="markdownIt-Anchor" href="#通过-dns-发现"></a> 通过 DNS 发现</h2>
+<p>Kubernetes 使用 CoreDNS 作为默认的 DNS 服务。每个运行的 Pod 都会在 <code>/etc/resolv.conf</code> 中写入 DNS 服务的地址：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token parameter variable">-n</span> kube-system describe service/kube-dns
+IP:                <span class="token number">10.96</span>.0.10
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$  kubectl <span class="token builtin class-name">exec</span> <span class="token parameter variable">-it</span> kubiaex-5s68q -- <span class="token function">cat</span> /etc/resolv.conf 
+nameserver <span class="token number">10.96</span>.0.10
+search default.svc.cluster.local svc.cluster.local cluster.local
+options ndots:5<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Pod 是否使用内部 DNS 策略由 <code>spec.dnsPolicy</code> 来决定：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get po kubiaex-5s68q <span class="token parameter variable">-o</span> yaml
+spec:
+  dnsPolicy: ClusterFirst<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>客户端的 Pod 在知道服务名称的情况下，可以通过全限定域名（Fully Qualified Domain Name，FQDN）来访问，而不用依靠环境变量。例如，服务的全名是 <code>kubia.default.svc.cluster.local</code>，通过 Pod 中的容器访问这个地址：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">root@kubiaex-5s68q:/<span class="token comment"># curl http://kubia.default.svc.cluster.local</span>
+You've hit kubiaex-bwzb9<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>FQDN 分为三部分：<code>kubia</code> 为主机名，<code>default</code> 为对应的命名空间，<code>svc.cluster.local</code> 是所有集群本地服务名称中使用的可配置集群域后缀。</p>
+<p>如果要与同一命名空间下的资源通信，可以省略后缀，直接通过主机名进行通信：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">root@kubiaex-5s68q:/<span class="token comment"># curl http://kubia  </span>
+You've hit kubiaex-bwzb9
+root@kubiaex-5s68q:/<span class="token comment"># ping kubia</span>
+PING kubia.default.svc.cluster.local <span class="token punctuation">(</span><span class="token number">10.107</span>.244.106<span class="token punctuation">)</span>: <span class="token number">56</span> data bytes<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="暴露内部服务"><a class="markdownIt-Anchor" href="#暴露内部服务"></a> 暴露内部服务</h1>
+<p>服务主要作用是将集群内的服务向外公开，让外部客户端可以访问它们。如下图所示：</p>
+<p><img data-src="../../../images/%E5%B0%86%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2%E5%87%BA%E5%8E%BB.jpg" alt="将服务暴露出去" /></p>
+<p>有几种方式可以从外部访问服务：</p>
+<ul>
+<li>
+<p>将服务类型设置为 NodePort</p>
+<p>每个集群节点都会打开一个端口，并将流量转发重定向到基础服务。该服务只能在内部集群的 IP 和端口上访问，但也可以通过所有节点上的专用端口访问。</p>
+</li>
+<li>
+<p>将服务类型设置为 LoadBalancer</p>
+<p>LoadBalancer 是 NodePort 类型的一种扩展，它允许通过一个专用的负载均衡器来访问服务，该负载均衡器由云基础设施提供。负载均衡器将流量重定向到跨所有节点的节点端口，客户端可以通过负载均衡器的 IP 连接到服务。</p>
+</li>
+<li>
+<p>创建一个 Ingress 资源</p>
+<p>Ingress 资源可以通过一个 IP 地址公开多个服务，它运行在 HTTP 层（第 7 层），因此可以提供更多的功能。</p>
+</li>
+</ul>
+<p>最常用的端口暴露方式是 NodePort。一般的应用端口可以通过 Nginx 做反向代理，而不需要直接暴露出去。</p>
+<h2 id="nodeport"><a class="markdownIt-Anchor" href="#nodeport"></a> NodePort</h2>
+<p>NodePort 类型的服务可以通过任何节点的 IP 和端口进行访问，同时也可以通过服务的内部集群 IP 进行访问，两者互不冲突。默认情况下，NodePort 可用的端口范围是从 30000 到 32767。示意图如下所示：</p>
+<p><img data-src="../../../images/%E9%80%9A%E8%BF%87NodePort%E6%9A%B4%E9%9C%B2%E7%AB%AF%E5%8F%A3.jpg" alt="通过NodePort暴露端口" /></p>
+<p>创建服务配置文件时，除了将类型设置为 NodePort，还需要定义三个端口：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-np.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubia-nodeport
+spec:
+  type: NodePort
+  ports:
+  - port: <span class="token number">80</span>
+    targetPort: <span class="token number">8080</span>
+    nodePort: <span class="token number">30123</span>
+  selector:
+    app: kubia<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中，port 端口 80 代表集群内部访问端口，targetPort 端口 8080 代表 Pod 中服务监听的端口，这两个端口的定义与普通服务相同。而额外的 nodePort 端口 30123 是用于外部访问的端口。如果不设置 nodePort，Kubernetes 会使用随机端口。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-np.yaml
+service/kubia-nodeport created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>启动后，可以通过浏览器访问地址 <a href="http://xn--ip-dh3cr99d42rrmy:30123/">http://任意节点 IP:30123/</a> 来打开服务。可以使用 JSONPath 选择器来获取所有节点的 IP：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get nodes <span class="token parameter variable">-o</span> <span class="token assign-left variable">jsonpath</span><span class="token operator">=</span><span class="token string">'&#123;.items[*].status.addresses[?(@.type=="InternalIP")].address&#125;'</span>
+<span class="token number">192.168</span>.2.204 <span class="token number">192.168</span>.2.205 <span class="token number">192.168</span>.2.206<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>需要注意的是，当节点发生故障时，无法访问该节点。因此，在选择端口暴露方式时，应优先考虑使用 LoadBalancer。</p>
+<h2 id="loadbalance"><a class="markdownIt-Anchor" href="#loadbalance"></a> LoadBalance</h2>
+<p>负载均衡器具有唯一的 IP 地址，并将所有连接重定向到服务。LoadBalancer 服务是 NodePort 服务的扩展，如果 Kubernetes 在不支持负载均衡器服务的环境中运行，服务仍将以 NodePort 模式工作。其工作原理如下图所示：</p>
+<p><img data-src="../../../images/%E9%80%9A%E8%BF%87%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E6%9A%B4%E9%9C%B2%E7%AB%AF%E5%8F%A3.jpg" alt="通过负载均衡暴露端口" /></p>
+<p>可以创建一个 LoadBalancer 类型的服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-lb.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubia-loadbalancer
+spec:
+  type: LoadBalancer
+  ports:
+  - port: <span class="token number">80</span>
+    targetPort: <span class="token number">8080</span>
+  selector:
+    app: kubia
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-lb.yaml 
+service/kubia-loadbalancer created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>只需将服务类型设置为 LoadBalancer，服务将从集群基础架构中获取负载均衡器，并将其 IP 地址写入服务的 EXTERNAL-IP 字段。</p>
+<p>通过浏览器访问时，您会发现每次都会连接到同一个 Pod，这是因为服务在连接级别上工作。因此，首次建立连接时会选择一个随机集群，之后所有的数据包都会发送到同一个集群，直到连接关闭。</p>
+<h2 id="ingress"><a class="markdownIt-Anchor" href="#ingress"></a> Ingress</h2>
+<p>使用 Ingress 只需要一个公网 IP 地址就能为所有服务提供访问，Ingress 会根据请求的主机名和路径决定转发到的服务。</p>
+<p>Ingress 作用在网络第七层，因此能实现基于 cookie 的会话亲和性等功能，但相对于作用在第四层协议的服务，转发效率较低。</p>
+<p>Ingress 的工作原理如下图所示：</p>
+<p><img data-src="../../../images/%E9%80%9A%E8%BF%87Ingress%E8%AE%BF%E9%97%AEpod.jpg" alt="通过Ingress访问pod" /></p>
+<p>要让 Ingress 资源正常工作，需要配合 Ingress 控制器。可以通过官方提供的 YAML 文件直接部署 Ingress，可以选择基于 Nginx、Envoy、Haproxy、Vulcand 和 Traefik 等作为反向代理：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl apply <span class="token parameter variable">-f</span> https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml
+namespace/ingress-nginx created
+configmap/nginx-configuration created
+configmap/tcp-services created
+configmap/udp-services created
+serviceaccount/nginx-ingress-serviceaccount created
+clusterrole.rbac.authorization.k8s.io/nginx-ingress-clusterrole created
+role.rbac.authorization.k8s.io/nginx-ingress-role created
+rolebinding.rbac.authorization.k8s.io/nginx-ingress-role-nisa-binding created
+clusterrolebinding.rbac.authorization.k8s.io/nginx-ingress-clusterrole-nisa-binding created
+deployment.apps/nginx-ingress-controller created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>查看 YAML 内容后，将自动创建一个属于 ingress-nginx 命名空间的 nginx-ingress-controller 控制器的 Pod，然后创建服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl get pods --all-namespaces <span class="token parameter variable">-l</span> app.kubernetes.io/name<span class="token operator">=</span>ingress-nginx <span class="token parameter variable">--watch</span>
+NAMESPACE       NAME                                        READY   STATUS              RESTARTS   AGE
+ingress-nginx   nginx-ingress-controller-7995bd9c47-8v8rj   <span class="token number">0</span>/1     ContainerCreating   <span class="token number">0</span>          75s
+ingress-nginx   nginx-ingress-controller-7995bd9c47-8v8rj   <span class="token number">0</span>/1     Running             <span class="token number">0</span>          88s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>接着创建服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl apply <span class="token parameter variable">-f</span> https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/baremetal/service-nodeport.yaml
+service/ingress-nginx created
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get pods <span class="token parameter variable">-n</span> ingress-nginx
+NAME                                        READY   STATUS    RESTARTS   AGE
+nginx-ingress-controller-7995bd9c47-8v8rj   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          3h6m
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get svc <span class="token parameter variable">-n</span> ingress-nginx
+NAME            TYPE       CLUSTER-IP     EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>                      AGE
+ingress-nginx   NodePort   <span class="token number">10.98</span>.41.161   <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>:30112/TCP,443:30970/TCP   105m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>建立 YAML 文件来绑定后端服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-ingress.yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kubia-ingress
+spec:
+  rules:
+  - host: kubia.exp.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kubia
+          servicePort: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>将虚拟域名 <code>kubia.exp.com</code> 映射到 Ingress 控制器的节点 IP（192.168.2.113-115 <code>kubia.exp.com</code>）。配置将所有请求发送到 kubia 服务的 80 端口。云服务商要求 Ingress 指向一个 NodePort 服务，但实际上可以指向任意服务。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-ingress.yaml 
+ingress.extensions/kubia-ingress created
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl get ingresses
+NAME            HOSTS           ADDRESS   PORTS   AGE
+kubia-ingress   kubia.exp.com             <span class="token number">80</span>      59s
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl describe ingress kubia-ingress
+Name:             kubia-ingress
+Namespace:        default
+Address:          
+Default backend:  default-http-backend:80 <span class="token punctuation">(</span><span class="token operator">&lt;</span>none<span class="token operator">></span><span class="token punctuation">)</span>
+Rules:
+  Host           Path  Backends
+  ----           ----  --------
+  kubia.exp.com  
+                 /   kubia:80 <span class="token punctuation">(</span><span class="token number">10.244</span>.1.28:8080,10.244.2.43:8080,10.244.2.44:8080<span class="token punctuation">)</span>
+Annotations:
+Events:
+  Type    Reason  Age    From                      Message
+  ----    ------  ----   ----                      -------
+  Normal  CREATE  2m22s  nginx-ingress-controller  Ingress default/kubia-ingress<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>通过浏览器访问 <code>kubia.exp.com:30112</code> 即可访问 kubia 服务。</p>
+<p>客户端与控制器之间的通信采用 HTTPS 加密，而控制器与后端 Pod 之间的通信则不需要加密。运行在 Pod 上的应用程序不需要支持 TLS。例如，如果 Pod 上运行着 Web 服务器，它只需要接收 HTTP 通信，并让 Ingress 控制器负责处理与 TLS 相关的所有内容。只需将证书和私钥附加到 Ingress 上，这两个资源存储在 Secret 中，然后在 Ingress 的配置文件中引用它们：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ openssl genrsa <span class="token parameter variable">-out</span> tls.key <span class="token number">2048</span>
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ openssl req <span class="token parameter variable">-new</span> <span class="token parameter variable">-x509</span> <span class="token parameter variable">-key</span> tls.key <span class="token parameter variable">-out</span> tls.crt <span class="token parameter variable">-subj</span> /C<span class="token operator">=</span>CN/ST<span class="token operator">=</span>Beijing/L<span class="token operator">=</span>Beijing/O<span class="token operator">=</span>DevOps/CN<span class="token operator">=</span>kubia.exp.com
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl create secret tls kubia-secret <span class="token parameter variable">--cert</span><span class="token operator">=</span>tls.crt <span class="token parameter variable">--key</span><span class="token operator">=</span>tls.key
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get secret
+NAME                    TYPE                                  DATA   AGE
+default-token-5wkq2     kubernetes.io/service-account-token   <span class="token number">3</span>      25h
+kubia-secret            kubernetes.io/tls                     <span class="token number">2</span>      30s
+tomcat-ingress-secret   kubernetes.io/tls                     <span class="token number">2</span>      55m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>重新创建 Ingress，使用 HTTPS 协议将 kubia 绑定到 <code>kubia.exp.com</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-tls.yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-kubia
+  namespace: default
+spec:
+  tls:
+  - hosts:
+    - kubia.exp.com
+    secretName: kubia-secret
+  rules:
+  - host: kubia.exp.com
+    http:
+      paths:
+      - path:
+        backend:
+          serviceName: kubia
+          servicePort: <span class="token number">8080</span>
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-tls.yaml 
+ingress.extensions/ingress-kubia created
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get ingress
+NAME                 HOSTS              ADDRESS   PORTS     AGE
+ingress-kubia        kubia.exp.com                <span class="token number">80</span>, <span class="token number">443</span>   29s
+ingress-myapp        myapp.along.com              <span class="token number">80</span>        65m
+ingress-tomcat       tomcat.along.com             <span class="token number">80</span>        60m
+ingress-tomcat-tls   tomcat.along.com             <span class="token number">80</span>, <span class="token number">443</span>   58m
+kubia-ingress        kubia.exp.com                <span class="token number">80</span>        10m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用浏览器访问 HTTPS 地址：<a href="https://kubia.exp.com:30970/">https://kubia.exp.com:30970/</a> 进行验证。</p>
+<p>可以通过设置多个路径来将访问路径转发到不同的服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">..</span>.
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kubia
+          servicePort: <span class="token number">80</span>
+      - path: /admin
+        backend:
+          serviceName: admin
+          servicePort: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>同样，可以设置多个规则来将子域名转发到不同的服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kubia-ingress
+  namespace: default
+spec:
+  rules:
+  - host: kubia.exp.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kubia
+          servicePort: <span class="token number">80</span>
+  rules:
+  - host: app.exp.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: app
+          servicePort: <span class="token number">80</span>
+      - path: /api
+        backend:
+          serviceName: api
+          servicePort: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>除了使用 NodePort、LoadBalancer 等方式来暴露单个服务，还可以使用 Ingress 来暴露服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: my-ingress
+spec:
+  backend:
+    serviceName: my-svc
+    servicePort: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这样，通过外网访问 80 端口即可直接转发到 my-svc 服务。</p>
+<h1 id="指向外部服务"><a class="markdownIt-Anchor" href="#指向外部服务"></a> 指向外部服务</h1>
+<p>SVC 也可以将服务的地址重定向到集群外部网络的地址和端口，在集群中的 pod 可以像连接内部服务一样连接到外部服务。如下图所示：</p>
+<p><img data-src="../../../images/%E6%9C%8D%E5%8A%A1%E6%8C%87%E5%90%91%E5%A4%96%E9%83%A8%E5%9C%B0%E5%9D%80.jpg" alt="服务指向外部地址" /></p>
+<h2 id="endpoint"><a class="markdownIt-Anchor" href="#endpoint"></a> Endpoint</h2>
+<p>SVC 通过 Endpoint（以下简称 EP）资源与 pod 进行连接，一般指向 pod 的 IP 地址和端口列表：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl describe svc kubia
+Endpoints:         <span class="token number">10.244</span>.191.210:8080,10.244.191.211:8080,10.244.244.209:8080<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>也可以直接查询 EP 资源：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get endpoints kubia
+NAME    ENDPOINTS                                                     AGE
+kubia   <span class="token number">10.244</span>.191.210:8080,10.244.191.211:8080,10.244.244.209:8080   100m
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl describe endpoints kubia
+Name:         kubia
+Namespace:    default
+Labels:       <span class="token operator">&lt;</span>none<span class="token operator">></span>
+Annotations:  endpoints.kubernetes.io/last-change-trigger-time: <span class="token number">2021</span>-11-03T11:45:07Z
+Subsets:
+  Addresses:          <span class="token number">10.244</span>.191.210,10.244.191.211,10.244.244.209
+  NotReadyAddresses:  <span class="token operator">&lt;</span>none<span class="token operator">></span>
+  Ports:
+    Name     Port  Protocol
+    ----     ----  --------
+    <span class="token operator">&lt;</span>unset<span class="token operator">></span>  <span class="token number">8080</span>  TCP<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>EP 的作用是存储通过 pod 选择器获取的 pod 地址和端口，并提供给服务调用。</p>
+<h2 id="配置-ep"><a class="markdownIt-Anchor" href="#配置-ep"></a> 配置 EP</h2>
+<p>可以分别创建 SVC 和 EP 资源来自定义要转发到的地址列表。先创建一个没有选择器的服务，并指定 EP 的目标端口为 80：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> outside-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: outside
+spec:
+  ports:
+  - name: http
+    port: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>创建一个 EP 来指定地址列表。名称需要与 SVC 的一致：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> outside-ep.yaml
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: outside
+subsets:
+  - addresses:
+    - ip: <span class="token number">11.11</span>.11.11
+    - ip: <span class="token number">22.22</span>.22.22
+    ports:
+    - port: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>分别部署后，SVC 就具有了转发到外部服务的功能：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> outside-svc.yaml <span class="token parameter variable">-f</span> outside-ep.yaml <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>自定义 Endpoint 通常可用于服务迁移。当集群内的应用迁移到外部时，在 EP 资源中修改地址后，SVC 提供的访问 IP 地址可以保持不变。</p>
+<h2 id="配置别名"><a class="markdownIt-Anchor" href="#配置别名"></a> 配置别名</h2>
+<p>除了手动配置 EP 外，还可以设置域名作为转发目标。只需要在 SVC 配置文件中设置类型为 ExternalName 即可：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> ext-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: exten
+spec:
+  type: ExternalName
+  externalName: someapi.somecompany.com
+  ports:
+  - port: <span class="token number">80</span>
+    targetPort: <span class="token number">6379</span>
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> ext-svc.yaml 
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get svc exten 
+NAME    TYPE           CLUSTER-IP   EXTERNAL-IP               PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>   AGE
+exten   ExternalName   <span class="token operator">&lt;</span>none<span class="token operator">></span>       someapi.somecompany.com   <span class="token number">80</span>/TCP    29s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>之后，集群内的 pod 可以通过访问 <code>exten</code> 这个 SVC 就能连接到外部域名 <code>someapi.somecompany.com</code>。这样的好处是不需要关心外部域名的 IP 地址，即使 IP 有变动也不会影响 SVC 的运行。</p>
+<h1 id="无头服务"><a class="markdownIt-Anchor" href="#无头服务"></a> 无头服务</h1>
+<p>假如客户需要获取一组 pod IP，默认情况下查询服务会返回服务的集群 IP。通过把服务 IP 设为 None，客户端可以通过一个简单的 DNS A 记录查找获取到属于该服务的所有 pod IP。这种服务叫做无头服务。</p>
+<h2 id="创建服务"><a class="markdownIt-Anchor" href="#创建服务"></a> 创建服务</h2>
+<p>配置 YAML 并启动服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-headless.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubia-headless
+  namespace: default
+spec:
+  clusterIP: None
+  ports:
+  - port: <span class="token number">80</span>
+    targetPort: <span class="token number">8080</span>
+  selector:
+    app: kubia
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-headless.yaml 
+service/kubia-headless created
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get <span class="token function">service</span>
+NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>        AGE
+kubernetes       ClusterIP   <span class="token number">10.96</span>.0.1        <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">443</span>/TCP        130d
+kubia            ClusterIP   <span class="token number">10.107</span>.244.106   <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>/TCP         3h43m
+kubia-headless   ClusterIP   None             <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>/TCP         3s
+kubia-nodeport   NodePort    <span class="token number">10.99</span>.116.227    <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>:30123/TCP   148m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>创建完毕后，可以看到服务没有集群 IP。</p>
+<h2 id="通过-dns-查找"><a class="markdownIt-Anchor" href="#通过-dns-查找"></a> 通过 DNS 查找</h2>
+<p>拉取一个能够进行 DNS 查询的容器后，进入 pod 执行 DNS 查找：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl run dnsutils <span class="token parameter variable">--image</span><span class="token operator">=</span>tutum/dnsutils <span class="token parameter variable">--command</span> -- <span class="token function">sleep</span> infinity
+pod/dnsutils created
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> dnsutils <span class="token function">nslookup</span> kubia-headless
+Server:         <span class="token number">10.96</span>.0.10
+Address:        <span class="token number">10.96</span>.0.10<span class="token comment">#53</span>
+
+Name:   kubia-headless.default.svc.cluster.local
+Address: <span class="token number">10.244</span>.1.38
+Name:   kubia-headless.default.svc.cluster.local
+Address: <span class="token number">10.244</span>.2.57
+Name:   kubia-headless.default.svc.cluster.local
+Address: <span class="token number">10.244</span>.2.58<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>结果返回了 pod 的 IP，这与普通服务不同，比如 kubia 服务返回服务的集群 IP：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> dnsutils <span class="token function">nslookup</span> kubia
+Server:         <span class="token number">10.96</span>.0.10
+Address:        <span class="token number">10.96</span>.0.10<span class="token comment">#53</span>
+
+Name:   kubia.default.svc.cluster.local
+Address: <span class="token number">10.102</span>.7.149
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get svc
+NAME             TYPE        CLUSTER-IP     EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>   AGE
+kubernetes       ClusterIP   <span class="token number">10.96</span>.0.1      <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">443</span>/TCP   24h
+kubia            ClusterIP   <span class="token number">10.102</span>.7.149   <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>/TCP    64s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>无头服务使用上与普通服务一样，客户也可以通过连接服务的 DNS 名称来连接到 pod 上，不过客户端直连到 pod 上，而不是通过服务代理。</p>
+<p>无头服务仍然提供跨 pod 的负载平衡，通过 DNS 轮询机制实现。</p>
+<h2 id="发现所有-pod"><a class="markdownIt-Anchor" href="#发现所有-pod"></a> 发现所有 Pod</h2>
+<p>如果希望 pod 没有准备就绪也能被发现，可以在服务配置中添加注解：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">metadata:
+  name: kubia-headless
+  namespace: default
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: <span class="token string">"true"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+]]></content>
+      <categories>
+        <category>Kubernets</category>
+        <category>1.常用资源</category>
+      </categories>
+  </entry>
+  <entry>
     <title>K8s 控制器资源</title>
     <url>/3401119197/</url>
     <content><![CDATA[<h1 id="replicationcontroller"><a class="markdownIt-Anchor" href="#replicationcontroller"></a> ReplicationController</h1>
@@ -9150,493 +9637,6 @@ spec:
 <p>suspend：是否挂起后续的任务执行，默认为 false，对运行中的作业不会产生影响。</p>
 </li>
 </ul>
-]]></content>
-      <categories>
-        <category>Kubernets</category>
-        <category>1.常用资源</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>K8s 服务资源</title>
-    <url>/3045985343/</url>
-    <content><![CDATA[<h1 id="服务概念"><a class="markdownIt-Anchor" href="#服务概念"></a> 服务概念</h1>
-<p>在 K8s 中，不再使用记录 pod IP 的方式来实现 pod 之间的通信，因为 pod 是活动的，会随着调度分配而更换 IP 地址。K8s 提供了一种名为服务（Service）的资源，用于解决 pod 之间的通信问题。每个服务实际上就是微服务架构中的一个微服务。</p>
-<p>服务的主要工作是通过标签选择器选取一组 pod 对象，并为这组 pod 提供一个固定的入口点（固定 IP），客户端通过访问该地址来访问这组 pod 中的任意一个对象。</p>
-<p>如果集群中存在 DNS 服务，它会在创建服务时为其自动配置一个 DNS 名称，该名称对应服务的 ClusterIP 地址，以便客户端进行服务发现。实质上，服务充当了一个四层代理服务器。</p>
-<h2 id="服务原理"><a class="markdownIt-Anchor" href="#服务原理"></a> 服务原理</h2>
-<p>每个 Service 都有自己稳定的 IP 地址和端口，客户端通过连接该 IP 和端口来使用服务。IP 地址是虚拟的，没有分配给任何网络接口，并且当数据包离开节点时，也不会被标记为数据包的源或目的地 IP 地址，因此无法使用 ping 命令连接到 Service 的 IP。</p>
-<p>与 Service 相关的所有事情都由运行在每个节点上的 kube-proxy 处理。在最初的实现中，代理模式采用用户空间代理，对于每个传入的连接，连接到一个 pod。</p>
-<p>现在采用的是 iptables 代理模式，具有更好的性能。当在 API 服务器中创建一个 Service 时，会立即分配虚拟 IP 地址。然后，API 服务器会通知所有节点上的 proxy 客户端有关新服务的信息。每个 proxy 都会在自己所在的节点上建立可寻址的服务。这是通过建立 iptables 规则来实现的，确保目标为服务的 IP/端口对的数据包被解析，目的地址被修改，从而将数据包重定向到支持该服务的一个 pod 上。</p>
-<p>除了监视 Service 的更改，proxy 还监视 Endpoint 对象的更改。Endpoint 对象会在每次新创建或删除 pod 时发生变化，以及 pod 的就绪状态或标签发生变化时，将其纳入或移出服务范畴。</p>
-<p>如下图所示，proxy 在 Service 中的作用：</p>
-<p><img data-src="../../../images/proxy%E7%9A%84%E4%BD%9C%E7%94%A8.jpg" alt="proxy的作用" /></p>
-<p>上述示例中，一个数据包从节点 A 的 pod A 发送到服务 B。节点 A 的 iptables 规则将数据包的目标地址设置为服务的 IP 和端口（172.30.0.1:80），根据规则匹配，将匹配到的地址和端口（172.30.0.1:80）替换为随机选中的 pod B2 的 IP 和端口，就好像客户端的 pod A 直接将数据包发送给 pod B，而不经过 Service。</p>
-<p>运行在每个节点上的 Proxy 进程实际上是一个智能的软件负载均衡器，内部实现了服务的负载均衡和会话保持机制。</p>
-<h2 id="外部连接的特性"><a class="markdownIt-Anchor" href="#外部连接的特性"></a> 外部连接的特性</h2>
-<p>当客户端通过节点端口连接到服务时，随机选择的 pod 并不一定在接收连接的同一节点上运行。例如，接收服务的 pod 运行在 node1，而服务在 node2，这会导致不必要的跳转。可以通过将服务配置为仅将外部通信重定向到接收连接的节点上运行的 pod。</p>
-<p>具体操作是将服务的 <code>spec.externalTrafficPolicy</code> 修改为 <code>Local</code>。如果节点上没有本地 pod 存在，则连接将挂起，因此需要确保负载均衡器将连接转发给至少具有一个 pod 的节点。</p>
-<p>然而，这种配置会引发一个问题，即原本均匀分配给 pod 的流量将按节点平均分配。例如，一个节点有一个 pod，另一个节点有两个 pod，原本每个 pod 接收的流量占比为 1/3。设置流量不转发后，一个 pod 承担了 1/2 的流量，而另外两个 pod 分别承担了 1/4 的流量。</p>
-<p>在没有配置流量不转发的情况下，当通过节点端口接收连接时，会对数据包执行源网络地址转换（SNAT），因此数据包的源 IP 地址会发生改变，后端的 pod 无法看到实际的客户端 IP 地址。而使用上述配置可以保留客户端 IP，因为接收连接的节点和目标 pod 节点之间没有额外的跳转。</p>
-<h2 id="排除连接故障"><a class="markdownIt-Anchor" href="#排除连接故障"></a> 排除连接故障</h2>
-<p>首先，确保从集群内部连接到服务时使用的是集群 IP，而不是从外部进行连接。</p>
-<p>请避免使用 ping 来判断服务是否可访问，因为服务的集群 IP 是虚拟的。</p>
-<p>如果已经定义了就绪探针，请确保探针返回成功，否则该 pod 将不会被视为服务的一部分。</p>
-<p>要确认某个容器是否属于服务，请使用 <code>get endpoints</code> 命令来检查相应的端点对象。</p>
-<p>如果通过完全限定域名（FQDN）无法访问服务，请尝试使用集群 IP 进行访问。</p>
-<p>可以尝试直接连接到 pod 的 IP 地址，以确认该 pod 是否正在正确的端口上接收连接。</p>
-<p>如果甚至无法通过 pod 的 IP 访问应用程序，请确保应用程序没有仅绑定到本地主机。</p>
-<h1 id="基本操作"><a class="markdownIt-Anchor" href="#基本操作"></a> 基本操作</h1>
-<p>服务（Services）使用标签（Labels）来选择 Pod。以下简称 SVC。</p>
-<h2 id="创建-svc"><a class="markdownIt-Anchor" href="#创建-svc"></a> 创建 SVC</h2>
-<p>假设已经启动了一组 Pod，其标签为 <code>app=kubia</code>，可以通过命令 <code>kubectl expose</code> 来创建服务。不过更推荐使用 YAML 文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-svc.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: kubia
-spec:
-  ports:
-  - port: <span class="token number">80</span>
-    targetPort: <span class="token number">8080</span>
-  selector:
-    app: kubia<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>其中 80 端口用于对外访问，8080 映射到容器端口，并通过标签 <code>app=kubia</code> 选择 Pod。</p>
-<p>创建并查看服务：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-svc.yaml 
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get svc
-NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>   AGE
-kubernetes   ClusterIP   <span class="token number">10.96</span>.0.1        <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">443</span>/TCP   17h
-kubia        ClusterIP   <span class="token number">10.107</span>.244.106   <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>/TCP    8s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以看到服务已经分配了一个内部集群 IP 地址 <code>10.107.244.106</code>，访问端口为 80。</p>
-<h2 id="测试服务"><a class="markdownIt-Anchor" href="#测试服务"></a> 测试服务</h2>
-<p>由于是内部集群地址，只有集群中的 Pod 可以访问。可以使用 <code>kubectl exec</code> 命令在 Pod 中执行 <code>curl</code> 命令：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> kubiaex-f4wkw -- <span class="token function">curl</span> <span class="token parameter variable">-s</span> <span class="token number">10.107</span>.244.106
-You<span class="token string">'ve hit kubiaex-nj968
-[root@server4-master ~]$ kubectl exec kubiaex-f4wkw -- curl -s 10.107.244.106
-You'</span>ve hit kubiaex-ptws9<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>从结果可以看到请求连接到后端的随机一个 Pod。</p>
-<h2 id="亲和性"><a class="markdownIt-Anchor" href="#亲和性"></a> 亲和性</h2>
-<p>可以配置服务的会话亲和性，这样会使服务代理将同一 IP 的请求转发到同一个 Pod 中：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-svc.yaml
-spec:
-  sessionAffinity: ClientIP<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>亲和性配置 <code>sessionAffinity</code> 值默认为 <code>None</code>。由于 Kubernetes 服务不是在 HTTP 层面上工作，它只处理 TCP 和 UDP 包，所以会话亲和性不能基于 cookie。</p>
-<h2 id="暴露多端口"><a class="markdownIt-Anchor" href="#暴露多端口"></a> 暴露多端口</h2>
-<p>可以在服务中暴露多个端口。必须设置端口名称：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-svc.yaml
-spec:
-  ports:
-  - name: http
-    port: <span class="token number">80</span>
-    targetPort: <span class="token number">8080</span>
-  - name: https
-    port: <span class="token number">443</span>
-    targetPort: <span class="token number">8443</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="命名引用"><a class="markdownIt-Anchor" href="#命名引用"></a> 命名引用</h2>
-<p>如果 Pod 配置中对端口取了名：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-rs.yaml
-spec:
-  containers:
-    ports: 
-    - name: http
-      containerPort: <span class="token number">8080</span>
-    - name: https
-      containerPort: <span class="token number">8443</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>那么在服务配置中可以直接引用：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-svc.yaml
-spec:
-  ports:
-  - name: http
-    port: <span class="token number">80</span>
-    targetPort: http
-  - name: https
-    port: <span class="token number">443</span>
-    targetPort: https<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>这样做的好处是，当容器更换端口号时，无须更改服务的配置。</p>
-<h1 id="服务发现"><a class="markdownIt-Anchor" href="#服务发现"></a> 服务发现</h1>
-<p>服务可以提供稳定的 IP 地址来访问 Pod，只要服务存在， IP 就不会变化。但客户端 Pod 要获得服务的 IP 和端口需要进行配置。</p>
-<h2 id="环境变量"><a class="markdownIt-Anchor" href="#环境变量"></a> 环境变量</h2>
-<p>如果服务先于 Pod 创建，Pod 创建时 Kubernetes 会初始化一系列环境变量，指向已存在的服务。Pod 上的进程可以根据环境变量获取服务的 IP 地址和端口号。</p>
-<p>重新运行 Pod 后再查看环境变量：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl delete <span class="token parameter variable">-f</span> kubia-rs.yaml 
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-rs.yaml 
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> kubiaex-5s68q -- <span class="token function">env</span>
-<span class="token assign-left variable">KUBIA_PORT</span><span class="token operator">=</span>tcp://10.107.244.106:80
-<span class="token assign-left variable">KUBIA_SERVICE_HOST</span><span class="token operator">=</span><span class="token number">10.107</span>.244.106
-<span class="token assign-left variable">KUBIA_SERVICE_PORT</span><span class="token operator">=</span><span class="token number">80</span>
-<span class="token assign-left variable">KUBIA_PORT_80_TCP_PROTO</span><span class="token operator">=</span>tcp
-<span class="token assign-left variable">KUBIA_PORT_80_TCP_ADDR</span><span class="token operator">=</span><span class="token number">10.107</span>.244.106
-<span class="token assign-left variable">KUBIA_PORT_80_TCP</span><span class="token operator">=</span>tcp://10.107.244.106:80
-<span class="token assign-left variable">KUBIA_PORT_80_TCP_PORT</span><span class="token operator">=</span><span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>上面显示的环境变量是创建服务后才有的，它们指向了服务 <code>kubia</code> 的 IP 地址和端口。此外，还有 Kubernetes 服务的环境变量。</p>
-<h2 id="通过-dns-发现"><a class="markdownIt-Anchor" href="#通过-dns-发现"></a> 通过 DNS 发现</h2>
-<p>Kubernetes 使用 CoreDNS 作为默认的 DNS 服务。每个运行的 Pod 都会在 <code>/etc/resolv.conf</code> 中写入 DNS 服务的地址：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token parameter variable">-n</span> kube-system describe service/kube-dns
-IP:                <span class="token number">10.96</span>.0.10
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$  kubectl <span class="token builtin class-name">exec</span> <span class="token parameter variable">-it</span> kubiaex-5s68q -- <span class="token function">cat</span> /etc/resolv.conf 
-nameserver <span class="token number">10.96</span>.0.10
-search default.svc.cluster.local svc.cluster.local cluster.local
-options ndots:5<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>Pod 是否使用内部 DNS 策略由 <code>spec.dnsPolicy</code> 来决定：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get po kubiaex-5s68q <span class="token parameter variable">-o</span> yaml
-spec:
-  dnsPolicy: ClusterFirst<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>客户端的 Pod 在知道服务名称的情况下，可以通过全限定域名（Fully Qualified Domain Name，FQDN）来访问，而不用依靠环境变量。例如，服务的全名是 <code>kubia.default.svc.cluster.local</code>，通过 Pod 中的容器访问这个地址：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">root@kubiaex-5s68q:/<span class="token comment"># curl http://kubia.default.svc.cluster.local</span>
-You've hit kubiaex-bwzb9<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>FQDN 分为三部分：<code>kubia</code> 为主机名，<code>default</code> 为对应的命名空间，<code>svc.cluster.local</code> 是所有集群本地服务名称中使用的可配置集群域后缀。</p>
-<p>如果要与同一命名空间下的资源通信，可以省略后缀，直接通过主机名进行通信：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">root@kubiaex-5s68q:/<span class="token comment"># curl http://kubia  </span>
-You've hit kubiaex-bwzb9
-root@kubiaex-5s68q:/<span class="token comment"># ping kubia</span>
-PING kubia.default.svc.cluster.local <span class="token punctuation">(</span><span class="token number">10.107</span>.244.106<span class="token punctuation">)</span>: <span class="token number">56</span> data bytes<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="暴露内部服务"><a class="markdownIt-Anchor" href="#暴露内部服务"></a> 暴露内部服务</h1>
-<p>服务主要作用是将集群内的服务向外公开，让外部客户端可以访问它们。如下图所示：</p>
-<p><img data-src="../../../images/%E5%B0%86%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2%E5%87%BA%E5%8E%BB.jpg" alt="将服务暴露出去" /></p>
-<p>有几种方式可以从外部访问服务：</p>
-<ul>
-<li>
-<p>将服务类型设置为 NodePort</p>
-<p>每个集群节点都会打开一个端口，并将流量转发重定向到基础服务。该服务只能在内部集群的 IP 和端口上访问，但也可以通过所有节点上的专用端口访问。</p>
-</li>
-<li>
-<p>将服务类型设置为 LoadBalancer</p>
-<p>LoadBalancer 是 NodePort 类型的一种扩展，它允许通过一个专用的负载均衡器来访问服务，该负载均衡器由云基础设施提供。负载均衡器将流量重定向到跨所有节点的节点端口，客户端可以通过负载均衡器的 IP 连接到服务。</p>
-</li>
-<li>
-<p>创建一个 Ingress 资源</p>
-<p>Ingress 资源可以通过一个 IP 地址公开多个服务，它运行在 HTTP 层（第 7 层），因此可以提供更多的功能。</p>
-</li>
-</ul>
-<p>最常用的端口暴露方式是 NodePort。一般的应用端口可以通过 Nginx 做反向代理，而不需要直接暴露出去。</p>
-<h2 id="nodeport"><a class="markdownIt-Anchor" href="#nodeport"></a> NodePort</h2>
-<p>NodePort 类型的服务可以通过任何节点的 IP 和端口进行访问，同时也可以通过服务的内部集群 IP 进行访问，两者互不冲突。默认情况下，NodePort 可用的端口范围是从 30000 到 32767。示意图如下所示：</p>
-<p><img data-src="../../../images/%E9%80%9A%E8%BF%87NodePort%E6%9A%B4%E9%9C%B2%E7%AB%AF%E5%8F%A3.jpg" alt="通过NodePort暴露端口" /></p>
-<p>创建服务配置文件时，除了将类型设置为 NodePort，还需要定义三个端口：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-np.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: kubia-nodeport
-spec:
-  type: NodePort
-  ports:
-  - port: <span class="token number">80</span>
-    targetPort: <span class="token number">8080</span>
-    nodePort: <span class="token number">30123</span>
-  selector:
-    app: kubia<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>其中，port 端口 80 代表集群内部访问端口，targetPort 端口 8080 代表 Pod 中服务监听的端口，这两个端口的定义与普通服务相同。而额外的 nodePort 端口 30123 是用于外部访问的端口。如果不设置 nodePort，Kubernetes 会使用随机端口。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-np.yaml
-service/kubia-nodeport created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>启动后，可以通过浏览器访问地址 <a href="http://xn--ip-dh3cr99d42rrmy:30123/">http://任意节点 IP:30123/</a> 来打开服务。可以使用 JSONPath 选择器来获取所有节点的 IP：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get nodes <span class="token parameter variable">-o</span> <span class="token assign-left variable">jsonpath</span><span class="token operator">=</span><span class="token string">'&#123;.items[*].status.addresses[?(@.type=="InternalIP")].address&#125;'</span>
-<span class="token number">192.168</span>.2.204 <span class="token number">192.168</span>.2.205 <span class="token number">192.168</span>.2.206<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>需要注意的是，当节点发生故障时，无法访问该节点。因此，在选择端口暴露方式时，应优先考虑使用 LoadBalancer。</p>
-<h2 id="loadbalance"><a class="markdownIt-Anchor" href="#loadbalance"></a> LoadBalance</h2>
-<p>负载均衡器具有唯一的 IP 地址，并将所有连接重定向到服务。LoadBalancer 服务是 NodePort 服务的扩展，如果 Kubernetes 在不支持负载均衡器服务的环境中运行，服务仍将以 NodePort 模式工作。其工作原理如下图所示：</p>
-<p><img data-src="../../../images/%E9%80%9A%E8%BF%87%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E6%9A%B4%E9%9C%B2%E7%AB%AF%E5%8F%A3.jpg" alt="通过负载均衡暴露端口" /></p>
-<p>可以创建一个 LoadBalancer 类型的服务：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-lb.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: kubia-loadbalancer
-spec:
-  type: LoadBalancer
-  ports:
-  - port: <span class="token number">80</span>
-    targetPort: <span class="token number">8080</span>
-  selector:
-    app: kubia
-<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-lb.yaml 
-service/kubia-loadbalancer created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>只需将服务类型设置为 LoadBalancer，服务将从集群基础架构中获取负载均衡器，并将其 IP 地址写入服务的 EXTERNAL-IP 字段。</p>
-<p>通过浏览器访问时，您会发现每次都会连接到同一个 Pod，这是因为服务在连接级别上工作。因此，首次建立连接时会选择一个随机集群，之后所有的数据包都会发送到同一个集群，直到连接关闭。</p>
-<h2 id="ingress"><a class="markdownIt-Anchor" href="#ingress"></a> Ingress</h2>
-<p>使用 Ingress 只需要一个公网 IP 地址就能为所有服务提供访问，Ingress 会根据请求的主机名和路径决定转发到的服务。</p>
-<p>Ingress 作用在网络第七层，因此能实现基于 cookie 的会话亲和性等功能，但相对于作用在第四层协议的服务，转发效率较低。</p>
-<p>Ingress 的工作原理如下图所示：</p>
-<p><img data-src="../../../images/%E9%80%9A%E8%BF%87Ingress%E8%AE%BF%E9%97%AEpod.jpg" alt="通过Ingress访问pod" /></p>
-<p>要让 Ingress 资源正常工作，需要配合 Ingress 控制器。可以通过官方提供的 YAML 文件直接部署 Ingress，可以选择基于 Nginx、Envoy、Haproxy、Vulcand 和 Traefik 等作为反向代理：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl apply <span class="token parameter variable">-f</span> https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml
-namespace/ingress-nginx created
-configmap/nginx-configuration created
-configmap/tcp-services created
-configmap/udp-services created
-serviceaccount/nginx-ingress-serviceaccount created
-clusterrole.rbac.authorization.k8s.io/nginx-ingress-clusterrole created
-role.rbac.authorization.k8s.io/nginx-ingress-role created
-rolebinding.rbac.authorization.k8s.io/nginx-ingress-role-nisa-binding created
-clusterrolebinding.rbac.authorization.k8s.io/nginx-ingress-clusterrole-nisa-binding created
-deployment.apps/nginx-ingress-controller created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>查看 YAML 内容后，将自动创建一个属于 ingress-nginx 命名空间的 nginx-ingress-controller 控制器的 Pod，然后创建服务：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl get pods --all-namespaces <span class="token parameter variable">-l</span> app.kubernetes.io/name<span class="token operator">=</span>ingress-nginx <span class="token parameter variable">--watch</span>
-NAMESPACE       NAME                                        READY   STATUS              RESTARTS   AGE
-ingress-nginx   nginx-ingress-controller-7995bd9c47-8v8rj   <span class="token number">0</span>/1     ContainerCreating   <span class="token number">0</span>          75s
-ingress-nginx   nginx-ingress-controller-7995bd9c47-8v8rj   <span class="token number">0</span>/1     Running             <span class="token number">0</span>          88s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>接着创建服务：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl apply <span class="token parameter variable">-f</span> https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/baremetal/service-nodeport.yaml
-service/ingress-nginx created
-<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get pods <span class="token parameter variable">-n</span> ingress-nginx
-NAME                                        READY   STATUS    RESTARTS   AGE
-nginx-ingress-controller-7995bd9c47-8v8rj   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          3h6m
-<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get svc <span class="token parameter variable">-n</span> ingress-nginx
-NAME            TYPE       CLUSTER-IP     EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>                      AGE
-ingress-nginx   NodePort   <span class="token number">10.98</span>.41.161   <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>:30112/TCP,443:30970/TCP   105m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>建立 YAML 文件来绑定后端服务：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-ingress.yaml
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: kubia-ingress
-spec:
-  rules:
-  - host: kubia.exp.com
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: kubia
-          servicePort: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>将虚拟域名 <code>kubia.exp.com</code> 映射到 Ingress 控制器的节点 IP（192.168.2.113-115 <code>kubia.exp.com</code>）。配置将所有请求发送到 kubia 服务的 80 端口。云服务商要求 Ingress 指向一个 NodePort 服务，但实际上可以指向任意服务。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-ingress.yaml 
-ingress.extensions/kubia-ingress created
-<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl get ingresses
-NAME            HOSTS           ADDRESS   PORTS   AGE
-kubia-ingress   kubia.exp.com             <span class="token number">80</span>      59s
-<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl describe ingress kubia-ingress
-Name:             kubia-ingress
-Namespace:        default
-Address:          
-Default backend:  default-http-backend:80 <span class="token punctuation">(</span><span class="token operator">&lt;</span>none<span class="token operator">></span><span class="token punctuation">)</span>
-Rules:
-  Host           Path  Backends
-  ----           ----  --------
-  kubia.exp.com  
-                 /   kubia:80 <span class="token punctuation">(</span><span class="token number">10.244</span>.1.28:8080,10.244.2.43:8080,10.244.2.44:8080<span class="token punctuation">)</span>
-Annotations:
-Events:
-  Type    Reason  Age    From                      Message
-  ----    ------  ----   ----                      -------
-  Normal  CREATE  2m22s  nginx-ingress-controller  Ingress default/kubia-ingress<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>通过浏览器访问 <code>kubia.exp.com:30112</code> 即可访问 kubia 服务。</p>
-<p>客户端与控制器之间的通信采用 HTTPS 加密，而控制器与后端 Pod 之间的通信则不需要加密。运行在 Pod 上的应用程序不需要支持 TLS。例如，如果 Pod 上运行着 Web 服务器，它只需要接收 HTTP 通信，并让 Ingress 控制器负责处理与 TLS 相关的所有内容。只需将证书和私钥附加到 Ingress 上，这两个资源存储在 Secret 中，然后在 Ingress 的配置文件中引用它们：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ openssl genrsa <span class="token parameter variable">-out</span> tls.key <span class="token number">2048</span>
-<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ openssl req <span class="token parameter variable">-new</span> <span class="token parameter variable">-x509</span> <span class="token parameter variable">-key</span> tls.key <span class="token parameter variable">-out</span> tls.crt <span class="token parameter variable">-subj</span> /C<span class="token operator">=</span>CN/ST<span class="token operator">=</span>Beijing/L<span class="token operator">=</span>Beijing/O<span class="token operator">=</span>DevOps/CN<span class="token operator">=</span>kubia.exp.com
-<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl create secret tls kubia-secret <span class="token parameter variable">--cert</span><span class="token operator">=</span>tls.crt <span class="token parameter variable">--key</span><span class="token operator">=</span>tls.key
-<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get secret
-NAME                    TYPE                                  DATA   AGE
-default-token-5wkq2     kubernetes.io/service-account-token   <span class="token number">3</span>      25h
-kubia-secret            kubernetes.io/tls                     <span class="token number">2</span>      30s
-tomcat-ingress-secret   kubernetes.io/tls                     <span class="token number">2</span>      55m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>重新创建 Ingress，使用 HTTPS 协议将 kubia 绑定到 <code>kubia.exp.com</code>：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-tls.yaml
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: ingress-kubia
-  namespace: default
-spec:
-  tls:
-  - hosts:
-    - kubia.exp.com
-    secretName: kubia-secret
-  rules:
-  - host: kubia.exp.com
-    http:
-      paths:
-      - path:
-        backend:
-          serviceName: kubia
-          servicePort: <span class="token number">8080</span>
-<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-tls.yaml 
-ingress.extensions/ingress-kubia created
-<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get ingress
-NAME                 HOSTS              ADDRESS   PORTS     AGE
-ingress-kubia        kubia.exp.com                <span class="token number">80</span>, <span class="token number">443</span>   29s
-ingress-myapp        myapp.along.com              <span class="token number">80</span>        65m
-ingress-tomcat       tomcat.along.com             <span class="token number">80</span>        60m
-ingress-tomcat-tls   tomcat.along.com             <span class="token number">80</span>, <span class="token number">443</span>   58m
-kubia-ingress        kubia.exp.com                <span class="token number">80</span>        10m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>使用浏览器访问 HTTPS 地址：<a href="https://kubia.exp.com:30970/">https://kubia.exp.com:30970/</a> 进行验证。</p>
-<p>可以通过设置多个路径来将访问路径转发到不同的服务：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">..</span>.
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: kubia
-          servicePort: <span class="token number">80</span>
-      - path: /admin
-        backend:
-          serviceName: admin
-          servicePort: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>同样，可以设置多个规则来将子域名转发到不同的服务：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: kubia-ingress
-  namespace: default
-spec:
-  rules:
-  - host: kubia.exp.com
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: kubia
-          servicePort: <span class="token number">80</span>
-  rules:
-  - host: app.exp.com
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: app
-          servicePort: <span class="token number">80</span>
-      - path: /api
-        backend:
-          serviceName: api
-          servicePort: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>除了使用 NodePort、LoadBalancer 等方式来暴露单个服务，还可以使用 Ingress 来暴露服务：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: my-ingress
-spec:
-  backend:
-    serviceName: my-svc
-    servicePort: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>这样，通过外网访问 80 端口即可直接转发到 my-svc 服务。</p>
-<h1 id="指向外部服务"><a class="markdownIt-Anchor" href="#指向外部服务"></a> 指向外部服务</h1>
-<p>SVC 也可以将服务的地址重定向到集群外部网络的地址和端口，在集群中的 pod 可以像连接内部服务一样连接到外部服务。如下图所示：</p>
-<p><img data-src="../../../images/%E6%9C%8D%E5%8A%A1%E6%8C%87%E5%90%91%E5%A4%96%E9%83%A8%E5%9C%B0%E5%9D%80.jpg" alt="服务指向外部地址" /></p>
-<h2 id="endpoint"><a class="markdownIt-Anchor" href="#endpoint"></a> Endpoint</h2>
-<p>SVC 通过 Endpoint（以下简称 EP）资源与 pod 进行连接，一般指向 pod 的 IP 地址和端口列表：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl describe svc kubia
-Endpoints:         <span class="token number">10.244</span>.191.210:8080,10.244.191.211:8080,10.244.244.209:8080<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>也可以直接查询 EP 资源：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get endpoints kubia
-NAME    ENDPOINTS                                                     AGE
-kubia   <span class="token number">10.244</span>.191.210:8080,10.244.191.211:8080,10.244.244.209:8080   100m
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl describe endpoints kubia
-Name:         kubia
-Namespace:    default
-Labels:       <span class="token operator">&lt;</span>none<span class="token operator">></span>
-Annotations:  endpoints.kubernetes.io/last-change-trigger-time: <span class="token number">2021</span>-11-03T11:45:07Z
-Subsets:
-  Addresses:          <span class="token number">10.244</span>.191.210,10.244.191.211,10.244.244.209
-  NotReadyAddresses:  <span class="token operator">&lt;</span>none<span class="token operator">></span>
-  Ports:
-    Name     Port  Protocol
-    ----     ----  --------
-    <span class="token operator">&lt;</span>unset<span class="token operator">></span>  <span class="token number">8080</span>  TCP<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>EP 的作用是存储通过 pod 选择器获取的 pod 地址和端口，并提供给服务调用。</p>
-<h2 id="配置-ep"><a class="markdownIt-Anchor" href="#配置-ep"></a> 配置 EP</h2>
-<p>可以分别创建 SVC 和 EP 资源来自定义要转发到的地址列表。先创建一个没有选择器的服务，并指定 EP 的目标端口为 80：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> outside-svc.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: outside
-spec:
-  ports:
-  - name: http
-    port: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>创建一个 EP 来指定地址列表。名称需要与 SVC 的一致：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> outside-ep.yaml
-apiVersion: v1
-kind: Endpoints
-metadata:
-  name: outside
-subsets:
-  - addresses:
-    - ip: <span class="token number">11.11</span>.11.11
-    - ip: <span class="token number">22.22</span>.22.22
-    ports:
-    - port: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>分别部署后，SVC 就具有了转发到外部服务的功能：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> outside-svc.yaml <span class="token parameter variable">-f</span> outside-ep.yaml <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>自定义 Endpoint 通常可用于服务迁移。当集群内的应用迁移到外部时，在 EP 资源中修改地址后，SVC 提供的访问 IP 地址可以保持不变。</p>
-<h2 id="配置别名"><a class="markdownIt-Anchor" href="#配置别名"></a> 配置别名</h2>
-<p>除了手动配置 EP 外，还可以设置域名作为转发目标。只需要在 SVC 配置文件中设置类型为 ExternalName 即可：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> ext-svc.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: exten
-spec:
-  type: ExternalName
-  externalName: someapi.somecompany.com
-  ports:
-  - port: <span class="token number">80</span>
-    targetPort: <span class="token number">6379</span>
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> ext-svc.yaml 
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get svc exten 
-NAME    TYPE           CLUSTER-IP   EXTERNAL-IP               PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>   AGE
-exten   ExternalName   <span class="token operator">&lt;</span>none<span class="token operator">></span>       someapi.somecompany.com   <span class="token number">80</span>/TCP    29s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>之后，集群内的 pod 可以通过访问 <code>exten</code> 这个 SVC 就能连接到外部域名 <code>someapi.somecompany.com</code>。这样的好处是不需要关心外部域名的 IP 地址，即使 IP 有变动也不会影响 SVC 的运行。</p>
-<h1 id="无头服务"><a class="markdownIt-Anchor" href="#无头服务"></a> 无头服务</h1>
-<p>假如客户需要获取一组 pod IP，默认情况下查询服务会返回服务的集群 IP。通过把服务 IP 设为 None，客户端可以通过一个简单的 DNS A 记录查找获取到属于该服务的所有 pod IP。这种服务叫做无头服务。</p>
-<h2 id="创建服务"><a class="markdownIt-Anchor" href="#创建服务"></a> 创建服务</h2>
-<p>配置 YAML 并启动服务：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-headless.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: kubia-headless
-  namespace: default
-spec:
-  clusterIP: None
-  ports:
-  - port: <span class="token number">80</span>
-    targetPort: <span class="token number">8080</span>
-  selector:
-    app: kubia
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-headless.yaml 
-service/kubia-headless created
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get <span class="token function">service</span>
-NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>        AGE
-kubernetes       ClusterIP   <span class="token number">10.96</span>.0.1        <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">443</span>/TCP        130d
-kubia            ClusterIP   <span class="token number">10.107</span>.244.106   <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>/TCP         3h43m
-kubia-headless   ClusterIP   None             <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>/TCP         3s
-kubia-nodeport   NodePort    <span class="token number">10.99</span>.116.227    <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>:30123/TCP   148m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>创建完毕后，可以看到服务没有集群 IP。</p>
-<h2 id="通过-dns-查找"><a class="markdownIt-Anchor" href="#通过-dns-查找"></a> 通过 DNS 查找</h2>
-<p>拉取一个能够进行 DNS 查询的容器后，进入 pod 执行 DNS 查找：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl run dnsutils <span class="token parameter variable">--image</span><span class="token operator">=</span>tutum/dnsutils <span class="token parameter variable">--command</span> -- <span class="token function">sleep</span> infinity
-pod/dnsutils created
-<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> dnsutils <span class="token function">nslookup</span> kubia-headless
-Server:         <span class="token number">10.96</span>.0.10
-Address:        <span class="token number">10.96</span>.0.10<span class="token comment">#53</span>
-
-Name:   kubia-headless.default.svc.cluster.local
-Address: <span class="token number">10.244</span>.1.38
-Name:   kubia-headless.default.svc.cluster.local
-Address: <span class="token number">10.244</span>.2.57
-Name:   kubia-headless.default.svc.cluster.local
-Address: <span class="token number">10.244</span>.2.58<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>结果返回了 pod 的 IP，这与普通服务不同，比如 kubia 服务返回服务的集群 IP：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> dnsutils <span class="token function">nslookup</span> kubia
-Server:         <span class="token number">10.96</span>.0.10
-Address:        <span class="token number">10.96</span>.0.10<span class="token comment">#53</span>
-
-Name:   kubia.default.svc.cluster.local
-Address: <span class="token number">10.102</span>.7.149
-<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get svc
-NAME             TYPE        CLUSTER-IP     EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>   AGE
-kubernetes       ClusterIP   <span class="token number">10.96</span>.0.1      <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">443</span>/TCP   24h
-kubia            ClusterIP   <span class="token number">10.102</span>.7.149   <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>/TCP    64s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>无头服务使用上与普通服务一样，客户也可以通过连接服务的 DNS 名称来连接到 pod 上，不过客户端直连到 pod 上，而不是通过服务代理。</p>
-<p>无头服务仍然提供跨 pod 的负载平衡，通过 DNS 轮询机制实现。</p>
-<h2 id="发现所有-pod"><a class="markdownIt-Anchor" href="#发现所有-pod"></a> 发现所有 Pod</h2>
-<p>如果希望 pod 没有准备就绪也能被发现，可以在服务配置中添加注解：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">metadata:
-  name: kubia-headless
-  namespace: default
-  annotations:
-    service.alpha.kubernetes.io/tolerate-unready-endpoints: <span class="token string">"true"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 ]]></content>
       <categories>
         <category>Kubernets</category>
