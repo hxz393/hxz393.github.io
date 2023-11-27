@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://lib.baomitu.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://lib.baomitu.com/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://lib.baomitu.com/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://lib.baomitu.com/pace/1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://lib.baomitu.com/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="js/config.js"></script>
+
+    <meta name="description" content="如果 table 组件本身也需要调用 ActionCopy 中的 copy_selected 方法，这意味着您需要一个机制，使得 table 能够访问 ActionCopy 的实例或方法。在这种情况下，考虑以下几点很重要：  反向依赖：通常，UI 控件（如 table）不应直接依赖于特定的操作或行为（如 copy_selected），因为这会增加组件间的耦合。 事件驱动：在 GUI 应用中，操作通">
+<meta property="og:type" content="website">
+<meta property="og:title" content="X to Bytes">
+<meta property="og:url" content="https://blog.x2b.net/table%E9%87%8D%E6%9E%84.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="如果 table 组件本身也需要调用 ActionCopy 中的 copy_selected 方法，这意味着您需要一个机制，使得 table 能够访问 ActionCopy 的实例或方法。在这种情况下，考虑以下几点很重要：  反向依赖：通常，UI 控件（如 table）不应直接依赖于特定的操作或行为（如 copy_selected），因为这会增加组件间的耦合。 事件驱动：在 GUI 应用中，操作通">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-25T03:24:02.432Z">
+<meta property="article:modified_time" content="2023-11-25T03:24:02.432Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/table%E9%87%8D%E6%9E%84">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/table%E9%87%8D%E6%9E%84.html","path":"table重构.html","title":""}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title> | X to Bytes
+</title>
+  
+
+  <script src="js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">16</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">95</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E4%BD%BF%E7%94%A8%E4%BF%A1%E5%8F%B7%E6%A7%BD%E6%9C%BA%E5%88%B6"><span class="nav-number">1.</span> <span class="nav-text"> 1. 使用信号槽机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text"> 2. 回调函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E4%BD%BF%E7%94%A8%E5%85%A8%E5%B1%80%E6%88%96%E5%85%B1%E4%BA%AB%E5%AE%9E%E4%BE%8B"><span class="nav-number">3.</span> <span class="nav-text"> 3. 使用全局或共享实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E5%93%AA%E7%A7%8D%E6%96%B9%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text"> 选择哪种方式？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%B0%81%E8%A3%85%E5%AF%B9-table-%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="nav-number">5.</span> <span class="nav-text"> 1. 封装对 table 的操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%BD%BF%E7%94%A8%E4%BF%A1%E5%8F%B7%E6%A7%BD%E6%9C%BA%E5%88%B6"><span class="nav-number">6.</span> <span class="nav-text"> 2. 使用信号槽机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5"><span class="nav-number">7.</span> <span class="nav-text"> 3. 依赖注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%8E%A5%E5%8F%A3%E6%8A%BD%E8%B1%A1"><span class="nav-number">8.</span> <span class="nav-text"> 4. 接口抽象</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">95</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner page posts-expand">
+
+
+    
+    
+    
+    <div class="post-block" lang="zh-CN"><header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta-container">
+</div>
+
+</header>
+
+      
+      
+      <div class="post-body">
+          <p>如果 <code>table</code> 组件本身也需要调用 <code>ActionCopy</code> 中的 <code>copy_selected</code> 方法，这意味着您需要一个机制，使得 <code>table</code> 能够访问 <code>ActionCopy</code> 的实例或方法。在这种情况下，考虑以下几点很重要：</p>
+<ol>
+<li><strong>反向依赖</strong>：通常，UI 控件（如 <code>table</code>）不应直接依赖于特定的操作或行为（如 <code>copy_selected</code>），因为这会增加组件间的耦合。</li>
+<li><strong>事件驱动</strong>：在 GUI 应用中，操作通常是由事件触发的，如按钮点击或快捷键。这些事件应该在 UI 层处理，然后调用相应的逻辑。</li>
+</ol>
+<p>根据您的需求，以下是几种可能的实现方式：</p>
+<h3 id="1-使用信号槽机制"><a class="markdownIt-Anchor" href="#1-使用信号槽机制"></a> 1. 使用信号槽机制</h3>
+<p>这是 PyQt 应用中最符合规范的方式。您可以在 <code>table</code> 中发射一个信号，然后在 <code>ActionCopy</code> 或其他适当的地方连接这个信号到 <code>copy_selected</code> 方法。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">TableWidget</span><span class="token punctuation">(</span>QTableWidget<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    request_copy <span class="token operator">=</span> pyqtSignal<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token builtin">super</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>__init__<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token comment"># 初始化代码</span>
+        self<span class="token punctuation">.</span>request_copy<span class="token punctuation">.</span>connect<span class="token punctuation">(</span>self<span class="token punctuation">.</span>handle_copy_request<span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">handle_copy_request</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment"># 调用 ActionCopy 中的 copy_selected 方法</span>
+
+<span class="token comment"># 在 ActionCopy 或其他合适的地方</span>
+table_widget <span class="token operator">=</span> TableWidget<span class="token punctuation">(</span><span class="token punctuation">)</span>
+action_copy <span class="token operator">=</span> ActionCopy<span class="token punctuation">(</span><span class="token punctuation">)</span>
+table_widget<span class="token punctuation">.</span>request_copy<span class="token punctuation">.</span>connect<span class="token punctuation">(</span>action_copy<span class="token punctuation">.</span>copy_selected<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="2-回调函数"><a class="markdownIt-Anchor" href="#2-回调函数"></a> 2. 回调函数</h3>
+<p>您可以将 <code>copy_selected</code> 方法作为回调函数传递给 <code>table</code>，这样 <code>table</code> 可以在需要时调用这个方法。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">TableWidget</span><span class="token punctuation">(</span>QTableWidget<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> copy_callback<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token builtin">super</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>__init__<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>copy_callback <span class="token operator">=</span> copy_callback
+
+    <span class="token keyword">def</span> <span class="token function">some_method</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment"># 需要复制时</span>
+        self<span class="token punctuation">.</span>copy_callback<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token comment"># 在初始化 TableWidget 时</span>
+action_copy <span class="token operator">=</span> ActionCopy<span class="token punctuation">(</span><span class="token punctuation">)</span>
+table_widget <span class="token operator">=</span> TableWidget<span class="token punctuation">(</span>action_copy<span class="token punctuation">.</span>copy_selected<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="3-使用全局或共享实例"><a class="markdownIt-Anchor" href="#3-使用全局或共享实例"></a> 3. 使用全局或共享实例</h3>
+<p>如果您的应用结构允许，可以创建 <code>ActionCopy</code> 的全局或共享实例，然后在 <code>table</code> 中直接使用这个实例。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment"># 创建 ActionCopy 的全局实例</span>
+global_action_copy <span class="token operator">=</span> ActionCopy<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token keyword">class</span> <span class="token class-name">TableWidget</span><span class="token punctuation">(</span>QTableWidget<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">some_method</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment"># 使用全局实例</span>
+        global_action_copy<span class="token punctuation">.</span>copy_selected<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token comment"># 在需要的地方使用 global_action_copy</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="选择哪种方式"><a class="markdownIt-Anchor" href="#选择哪种方式"></a> 选择哪种方式？</h3>
+<p>在决定使用哪种方式时，需要考虑应用的整体架构和未来的扩展性。通常，使用信号槽机制是最符合 PyQt 设计原则的方法，它可以有效地解耦 UI 组件和逻辑处理。而回调函数和全局实例虽然简单，但可能在更复杂的应用中带来维护上的挑战。</p>
+<p>每种方法都有其适用场景，最佳选择取决于您的具体需求和应用的总体设计。</p>
+<p>当然，我会逐一解释每种方法，并为您提供相应的示例代码。这些代码片段假定您已经有了基本的 PyQt5 和 Python 知识。</p>
+<h3 id="1-封装对-table-的操作"><a class="markdownIt-Anchor" href="#1-封装对-table-的操作"></a> 1. 封装对 <code>table</code> 的操作</h3>
+<p>假设您创建一个名为 <code>TableManager</code> 的类来管理与表格相关的操作：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">TableManager</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> table<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>table <span class="token operator">=</span> table
+
+    <span class="token keyword">def</span> <span class="token function">get_selected_data</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        selected_ranges <span class="token operator">=</span> self<span class="token punctuation">.</span>table<span class="token punctuation">.</span>selectedRanges<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">if</span> <span class="token keyword">not</span> selected_ranges<span class="token punctuation">:</span>
+            <span class="token keyword">return</span> <span class="token boolean">None</span>
+
+        <span class="token keyword">return</span> self<span class="token punctuation">.</span>_format_selected_data<span class="token punctuation">(</span>selected_ranges<span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">_format_selected_data</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> selected_ranges<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment"># ... 与原来 _format_selected_data 相同的逻辑 ...</span>
+
+    <span class="token comment"># 其他表格相关的方法...</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在 <code>ActionCopy</code> 类中使用这个 <code>TableManager</code>：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">ActionCopy</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> main_window<span class="token punctuation">:</span> ConfigCenterComparer<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment"># ... 其他初始化代码 ...</span>
+        self<span class="token punctuation">.</span>table_manager <span class="token operator">=</span> TableManager<span class="token punctuation">(</span>self<span class="token punctuation">.</span>table<span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">copy_selected</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> Optional<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
+        <span class="token keyword">try</span><span class="token punctuation">:</span>
+            clipboard_data <span class="token operator">=</span> self<span class="token punctuation">.</span>table_manager<span class="token punctuation">.</span>get_selected_data<span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token keyword">if</span> clipboard_data <span class="token keyword">is</span> <span class="token keyword">not</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+                QApplication<span class="token punctuation">.</span>clipboard<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>setText<span class="token punctuation">(</span>clipboard_data<span class="token punctuation">)</span>
+            <span class="token keyword">return</span> clipboard_data
+        <span class="token keyword">except</span> Exception<span class="token punctuation">:</span>
+            <span class="token comment"># ... 异常处理 ...</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="2-使用信号槽机制"><a class="markdownIt-Anchor" href="#2-使用信号槽机制"></a> 2. 使用信号槽机制</h3>
+<p>假设您为 <code>table</code> 更新定义了一个信号：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> PyQt5<span class="token punctuation">.</span>QtCore <span class="token keyword">import</span> pyqtSignal<span class="token punctuation">,</span> QObject
+
+<span class="token keyword">class</span> <span class="token class-name">TableSignals</span><span class="token punctuation">(</span>QObject<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    data_changed <span class="token operator">=</span> pyqtSignal<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token keyword">class</span> <span class="token class-name">TableManager</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> table<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>table <span class="token operator">=</span> table
+        self<span class="token punctuation">.</span>signals <span class="token operator">=</span> TableSignals<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">update_data</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> new_data<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment"># 更新表格数据的逻辑</span>
+        self<span class="token punctuation">.</span>signals<span class="token punctuation">.</span>data_changed<span class="token punctuation">.</span>emit<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在主窗口或其他组件中连接这个信号：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">MainWindow</span><span class="token punctuation">(</span>ConfigCenterComparer<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment"># ... 初始化代码 ...</span>
+        self<span class="token punctuation">.</span>table_manager <span class="token operator">=</span> TableManager<span class="token punctuation">(</span>self<span class="token punctuation">.</span>table<span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>table_manager<span class="token punctuation">.</span>signals<span class="token punctuation">.</span>data_changed<span class="token punctuation">.</span>connect<span class="token punctuation">(</span>self<span class="token punctuation">.</span>on_table_data_changed<span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">on_table_data_changed</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment"># 响应表格数据变化的逻辑</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="3-依赖注入"><a class="markdownIt-Anchor" href="#3-依赖注入"></a> 3. 依赖注入</h3>
+<p>在 <code>ActionCopy</code> 的构造函数中直接传入 <code>table</code> 对象：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">ActionCopy</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> table<span class="token punctuation">:</span> QTableWidget<span class="token punctuation">,</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">)</span><span class="token punctuation">:</span>  <span class="token comment"># 其他依赖</span>
+        self<span class="token punctuation">.</span>table <span class="token operator">=</span> table
+        <span class="token comment"># ... 其他初始化代码 ...</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用时：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">action_copy <span class="token operator">=</span> ActionCopy<span class="token punctuation">(</span>main_window<span class="token punctuation">.</span>table<span class="token punctuation">,</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="4-接口抽象"><a class="markdownIt-Anchor" href="#4-接口抽象"></a> 4. 接口抽象</h3>
+<p>定义一个表格接口：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> abc <span class="token keyword">import</span> ABC<span class="token punctuation">,</span> abstractmethod
+
+<span class="token keyword">class</span> <span class="token class-name">ITable</span><span class="token punctuation">(</span>ABC<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token decorator annotation punctuation">@abstractmethod</span>
+    <span class="token keyword">def</span> <span class="token function">get_selected_data</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">pass</span>
+
+    <span class="token comment"># 可以定义其他需要的抽象方法</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>让 <code>TableManager</code> 实现这个接口：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">TableManager</span><span class="token punctuation">(</span>ITable<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> table<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>table <span class="token operator">=</span> table
+
+    <span class="token keyword">def</span> <span class="token function">get_selected_data</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment"># 实现抽象方法</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在 <code>ActionCopy</code> 中，您可以针对 <code>ITable</code> 接口编程，而不是具体的 <code>TableManager</code> 类：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">ActionCopy</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> table<span class="token punctuation">:</span> ITable<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>table <span class="token operator">=</span> table
+        <span class="token comment"># ... 其他初始化代码 ...</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这些示例展示了如何将您的代码重构为更模块化、可维护的形式。在实际应用中，您可能需要根据具体的应用场景调整这些示例。</p>
+
+      </div>
+      
+      
+      
+    </div>
+
+    
+    
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">295k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">16:25</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://lib.baomitu.com/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://lib.baomitu.com/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://lib.baomitu.com/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://lib.baomitu.com/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="js/comments.js"></script><script src="js/utils.js"></script><script src="js/motion.js"></script><script src="js/next-boot.js"></script><script src="js/pjax.js"></script>
+
+  <script src="https://lib.baomitu.com/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.4/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://lib.baomitu.com/KaTeX/0.16.4/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="js/third-party/math/katex.js"></script>
+
+
+  <script src="https://lib.baomitu.com/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/table%E9%87%8D%E6%9E%84.html"}</script>
+  <script src="js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://lib.baomitu.com/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://lib.baomitu.com/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

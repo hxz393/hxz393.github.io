@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://lib.baomitu.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://lib.baomitu.com/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://lib.baomitu.com/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://lib.baomitu.com/pace/1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://lib.baomitu.com/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="js/config.js"></script>
+
+    <meta name="description" content="Python 类型提示（Type Hints）概述 Python 类型提示（Type Hints）是 Python 3.5 引入的一项功能，旨在提高代码的可读性和维护性。它允许开发者为变量、函数参数和返回值指定预期的数据类型。类型提示本身不会影响程序的运行时行为，但它可以通过静态代码分析工具（如 Mypy）来检查类型一致性，有助于在早期发现潜在的错误。  如何阅读类型提示 类型提示的阅读主要关注">
+<meta property="og:type" content="website">
+<meta property="og:title" content="X to Bytes">
+<meta property="og:url" content="https://blog.x2b.net/Python%20%E7%B1%BB%E5%9E%8B%E6%8F%90%E7%A4%BA%EF%BC%88Type%20Hints%EF%BC%89.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="Python 类型提示（Type Hints）概述 Python 类型提示（Type Hints）是 Python 3.5 引入的一项功能，旨在提高代码的可读性和维护性。它允许开发者为变量、函数参数和返回值指定预期的数据类型。类型提示本身不会影响程序的运行时行为，但它可以通过静态代码分析工具（如 Mypy）来检查类型一致性，有助于在早期发现潜在的错误。  如何阅读类型提示 类型提示的阅读主要关注">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-22T01:08:29.115Z">
+<meta property="article:modified_time" content="2023-11-22T01:08:29.115Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/Python%20%E7%B1%BB%E5%9E%8B%E6%8F%90%E7%A4%BA%EF%BC%88Type%20Hints%EF%BC%89">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/Python%20%E7%B1%BB%E5%9E%8B%E6%8F%90%E7%A4%BA%EF%BC%88Type%20Hints%EF%BC%89.html","path":"Python 类型提示（Type Hints）.html","title":""}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title> | X to Bytes
+</title>
+  
+
+  <script src="js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">16</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">95</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#python-%E7%B1%BB%E5%9E%8B%E6%8F%90%E7%A4%BAtype-hints%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text"> Python 类型提示（Type Hints）概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%98%85%E8%AF%BB%E7%B1%BB%E5%9E%8B%E6%8F%90%E7%A4%BA"><span class="nav-number">2.</span> <span class="nav-text"> 如何阅读类型提示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%86%99%E7%B1%BB%E5%9E%8B%E6%8F%90%E7%A4%BA"><span class="nav-number">3.</span> <span class="nav-text"> 如何写类型提示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#python-%E4%B8%AD%E5%B8%B8%E8%A7%81%E7%9A%84%E6%B3%9B%E5%9E%8B%E7%B1%BB%E5%9E%8B%E7%A4%BA%E4%BE%8B"><span class="nav-number">4.</span> <span class="nav-text"> Python 中常见的泛型类型示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%84%E5%90%88%E6%B3%9B%E5%9E%8B%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%86%99%E6%B3%95"><span class="nav-number">5.</span> <span class="nav-text"> 组合泛型类型的写法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">6.</span> <span class="nav-text"> 示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#any-%E5%92%8C-union-%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">7.</span> <span class="nav-text"> Any 和 Union 的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-any"><span class="nav-number">7.1.</span> <span class="nav-text"> 使用 Any</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-union"><span class="nav-number">7.2.</span> <span class="nav-text"> 使用 Union</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%89%E6%8B%A9-any-%E8%BF%98%E6%98%AF-union"><span class="nav-number">8.</span> <span class="nav-text"> 选择 Any 还是 Union</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%B5%8C%E5%A5%97%E7%9A%84%E6%B3%9B%E5%9E%8B%E7%B1%BB%E5%9E%8B"><span class="nav-number">9.</span> <span class="nav-text"> 1. 嵌套的泛型类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%BD%BF%E7%94%A8%E6%B3%9B%E5%9E%8B%E4%B8%8E%E7%B1%BB%E5%9E%8B%E5%8F%98%E9%87%8F"><span class="nav-number">10.</span> <span class="nav-text"> 2. 使用泛型与类型变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0higher-order-functions"><span class="nav-number">11.</span> <span class="nav-text"> 3. 高阶函数（Higher-order Functions）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E4%BD%BF%E7%94%A8-union-%E5%92%8C-optional-%E7%9A%84%E5%A4%8D%E6%9D%82%E6%83%85%E5%86%B5"><span class="nav-number">12.</span> <span class="nav-text"> 4. 使用 Union 和 Optional 的复杂情况</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">95</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner page posts-expand">
+
+
+    
+    
+    
+    <div class="post-block" lang="zh-CN"><header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta-container">
+</div>
+
+</header>
+
+      
+      
+      <div class="post-body">
+          <h3 id="python-类型提示type-hints概述"><a class="markdownIt-Anchor" href="#python-类型提示type-hints概述"></a> Python 类型提示（Type Hints）概述</h3>
+<p>Python 类型提示（Type Hints）是 Python 3.5 引入的一项功能，旨在提高代码的可读性和维护性。它允许开发者为变量、函数参数和返回值指定预期的数据类型。类型提示本身不会影响程序的运行时行为，但它可以通过静态代码分析工具（如 Mypy）来检查类型一致性，有助于在早期发现潜在的错误。</p>
+<h3 id="如何阅读类型提示"><a class="markdownIt-Anchor" href="#如何阅读类型提示"></a> 如何阅读类型提示</h3>
+<p>类型提示的阅读主要关注两个方面：<strong>变量类型</strong>和<strong>函数签名</strong>。</p>
+<ol>
+<li>
+<p><strong>变量类型</strong>：</p>
+<ul>
+<li>例如，<code>name: str = &quot;Alice&quot;</code> 表示 <code>name</code> 是一个字符串类型的变量。</li>
+</ul>
+</li>
+<li>
+<p><strong>函数签名</strong>：</p>
+<ul>
+<li>参数类型：在函数定义中，参数后面通过冒号指定类型。</li>
+<li>返回类型：在函数参数列表后，使用 <code>-&gt;</code> 符号指定返回值类型。</li>
+<li>例如，<code>def greet(name: str) -&gt; str:</code> 表示 <code>greet</code> 是一个接受字符串参数 <code>name</code> 并返回字符串的函数。</li>
+</ul>
+</li>
+</ol>
+<h3 id="如何写类型提示"><a class="markdownIt-Anchor" href="#如何写类型提示"></a> 如何写类型提示</h3>
+<ol>
+<li>
+<p><strong>为变量添加类型提示</strong>：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">age<span class="token punctuation">:</span> <span class="token builtin">int</span> <span class="token operator">=</span> <span class="token number">30</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li>
+<p><strong>为函数参数和返回值添加类型提示</strong>：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">add_numbers</span><span class="token punctuation">(</span>x<span class="token punctuation">:</span> <span class="token builtin">int</span><span class="token punctuation">,</span> y<span class="token punctuation">:</span> <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">int</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> x <span class="token operator">+</span> y<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+</li>
+<li>
+<p><strong>使用类型别名</strong>：</p>
+<ul>
+<li>可以定义一个类型别名来简化复杂的类型声明。</li>
+<li>例如：<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> List<span class="token punctuation">,</span> Tuple
+
+Vector <span class="token operator">=</span> List<span class="token punctuation">[</span><span class="token builtin">float</span><span class="token punctuation">]</span>
+Point <span class="token operator">=</span> Tuple<span class="token punctuation">[</span><span class="token builtin">float</span><span class="token punctuation">,</span> <span class="token builtin">float</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>使用泛型</strong>：</p>
+<ul>
+<li>对于泛型集合，可以指定包含元素的类型。</li>
+<li>例如：<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> Dict<span class="token punctuation">,</span> List
+
+names<span class="token punctuation">:</span> List<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">"Alice"</span><span class="token punctuation">,</span> <span class="token string">"Bob"</span><span class="token punctuation">]</span>
+ages<span class="token punctuation">:</span> Dict<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">,</span> <span class="token builtin">int</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">"Alice"</span><span class="token punctuation">:</span> <span class="token number">30</span><span class="token punctuation">,</span> <span class="token string">"Bob"</span><span class="token punctuation">:</span> <span class="token number">25</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>处理可选类型</strong>：</p>
+<ul>
+<li>使用 <code>Optional</code> 来表示一个变量可能是某个类型，也可能是 <code>None</code>。</li>
+<li>例如：<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> Optional
+
+<span class="token keyword">def</span> <span class="token function">get_name</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> Optional<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
+    <span class="token keyword">if</span> condition<span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token string">"Alice"</span>
+    <span class="token keyword">else</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token boolean">None</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>类型注释与 Python 运行时</strong>：</p>
+<ul>
+<li>需要注意的是，类型注释不会影响 Python 程序的运行时行为。</li>
+<li>它们主要用于代码审查和静态类型检查工具。</li>
+</ul>
+</li>
+</ol>
+<p>通过正确使用类型提示，你的 Python 代码将变得更加清晰和易于维护。同时，这也有助于团队合作中的代码理解和错误预防。</p>
+<h3 id="python-中常见的泛型类型示例"><a class="markdownIt-Anchor" href="#python-中常见的泛型类型示例"></a> Python 中常见的泛型类型示例</h3>
+<p>泛型（Generics）在 Python 中主要通过 <code>typing</code> 模块提供的类实现。这些泛型类型允许您指定容器内元素的类型。以下是一些常见泛型类型的具体示例：</p>
+<ol>
+<li>
+<p><strong>List（列表）</strong>：</p>
+<ul>
+<li>用于指定具有特定类型元素的列表。</li>
+<li>示例：<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> List
+
+numbers<span class="token punctuation">:</span> List<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span>
+names<span class="token punctuation">:</span> List<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">"Alice"</span><span class="token punctuation">,</span> <span class="token string">"Bob"</span><span class="token punctuation">,</span> <span class="token string">"Charlie"</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Dict（字典）</strong>：</p>
+<ul>
+<li>用于指定键和值具有特定类型的字典。</li>
+<li>示例：<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> Dict
+
+ages<span class="token punctuation">:</span> Dict<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">,</span> <span class="token builtin">int</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">"Alice"</span><span class="token punctuation">:</span> <span class="token number">30</span><span class="token punctuation">,</span> <span class="token string">"Bob"</span><span class="token punctuation">:</span> <span class="token number">25</span><span class="token punctuation">&#125;</span>
+translations<span class="token punctuation">:</span> Dict<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">,</span> <span class="token builtin">str</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">"hello"</span><span class="token punctuation">:</span> <span class="token string">"你好"</span><span class="token punctuation">,</span> <span class="token string">"thank you"</span><span class="token punctuation">:</span> <span class="token string">"谢谢"</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Tuple（元组）</strong>：</p>
+<ul>
+<li>用于指定元组中每个元素的类型。</li>
+<li>示例：<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> Tuple
+
+coordinates<span class="token punctuation">:</span> Tuple<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">,</span> <span class="token builtin">int</span><span class="token punctuation">,</span> <span class="token builtin">int</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">20</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">)</span>
+mixed<span class="token punctuation">:</span> Tuple<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">,</span> <span class="token builtin">int</span><span class="token punctuation">,</span> <span class="token builtin">float</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token string">"Alice"</span><span class="token punctuation">,</span> <span class="token number">25</span><span class="token punctuation">,</span> <span class="token number">5.5</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Set（集合）</strong>：</p>
+<ul>
+<li>用于指定具有特定类型元素的集合。</li>
+<li>示例：<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> Set
+
+unique_numbers<span class="token punctuation">:</span> Set<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">&#125;</span>
+colors<span class="token punctuation">:</span> Set<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">"red"</span><span class="token punctuation">,</span> <span class="token string">"green"</span><span class="token punctuation">,</span> <span class="token string">"blue"</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Optional（可选类型）</strong>：</p>
+<ul>
+<li>用于表示变量可能是某个给定类型，也可能是 <code>None</code>。</li>
+<li>示例：<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> Optional
+
+maybe_name<span class="token punctuation">:</span> Optional<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">None</span>  <span class="token comment"># 可能是字符串，也可能是 None</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Union（联合类型）</strong>：</p>
+<ul>
+<li>用于指定变量可以是多种类型中的一种。</li>
+<li>示例：<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> Union
+
+number_or_string<span class="token punctuation">:</span> Union<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">,</span> <span class="token builtin">str</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">42</span>  <span class="token comment"># 可以是整数或字符串</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Callable（可调用对象）</strong>：</p>
+<ul>
+<li>用于指定可调用对象（如函数）的签名。</li>
+<li>示例：<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> Callable
+
+<span class="token keyword">def</span> <span class="token function">repeat</span><span class="token punctuation">(</span>x<span class="token punctuation">:</span> <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">str</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> <span class="token builtin">str</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">2</span>
+
+f<span class="token punctuation">:</span> Callable<span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token builtin">str</span><span class="token punctuation">]</span> <span class="token operator">=</span> repeat<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+</li>
+</ol>
+<p>使用泛型类型可以大大提高代码的可读性和健壮性，尤其是在处理复杂的数据结构时。这些类型提示还能帮助静态类型检查器识别潜在的类型错误，从而提升代码质量。</p>
+<h3 id="组合泛型类型的写法"><a class="markdownIt-Anchor" href="#组合泛型类型的写法"></a> 组合泛型类型的写法</h3>
+<p>在 Python 中，可以通过组合不同的泛型类型来创建更具体和详细的类型描述。<code>List[Dict[str, int]]</code> 这样的类型提示表示一个列表，其中的每个元素都是一个字典，这些字典的键是字符串类型，而值是整数类型。</p>
+<h3 id="示例"><a class="markdownIt-Anchor" href="#示例"></a> 示例</h3>
+<p>假设你有一个记录多个人年龄的列表，每个人的名字和年龄都存储在一个字典里，可以这样写：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> List<span class="token punctuation">,</span> Dict
+
+people_ages<span class="token punctuation">:</span> List<span class="token punctuation">[</span>Dict<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">,</span> <span class="token builtin">int</span><span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">&#123;</span><span class="token string">"Alice"</span><span class="token punctuation">:</span> <span class="token number">30</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span><span class="token string">"Bob"</span><span class="token punctuation">:</span> <span class="token number">25</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span><span class="token string">"Charlie"</span><span class="token punctuation">:</span> <span class="token number">35</span><span class="token punctuation">&#125;</span>
+<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这里，<code>people_ages</code> 是一个列表，列表中的每个元素是一个字典。每个字典都映射一个字符串（人的名字）到一个整数（他们的年龄）。</p>
+<h3 id="any-和-union-的使用"><a class="markdownIt-Anchor" href="#any-和-union-的使用"></a> <code>Any</code> 和 <code>Union</code> 的使用</h3>
+<p>在 Python 的类型提示中，<code>Any</code> 和 <code>Union</code> 是两种非常有用的类型，用于表示变量可以是多种类型之一或任意类型。</p>
+<h4 id="使用-any"><a class="markdownIt-Anchor" href="#使用-any"></a> 使用 <code>Any</code></h4>
+<p><code>Any</code> 表示变量可以是任何类型，它是类型系统中最灵活的类型。使用 <code>Any</code> 通常意味着放弃了类型检查的一些好处，因为它不提供具体的类型信息。适合在以下情况使用：</p>
+<ul>
+<li>当你不确定变量的类型时。</li>
+<li>当你需要与现有的动态代码兼容时。</li>
+<li>在渐进式类型注释过程中作为一个临时解决方案。</li>
+</ul>
+<p><strong>示例</strong>：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> Any
+
+<span class="token keyword">def</span> <span class="token function">handle_data</span><span class="token punctuation">(</span>data<span class="token punctuation">:</span> Any<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> Any<span class="token punctuation">:</span>
+    <span class="token comment"># 由于使用了 Any，这里的 data 可以是任何类型</span>
+    <span class="token comment"># 函数的返回值也可以是任何类型</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="使用-union"><a class="markdownIt-Anchor" href="#使用-union"></a> 使用 <code>Union</code></h4>
+<p><code>Union</code> 用于指定一个变量可以是多个类型中的任一个。它在你希望变量保留几种特定类型中的一种时非常有用，使类型更加明确和受限。</p>
+<p><strong>示例</strong>：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> Union
+
+<span class="token keyword">def</span> <span class="token function">parse_data</span><span class="token punctuation">(</span>data<span class="token punctuation">:</span> Union<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">,</span> <span class="token builtin">str</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> Union<span class="token punctuation">[</span><span class="token builtin">float</span><span class="token punctuation">,</span> <span class="token boolean">None</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
+    <span class="token comment"># 这个函数接受一个整数或字符串，返回一个浮点数或 None</span>
+    <span class="token keyword">if</span> <span class="token builtin">isinstance</span><span class="token punctuation">(</span>data<span class="token punctuation">,</span> <span class="token builtin">str</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token builtin">float</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span>
+    <span class="token keyword">elif</span> <span class="token builtin">isinstance</span><span class="token punctuation">(</span>data<span class="token punctuation">,</span> <span class="token builtin">int</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token builtin">float</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span>
+    <span class="token keyword">else</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token boolean">None</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在这个例子中，<code>parse_data</code> 函数接受整数或字符串作为输入，并尝试将其转换为浮点数。如果转换不成功，则返回 <code>None</code>。</p>
+<h3 id="选择-any-还是-union"><a class="markdownIt-Anchor" href="#选择-any-还是-union"></a> 选择 <code>Any</code> 还是 <code>Union</code></h3>
+<ul>
+<li><strong>使用 <code>Union</code></strong>：当你想要限制变量可以接受的类型数量时，或者当你知道变量只会是少数几个类型时。</li>
+<li><strong>使用 <code>Any</code></strong>：当变量可以是任意类型，或者你暂时不关心变量的具体类型时。</li>
+</ul>
+<p>总的来说，使用 <code>Union</code> 可以提高代码的类型安全性和可读性，而 <code>Any</code> 更适用于需要高度灵活性的情况。尽量避免过多使用 <code>Any</code>，因为它减少了类型检查的好处。</p>
+<p>当然可以。在 Python 中，类型提示可以应用于更复杂的场景，包括嵌套的数据结构、高级函数类型和泛型。以下是一些更复杂的类型提示的例子：</p>
+<h3 id="1-嵌套的泛型类型"><a class="markdownIt-Anchor" href="#1-嵌套的泛型类型"></a> 1. 嵌套的泛型类型</h3>
+<p>例如，您可能有一个列表，其中每个元素都是一个元组，这个元组包含一个字符串和一个字符串到整数的字典：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> List<span class="token punctuation">,</span> Tuple<span class="token punctuation">,</span> Dict
+
+complex_data<span class="token punctuation">:</span> List<span class="token punctuation">[</span>Tuple<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">,</span> Dict<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">,</span> <span class="token builtin">int</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">(</span><span class="token string">"Alice"</span><span class="token punctuation">,</span> <span class="token punctuation">&#123;</span><span class="token string">"math"</span><span class="token punctuation">:</span> <span class="token number">90</span><span class="token punctuation">,</span> <span class="token string">"science"</span><span class="token punctuation">:</span> <span class="token number">85</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">(</span><span class="token string">"Bob"</span><span class="token punctuation">,</span> <span class="token punctuation">&#123;</span><span class="token string">"history"</span><span class="token punctuation">:</span> <span class="token number">80</span><span class="token punctuation">,</span> <span class="token string">"art"</span><span class="token punctuation">:</span> <span class="token number">95</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在这个例子中，<code>complex_data</code> 是一个列表，列表中的每个元素是一个元组，元组的第一个元素是字符串（如 “Alice”），第二个元素是一个字典，其中字典的键是字符串，值是整数。</p>
+<h3 id="2-使用泛型与类型变量"><a class="markdownIt-Anchor" href="#2-使用泛型与类型变量"></a> 2. 使用泛型与类型变量</h3>
+<p>如果你正在定义一个函数，它接受一个列表并返回该列表中的第一个元素，你可以使用泛型来表示这个函数可以用于任何类型的列表：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> TypeVar<span class="token punctuation">,</span> List<span class="token punctuation">,</span> Optional
+
+T <span class="token operator">=</span> TypeVar<span class="token punctuation">(</span><span class="token string">'T'</span><span class="token punctuation">)</span>  <span class="token comment"># 定义一个类型变量 T</span>
+
+<span class="token keyword">def</span> <span class="token function">first_item</span><span class="token punctuation">(</span>items<span class="token punctuation">:</span> List<span class="token punctuation">[</span>T<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> Optional<span class="token punctuation">[</span>T<span class="token punctuation">]</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> items<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token keyword">if</span> items <span class="token keyword">else</span> <span class="token boolean">None</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这里，<code>TypeVar('T')</code> 创建了一个类型变量 <code>T</code>，可以在类型提示中使用。<code>first_item</code> 函数可以用于任何类型的列表，其返回类型与列表中的元素类型相同。</p>
+<h3 id="3-高阶函数higher-order-functions"><a class="markdownIt-Anchor" href="#3-高阶函数higher-order-functions"></a> 3. 高阶函数（Higher-order Functions）</h3>
+<p>如果您有一个函数，它接受另一个函数作为参数，您可以使用 <code>Callable</code> 来注明这个参数的类型。例如，一个函数处理器，它接受一个函数和一个整数列表，然后将该函数应用于列表的每个元素：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> Callable<span class="token punctuation">,</span> List
+
+<span class="token keyword">def</span> <span class="token function">process_data</span><span class="token punctuation">(</span>func<span class="token punctuation">:</span> Callable<span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token builtin">str</span><span class="token punctuation">]</span><span class="token punctuation">,</span> data<span class="token punctuation">:</span> List<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> List<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> <span class="token punctuation">[</span>func<span class="token punctuation">(</span>item<span class="token punctuation">)</span> <span class="token keyword">for</span> item <span class="token keyword">in</span> data<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在这个例子中，<code>process_data</code> 函数接受一个函数 <code>func</code>（这个函数将整数转换为字符串）和一个整数列表 <code>data</code>，然后返回一个字符串列表。</p>
+<h3 id="4-使用-union-和-optional-的复杂情况"><a class="markdownIt-Anchor" href="#4-使用-union-和-optional-的复杂情况"></a> 4. 使用 <code>Union</code> 和 <code>Optional</code> 的复杂情况</h3>
+<p>考虑一个函数，它可以接受字符串或者整数列表，并返回一个字符串或 <code>None</code>：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> Union<span class="token punctuation">,</span> List<span class="token punctuation">,</span> Optional
+
+<span class="token keyword">def</span> <span class="token function">convert_data</span><span class="token punctuation">(</span>data<span class="token punctuation">:</span> Union<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">,</span> List<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> Optional<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
+    <span class="token keyword">if</span> <span class="token builtin">isinstance</span><span class="token punctuation">(</span>data<span class="token punctuation">,</span> <span class="token builtin">str</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> data<span class="token punctuation">.</span>upper<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">elif</span> <span class="token builtin">isinstance</span><span class="token punctuation">(</span>data<span class="token punctuation">,</span> <span class="token builtin">list</span><span class="token punctuation">)</span> <span class="token keyword">and</span> <span class="token builtin">all</span><span class="token punctuation">(</span><span class="token builtin">isinstance</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span> <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> data<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token string">','</span><span class="token punctuation">.</span>join<span class="token punctuation">(</span><span class="token builtin">map</span><span class="token punctuation">(</span><span class="token builtin">str</span><span class="token punctuation">,</span> data<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">else</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token boolean">None</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在这个例子中，<code>convert_data</code> 可以接受一个字符串或者整数列表。如果是字符串，它返回该字符串的大写形式；如果是整数列表，它返回由列表元素组成的以逗号分隔的字符串；否则返回 <code>None</code>。</p>
+<p>这些示例展示了 Python 类型提示在复杂数据结构和函数定义中的应用，有助于增加代码的可读性和健壮性。</p>
+<p>你问的是在Python函数定义参数类型注解时,类型名称大小写和省略号的区别:</p>
+<ol>
+<li>类型名称大小写:</li>
+</ol>
+<ul>
+<li>小写如str、int表示内置类型</li>
+<li>大写如String、Integer表示自定义类</li>
+</ul>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">func</span><span class="token punctuation">(</span>p<span class="token punctuation">:</span> <span class="token builtin">str</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token comment"># p必须是internal str</span>
+<span class="token keyword">def</span> <span class="token function">func</span><span class="token punctuation">(</span>p<span class="token punctuation">:</span> String<span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token comment"># p必须是自定义的String类 </span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<ol start="2">
+<li>省略号表示可变参数:</li>
+</ol>
+<ul>
+<li>函数定义中参数后加省略号表示可变位置参数</li>
+</ul>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">func</span><span class="token punctuation">(</span><span class="token operator">*</span>args<span class="token punctuation">)</span><span class="token punctuation">:</span> 
+  <span class="token keyword">print</span><span class="token punctuation">(</span>args<span class="token punctuation">)</span> <span class="token comment"># args是tuple</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<ul>
+<li>类型注解中,列表、字典等后加省略号表示可变类型</li>
+</ul>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">func</span><span class="token punctuation">(</span>p<span class="token punctuation">:</span> <span class="token builtin">list</span><span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token comment"># p可以是任意长度的int列表</span>
+  <span class="token keyword">pass</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>所以在函数定义的参数类型注解中:</p>
+<ul>
+<li>大小写表示内置类型还是自定义类</li>
+<li>省略号表示参数可变或类型可变</li>
+</ul>
+<p>这便于进行更严格和准确的类型检查。</p>
+
+      </div>
+      
+      
+      
+    </div>
+
+    
+    
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">295k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">16:25</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://lib.baomitu.com/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://lib.baomitu.com/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://lib.baomitu.com/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://lib.baomitu.com/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="js/comments.js"></script><script src="js/utils.js"></script><script src="js/motion.js"></script><script src="js/next-boot.js"></script><script src="js/pjax.js"></script>
+
+  <script src="https://lib.baomitu.com/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.4/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://lib.baomitu.com/KaTeX/0.16.4/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="js/third-party/math/katex.js"></script>
+
+
+  <script src="https://lib.baomitu.com/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/Python%20%E7%B1%BB%E5%9E%8B%E6%8F%90%E7%A4%BA%EF%BC%88Type%20Hints%EF%BC%89.html"}</script>
+  <script src="js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://lib.baomitu.com/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://lib.baomitu.com/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
