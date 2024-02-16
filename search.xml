@@ -8236,6 +8236,493 @@ namespace/pro created<span aria-hidden="true" class="line-numbers-rows"><span></
       </categories>
   </entry>
   <entry>
+    <title>K8s 服务资源</title>
+    <url>/3045985343/</url>
+    <content><![CDATA[<h1 id="服务概念"><a class="markdownIt-Anchor" href="#服务概念"></a> 服务概念</h1>
+<p>在 K8s 中，不再使用记录 pod IP 的方式来实现 pod 之间的通信，因为 pod 是活动的，会随着调度分配而更换 IP 地址。K8s 提供了一种名为服务（Service）的资源，用于解决 pod 之间的通信问题。每个服务实际上就是微服务架构中的一个微服务。</p>
+<p>服务的主要工作是通过标签选择器选取一组 pod 对象，并为这组 pod 提供一个固定的入口点（固定 IP），客户端通过访问该地址来访问这组 pod 中的任意一个对象。</p>
+<p>如果集群中存在 DNS 服务，它会在创建服务时为其自动配置一个 DNS 名称，该名称对应服务的 ClusterIP 地址，以便客户端进行服务发现。实质上，服务充当了一个四层代理服务器。</p>
+<h2 id="服务原理"><a class="markdownIt-Anchor" href="#服务原理"></a> 服务原理</h2>
+<p>每个 Service 都有自己稳定的 IP 地址和端口，客户端通过连接该 IP 和端口来使用服务。IP 地址是虚拟的，没有分配给任何网络接口，并且当数据包离开节点时，也不会被标记为数据包的源或目的地 IP 地址，因此无法使用 ping 命令连接到 Service 的 IP。</p>
+<p>与 Service 相关的所有事情都由运行在每个节点上的 kube-proxy 处理。在最初的实现中，代理模式采用用户空间代理，对于每个传入的连接，连接到一个 pod。</p>
+<p>现在采用的是 iptables 代理模式，具有更好的性能。当在 API 服务器中创建一个 Service 时，会立即分配虚拟 IP 地址。然后，API 服务器会通知所有节点上的 proxy 客户端有关新服务的信息。每个 proxy 都会在自己所在的节点上建立可寻址的服务。这是通过建立 iptables 规则来实现的，确保目标为服务的 IP/端口对的数据包被解析，目的地址被修改，从而将数据包重定向到支持该服务的一个 pod 上。</p>
+<p>除了监视 Service 的更改，proxy 还监视 Endpoint 对象的更改。Endpoint 对象会在每次新创建或删除 pod 时发生变化，以及 pod 的就绪状态或标签发生变化时，将其纳入或移出服务范畴。</p>
+<p>如下图所示，proxy 在 Service 中的作用：</p>
+<p><img data-src="../../../images/proxy%E7%9A%84%E4%BD%9C%E7%94%A8.jpg" alt="proxy的作用" /></p>
+<p>上述示例中，一个数据包从节点 A 的 pod A 发送到服务 B。节点 A 的 iptables 规则将数据包的目标地址设置为服务的 IP 和端口（172.30.0.1:80），根据规则匹配，将匹配到的地址和端口（172.30.0.1:80）替换为随机选中的 pod B2 的 IP 和端口，就好像客户端的 pod A 直接将数据包发送给 pod B，而不经过 Service。</p>
+<p>运行在每个节点上的 Proxy 进程实际上是一个智能的软件负载均衡器，内部实现了服务的负载均衡和会话保持机制。</p>
+<h2 id="外部连接的特性"><a class="markdownIt-Anchor" href="#外部连接的特性"></a> 外部连接的特性</h2>
+<p>当客户端通过节点端口连接到服务时，随机选择的 pod 并不一定在接收连接的同一节点上运行。例如，接收服务的 pod 运行在 node1，而服务在 node2，这会导致不必要的跳转。可以通过将服务配置为仅将外部通信重定向到接收连接的节点上运行的 pod。</p>
+<p>具体操作是将服务的 <code>spec.externalTrafficPolicy</code> 修改为 <code>Local</code>。如果节点上没有本地 pod 存在，则连接将挂起，因此需要确保负载均衡器将连接转发给至少具有一个 pod 的节点。</p>
+<p>然而，这种配置会引发一个问题，即原本均匀分配给 pod 的流量将按节点平均分配。例如，一个节点有一个 pod，另一个节点有两个 pod，原本每个 pod 接收的流量占比为 1/3。设置流量不转发后，一个 pod 承担了 1/2 的流量，而另外两个 pod 分别承担了 1/4 的流量。</p>
+<p>在没有配置流量不转发的情况下，当通过节点端口接收连接时，会对数据包执行源网络地址转换（SNAT），因此数据包的源 IP 地址会发生改变，后端的 pod 无法看到实际的客户端 IP 地址。而使用上述配置可以保留客户端 IP，因为接收连接的节点和目标 pod 节点之间没有额外的跳转。</p>
+<h2 id="排除连接故障"><a class="markdownIt-Anchor" href="#排除连接故障"></a> 排除连接故障</h2>
+<p>首先，确保从集群内部连接到服务时使用的是集群 IP，而不是从外部进行连接。</p>
+<p>请避免使用 ping 来判断服务是否可访问，因为服务的集群 IP 是虚拟的。</p>
+<p>如果已经定义了就绪探针，请确保探针返回成功，否则该 pod 将不会被视为服务的一部分。</p>
+<p>要确认某个容器是否属于服务，请使用 <code>get endpoints</code> 命令来检查相应的端点对象。</p>
+<p>如果通过完全限定域名（FQDN）无法访问服务，请尝试使用集群 IP 进行访问。</p>
+<p>可以尝试直接连接到 pod 的 IP 地址，以确认该 pod 是否正在正确的端口上接收连接。</p>
+<p>如果甚至无法通过 pod 的 IP 访问应用程序，请确保应用程序没有仅绑定到本地主机。</p>
+<h1 id="基本操作"><a class="markdownIt-Anchor" href="#基本操作"></a> 基本操作</h1>
+<p>服务（Services）使用标签（Labels）来选择 Pod。以下简称 SVC。</p>
+<h2 id="创建-svc"><a class="markdownIt-Anchor" href="#创建-svc"></a> 创建 SVC</h2>
+<p>假设已经启动了一组 Pod，其标签为 <code>app=kubia</code>，可以通过命令 <code>kubectl expose</code> 来创建服务。不过更推荐使用 YAML 文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubia
+spec:
+  ports:
+  - port: <span class="token number">80</span>
+    targetPort: <span class="token number">8080</span>
+  selector:
+    app: kubia<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中 80 端口用于对外访问，8080 映射到容器端口，并通过标签 <code>app=kubia</code> 选择 Pod。</p>
+<p>创建并查看服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-svc.yaml 
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get svc
+NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>   AGE
+kubernetes   ClusterIP   <span class="token number">10.96</span>.0.1        <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">443</span>/TCP   17h
+kubia        ClusterIP   <span class="token number">10.107</span>.244.106   <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>/TCP    8s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到服务已经分配了一个内部集群 IP 地址 <code>10.107.244.106</code>，访问端口为 80。</p>
+<h2 id="测试服务"><a class="markdownIt-Anchor" href="#测试服务"></a> 测试服务</h2>
+<p>由于是内部集群地址，只有集群中的 Pod 可以访问。可以使用 <code>kubectl exec</code> 命令在 Pod 中执行 <code>curl</code> 命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> kubiaex-f4wkw -- <span class="token function">curl</span> <span class="token parameter variable">-s</span> <span class="token number">10.107</span>.244.106
+You<span class="token string">'ve hit kubiaex-nj968
+[root@server4-master ~]$ kubectl exec kubiaex-f4wkw -- curl -s 10.107.244.106
+You'</span>ve hit kubiaex-ptws9<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>从结果可以看到请求连接到后端的随机一个 Pod。</p>
+<h2 id="亲和性"><a class="markdownIt-Anchor" href="#亲和性"></a> 亲和性</h2>
+<p>可以配置服务的会话亲和性，这样会使服务代理将同一 IP 的请求转发到同一个 Pod 中：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-svc.yaml
+spec:
+  sessionAffinity: ClientIP<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>亲和性配置 <code>sessionAffinity</code> 值默认为 <code>None</code>。由于 Kubernetes 服务不是在 HTTP 层面上工作，它只处理 TCP 和 UDP 包，所以会话亲和性不能基于 cookie。</p>
+<h2 id="暴露多端口"><a class="markdownIt-Anchor" href="#暴露多端口"></a> 暴露多端口</h2>
+<p>可以在服务中暴露多个端口。必须设置端口名称：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-svc.yaml
+spec:
+  ports:
+  - name: http
+    port: <span class="token number">80</span>
+    targetPort: <span class="token number">8080</span>
+  - name: https
+    port: <span class="token number">443</span>
+    targetPort: <span class="token number">8443</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="命名引用"><a class="markdownIt-Anchor" href="#命名引用"></a> 命名引用</h2>
+<p>如果 Pod 配置中对端口取了名：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-rs.yaml
+spec:
+  containers:
+    ports: 
+    - name: http
+      containerPort: <span class="token number">8080</span>
+    - name: https
+      containerPort: <span class="token number">8443</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>那么在服务配置中可以直接引用：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-svc.yaml
+spec:
+  ports:
+  - name: http
+    port: <span class="token number">80</span>
+    targetPort: http
+  - name: https
+    port: <span class="token number">443</span>
+    targetPort: https<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这样做的好处是，当容器更换端口号时，无须更改服务的配置。</p>
+<h1 id="服务发现"><a class="markdownIt-Anchor" href="#服务发现"></a> 服务发现</h1>
+<p>服务可以提供稳定的 IP 地址来访问 Pod，只要服务存在， IP 就不会变化。但客户端 Pod 要获得服务的 IP 和端口需要进行配置。</p>
+<h2 id="环境变量"><a class="markdownIt-Anchor" href="#环境变量"></a> 环境变量</h2>
+<p>如果服务先于 Pod 创建，Pod 创建时 Kubernetes 会初始化一系列环境变量，指向已存在的服务。Pod 上的进程可以根据环境变量获取服务的 IP 地址和端口号。</p>
+<p>重新运行 Pod 后再查看环境变量：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl delete <span class="token parameter variable">-f</span> kubia-rs.yaml 
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-rs.yaml 
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> kubiaex-5s68q -- <span class="token function">env</span>
+<span class="token assign-left variable">KUBIA_PORT</span><span class="token operator">=</span>tcp://10.107.244.106:80
+<span class="token assign-left variable">KUBIA_SERVICE_HOST</span><span class="token operator">=</span><span class="token number">10.107</span>.244.106
+<span class="token assign-left variable">KUBIA_SERVICE_PORT</span><span class="token operator">=</span><span class="token number">80</span>
+<span class="token assign-left variable">KUBIA_PORT_80_TCP_PROTO</span><span class="token operator">=</span>tcp
+<span class="token assign-left variable">KUBIA_PORT_80_TCP_ADDR</span><span class="token operator">=</span><span class="token number">10.107</span>.244.106
+<span class="token assign-left variable">KUBIA_PORT_80_TCP</span><span class="token operator">=</span>tcp://10.107.244.106:80
+<span class="token assign-left variable">KUBIA_PORT_80_TCP_PORT</span><span class="token operator">=</span><span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上面显示的环境变量是创建服务后才有的，它们指向了服务 <code>kubia</code> 的 IP 地址和端口。此外，还有 Kubernetes 服务的环境变量。</p>
+<h2 id="通过-dns-发现"><a class="markdownIt-Anchor" href="#通过-dns-发现"></a> 通过 DNS 发现</h2>
+<p>Kubernetes 使用 CoreDNS 作为默认的 DNS 服务。每个运行的 Pod 都会在 <code>/etc/resolv.conf</code> 中写入 DNS 服务的地址：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token parameter variable">-n</span> kube-system describe service/kube-dns
+IP:                <span class="token number">10.96</span>.0.10
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$  kubectl <span class="token builtin class-name">exec</span> <span class="token parameter variable">-it</span> kubiaex-5s68q -- <span class="token function">cat</span> /etc/resolv.conf 
+nameserver <span class="token number">10.96</span>.0.10
+search default.svc.cluster.local svc.cluster.local cluster.local
+options ndots:5<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Pod 是否使用内部 DNS 策略由 <code>spec.dnsPolicy</code> 来决定：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get po kubiaex-5s68q <span class="token parameter variable">-o</span> yaml
+spec:
+  dnsPolicy: ClusterFirst<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>客户端的 Pod 在知道服务名称的情况下，可以通过全限定域名（Fully Qualified Domain Name，FQDN）来访问，而不用依靠环境变量。例如，服务的全名是 <code>kubia.default.svc.cluster.local</code>，通过 Pod 中的容器访问这个地址：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">root@kubiaex-5s68q:/<span class="token comment"># curl http://kubia.default.svc.cluster.local</span>
+You've hit kubiaex-bwzb9<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>FQDN 分为三部分：<code>kubia</code> 为主机名，<code>default</code> 为对应的命名空间，<code>svc.cluster.local</code> 是所有集群本地服务名称中使用的可配置集群域后缀。</p>
+<p>如果要与同一命名空间下的资源通信，可以省略后缀，直接通过主机名进行通信：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">root@kubiaex-5s68q:/<span class="token comment"># curl http://kubia  </span>
+You've hit kubiaex-bwzb9
+root@kubiaex-5s68q:/<span class="token comment"># ping kubia</span>
+PING kubia.default.svc.cluster.local <span class="token punctuation">(</span><span class="token number">10.107</span>.244.106<span class="token punctuation">)</span>: <span class="token number">56</span> data bytes<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="暴露内部服务"><a class="markdownIt-Anchor" href="#暴露内部服务"></a> 暴露内部服务</h1>
+<p>服务主要作用是将集群内的服务向外公开，让外部客户端可以访问它们。如下图所示：</p>
+<p><img data-src="../../../images/%E5%B0%86%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2%E5%87%BA%E5%8E%BB.jpg" alt="将服务暴露出去" /></p>
+<p>有几种方式可以从外部访问服务：</p>
+<ul>
+<li>
+<p>将服务类型设置为 NodePort</p>
+<p>每个集群节点都会打开一个端口，并将流量转发重定向到基础服务。该服务只能在内部集群的 IP 和端口上访问，但也可以通过所有节点上的专用端口访问。</p>
+</li>
+<li>
+<p>将服务类型设置为 LoadBalancer</p>
+<p>LoadBalancer 是 NodePort 类型的一种扩展，它允许通过一个专用的负载均衡器来访问服务，该负载均衡器由云基础设施提供。负载均衡器将流量重定向到跨所有节点的节点端口，客户端可以通过负载均衡器的 IP 连接到服务。</p>
+</li>
+<li>
+<p>创建一个 Ingress 资源</p>
+<p>Ingress 资源可以通过一个 IP 地址公开多个服务，它运行在 HTTP 层（第 7 层），因此可以提供更多的功能。</p>
+</li>
+</ul>
+<p>最常用的端口暴露方式是 NodePort。一般的应用端口可以通过 Nginx 做反向代理，而不需要直接暴露出去。</p>
+<h2 id="nodeport"><a class="markdownIt-Anchor" href="#nodeport"></a> NodePort</h2>
+<p>NodePort 类型的服务可以通过任何节点的 IP 和端口进行访问，同时也可以通过服务的内部集群 IP 进行访问，两者互不冲突。默认情况下，NodePort 可用的端口范围是从 30000 到 32767。示意图如下所示：</p>
+<p><img data-src="../../../images/%E9%80%9A%E8%BF%87NodePort%E6%9A%B4%E9%9C%B2%E7%AB%AF%E5%8F%A3.jpg" alt="通过NodePort暴露端口" /></p>
+<p>创建服务配置文件时，除了将类型设置为 NodePort，还需要定义三个端口：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-np.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubia-nodeport
+spec:
+  type: NodePort
+  ports:
+  - port: <span class="token number">80</span>
+    targetPort: <span class="token number">8080</span>
+    nodePort: <span class="token number">30123</span>
+  selector:
+    app: kubia<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中，port 端口 80 代表集群内部访问端口，targetPort 端口 8080 代表 Pod 中服务监听的端口，这两个端口的定义与普通服务相同。而额外的 nodePort 端口 30123 是用于外部访问的端口。如果不设置 nodePort，Kubernetes 会使用随机端口。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-np.yaml
+service/kubia-nodeport created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>启动后，可以通过浏览器访问地址 <a href="http://xn--ip-dh3cr99d42rrmy:30123/">http://任意节点 IP:30123/</a> 来打开服务。可以使用 JSONPath 选择器来获取所有节点的 IP：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get nodes <span class="token parameter variable">-o</span> <span class="token assign-left variable">jsonpath</span><span class="token operator">=</span><span class="token string">'&#123;.items[*].status.addresses[?(@.type=="InternalIP")].address&#125;'</span>
+<span class="token number">192.168</span>.2.204 <span class="token number">192.168</span>.2.205 <span class="token number">192.168</span>.2.206<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>需要注意的是，当节点发生故障时，无法访问该节点。因此，在选择端口暴露方式时，应优先考虑使用 LoadBalancer。</p>
+<h2 id="loadbalance"><a class="markdownIt-Anchor" href="#loadbalance"></a> LoadBalance</h2>
+<p>负载均衡器具有唯一的 IP 地址，并将所有连接重定向到服务。LoadBalancer 服务是 NodePort 服务的扩展，如果 Kubernetes 在不支持负载均衡器服务的环境中运行，服务仍将以 NodePort 模式工作。其工作原理如下图所示：</p>
+<p><img data-src="../../../images/%E9%80%9A%E8%BF%87%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E6%9A%B4%E9%9C%B2%E7%AB%AF%E5%8F%A3.jpg" alt="通过负载均衡暴露端口" /></p>
+<p>可以创建一个 LoadBalancer 类型的服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-lb.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubia-loadbalancer
+spec:
+  type: LoadBalancer
+  ports:
+  - port: <span class="token number">80</span>
+    targetPort: <span class="token number">8080</span>
+  selector:
+    app: kubia
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-lb.yaml 
+service/kubia-loadbalancer created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>只需将服务类型设置为 LoadBalancer，服务将从集群基础架构中获取负载均衡器，并将其 IP 地址写入服务的 EXTERNAL-IP 字段。</p>
+<p>通过浏览器访问时，您会发现每次都会连接到同一个 Pod，这是因为服务在连接级别上工作。因此，首次建立连接时会选择一个随机集群，之后所有的数据包都会发送到同一个集群，直到连接关闭。</p>
+<h2 id="ingress"><a class="markdownIt-Anchor" href="#ingress"></a> Ingress</h2>
+<p>使用 Ingress 只需要一个公网 IP 地址就能为所有服务提供访问，Ingress 会根据请求的主机名和路径决定转发到的服务。</p>
+<p>Ingress 作用在网络第七层，因此能实现基于 cookie 的会话亲和性等功能，但相对于作用在第四层协议的服务，转发效率较低。</p>
+<p>Ingress 的工作原理如下图所示：</p>
+<p><img data-src="../../../images/%E9%80%9A%E8%BF%87Ingress%E8%AE%BF%E9%97%AEpod.jpg" alt="通过Ingress访问pod" /></p>
+<p>要让 Ingress 资源正常工作，需要配合 Ingress 控制器。可以通过官方提供的 YAML 文件直接部署 Ingress，可以选择基于 Nginx、Envoy、Haproxy、Vulcand 和 Traefik 等作为反向代理：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl apply <span class="token parameter variable">-f</span> https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml
+namespace/ingress-nginx created
+configmap/nginx-configuration created
+configmap/tcp-services created
+configmap/udp-services created
+serviceaccount/nginx-ingress-serviceaccount created
+clusterrole.rbac.authorization.k8s.io/nginx-ingress-clusterrole created
+role.rbac.authorization.k8s.io/nginx-ingress-role created
+rolebinding.rbac.authorization.k8s.io/nginx-ingress-role-nisa-binding created
+clusterrolebinding.rbac.authorization.k8s.io/nginx-ingress-clusterrole-nisa-binding created
+deployment.apps/nginx-ingress-controller created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>查看 YAML 内容后，将自动创建一个属于 ingress-nginx 命名空间的 nginx-ingress-controller 控制器的 Pod，然后创建服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl get pods --all-namespaces <span class="token parameter variable">-l</span> app.kubernetes.io/name<span class="token operator">=</span>ingress-nginx <span class="token parameter variable">--watch</span>
+NAMESPACE       NAME                                        READY   STATUS              RESTARTS   AGE
+ingress-nginx   nginx-ingress-controller-7995bd9c47-8v8rj   <span class="token number">0</span>/1     ContainerCreating   <span class="token number">0</span>          75s
+ingress-nginx   nginx-ingress-controller-7995bd9c47-8v8rj   <span class="token number">0</span>/1     Running             <span class="token number">0</span>          88s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>接着创建服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl apply <span class="token parameter variable">-f</span> https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/baremetal/service-nodeport.yaml
+service/ingress-nginx created
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get pods <span class="token parameter variable">-n</span> ingress-nginx
+NAME                                        READY   STATUS    RESTARTS   AGE
+nginx-ingress-controller-7995bd9c47-8v8rj   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          3h6m
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get svc <span class="token parameter variable">-n</span> ingress-nginx
+NAME            TYPE       CLUSTER-IP     EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>                      AGE
+ingress-nginx   NodePort   <span class="token number">10.98</span>.41.161   <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>:30112/TCP,443:30970/TCP   105m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>建立 YAML 文件来绑定后端服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-ingress.yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kubia-ingress
+spec:
+  rules:
+  - host: kubia.exp.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kubia
+          servicePort: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>将虚拟域名 <code>kubia.exp.com</code> 映射到 Ingress 控制器的节点 IP（192.168.2.113-115 <code>kubia.exp.com</code>）。配置将所有请求发送到 kubia 服务的 80 端口。云服务商要求 Ingress 指向一个 NodePort 服务，但实际上可以指向任意服务。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-ingress.yaml 
+ingress.extensions/kubia-ingress created
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl get ingresses
+NAME            HOSTS           ADDRESS   PORTS   AGE
+kubia-ingress   kubia.exp.com             <span class="token number">80</span>      59s
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl describe ingress kubia-ingress
+Name:             kubia-ingress
+Namespace:        default
+Address:          
+Default backend:  default-http-backend:80 <span class="token punctuation">(</span><span class="token operator">&lt;</span>none<span class="token operator">></span><span class="token punctuation">)</span>
+Rules:
+  Host           Path  Backends
+  ----           ----  --------
+  kubia.exp.com  
+                 /   kubia:80 <span class="token punctuation">(</span><span class="token number">10.244</span>.1.28:8080,10.244.2.43:8080,10.244.2.44:8080<span class="token punctuation">)</span>
+Annotations:
+Events:
+  Type    Reason  Age    From                      Message
+  ----    ------  ----   ----                      -------
+  Normal  CREATE  2m22s  nginx-ingress-controller  Ingress default/kubia-ingress<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>通过浏览器访问 <code>kubia.exp.com:30112</code> 即可访问 kubia 服务。</p>
+<p>客户端与控制器之间的通信采用 HTTPS 加密，而控制器与后端 Pod 之间的通信则不需要加密。运行在 Pod 上的应用程序不需要支持 TLS。例如，如果 Pod 上运行着 Web 服务器，它只需要接收 HTTP 通信，并让 Ingress 控制器负责处理与 TLS 相关的所有内容。只需将证书和私钥附加到 Ingress 上，这两个资源存储在 Secret 中，然后在 Ingress 的配置文件中引用它们：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ openssl genrsa <span class="token parameter variable">-out</span> tls.key <span class="token number">2048</span>
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ openssl req <span class="token parameter variable">-new</span> <span class="token parameter variable">-x509</span> <span class="token parameter variable">-key</span> tls.key <span class="token parameter variable">-out</span> tls.crt <span class="token parameter variable">-subj</span> /C<span class="token operator">=</span>CN/ST<span class="token operator">=</span>Beijing/L<span class="token operator">=</span>Beijing/O<span class="token operator">=</span>DevOps/CN<span class="token operator">=</span>kubia.exp.com
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl create secret tls kubia-secret <span class="token parameter variable">--cert</span><span class="token operator">=</span>tls.crt <span class="token parameter variable">--key</span><span class="token operator">=</span>tls.key
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get secret
+NAME                    TYPE                                  DATA   AGE
+default-token-5wkq2     kubernetes.io/service-account-token   <span class="token number">3</span>      25h
+kubia-secret            kubernetes.io/tls                     <span class="token number">2</span>      30s
+tomcat-ingress-secret   kubernetes.io/tls                     <span class="token number">2</span>      55m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>重新创建 Ingress，使用 HTTPS 协议将 kubia 绑定到 <code>kubia.exp.com</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-tls.yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-kubia
+  namespace: default
+spec:
+  tls:
+  - hosts:
+    - kubia.exp.com
+    secretName: kubia-secret
+  rules:
+  - host: kubia.exp.com
+    http:
+      paths:
+      - path:
+        backend:
+          serviceName: kubia
+          servicePort: <span class="token number">8080</span>
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-tls.yaml 
+ingress.extensions/ingress-kubia created
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get ingress
+NAME                 HOSTS              ADDRESS   PORTS     AGE
+ingress-kubia        kubia.exp.com                <span class="token number">80</span>, <span class="token number">443</span>   29s
+ingress-myapp        myapp.along.com              <span class="token number">80</span>        65m
+ingress-tomcat       tomcat.along.com             <span class="token number">80</span>        60m
+ingress-tomcat-tls   tomcat.along.com             <span class="token number">80</span>, <span class="token number">443</span>   58m
+kubia-ingress        kubia.exp.com                <span class="token number">80</span>        10m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用浏览器访问 HTTPS 地址：<a href="https://kubia.exp.com:30970/">https://kubia.exp.com:30970/</a> 进行验证。</p>
+<p>可以通过设置多个路径来将访问路径转发到不同的服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">..</span>.
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kubia
+          servicePort: <span class="token number">80</span>
+      - path: /admin
+        backend:
+          serviceName: admin
+          servicePort: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>同样，可以设置多个规则来将子域名转发到不同的服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kubia-ingress
+  namespace: default
+spec:
+  rules:
+  - host: kubia.exp.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kubia
+          servicePort: <span class="token number">80</span>
+  rules:
+  - host: app.exp.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: app
+          servicePort: <span class="token number">80</span>
+      - path: /api
+        backend:
+          serviceName: api
+          servicePort: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>除了使用 NodePort、LoadBalancer 等方式来暴露单个服务，还可以使用 Ingress 来暴露服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: my-ingress
+spec:
+  backend:
+    serviceName: my-svc
+    servicePort: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这样，通过外网访问 80 端口即可直接转发到 my-svc 服务。</p>
+<h1 id="指向外部服务"><a class="markdownIt-Anchor" href="#指向外部服务"></a> 指向外部服务</h1>
+<p>SVC 也可以将服务的地址重定向到集群外部网络的地址和端口，在集群中的 pod 可以像连接内部服务一样连接到外部服务。如下图所示：</p>
+<p><img data-src="../../../images/%E6%9C%8D%E5%8A%A1%E6%8C%87%E5%90%91%E5%A4%96%E9%83%A8%E5%9C%B0%E5%9D%80.jpg" alt="服务指向外部地址" /></p>
+<h2 id="endpoint"><a class="markdownIt-Anchor" href="#endpoint"></a> Endpoint</h2>
+<p>SVC 通过 Endpoint（以下简称 EP）资源与 pod 进行连接，一般指向 pod 的 IP 地址和端口列表：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl describe svc kubia
+Endpoints:         <span class="token number">10.244</span>.191.210:8080,10.244.191.211:8080,10.244.244.209:8080<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>也可以直接查询 EP 资源：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get endpoints kubia
+NAME    ENDPOINTS                                                     AGE
+kubia   <span class="token number">10.244</span>.191.210:8080,10.244.191.211:8080,10.244.244.209:8080   100m
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl describe endpoints kubia
+Name:         kubia
+Namespace:    default
+Labels:       <span class="token operator">&lt;</span>none<span class="token operator">></span>
+Annotations:  endpoints.kubernetes.io/last-change-trigger-time: <span class="token number">2021</span>-11-03T11:45:07Z
+Subsets:
+  Addresses:          <span class="token number">10.244</span>.191.210,10.244.191.211,10.244.244.209
+  NotReadyAddresses:  <span class="token operator">&lt;</span>none<span class="token operator">></span>
+  Ports:
+    Name     Port  Protocol
+    ----     ----  --------
+    <span class="token operator">&lt;</span>unset<span class="token operator">></span>  <span class="token number">8080</span>  TCP<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>EP 的作用是存储通过 pod 选择器获取的 pod 地址和端口，并提供给服务调用。</p>
+<h2 id="配置-ep"><a class="markdownIt-Anchor" href="#配置-ep"></a> 配置 EP</h2>
+<p>可以分别创建 SVC 和 EP 资源来自定义要转发到的地址列表。先创建一个没有选择器的服务，并指定 EP 的目标端口为 80：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> outside-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: outside
+spec:
+  ports:
+  - name: http
+    port: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>创建一个 EP 来指定地址列表。名称需要与 SVC 的一致：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> outside-ep.yaml
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: outside
+subsets:
+  - addresses:
+    - ip: <span class="token number">11.11</span>.11.11
+    - ip: <span class="token number">22.22</span>.22.22
+    ports:
+    - port: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>分别部署后，SVC 就具有了转发到外部服务的功能：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> outside-svc.yaml <span class="token parameter variable">-f</span> outside-ep.yaml <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>自定义 Endpoint 通常可用于服务迁移。当集群内的应用迁移到外部时，在 EP 资源中修改地址后，SVC 提供的访问 IP 地址可以保持不变。</p>
+<h2 id="配置别名"><a class="markdownIt-Anchor" href="#配置别名"></a> 配置别名</h2>
+<p>除了手动配置 EP 外，还可以设置域名作为转发目标。只需要在 SVC 配置文件中设置类型为 ExternalName 即可：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> ext-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: exten
+spec:
+  type: ExternalName
+  externalName: someapi.somecompany.com
+  ports:
+  - port: <span class="token number">80</span>
+    targetPort: <span class="token number">6379</span>
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> ext-svc.yaml 
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get svc exten 
+NAME    TYPE           CLUSTER-IP   EXTERNAL-IP               PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>   AGE
+exten   ExternalName   <span class="token operator">&lt;</span>none<span class="token operator">></span>       someapi.somecompany.com   <span class="token number">80</span>/TCP    29s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>之后，集群内的 pod 可以通过访问 <code>exten</code> 这个 SVC 就能连接到外部域名 <code>someapi.somecompany.com</code>。这样的好处是不需要关心外部域名的 IP 地址，即使 IP 有变动也不会影响 SVC 的运行。</p>
+<h1 id="无头服务"><a class="markdownIt-Anchor" href="#无头服务"></a> 无头服务</h1>
+<p>假如客户需要获取一组 pod IP，默认情况下查询服务会返回服务的集群 IP。通过把服务 IP 设为 None，客户端可以通过一个简单的 DNS A 记录查找获取到属于该服务的所有 pod IP。这种服务叫做无头服务。</p>
+<h2 id="创建服务"><a class="markdownIt-Anchor" href="#创建服务"></a> 创建服务</h2>
+<p>配置 YAML 并启动服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-headless.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubia-headless
+  namespace: default
+spec:
+  clusterIP: None
+  ports:
+  - port: <span class="token number">80</span>
+    targetPort: <span class="token number">8080</span>
+  selector:
+    app: kubia
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-headless.yaml 
+service/kubia-headless created
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get <span class="token function">service</span>
+NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>        AGE
+kubernetes       ClusterIP   <span class="token number">10.96</span>.0.1        <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">443</span>/TCP        130d
+kubia            ClusterIP   <span class="token number">10.107</span>.244.106   <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>/TCP         3h43m
+kubia-headless   ClusterIP   None             <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>/TCP         3s
+kubia-nodeport   NodePort    <span class="token number">10.99</span>.116.227    <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>:30123/TCP   148m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>创建完毕后，可以看到服务没有集群 IP。</p>
+<h2 id="通过-dns-查找"><a class="markdownIt-Anchor" href="#通过-dns-查找"></a> 通过 DNS 查找</h2>
+<p>拉取一个能够进行 DNS 查询的容器后，进入 pod 执行 DNS 查找：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl run dnsutils <span class="token parameter variable">--image</span><span class="token operator">=</span>tutum/dnsutils <span class="token parameter variable">--command</span> -- <span class="token function">sleep</span> infinity
+pod/dnsutils created
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> dnsutils <span class="token function">nslookup</span> kubia-headless
+Server:         <span class="token number">10.96</span>.0.10
+Address:        <span class="token number">10.96</span>.0.10<span class="token comment">#53</span>
+
+Name:   kubia-headless.default.svc.cluster.local
+Address: <span class="token number">10.244</span>.1.38
+Name:   kubia-headless.default.svc.cluster.local
+Address: <span class="token number">10.244</span>.2.57
+Name:   kubia-headless.default.svc.cluster.local
+Address: <span class="token number">10.244</span>.2.58<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>结果返回了 pod 的 IP，这与普通服务不同，比如 kubia 服务返回服务的集群 IP：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> dnsutils <span class="token function">nslookup</span> kubia
+Server:         <span class="token number">10.96</span>.0.10
+Address:        <span class="token number">10.96</span>.0.10<span class="token comment">#53</span>
+
+Name:   kubia.default.svc.cluster.local
+Address: <span class="token number">10.102</span>.7.149
+<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get svc
+NAME             TYPE        CLUSTER-IP     EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>   AGE
+kubernetes       ClusterIP   <span class="token number">10.96</span>.0.1      <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">443</span>/TCP   24h
+kubia            ClusterIP   <span class="token number">10.102</span>.7.149   <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>/TCP    64s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>无头服务使用上与普通服务一样，客户也可以通过连接服务的 DNS 名称来连接到 pod 上，不过客户端直连到 pod 上，而不是通过服务代理。</p>
+<p>无头服务仍然提供跨 pod 的负载平衡，通过 DNS 轮询机制实现。</p>
+<h2 id="发现所有-pod"><a class="markdownIt-Anchor" href="#发现所有-pod"></a> 发现所有 Pod</h2>
+<p>如果希望 pod 没有准备就绪也能被发现，可以在服务配置中添加注解：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">metadata:
+  name: kubia-headless
+  namespace: default
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: <span class="token string">"true"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+]]></content>
+      <categories>
+        <category>Kubernets</category>
+        <category>1.常用资源</category>
+      </categories>
+  </entry>
+  <entry>
     <title>K8s 控制器资源</title>
     <url>/3401119197/</url>
     <content><![CDATA[<h1 id="replicationcontroller"><a class="markdownIt-Anchor" href="#replicationcontroller"></a> ReplicationController</h1>
@@ -9150,493 +9637,6 @@ spec:
 <p>suspend：是否挂起后续的任务执行，默认为 false，对运行中的作业不会产生影响。</p>
 </li>
 </ul>
-]]></content>
-      <categories>
-        <category>Kubernets</category>
-        <category>1.常用资源</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>K8s 服务资源</title>
-    <url>/3045985343/</url>
-    <content><![CDATA[<h1 id="服务概念"><a class="markdownIt-Anchor" href="#服务概念"></a> 服务概念</h1>
-<p>在 K8s 中，不再使用记录 pod IP 的方式来实现 pod 之间的通信，因为 pod 是活动的，会随着调度分配而更换 IP 地址。K8s 提供了一种名为服务（Service）的资源，用于解决 pod 之间的通信问题。每个服务实际上就是微服务架构中的一个微服务。</p>
-<p>服务的主要工作是通过标签选择器选取一组 pod 对象，并为这组 pod 提供一个固定的入口点（固定 IP），客户端通过访问该地址来访问这组 pod 中的任意一个对象。</p>
-<p>如果集群中存在 DNS 服务，它会在创建服务时为其自动配置一个 DNS 名称，该名称对应服务的 ClusterIP 地址，以便客户端进行服务发现。实质上，服务充当了一个四层代理服务器。</p>
-<h2 id="服务原理"><a class="markdownIt-Anchor" href="#服务原理"></a> 服务原理</h2>
-<p>每个 Service 都有自己稳定的 IP 地址和端口，客户端通过连接该 IP 和端口来使用服务。IP 地址是虚拟的，没有分配给任何网络接口，并且当数据包离开节点时，也不会被标记为数据包的源或目的地 IP 地址，因此无法使用 ping 命令连接到 Service 的 IP。</p>
-<p>与 Service 相关的所有事情都由运行在每个节点上的 kube-proxy 处理。在最初的实现中，代理模式采用用户空间代理，对于每个传入的连接，连接到一个 pod。</p>
-<p>现在采用的是 iptables 代理模式，具有更好的性能。当在 API 服务器中创建一个 Service 时，会立即分配虚拟 IP 地址。然后，API 服务器会通知所有节点上的 proxy 客户端有关新服务的信息。每个 proxy 都会在自己所在的节点上建立可寻址的服务。这是通过建立 iptables 规则来实现的，确保目标为服务的 IP/端口对的数据包被解析，目的地址被修改，从而将数据包重定向到支持该服务的一个 pod 上。</p>
-<p>除了监视 Service 的更改，proxy 还监视 Endpoint 对象的更改。Endpoint 对象会在每次新创建或删除 pod 时发生变化，以及 pod 的就绪状态或标签发生变化时，将其纳入或移出服务范畴。</p>
-<p>如下图所示，proxy 在 Service 中的作用：</p>
-<p><img data-src="../../../images/proxy%E7%9A%84%E4%BD%9C%E7%94%A8.jpg" alt="proxy的作用" /></p>
-<p>上述示例中，一个数据包从节点 A 的 pod A 发送到服务 B。节点 A 的 iptables 规则将数据包的目标地址设置为服务的 IP 和端口（172.30.0.1:80），根据规则匹配，将匹配到的地址和端口（172.30.0.1:80）替换为随机选中的 pod B2 的 IP 和端口，就好像客户端的 pod A 直接将数据包发送给 pod B，而不经过 Service。</p>
-<p>运行在每个节点上的 Proxy 进程实际上是一个智能的软件负载均衡器，内部实现了服务的负载均衡和会话保持机制。</p>
-<h2 id="外部连接的特性"><a class="markdownIt-Anchor" href="#外部连接的特性"></a> 外部连接的特性</h2>
-<p>当客户端通过节点端口连接到服务时，随机选择的 pod 并不一定在接收连接的同一节点上运行。例如，接收服务的 pod 运行在 node1，而服务在 node2，这会导致不必要的跳转。可以通过将服务配置为仅将外部通信重定向到接收连接的节点上运行的 pod。</p>
-<p>具体操作是将服务的 <code>spec.externalTrafficPolicy</code> 修改为 <code>Local</code>。如果节点上没有本地 pod 存在，则连接将挂起，因此需要确保负载均衡器将连接转发给至少具有一个 pod 的节点。</p>
-<p>然而，这种配置会引发一个问题，即原本均匀分配给 pod 的流量将按节点平均分配。例如，一个节点有一个 pod，另一个节点有两个 pod，原本每个 pod 接收的流量占比为 1/3。设置流量不转发后，一个 pod 承担了 1/2 的流量，而另外两个 pod 分别承担了 1/4 的流量。</p>
-<p>在没有配置流量不转发的情况下，当通过节点端口接收连接时，会对数据包执行源网络地址转换（SNAT），因此数据包的源 IP 地址会发生改变，后端的 pod 无法看到实际的客户端 IP 地址。而使用上述配置可以保留客户端 IP，因为接收连接的节点和目标 pod 节点之间没有额外的跳转。</p>
-<h2 id="排除连接故障"><a class="markdownIt-Anchor" href="#排除连接故障"></a> 排除连接故障</h2>
-<p>首先，确保从集群内部连接到服务时使用的是集群 IP，而不是从外部进行连接。</p>
-<p>请避免使用 ping 来判断服务是否可访问，因为服务的集群 IP 是虚拟的。</p>
-<p>如果已经定义了就绪探针，请确保探针返回成功，否则该 pod 将不会被视为服务的一部分。</p>
-<p>要确认某个容器是否属于服务，请使用 <code>get endpoints</code> 命令来检查相应的端点对象。</p>
-<p>如果通过完全限定域名（FQDN）无法访问服务，请尝试使用集群 IP 进行访问。</p>
-<p>可以尝试直接连接到 pod 的 IP 地址，以确认该 pod 是否正在正确的端口上接收连接。</p>
-<p>如果甚至无法通过 pod 的 IP 访问应用程序，请确保应用程序没有仅绑定到本地主机。</p>
-<h1 id="基本操作"><a class="markdownIt-Anchor" href="#基本操作"></a> 基本操作</h1>
-<p>服务（Services）使用标签（Labels）来选择 Pod。以下简称 SVC。</p>
-<h2 id="创建-svc"><a class="markdownIt-Anchor" href="#创建-svc"></a> 创建 SVC</h2>
-<p>假设已经启动了一组 Pod，其标签为 <code>app=kubia</code>，可以通过命令 <code>kubectl expose</code> 来创建服务。不过更推荐使用 YAML 文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-svc.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: kubia
-spec:
-  ports:
-  - port: <span class="token number">80</span>
-    targetPort: <span class="token number">8080</span>
-  selector:
-    app: kubia<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>其中 80 端口用于对外访问，8080 映射到容器端口，并通过标签 <code>app=kubia</code> 选择 Pod。</p>
-<p>创建并查看服务：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-svc.yaml 
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get svc
-NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>   AGE
-kubernetes   ClusterIP   <span class="token number">10.96</span>.0.1        <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">443</span>/TCP   17h
-kubia        ClusterIP   <span class="token number">10.107</span>.244.106   <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>/TCP    8s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以看到服务已经分配了一个内部集群 IP 地址 <code>10.107.244.106</code>，访问端口为 80。</p>
-<h2 id="测试服务"><a class="markdownIt-Anchor" href="#测试服务"></a> 测试服务</h2>
-<p>由于是内部集群地址，只有集群中的 Pod 可以访问。可以使用 <code>kubectl exec</code> 命令在 Pod 中执行 <code>curl</code> 命令：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> kubiaex-f4wkw -- <span class="token function">curl</span> <span class="token parameter variable">-s</span> <span class="token number">10.107</span>.244.106
-You<span class="token string">'ve hit kubiaex-nj968
-[root@server4-master ~]$ kubectl exec kubiaex-f4wkw -- curl -s 10.107.244.106
-You'</span>ve hit kubiaex-ptws9<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>从结果可以看到请求连接到后端的随机一个 Pod。</p>
-<h2 id="亲和性"><a class="markdownIt-Anchor" href="#亲和性"></a> 亲和性</h2>
-<p>可以配置服务的会话亲和性，这样会使服务代理将同一 IP 的请求转发到同一个 Pod 中：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-svc.yaml
-spec:
-  sessionAffinity: ClientIP<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>亲和性配置 <code>sessionAffinity</code> 值默认为 <code>None</code>。由于 Kubernetes 服务不是在 HTTP 层面上工作，它只处理 TCP 和 UDP 包，所以会话亲和性不能基于 cookie。</p>
-<h2 id="暴露多端口"><a class="markdownIt-Anchor" href="#暴露多端口"></a> 暴露多端口</h2>
-<p>可以在服务中暴露多个端口。必须设置端口名称：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-svc.yaml
-spec:
-  ports:
-  - name: http
-    port: <span class="token number">80</span>
-    targetPort: <span class="token number">8080</span>
-  - name: https
-    port: <span class="token number">443</span>
-    targetPort: <span class="token number">8443</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="命名引用"><a class="markdownIt-Anchor" href="#命名引用"></a> 命名引用</h2>
-<p>如果 Pod 配置中对端口取了名：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-rs.yaml
-spec:
-  containers:
-    ports: 
-    - name: http
-      containerPort: <span class="token number">8080</span>
-    - name: https
-      containerPort: <span class="token number">8443</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>那么在服务配置中可以直接引用：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-svc.yaml
-spec:
-  ports:
-  - name: http
-    port: <span class="token number">80</span>
-    targetPort: http
-  - name: https
-    port: <span class="token number">443</span>
-    targetPort: https<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>这样做的好处是，当容器更换端口号时，无须更改服务的配置。</p>
-<h1 id="服务发现"><a class="markdownIt-Anchor" href="#服务发现"></a> 服务发现</h1>
-<p>服务可以提供稳定的 IP 地址来访问 Pod，只要服务存在， IP 就不会变化。但客户端 Pod 要获得服务的 IP 和端口需要进行配置。</p>
-<h2 id="环境变量"><a class="markdownIt-Anchor" href="#环境变量"></a> 环境变量</h2>
-<p>如果服务先于 Pod 创建，Pod 创建时 Kubernetes 会初始化一系列环境变量，指向已存在的服务。Pod 上的进程可以根据环境变量获取服务的 IP 地址和端口号。</p>
-<p>重新运行 Pod 后再查看环境变量：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl delete <span class="token parameter variable">-f</span> kubia-rs.yaml 
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-rs.yaml 
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> kubiaex-5s68q -- <span class="token function">env</span>
-<span class="token assign-left variable">KUBIA_PORT</span><span class="token operator">=</span>tcp://10.107.244.106:80
-<span class="token assign-left variable">KUBIA_SERVICE_HOST</span><span class="token operator">=</span><span class="token number">10.107</span>.244.106
-<span class="token assign-left variable">KUBIA_SERVICE_PORT</span><span class="token operator">=</span><span class="token number">80</span>
-<span class="token assign-left variable">KUBIA_PORT_80_TCP_PROTO</span><span class="token operator">=</span>tcp
-<span class="token assign-left variable">KUBIA_PORT_80_TCP_ADDR</span><span class="token operator">=</span><span class="token number">10.107</span>.244.106
-<span class="token assign-left variable">KUBIA_PORT_80_TCP</span><span class="token operator">=</span>tcp://10.107.244.106:80
-<span class="token assign-left variable">KUBIA_PORT_80_TCP_PORT</span><span class="token operator">=</span><span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>上面显示的环境变量是创建服务后才有的，它们指向了服务 <code>kubia</code> 的 IP 地址和端口。此外，还有 Kubernetes 服务的环境变量。</p>
-<h2 id="通过-dns-发现"><a class="markdownIt-Anchor" href="#通过-dns-发现"></a> 通过 DNS 发现</h2>
-<p>Kubernetes 使用 CoreDNS 作为默认的 DNS 服务。每个运行的 Pod 都会在 <code>/etc/resolv.conf</code> 中写入 DNS 服务的地址：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token parameter variable">-n</span> kube-system describe service/kube-dns
-IP:                <span class="token number">10.96</span>.0.10
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$  kubectl <span class="token builtin class-name">exec</span> <span class="token parameter variable">-it</span> kubiaex-5s68q -- <span class="token function">cat</span> /etc/resolv.conf 
-nameserver <span class="token number">10.96</span>.0.10
-search default.svc.cluster.local svc.cluster.local cluster.local
-options ndots:5<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>Pod 是否使用内部 DNS 策略由 <code>spec.dnsPolicy</code> 来决定：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get po kubiaex-5s68q <span class="token parameter variable">-o</span> yaml
-spec:
-  dnsPolicy: ClusterFirst<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>客户端的 Pod 在知道服务名称的情况下，可以通过全限定域名（Fully Qualified Domain Name，FQDN）来访问，而不用依靠环境变量。例如，服务的全名是 <code>kubia.default.svc.cluster.local</code>，通过 Pod 中的容器访问这个地址：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">root@kubiaex-5s68q:/<span class="token comment"># curl http://kubia.default.svc.cluster.local</span>
-You've hit kubiaex-bwzb9<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>FQDN 分为三部分：<code>kubia</code> 为主机名，<code>default</code> 为对应的命名空间，<code>svc.cluster.local</code> 是所有集群本地服务名称中使用的可配置集群域后缀。</p>
-<p>如果要与同一命名空间下的资源通信，可以省略后缀，直接通过主机名进行通信：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">root@kubiaex-5s68q:/<span class="token comment"># curl http://kubia  </span>
-You've hit kubiaex-bwzb9
-root@kubiaex-5s68q:/<span class="token comment"># ping kubia</span>
-PING kubia.default.svc.cluster.local <span class="token punctuation">(</span><span class="token number">10.107</span>.244.106<span class="token punctuation">)</span>: <span class="token number">56</span> data bytes<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="暴露内部服务"><a class="markdownIt-Anchor" href="#暴露内部服务"></a> 暴露内部服务</h1>
-<p>服务主要作用是将集群内的服务向外公开，让外部客户端可以访问它们。如下图所示：</p>
-<p><img data-src="../../../images/%E5%B0%86%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2%E5%87%BA%E5%8E%BB.jpg" alt="将服务暴露出去" /></p>
-<p>有几种方式可以从外部访问服务：</p>
-<ul>
-<li>
-<p>将服务类型设置为 NodePort</p>
-<p>每个集群节点都会打开一个端口，并将流量转发重定向到基础服务。该服务只能在内部集群的 IP 和端口上访问，但也可以通过所有节点上的专用端口访问。</p>
-</li>
-<li>
-<p>将服务类型设置为 LoadBalancer</p>
-<p>LoadBalancer 是 NodePort 类型的一种扩展，它允许通过一个专用的负载均衡器来访问服务，该负载均衡器由云基础设施提供。负载均衡器将流量重定向到跨所有节点的节点端口，客户端可以通过负载均衡器的 IP 连接到服务。</p>
-</li>
-<li>
-<p>创建一个 Ingress 资源</p>
-<p>Ingress 资源可以通过一个 IP 地址公开多个服务，它运行在 HTTP 层（第 7 层），因此可以提供更多的功能。</p>
-</li>
-</ul>
-<p>最常用的端口暴露方式是 NodePort。一般的应用端口可以通过 Nginx 做反向代理，而不需要直接暴露出去。</p>
-<h2 id="nodeport"><a class="markdownIt-Anchor" href="#nodeport"></a> NodePort</h2>
-<p>NodePort 类型的服务可以通过任何节点的 IP 和端口进行访问，同时也可以通过服务的内部集群 IP 进行访问，两者互不冲突。默认情况下，NodePort 可用的端口范围是从 30000 到 32767。示意图如下所示：</p>
-<p><img data-src="../../../images/%E9%80%9A%E8%BF%87NodePort%E6%9A%B4%E9%9C%B2%E7%AB%AF%E5%8F%A3.jpg" alt="通过NodePort暴露端口" /></p>
-<p>创建服务配置文件时，除了将类型设置为 NodePort，还需要定义三个端口：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-np.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: kubia-nodeport
-spec:
-  type: NodePort
-  ports:
-  - port: <span class="token number">80</span>
-    targetPort: <span class="token number">8080</span>
-    nodePort: <span class="token number">30123</span>
-  selector:
-    app: kubia<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>其中，port 端口 80 代表集群内部访问端口，targetPort 端口 8080 代表 Pod 中服务监听的端口，这两个端口的定义与普通服务相同。而额外的 nodePort 端口 30123 是用于外部访问的端口。如果不设置 nodePort，Kubernetes 会使用随机端口。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-np.yaml
-service/kubia-nodeport created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>启动后，可以通过浏览器访问地址 <a href="http://xn--ip-dh3cr99d42rrmy:30123/">http://任意节点 IP:30123/</a> 来打开服务。可以使用 JSONPath 选择器来获取所有节点的 IP：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get nodes <span class="token parameter variable">-o</span> <span class="token assign-left variable">jsonpath</span><span class="token operator">=</span><span class="token string">'&#123;.items[*].status.addresses[?(@.type=="InternalIP")].address&#125;'</span>
-<span class="token number">192.168</span>.2.204 <span class="token number">192.168</span>.2.205 <span class="token number">192.168</span>.2.206<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>需要注意的是，当节点发生故障时，无法访问该节点。因此，在选择端口暴露方式时，应优先考虑使用 LoadBalancer。</p>
-<h2 id="loadbalance"><a class="markdownIt-Anchor" href="#loadbalance"></a> LoadBalance</h2>
-<p>负载均衡器具有唯一的 IP 地址，并将所有连接重定向到服务。LoadBalancer 服务是 NodePort 服务的扩展，如果 Kubernetes 在不支持负载均衡器服务的环境中运行，服务仍将以 NodePort 模式工作。其工作原理如下图所示：</p>
-<p><img data-src="../../../images/%E9%80%9A%E8%BF%87%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E6%9A%B4%E9%9C%B2%E7%AB%AF%E5%8F%A3.jpg" alt="通过负载均衡暴露端口" /></p>
-<p>可以创建一个 LoadBalancer 类型的服务：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-lb.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: kubia-loadbalancer
-spec:
-  type: LoadBalancer
-  ports:
-  - port: <span class="token number">80</span>
-    targetPort: <span class="token number">8080</span>
-  selector:
-    app: kubia
-<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-lb.yaml 
-service/kubia-loadbalancer created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>只需将服务类型设置为 LoadBalancer，服务将从集群基础架构中获取负载均衡器，并将其 IP 地址写入服务的 EXTERNAL-IP 字段。</p>
-<p>通过浏览器访问时，您会发现每次都会连接到同一个 Pod，这是因为服务在连接级别上工作。因此，首次建立连接时会选择一个随机集群，之后所有的数据包都会发送到同一个集群，直到连接关闭。</p>
-<h2 id="ingress"><a class="markdownIt-Anchor" href="#ingress"></a> Ingress</h2>
-<p>使用 Ingress 只需要一个公网 IP 地址就能为所有服务提供访问，Ingress 会根据请求的主机名和路径决定转发到的服务。</p>
-<p>Ingress 作用在网络第七层，因此能实现基于 cookie 的会话亲和性等功能，但相对于作用在第四层协议的服务，转发效率较低。</p>
-<p>Ingress 的工作原理如下图所示：</p>
-<p><img data-src="../../../images/%E9%80%9A%E8%BF%87Ingress%E8%AE%BF%E9%97%AEpod.jpg" alt="通过Ingress访问pod" /></p>
-<p>要让 Ingress 资源正常工作，需要配合 Ingress 控制器。可以通过官方提供的 YAML 文件直接部署 Ingress，可以选择基于 Nginx、Envoy、Haproxy、Vulcand 和 Traefik 等作为反向代理：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl apply <span class="token parameter variable">-f</span> https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml
-namespace/ingress-nginx created
-configmap/nginx-configuration created
-configmap/tcp-services created
-configmap/udp-services created
-serviceaccount/nginx-ingress-serviceaccount created
-clusterrole.rbac.authorization.k8s.io/nginx-ingress-clusterrole created
-role.rbac.authorization.k8s.io/nginx-ingress-role created
-rolebinding.rbac.authorization.k8s.io/nginx-ingress-role-nisa-binding created
-clusterrolebinding.rbac.authorization.k8s.io/nginx-ingress-clusterrole-nisa-binding created
-deployment.apps/nginx-ingress-controller created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>查看 YAML 内容后，将自动创建一个属于 ingress-nginx 命名空间的 nginx-ingress-controller 控制器的 Pod，然后创建服务：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl get pods --all-namespaces <span class="token parameter variable">-l</span> app.kubernetes.io/name<span class="token operator">=</span>ingress-nginx <span class="token parameter variable">--watch</span>
-NAMESPACE       NAME                                        READY   STATUS              RESTARTS   AGE
-ingress-nginx   nginx-ingress-controller-7995bd9c47-8v8rj   <span class="token number">0</span>/1     ContainerCreating   <span class="token number">0</span>          75s
-ingress-nginx   nginx-ingress-controller-7995bd9c47-8v8rj   <span class="token number">0</span>/1     Running             <span class="token number">0</span>          88s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>接着创建服务：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl apply <span class="token parameter variable">-f</span> https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/baremetal/service-nodeport.yaml
-service/ingress-nginx created
-<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get pods <span class="token parameter variable">-n</span> ingress-nginx
-NAME                                        READY   STATUS    RESTARTS   AGE
-nginx-ingress-controller-7995bd9c47-8v8rj   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          3h6m
-<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get svc <span class="token parameter variable">-n</span> ingress-nginx
-NAME            TYPE       CLUSTER-IP     EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>                      AGE
-ingress-nginx   NodePort   <span class="token number">10.98</span>.41.161   <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>:30112/TCP,443:30970/TCP   105m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>建立 YAML 文件来绑定后端服务：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-ingress.yaml
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: kubia-ingress
-spec:
-  rules:
-  - host: kubia.exp.com
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: kubia
-          servicePort: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>将虚拟域名 <code>kubia.exp.com</code> 映射到 Ingress 控制器的节点 IP（192.168.2.113-115 <code>kubia.exp.com</code>）。配置将所有请求发送到 kubia 服务的 80 端口。云服务商要求 Ingress 指向一个 NodePort 服务，但实际上可以指向任意服务。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-ingress.yaml 
-ingress.extensions/kubia-ingress created
-<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ kubectl get ingresses
-NAME            HOSTS           ADDRESS   PORTS   AGE
-kubia-ingress   kubia.exp.com             <span class="token number">80</span>      59s
-<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl describe ingress kubia-ingress
-Name:             kubia-ingress
-Namespace:        default
-Address:          
-Default backend:  default-http-backend:80 <span class="token punctuation">(</span><span class="token operator">&lt;</span>none<span class="token operator">></span><span class="token punctuation">)</span>
-Rules:
-  Host           Path  Backends
-  ----           ----  --------
-  kubia.exp.com  
-                 /   kubia:80 <span class="token punctuation">(</span><span class="token number">10.244</span>.1.28:8080,10.244.2.43:8080,10.244.2.44:8080<span class="token punctuation">)</span>
-Annotations:
-Events:
-  Type    Reason  Age    From                      Message
-  ----    ------  ----   ----                      -------
-  Normal  CREATE  2m22s  nginx-ingress-controller  Ingress default/kubia-ingress<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>通过浏览器访问 <code>kubia.exp.com:30112</code> 即可访问 kubia 服务。</p>
-<p>客户端与控制器之间的通信采用 HTTPS 加密，而控制器与后端 Pod 之间的通信则不需要加密。运行在 Pod 上的应用程序不需要支持 TLS。例如，如果 Pod 上运行着 Web 服务器，它只需要接收 HTTP 通信，并让 Ingress 控制器负责处理与 TLS 相关的所有内容。只需将证书和私钥附加到 Ingress 上，这两个资源存储在 Secret 中，然后在 Ingress 的配置文件中引用它们：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ openssl genrsa <span class="token parameter variable">-out</span> tls.key <span class="token number">2048</span>
-<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ openssl req <span class="token parameter variable">-new</span> <span class="token parameter variable">-x509</span> <span class="token parameter variable">-key</span> tls.key <span class="token parameter variable">-out</span> tls.crt <span class="token parameter variable">-subj</span> /C<span class="token operator">=</span>CN/ST<span class="token operator">=</span>Beijing/L<span class="token operator">=</span>Beijing/O<span class="token operator">=</span>DevOps/CN<span class="token operator">=</span>kubia.exp.com
-<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl create secret tls kubia-secret <span class="token parameter variable">--cert</span><span class="token operator">=</span>tls.crt <span class="token parameter variable">--key</span><span class="token operator">=</span>tls.key
-<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get secret
-NAME                    TYPE                                  DATA   AGE
-default-token-5wkq2     kubernetes.io/service-account-token   <span class="token number">3</span>      25h
-kubia-secret            kubernetes.io/tls                     <span class="token number">2</span>      30s
-tomcat-ingress-secret   kubernetes.io/tls                     <span class="token number">2</span>      55m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>重新创建 Ingress，使用 HTTPS 协议将 kubia 绑定到 <code>kubia.exp.com</code>：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-tls.yaml
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: ingress-kubia
-  namespace: default
-spec:
-  tls:
-  - hosts:
-    - kubia.exp.com
-    secretName: kubia-secret
-  rules:
-  - host: kubia.exp.com
-    http:
-      paths:
-      - path:
-        backend:
-          serviceName: kubia
-          servicePort: <span class="token number">8080</span>
-<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-tls.yaml 
-ingress.extensions/ingress-kubia created
-<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get ingress
-NAME                 HOSTS              ADDRESS   PORTS     AGE
-ingress-kubia        kubia.exp.com                <span class="token number">80</span>, <span class="token number">443</span>   29s
-ingress-myapp        myapp.along.com              <span class="token number">80</span>        65m
-ingress-tomcat       tomcat.along.com             <span class="token number">80</span>        60m
-ingress-tomcat-tls   tomcat.along.com             <span class="token number">80</span>, <span class="token number">443</span>   58m
-kubia-ingress        kubia.exp.com                <span class="token number">80</span>        10m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>使用浏览器访问 HTTPS 地址：<a href="https://kubia.exp.com:30970/">https://kubia.exp.com:30970/</a> 进行验证。</p>
-<p>可以通过设置多个路径来将访问路径转发到不同的服务：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">..</span>.
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: kubia
-          servicePort: <span class="token number">80</span>
-      - path: /admin
-        backend:
-          serviceName: admin
-          servicePort: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>同样，可以设置多个规则来将子域名转发到不同的服务：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: kubia-ingress
-  namespace: default
-spec:
-  rules:
-  - host: kubia.exp.com
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: kubia
-          servicePort: <span class="token number">80</span>
-  rules:
-  - host: app.exp.com
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: app
-          servicePort: <span class="token number">80</span>
-      - path: /api
-        backend:
-          serviceName: api
-          servicePort: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>除了使用 NodePort、LoadBalancer 等方式来暴露单个服务，还可以使用 Ingress 来暴露服务：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: my-ingress
-spec:
-  backend:
-    serviceName: my-svc
-    servicePort: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>这样，通过外网访问 80 端口即可直接转发到 my-svc 服务。</p>
-<h1 id="指向外部服务"><a class="markdownIt-Anchor" href="#指向外部服务"></a> 指向外部服务</h1>
-<p>SVC 也可以将服务的地址重定向到集群外部网络的地址和端口，在集群中的 pod 可以像连接内部服务一样连接到外部服务。如下图所示：</p>
-<p><img data-src="../../../images/%E6%9C%8D%E5%8A%A1%E6%8C%87%E5%90%91%E5%A4%96%E9%83%A8%E5%9C%B0%E5%9D%80.jpg" alt="服务指向外部地址" /></p>
-<h2 id="endpoint"><a class="markdownIt-Anchor" href="#endpoint"></a> Endpoint</h2>
-<p>SVC 通过 Endpoint（以下简称 EP）资源与 pod 进行连接，一般指向 pod 的 IP 地址和端口列表：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl describe svc kubia
-Endpoints:         <span class="token number">10.244</span>.191.210:8080,10.244.191.211:8080,10.244.244.209:8080<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>也可以直接查询 EP 资源：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get endpoints kubia
-NAME    ENDPOINTS                                                     AGE
-kubia   <span class="token number">10.244</span>.191.210:8080,10.244.191.211:8080,10.244.244.209:8080   100m
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl describe endpoints kubia
-Name:         kubia
-Namespace:    default
-Labels:       <span class="token operator">&lt;</span>none<span class="token operator">></span>
-Annotations:  endpoints.kubernetes.io/last-change-trigger-time: <span class="token number">2021</span>-11-03T11:45:07Z
-Subsets:
-  Addresses:          <span class="token number">10.244</span>.191.210,10.244.191.211,10.244.244.209
-  NotReadyAddresses:  <span class="token operator">&lt;</span>none<span class="token operator">></span>
-  Ports:
-    Name     Port  Protocol
-    ----     ----  --------
-    <span class="token operator">&lt;</span>unset<span class="token operator">></span>  <span class="token number">8080</span>  TCP<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>EP 的作用是存储通过 pod 选择器获取的 pod 地址和端口，并提供给服务调用。</p>
-<h2 id="配置-ep"><a class="markdownIt-Anchor" href="#配置-ep"></a> 配置 EP</h2>
-<p>可以分别创建 SVC 和 EP 资源来自定义要转发到的地址列表。先创建一个没有选择器的服务，并指定 EP 的目标端口为 80：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> outside-svc.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: outside
-spec:
-  ports:
-  - name: http
-    port: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>创建一个 EP 来指定地址列表。名称需要与 SVC 的一致：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> outside-ep.yaml
-apiVersion: v1
-kind: Endpoints
-metadata:
-  name: outside
-subsets:
-  - addresses:
-    - ip: <span class="token number">11.11</span>.11.11
-    - ip: <span class="token number">22.22</span>.22.22
-    ports:
-    - port: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>分别部署后，SVC 就具有了转发到外部服务的功能：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> outside-svc.yaml <span class="token parameter variable">-f</span> outside-ep.yaml <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>自定义 Endpoint 通常可用于服务迁移。当集群内的应用迁移到外部时，在 EP 资源中修改地址后，SVC 提供的访问 IP 地址可以保持不变。</p>
-<h2 id="配置别名"><a class="markdownIt-Anchor" href="#配置别名"></a> 配置别名</h2>
-<p>除了手动配置 EP 外，还可以设置域名作为转发目标。只需要在 SVC 配置文件中设置类型为 ExternalName 即可：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> ext-svc.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: exten
-spec:
-  type: ExternalName
-  externalName: someapi.somecompany.com
-  ports:
-  - port: <span class="token number">80</span>
-    targetPort: <span class="token number">6379</span>
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> ext-svc.yaml 
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get svc exten 
-NAME    TYPE           CLUSTER-IP   EXTERNAL-IP               PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>   AGE
-exten   ExternalName   <span class="token operator">&lt;</span>none<span class="token operator">></span>       someapi.somecompany.com   <span class="token number">80</span>/TCP    29s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>之后，集群内的 pod 可以通过访问 <code>exten</code> 这个 SVC 就能连接到外部域名 <code>someapi.somecompany.com</code>。这样的好处是不需要关心外部域名的 IP 地址，即使 IP 有变动也不会影响 SVC 的运行。</p>
-<h1 id="无头服务"><a class="markdownIt-Anchor" href="#无头服务"></a> 无头服务</h1>
-<p>假如客户需要获取一组 pod IP，默认情况下查询服务会返回服务的集群 IP。通过把服务 IP 设为 None，客户端可以通过一个简单的 DNS A 记录查找获取到属于该服务的所有 pod IP。这种服务叫做无头服务。</p>
-<h2 id="创建服务"><a class="markdownIt-Anchor" href="#创建服务"></a> 创建服务</h2>
-<p>配置 YAML 并启动服务：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> kubia-headless.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: kubia-headless
-  namespace: default
-spec:
-  clusterIP: None
-  ports:
-  - port: <span class="token number">80</span>
-    targetPort: <span class="token number">8080</span>
-  selector:
-    app: kubia
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> kubia-headless.yaml 
-service/kubia-headless created
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get <span class="token function">service</span>
-NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>        AGE
-kubernetes       ClusterIP   <span class="token number">10.96</span>.0.1        <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">443</span>/TCP        130d
-kubia            ClusterIP   <span class="token number">10.107</span>.244.106   <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>/TCP         3h43m
-kubia-headless   ClusterIP   None             <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>/TCP         3s
-kubia-nodeport   NodePort    <span class="token number">10.99</span>.116.227    <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>:30123/TCP   148m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>创建完毕后，可以看到服务没有集群 IP。</p>
-<h2 id="通过-dns-查找"><a class="markdownIt-Anchor" href="#通过-dns-查找"></a> 通过 DNS 查找</h2>
-<p>拉取一个能够进行 DNS 查询的容器后，进入 pod 执行 DNS 查找：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl run dnsutils <span class="token parameter variable">--image</span><span class="token operator">=</span>tutum/dnsutils <span class="token parameter variable">--command</span> -- <span class="token function">sleep</span> infinity
-pod/dnsutils created
-<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> dnsutils <span class="token function">nslookup</span> kubia-headless
-Server:         <span class="token number">10.96</span>.0.10
-Address:        <span class="token number">10.96</span>.0.10<span class="token comment">#53</span>
-
-Name:   kubia-headless.default.svc.cluster.local
-Address: <span class="token number">10.244</span>.1.38
-Name:   kubia-headless.default.svc.cluster.local
-Address: <span class="token number">10.244</span>.2.57
-Name:   kubia-headless.default.svc.cluster.local
-Address: <span class="token number">10.244</span>.2.58<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>结果返回了 pod 的 IP，这与普通服务不同，比如 kubia 服务返回服务的集群 IP：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> dnsutils <span class="token function">nslookup</span> kubia
-Server:         <span class="token number">10.96</span>.0.10
-Address:        <span class="token number">10.96</span>.0.10<span class="token comment">#53</span>
-
-Name:   kubia.default.svc.cluster.local
-Address: <span class="token number">10.102</span>.7.149
-<span class="token punctuation">[</span>root@k8s-master ~<span class="token punctuation">]</span>$ kubectl get svc
-NAME             TYPE        CLUSTER-IP     EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>   AGE
-kubernetes       ClusterIP   <span class="token number">10.96</span>.0.1      <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">443</span>/TCP   24h
-kubia            ClusterIP   <span class="token number">10.102</span>.7.149   <span class="token operator">&lt;</span>none<span class="token operator">></span>        <span class="token number">80</span>/TCP    64s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>无头服务使用上与普通服务一样，客户也可以通过连接服务的 DNS 名称来连接到 pod 上，不过客户端直连到 pod 上，而不是通过服务代理。</p>
-<p>无头服务仍然提供跨 pod 的负载平衡，通过 DNS 轮询机制实现。</p>
-<h2 id="发现所有-pod"><a class="markdownIt-Anchor" href="#发现所有-pod"></a> 发现所有 Pod</h2>
-<p>如果希望 pod 没有准备就绪也能被发现，可以在服务配置中添加注解：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">metadata:
-  name: kubia-headless
-  namespace: default
-  annotations:
-    service.alpha.kubernetes.io/tolerate-unready-endpoints: <span class="token string">"true"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 ]]></content>
       <categories>
         <category>Kubernets</category>
@@ -30342,464 +30342,6 @@ default:other::r-x<span aria-hidden="true" class="line-numbers-rows"><span></spa
       </categories>
   </entry>
   <entry>
-    <title>Linux 磁盘配额管理</title>
-    <url>/3427262780/</url>
-    <content><![CDATA[<h1 id="磁盘配额简介"><a class="markdownIt-Anchor" href="#磁盘配额简介"></a> 磁盘配额简介</h1>
-<p>Linux 下磁盘配额功能叫 <code>quota</code>。</p>
-<h2 id="一般用途"><a class="markdownIt-Anchor" href="#一般用途"></a> 一般用途</h2>
-<ul>
-<li>限制服务使用空间容量；</li>
-<li>限制某一用户组所能使用的最大磁盘配额；</li>
-<li>限制某一用户的最大磁盘配额；</li>
-<li>限制某一目录的最大磁盘配额。</li>
-</ul>
-<h2 id="使用限制"><a class="markdownIt-Anchor" href="#使用限制"></a> 使用限制</h2>
-<ul>
-<li><code>EXT</code> 文件系统下仅能针对整个文件系统设置；</li>
-<li>针对单一目录的设置（<code>prjquota</code>）和针对群组的设置（<code>grpquota</code>）不能共存；</li>
-<li>内核必须支持；</li>
-<li>只对一般身份用户有效。比如 <code>root</code> 就不能设置配额。也不能针对目录来设置（<code>ext</code> 文件系统）；</li>
-<li>若启用 <code>SELinux</code>，非所有目录都可设置 <code>quota</code>。</li>
-</ul>
-<h2 id="设置选项"><a class="markdownIt-Anchor" href="#设置选项"></a> 设置选项</h2>
-<ul>
-<li>分别针对使用者，群组或个别目录（<code>user</code>，<code>group</code> &amp; <code>project</code>）；</li>
-<li>容量限制（<code>block</code>）或文件数量限制（<code>inode</code>）；</li>
-<li>警告（<code>soft</code>）与限制值（<code>hard</code>）；</li>
-<li>宽限时间（<code>grace time</code>），在用量介于 <code>soft</code> 与 <code>hard</code> 之间时给予警告，并给予宽限时间（默认 7 天）。如果在宽限期内没把用量降到 <code>soft</code> 值之下，<code>soft</code> 限制值会替代 <code>hard</code> 值作为 <code>quota</code> 的限制。</li>
-</ul>
-<h2 id="开启-quota-支持"><a class="markdownIt-Anchor" href="#开启-quota-支持"></a> 开启 Quota 支持</h2>
-<p><code>ext</code> 和 <code>xfs</code> 文件系统默认支持 <code>quota</code>，要手动加入 <code>quota</code> 支持可以使用 <code>mount -o remount,usrquota,grpquota /</code> 命令来重新挂载。<code>usrquota</code> 和 <code>grpquota</code> 参数分别代表用户与用户组支持参数。</p>
-<p>写入配置文件可以修改 <code>/etc/fstab</code> 文件，在挂载参数后面加入 <code>usrquota</code> 和 <code>grpquota</code> 或 <code>prjquota</code>：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/fstab
-/dev/sdb4 /root/sdb4m                    ext3    defaults        <span class="token number">0</span> <span class="token number">0</span>
-/dev/sdd1 /xfs333                  xfs           defaults,usrquota,grpquota  <span class="token number">0</span> <span class="token number">0</span>
-<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">umount</span> /xfs333
-<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mount</span> <span class="token parameter variable">-a</span>
-mount: /dev/sdb4 is already mounted or /root/sdb4m busy
-<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mount</span> <span class="token operator">|</span> <span class="token function">grep</span> sdd
-/dev/sdd1 on /xfs333 <span class="token builtin class-name">type</span> xfs <span class="token punctuation">(</span>rw,relatime,seclabel,attr2,inode64,usrquota,grpquota<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="ext-文件系统磁盘配额"><a class="markdownIt-Anchor" href="#ext-文件系统磁盘配额"></a> EXT 文件系统磁盘配额</h1>
-<p>由于 EXT 文件系统中使用的工具和 XFS 文件系统不同，因此分别记录。</p>
-<h2 id="新建-quota-配置文件"><a class="markdownIt-Anchor" href="#新建-quota-配置文件"></a> 新建 Quota 配置文件</h2>
-<p>Quota 是通过分析整个文件系统中每个用户(用户组)拥有的文件总数与总容量，将数据记录在该文件系统的最顶层目录，然后在该配置文件中再使用每个账号或组的限制值去规定磁盘使用量。</p>
-<p>可以使用<code>quotacheck</code>命令来新建 Quota 配置文件，用法如下：</p>
-<p><code>quotacheck [-avugfM] [挂载点]</code></p>
-<p>主要参数:</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>-a</td>
-<td>扫描所有在<code>/etc/mtab</code>内 Quota 支持的文件系统，加入此参数后可不写挂载点</td>
-</tr>
-<tr>
-<td>-u</td>
-<td>针对用户扫描文件与目录使用情况，会新建<code>aquota.user</code></td>
-</tr>
-<tr>
-<td>-g</td>
-<td>针对用户组扫描文件与目录使用情况，会新建<code>aquota.group</code></td>
-</tr>
-<tr>
-<td>-v</td>
-<td>显示扫描过程</td>
-</tr>
-<tr>
-<td>-f</td>
-<td>强制扫描文件系统，并写入新的 Quota 配置文件</td>
-</tr>
-<tr>
-<td>-M</td>
-<td>强制以读写的方式扫描文件系统</td>
-</tr>
-</tbody>
-</table>
-<p>对整个系统执行扫描并新建配置文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">quotacheck</span> <span class="token parameter variable">-avug</span>
-quotacheck: Your kernel probably supports journaled <span class="token function">quota</span> but you are not using it. Consider switching to journaled <span class="token function">quota</span> to avoid running <span class="token function">quotacheck</span> after an unclean shutdown.
-quotacheck: Scanning /dev/sdb4 <span class="token punctuation">[</span>/root/sdb4m<span class="token punctuation">]</span> <span class="token keyword">done</span>
-quotacheck: Cannot <span class="token function">stat</span> old user <span class="token function">quota</span> <span class="token function">file</span> /root/sdb4m/aquota.user: No such <span class="token function">file</span> or directory. Usage will not be subtracted.
-quotacheck: Checked <span class="token number">8</span> directories and <span class="token number">19</span> files
-quotacheck: Old <span class="token function">file</span> not found.
-quotacheck: Old <span class="token function">file</span> not found.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>在挂载点查询新建的配额配置文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll <span class="token parameter variable">-d</span> /root/sdb4m/aq*
--rw-------. <span class="token number">1</span> root root <span class="token number">7168</span> Sep <span class="token number">13</span> <span class="token number">13</span>:26 /root/sdb4m/aquota.group
--rw-------. <span class="token number">1</span> root root <span class="token number">7168</span> Sep <span class="token number">13</span> <span class="token number">13</span>:26 /root/sdb4m/aquota.user<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>配置文件不用手动去编辑，因为实际上是 Quota 的数据文件，内容会一直变动。</p>
-<h2 id="启动与关闭-quota"><a class="markdownIt-Anchor" href="#启动与关闭-quota"></a> 启动与关闭 Quota</h2>
-<p>启动 quota 服务使用命令<code>quotaon</code>，加入<code>-auvg</code>参数来启动所有功能：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ quotaon <span class="token parameter variable">-avug</span>
-/dev/sdb4 <span class="token punctuation">[</span>/root/sdb4m<span class="token punctuation">]</span>: group quotas turned on
-/dev/sdb4 <span class="token punctuation">[</span>/root/sdb4m<span class="token punctuation">]</span>: user quotas turned on<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>quota 启动一次后，系统的<code>/etc/rc.d/rc.sysinit</code>初始化脚本都会自动执行该命令。</p>
-<p>关闭 quota 服务使用<code>quotaoff</code>命令，用<code>-a</code>参数关闭所有功能：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ quotaoff <span class="token parameter variable">-a</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="编辑-quota"><a class="markdownIt-Anchor" href="#编辑-quota"></a> 编辑 Quota</h2>
-<p>编辑配额使用<code>edquota</code>命令，语法如下：</p>
-<p><code>edquota [-u 用户名] [-g 组]</code></p>
-<p><code>edquota -t 宽限时间</code></p>
-<p><code>edquota -p 范本账号 -u 新账号</code></p>
-<p>例如设置用户<code>user1</code>的 Quota 限制值为 hard=10MB，soft=8MB：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ edquota <span class="token parameter variable">-u</span> user1
-Disk quotas <span class="token keyword">for</span> user user1 <span class="token punctuation">(</span>uid <span class="token number">1003</span><span class="token punctuation">)</span>:
-  Filesystem                   blocks       soft       hard     inodes     soft     hard
-  /dev/sdb4                         <span class="token number">2</span>       <span class="token number">8000</span>      <span class="token number">10000</span>          <span class="token number">1</span>        <span class="token number">0</span>        <span class="token number">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>会进入到编辑页面，总共七个字段说明如下：</p>
-<table>
-<thead>
-<tr>
-<th>编号</th>
-<th>字段</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>Filesystem</td>
-<td>说明针对的文件系统</td>
-</tr>
-<tr>
-<td>2</td>
-<td>blocks</td>
-<td>磁盘容量，单位为 KB</td>
-</tr>
-<tr>
-<td>3</td>
-<td>soft</td>
-<td>磁盘容量的 soft 限制值，单位 KB</td>
-</tr>
-<tr>
-<td>4</td>
-<td>hard</td>
-<td>磁盘容量的 hard 限制值，单位 KB</td>
-</tr>
-<tr>
-<td>5</td>
-<td>inodes</td>
-<td>文件数量</td>
-</tr>
-<tr>
-<td>6</td>
-<td>soft</td>
-<td>文件数量的 soft 限制值</td>
-</tr>
-<tr>
-<td>7</td>
-<td>hard</td>
-<td>文件数量的 hard 限制值</td>
-</tr>
-</tbody>
-</table>
-<p>修改宽限时间为 14 天：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ edquota <span class="token parameter variable">-t</span>
-Grace period before enforcing soft limits <span class="token keyword">for</span> users:
-Time <span class="token function">units</span> may be: days, hours, minutes, or seconds
-  Filesystem             Block grace period     Inode grace period
-  /dev/sdb4                    14days                  7days<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="设置-quota"><a class="markdownIt-Anchor" href="#设置-quota"></a> 设置 Quota</h2>
-<p>除了修改配置文件，还可以通过<code>setquota</code>命令来设置 Quota 的值。命令语法如下：</p>
-<p><code>setquota [-u|-g] 用户名|组名 容量限制(soft) 容量限制(hard) 文件数限制(soft) 文件数限制(hard)</code></p>
-<p>例如，将<code>user1</code>的文件数限制设置为 1000/2000：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ setquota <span class="token parameter variable">-u</span> user1 <span class="token number">0</span> <span class="token number">0</span> <span class="token number">1000</span> <span class="token number">2000</span> /root/sdb4m<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="quota-报表"><a class="markdownIt-Anchor" href="#quota-报表"></a> Quota 报表</h2>
-<p>针对用户或组查询限额报表使用 <code>quota</code> 命令，命令语法如下：</p>
-<p><code>quota [-uvs] [用户名]</code></p>
-<p><code>quota [-gvs] [组名]</code></p>
-<p>例如查询用户<code>user1</code>的限额：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">quota</span> <span class="token parameter variable">-uvs</span> user1
-Disk quotas <span class="token keyword">for</span> user user1 <span class="token punctuation">(</span>uid <span class="token number">1003</span><span class="token punctuation">)</span>: 
-     Filesystem   space   <span class="token function">quota</span>   limit   grace   files   <span class="token function">quota</span>   limit   grace
-      /dev/sdb4   9250K*  8000K  10000K  13days       <span class="token number">5</span>       <span class="token number">0</span>       <span class="token number">0</span>   <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>显示的内容和<code>edquota</code>编辑时看到的字段差不多，多了一个宽限日期。</p>
-<p>针对整个文件系统配额查询可以使用<code>repquota</code>命令：</p>
-<p><code>repquota -a [-vugs]</code></p>
-<p>参数如下:</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>-a</td>
-<td>直接到<code>/etc/mtab</code>查询具有 quota 标志的文件系统，并报告 quota 的结果</td>
-</tr>
-<tr>
-<td>-v</td>
-<td>输出的数据将含有文件系统相关的详细信息</td>
-</tr>
-<tr>
-<td>-u</td>
-<td>显示出用户的 quota 限值</td>
-</tr>
-<tr>
-<td>-g</td>
-<td>显示出个别用户组的 quota 限值</td>
-</tr>
-<tr>
-<td>-s</td>
-<td>以 M，G 为单位显示结果</td>
-</tr>
-</tbody>
-</table>
-<p>例如查询所有用户的 quota 限制情况：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ repquota <span class="token parameter variable">-auvs</span>
-*** Report <span class="token keyword">for</span> user quotas on device /dev/sdb4
-Block grace time: 14days<span class="token punctuation">;</span> Inode grace time: 7days
-                        Space limits                File limits
-User            used    soft    hard  grace    used  soft  hard  grace
-----------------------------------------------------------------------
-root      --     78K      0K      0K             <span class="token number">17</span>     <span class="token number">0</span>     <span class="token number">0</span>       
-user1     +-   9250K   8000K  10000K 13days       <span class="token number">5</span>     <span class="token number">0</span>     <span class="token number">0</span>       
-
-Statistics:
-Total blocks: <span class="token number">7</span>
-Data blocks: <span class="token number">1</span>
-Entries: <span class="token number">2</span>
-Used average: <span class="token number">2.000000</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="xfs-文件系统磁盘配额"><a class="markdownIt-Anchor" href="#xfs-文件系统磁盘配额"></a> XFS 文件系统磁盘配额</h1>
-<p>在 xfs 文件系统下，主要使用 <code>xfs_quota</code> 命令进行配额管理。</p>
-<h2 id="查询状态"><a class="markdownIt-Anchor" href="#查询状态"></a> 查询状态</h2>
-<p>基本使用方法为:<code>xfs_quota -x -c &quot;指令&quot; [挂载点]</code>，其中 <code>-x</code> 表示使用专家模式，<code>-c</code> 后面加的指令有以下：</p>
-<table>
-<thead>
-<tr>
-<th>指令</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>print</td>
-<td>单纯列出目前主机内的文件系统参数等数据</td>
-</tr>
-<tr>
-<td>df</td>
-<td>与原本 <code>df</code> 一样的功能，可加上 <code>-b</code>、<code>-i</code>、<code>-h</code> 等参数</td>
-</tr>
-<tr>
-<td>report</td>
-<td>列出目前的 quota 项目，有 <code>-ugr</code> 及 <code>-bi</code> 等数据</td>
-</tr>
-<tr>
-<td>state</td>
-<td>说明目前支持 quota 的文件系统信息，有没有启动相关项目等</td>
-</tr>
-</tbody>
-</table>
-<p>在使用了 <code>usrquota</code>、<code>grpquota</code> 参数挂载完文件系统后，可以用 <code>print</code> 指令查询：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"print"</span>
-Filesystem          Pathname
-/                   /dev/mapper/centos-root
-/boot               /dev/sda1
-/xfs333             /dev/sdd1 <span class="token punctuation">(</span>uquota, gquota<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>查询挂载点 <code>/xfs333</code> 文件系统使用情况：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"df -h"</span> /xfs333/
-Filesystem     Size   Used  Avail Use% Pathname
-/dev/sdd1    <span class="token number">496</span>.7M  <span class="token number">55</span>.8M <span class="token number">440</span>.8M  <span class="token number">11</span>% /xfs333<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>列出目前 <code>/xfs333</code> 的所有用户 quota 限制值：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"report -ubih"</span> /xfs333
-User <span class="token function">quota</span> on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
-                        Blocks                            Inodes              
-User ID      Used   Soft   Hard Warn/Grace     Used   Soft   Hard Warn/Grace  
----------- --------------------------------- --------------------------------- 
-root        <span class="token number">30</span>.0M      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>      <span class="token number">7</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以看到目前只有 <code>root</code> 在目录中使用了 30MB，而且没有设限。使用 <code>state</code> 指令查询 <code>/xfs333</code> 的 quota 功能启用情况：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"state"</span>
-User <span class="token function">quota</span> state on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
-  Accounting: ON
-  Enforcement: ON
-  Inode: <span class="token comment">#68 (1 blocks, 1 extents)</span>
-Group <span class="token function">quota</span> state on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
-  Accounting: ON
-  Enforcement: ON
-  Inode: <span class="token comment">#69 (1 blocks, 1 extents)</span>
-Project <span class="token function">quota</span> state on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
-  Accounting: OFF
-  Enforcement: OFF
-  Inode: <span class="token comment">#69 (1 blocks, 1 extents)</span>
-Blocks grace time: <span class="token punctuation">[</span><span class="token number">7</span> days<span class="token punctuation">]</span>
-Inodes grace time: <span class="token punctuation">[</span><span class="token number">7</span> days<span class="token punctuation">]</span>
-Realtime Blocks grace time: <span class="token punctuation">[</span><span class="token number">7</span> days<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="针对用户和组设置-quota"><a class="markdownIt-Anchor" href="#针对用户和组设置-quota"></a> 针对用户和组设置 Quota</h2>
-<p>设置使用的命令格式为：</p>
-<p><code>xfs_quota -x -c &quot;limit [-ug] b[soft|hard]=限制值 i[soft|hard]=限制值 用户或组名&quot; 挂载点</code></p>
-<p><code>xfs_quota -x -c &quot;timer [-ug] [-bir] Ndays&quot;</code></p>
-<p>上面命令为限制 block 和 inode，下面命令为设置 grace 时间。针对用户/组设置使用<code>-u</code>/<code>-g</code>参数。</p>
-<p>例如限制用户<code>user1</code>对<code>/xfs333</code>的<code>bsoft</code>为 100MB，<code>bhard</code>为 110MB：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"limit -u bsoft=100M bhard=110M user1"</span> /xfs333/
-<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"report -ubih"</span> /xfs333/
-User <span class="token function">quota</span> on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
-                        Blocks                            Inodes              
-User ID      Used   Soft   Hard Warn/Grace     Used   Soft   Hard Warn/Grace  
----------- --------------------------------- --------------------------------- 
-root        <span class="token number">30</span>.0M      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>      <span class="token number">7</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>
-user1           <span class="token number">0</span>   100M   110M  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>      <span class="token number">0</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>限制用户组<code>users</code>对<code>/xfs333</code>的<code>bsoft</code>为 50MB，<code>bhard</code>为 60MB：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"limit -g bsoft=50M bhard=60M users"</span> /xfs333/
-<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"report -gbih"</span> /xfs333/
-Group <span class="token function">quota</span> on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
-                        Blocks                            Inodes              
-Group ID     Used   Soft   Hard Warn/Grace     Used   Soft   Hard Warn/Grace  
----------- --------------------------------- --------------------------------- 
-root        <span class="token number">30</span>.0M      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>      <span class="token number">7</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>
-<span class="token function">users</span>           <span class="token number">0</span>    50M    60M  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>      <span class="token number">0</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>设置<code>/xfs333</code>的 grace time 为 14 天：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"timer -g -b 14days"</span> /xfs333/
-<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"timer -u -b 14days"</span> /xfs333/
-<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"state"</span> /xfs333/
-Blocks grace time: <span class="token punctuation">[</span><span class="token number">14</span> days<span class="token punctuation">]</span>
-Inodes grace time: <span class="token punctuation">[</span><span class="token number">7</span> days<span class="token punctuation">]</span>
-Realtime Blocks grace time: <span class="token punctuation">[</span><span class="token number">7</span> days<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>测试一下对用户的实际限制情况：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 xfs333<span class="token punctuation">]</span>$ <span class="token function">df</span>
-Filesystem              1K-blocks    Used Available Use% Mounted on
-/dev/sdd1                  <span class="token number">508580</span>   <span class="token number">26416</span>    <span class="token number">482164</span>   <span class="token number">6</span>% /xfs333
-<span class="token punctuation">[</span>user1@101c7 test<span class="token punctuation">]</span>$ <span class="token function">dd</span> <span class="token assign-left variable">if</span><span class="token operator">=</span>/dev/zero <span class="token assign-left variable">of</span><span class="token operator">=</span>100M <span class="token assign-left variable">bs</span><span class="token operator">=</span>1M <span class="token assign-left variable">count</span><span class="token operator">=</span><span class="token number">100</span>
-File size limit exceeded
-<span class="token punctuation">[</span>user1@101c7 test<span class="token punctuation">]</span>$ <span class="token function">dd</span> <span class="token assign-left variable">if</span><span class="token operator">=</span>/dev/zero <span class="token assign-left variable">of</span><span class="token operator">=</span>200M <span class="token assign-left variable">bs</span><span class="token operator">=</span>1M <span class="token assign-left variable">count</span><span class="token operator">=</span><span class="token number">100</span>
-dd: error writing â€˜200Mâ€™: Disk <span class="token function">quota</span> exceeded
-<span class="token punctuation">[</span>user1@101c7 test<span class="token punctuation">]</span>$ ll <span class="token parameter variable">-h</span>
-total 110M
--rw-rw-r--. <span class="token number">1</span> user1 user1 79M Sep <span class="token number">17</span> <span class="token number">14</span>:20 100M
--rw-rw-r--. <span class="token number">1</span> user1 user1 31M Sep <span class="token number">17</span> <span class="token number">14</span>:20 200M
-<span class="token punctuation">[</span>root@101c7 xfs333<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"report -ubih"</span> /xfs333/
-User <span class="token function">quota</span> on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
-                        Blocks                            Inodes              
-User ID      Used   Soft   Hard Warn/Grace     Used   Soft   Hard Warn/Grace  
----------- --------------------------------- --------------------------------- 
-root            <span class="token number">0</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span><span class="token number">0</span> days<span class="token punctuation">]</span>      <span class="token number">3</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>
-user1      <span class="token number">109</span>.1M   100M   110M  00 <span class="token punctuation">[</span><span class="token number">13</span> days<span class="token punctuation">]</span>      <span class="token number">3</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以看到针对 <code>user1</code> 的限制已经生效，grace time 开始计时。</p>
-<p>再看看针对组的实际限制情况，使用 gid 为 <code>users</code> 的用户 <code>user4</code> 测试：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user4@101c7 test<span class="token punctuation">]</span>$ <span class="token function">dd</span> <span class="token assign-left variable">if</span><span class="token operator">=</span>/dev/zero <span class="token assign-left variable">of</span><span class="token operator">=</span>200M <span class="token assign-left variable">bs</span><span class="token operator">=</span>1M <span class="token assign-left variable">count</span><span class="token operator">=</span><span class="token number">200</span>
-dd: error writing â€˜200Mâ€™: Disk <span class="token function">quota</span> exceeded
-<span class="token number">61</span>+0 records <span class="token keyword">in</span>
-<span class="token number">60</span>+0 records out
-<span class="token number">62914560</span> bytes <span class="token punctuation">(</span><span class="token number">63</span> MB<span class="token punctuation">)</span> copied, <span class="token number">0.0394094</span> s, <span class="token number">1.6</span> GB/s
-<span class="token punctuation">[</span>user4@101c7 test<span class="token punctuation">]</span>$ ll <span class="token parameter variable">-h</span>
-total 60M
--rw-r--r--. <span class="token number">1</span> user4 <span class="token function">users</span> 60M Sep <span class="token number">17</span> <span class="token number">14</span>:26 200M
-<span class="token punctuation">[</span>root@101c7 xfs333<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"report -gbih"</span> /xfs333/
-Group <span class="token function">quota</span> on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
-                        Blocks                            Inodes              
-Group ID     Used   Soft   Hard Warn/Grace     Used   Soft   Hard Warn/Grace  
----------- --------------------------------- --------------------------------- 
-root            <span class="token number">0</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span><span class="token number">0</span> days<span class="token punctuation">]</span>      <span class="token number">3</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>
-<span class="token function">users</span>         60M    50M    60M  00 <span class="token punctuation">[</span><span class="token number">13</span> days<span class="token punctuation">]</span>      <span class="token number">2</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>同样已经生效。</p>
-<h2 id="针对目录设置-quota"><a class="markdownIt-Anchor" href="#针对目录设置-quota"></a> 针对目录设置 Quota</h2>
-<p>先修改<code>/etc/fstab</code>内<code>grpquota</code>挂载参数为<code>prjquota</code>，再重新挂载目录。查看状态：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"state"</span>
-Project <span class="token function">quota</span> state on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
-  Accounting: ON
-  Enforcement: ON
-  Inode: <span class="token comment">#69 (3 blocks, 3 extents)</span>
-Blocks grace time: <span class="token punctuation">[</span><span class="token number">14</span> days<span class="token punctuation">]</span>
-Inodes grace time: <span class="token punctuation">[</span><span class="token number">7</span> days<span class="token punctuation">]</span>
-Realtime Blocks grace time: <span class="token punctuation">[</span><span class="token number">7</span> days<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>然后针对目录<code>/xfs333/test</code>设置 Project 名称和 ID 为<code>dirquo:23</code>到配置文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token string">"23:/xfs333/test"</span> <span class="token operator">></span> /etc/projects
-<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token string">"dirquo:23"</span>  <span class="token operator">>></span> /etc/projid<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>下面初始化方案：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 /<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"project -s dirquo"</span>
-Setting up project dirquo <span class="token punctuation">(</span>path /xfs333/test<span class="token punctuation">)</span><span class="token punctuation">..</span>.
-Processed <span class="token number">1</span> <span class="token punctuation">(</span>/etc/projects and cmdline<span class="token punctuation">)</span> paths <span class="token keyword">for</span> project dirquo with recursion depth infinite <span class="token punctuation">(</span>-1<span class="token punctuation">)</span>.
-<span class="token punctuation">[</span>root@101c7 /<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"print"</span> /xfs333/
-Filesystem          Pathname
-/xfs333             /dev/sdd1 <span class="token punctuation">(</span>uquota, pquota<span class="token punctuation">)</span>
-/xfs333/test        /dev/sdd1 <span class="token punctuation">(</span>project <span class="token number">23</span>, dirquo<span class="token punctuation">)</span>
-<span class="token punctuation">[</span>root@101c7 /<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"report -pbih"</span> /xfs333/
-Project <span class="token function">quota</span> on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
-                        Blocks                            Inodes              
-Project ID   Used   Soft   Hard Warn/Grace     Used   Soft   Hard Warn/Grace  
----------- --------------------------------- --------------------------------- 
-<span class="token comment">#0              0      0      0  00 [------]      2      0      0  00 [------]</span>
-dirquo        60M      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>      <span class="token number">3</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>开始设置对目录的容量为 20M/30M 限制：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 /<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"limit -p bsoft=20M bhard=30M dirquo"</span> /xfs333/
-<span class="token punctuation">[</span>root@101c7 /<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"report -pbin"</span> /xfs333/
-Project <span class="token function">quota</span> on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
-                               Blocks                                          Inodes                     
-Project ID       Used       Soft       Hard    Warn/Grace           Used       Soft       Hard    Warn/ Grace     
----------- -------------------------------------------------- -------------------------------------------------- 
-<span class="token comment">#0                   0          0          0     00 [--------]          2          0          0     00 [--------]</span>
-<span class="token comment">#23              61440      20480      30720     00 [--none--]          3          0          0     00 [--------]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>目前容量使用已经超过配额，直接使用<code>root</code>测试：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 test<span class="token punctuation">]</span>$ <span class="token function">dd</span> <span class="token assign-left variable">if</span><span class="token operator">=</span>/dev/zero <span class="token assign-left variable">of</span><span class="token operator">=</span><span class="token number">44</span> <span class="token assign-left variable">bs</span><span class="token operator">=</span>1M <span class="token assign-left variable">count</span><span class="token operator">=</span><span class="token number">44</span>
-dd: failed to <span class="token function">open</span> â€˜44â€™: Disk <span class="token function">quota</span> exceeded
-<span class="token punctuation">[</span>root@101c7 test<span class="token punctuation">]</span>$ <span class="token function">rm</span> <span class="token parameter variable">-rf</span> 200M 
-<span class="token punctuation">[</span>root@101c7 test<span class="token punctuation">]</span>$ <span class="token function">dd</span> <span class="token assign-left variable">if</span><span class="token operator">=</span>/dev/zero <span class="token assign-left variable">of</span><span class="token operator">=</span><span class="token number">44</span> <span class="token assign-left variable">bs</span><span class="token operator">=</span>1M <span class="token assign-left variable">count</span><span class="token operator">=</span><span class="token number">44</span>
-dd: error writing â€˜44â€™: No space left on device
-<span class="token number">31</span>+0 records <span class="token keyword">in</span>
-<span class="token number">30</span>+0 records out
-<span class="token number">31457280</span> bytes <span class="token punctuation">(</span><span class="token number">31</span> MB<span class="token punctuation">)</span> copied, <span class="token number">0.0373182</span> s, <span class="token number">843</span> MB/s
-<span class="token punctuation">[</span>root@101c7 test<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"report -pbin"</span> /xfs333/
-Project <span class="token function">quota</span> on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
-                               Blocks                                          Inodes                     
-Project ID       Used       Soft       Hard    Warn/Grace           Used       Soft       Hard    Warn/ Grace     
----------- -------------------------------------------------- -------------------------------------------------- 
-<span class="token comment">#0                   0          0          0     00 [--------]          2          0          0     00 [--------]</span>
-<span class="token comment">#23              30720      20480      30720     00 [14 days]          3          0          0     00 [--------]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>第一次<code>dd</code>直接拒绝说达到配额限制，将原文件删除后再试，跑到 33MB 提示没有空间，所以对目录限制是不挑用户的。</p>
-<h2 id="管理-quota-功能"><a class="markdownIt-Anchor" href="#管理-quota-功能"></a> 管理 Quota 功能</h2>
-<p>可以使用下面的指令来启停 quota 功能：</p>
-<ul>
-<li><strong>disable</strong>: 暂停 quota 限制</li>
-<li><strong>enable</strong>: 恢复 quota 限制</li>
-<li><strong>off</strong>: 完全关闭 quota 限制，需要重新挂载文件系统才能再次启用</li>
-<li><strong>remove</strong>: 需要在 off 状态下执行，移除 quota 的限制设置。</li>
-</ul>
-<p>暂停后 quota 限制解除，但还是会继续计算用量：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 test<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"state"</span> /xfs333/
-User <span class="token function">quota</span> state on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
-  Accounting: ON
-  Enforcement: OFF
-  Inode: <span class="token comment">#68 (2 blocks, 2 extents)</span>
-Group <span class="token function">quota</span> state on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
-  Accounting: OFF
-  Enforcement: OFF
-  Inode: <span class="token comment">#69 (3 blocks, 3 extents)</span>
-Project <span class="token function">quota</span> state on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
-  Accounting: ON
-  Enforcement: OFF
-  Inode: <span class="token comment">#69 (3 blocks, 3 extents)</span>
-Blocks grace time: <span class="token punctuation">[</span><span class="token number">14</span> days<span class="token punctuation">]</span>
-Inodes grace time: <span class="token punctuation">[</span><span class="token number">7</span> days<span class="token punctuation">]</span>
-Realtime Blocks grace time: <span class="token punctuation">[</span><span class="token number">7</span> days<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>重新启用 quota：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 test<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"enable -up"</span> /xfs333/<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>完全关闭 quota 并取移除 project 限制：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 test<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"off -up"</span> /xfs333/
-<span class="token punctuation">[</span>root@101c7 test<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"enable -up"</span> /xfs333/
-XFS_QUOTAON: Function not implemented
-<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"remove -p"</span> /xfs333/
-<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">umount</span> /xfs333/<span class="token punctuation">;</span> <span class="token function">mount</span> <span class="token parameter variable">-a</span>
-<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"report -phb"</span> /xfs333/
-Project <span class="token function">quota</span> on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
-                        Blocks              
-Project ID   Used   Soft   Hard Warn/Grace   
----------- --------------------------------- 
-<span class="token comment">#0              0      0      0  00 [------]</span>
-dirquo        30M      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以看到 dirquo 的设置已经清零了，remove 会清除所有 project 限制。</p>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>2.系统管理</category>
-      </categories>
-  </entry>
-  <entry>
     <title>Linux 磁盘管理</title>
     <url>/3491093041/</url>
     <content><![CDATA[<h1 id="磁盘查询"><a class="markdownIt-Anchor" href="#磁盘查询"></a> 磁盘查询</h1>
@@ -31817,6 +31359,464 @@ The filesystem on /dev/VG400/LV400 is now <span class="token number">1437696</sp
 <p>要想建立快照区，必须注意快照区剩余容量要能装得下原始数据，如果快照区容纳不了，快照功能会失效。</p>
 <p>也可以将快照挂载后卸载原先 LV，使用快照区作为测试环境在上面测试，测试完毕后直接将快照区删除。</p>
 <p>要删除快照，先 <code>umount</code> 再使用 <code>lvremove</code> 命令即可。</p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>2.系统管理</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Linux 磁盘配额管理</title>
+    <url>/3427262780/</url>
+    <content><![CDATA[<h1 id="磁盘配额简介"><a class="markdownIt-Anchor" href="#磁盘配额简介"></a> 磁盘配额简介</h1>
+<p>Linux 下磁盘配额功能叫 <code>quota</code>。</p>
+<h2 id="一般用途"><a class="markdownIt-Anchor" href="#一般用途"></a> 一般用途</h2>
+<ul>
+<li>限制服务使用空间容量；</li>
+<li>限制某一用户组所能使用的最大磁盘配额；</li>
+<li>限制某一用户的最大磁盘配额；</li>
+<li>限制某一目录的最大磁盘配额。</li>
+</ul>
+<h2 id="使用限制"><a class="markdownIt-Anchor" href="#使用限制"></a> 使用限制</h2>
+<ul>
+<li><code>EXT</code> 文件系统下仅能针对整个文件系统设置；</li>
+<li>针对单一目录的设置（<code>prjquota</code>）和针对群组的设置（<code>grpquota</code>）不能共存；</li>
+<li>内核必须支持；</li>
+<li>只对一般身份用户有效。比如 <code>root</code> 就不能设置配额。也不能针对目录来设置（<code>ext</code> 文件系统）；</li>
+<li>若启用 <code>SELinux</code>，非所有目录都可设置 <code>quota</code>。</li>
+</ul>
+<h2 id="设置选项"><a class="markdownIt-Anchor" href="#设置选项"></a> 设置选项</h2>
+<ul>
+<li>分别针对使用者，群组或个别目录（<code>user</code>，<code>group</code> &amp; <code>project</code>）；</li>
+<li>容量限制（<code>block</code>）或文件数量限制（<code>inode</code>）；</li>
+<li>警告（<code>soft</code>）与限制值（<code>hard</code>）；</li>
+<li>宽限时间（<code>grace time</code>），在用量介于 <code>soft</code> 与 <code>hard</code> 之间时给予警告，并给予宽限时间（默认 7 天）。如果在宽限期内没把用量降到 <code>soft</code> 值之下，<code>soft</code> 限制值会替代 <code>hard</code> 值作为 <code>quota</code> 的限制。</li>
+</ul>
+<h2 id="开启-quota-支持"><a class="markdownIt-Anchor" href="#开启-quota-支持"></a> 开启 Quota 支持</h2>
+<p><code>ext</code> 和 <code>xfs</code> 文件系统默认支持 <code>quota</code>，要手动加入 <code>quota</code> 支持可以使用 <code>mount -o remount,usrquota,grpquota /</code> 命令来重新挂载。<code>usrquota</code> 和 <code>grpquota</code> 参数分别代表用户与用户组支持参数。</p>
+<p>写入配置文件可以修改 <code>/etc/fstab</code> 文件，在挂载参数后面加入 <code>usrquota</code> 和 <code>grpquota</code> 或 <code>prjquota</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/fstab
+/dev/sdb4 /root/sdb4m                    ext3    defaults        <span class="token number">0</span> <span class="token number">0</span>
+/dev/sdd1 /xfs333                  xfs           defaults,usrquota,grpquota  <span class="token number">0</span> <span class="token number">0</span>
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">umount</span> /xfs333
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mount</span> <span class="token parameter variable">-a</span>
+mount: /dev/sdb4 is already mounted or /root/sdb4m busy
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">mount</span> <span class="token operator">|</span> <span class="token function">grep</span> sdd
+/dev/sdd1 on /xfs333 <span class="token builtin class-name">type</span> xfs <span class="token punctuation">(</span>rw,relatime,seclabel,attr2,inode64,usrquota,grpquota<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="ext-文件系统磁盘配额"><a class="markdownIt-Anchor" href="#ext-文件系统磁盘配额"></a> EXT 文件系统磁盘配额</h1>
+<p>由于 EXT 文件系统中使用的工具和 XFS 文件系统不同，因此分别记录。</p>
+<h2 id="新建-quota-配置文件"><a class="markdownIt-Anchor" href="#新建-quota-配置文件"></a> 新建 Quota 配置文件</h2>
+<p>Quota 是通过分析整个文件系统中每个用户(用户组)拥有的文件总数与总容量，将数据记录在该文件系统的最顶层目录，然后在该配置文件中再使用每个账号或组的限制值去规定磁盘使用量。</p>
+<p>可以使用<code>quotacheck</code>命令来新建 Quota 配置文件，用法如下：</p>
+<p><code>quotacheck [-avugfM] [挂载点]</code></p>
+<p>主要参数:</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-a</td>
+<td>扫描所有在<code>/etc/mtab</code>内 Quota 支持的文件系统，加入此参数后可不写挂载点</td>
+</tr>
+<tr>
+<td>-u</td>
+<td>针对用户扫描文件与目录使用情况，会新建<code>aquota.user</code></td>
+</tr>
+<tr>
+<td>-g</td>
+<td>针对用户组扫描文件与目录使用情况，会新建<code>aquota.group</code></td>
+</tr>
+<tr>
+<td>-v</td>
+<td>显示扫描过程</td>
+</tr>
+<tr>
+<td>-f</td>
+<td>强制扫描文件系统，并写入新的 Quota 配置文件</td>
+</tr>
+<tr>
+<td>-M</td>
+<td>强制以读写的方式扫描文件系统</td>
+</tr>
+</tbody>
+</table>
+<p>对整个系统执行扫描并新建配置文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">quotacheck</span> <span class="token parameter variable">-avug</span>
+quotacheck: Your kernel probably supports journaled <span class="token function">quota</span> but you are not using it. Consider switching to journaled <span class="token function">quota</span> to avoid running <span class="token function">quotacheck</span> after an unclean shutdown.
+quotacheck: Scanning /dev/sdb4 <span class="token punctuation">[</span>/root/sdb4m<span class="token punctuation">]</span> <span class="token keyword">done</span>
+quotacheck: Cannot <span class="token function">stat</span> old user <span class="token function">quota</span> <span class="token function">file</span> /root/sdb4m/aquota.user: No such <span class="token function">file</span> or directory. Usage will not be subtracted.
+quotacheck: Checked <span class="token number">8</span> directories and <span class="token number">19</span> files
+quotacheck: Old <span class="token function">file</span> not found.
+quotacheck: Old <span class="token function">file</span> not found.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在挂载点查询新建的配额配置文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ ll <span class="token parameter variable">-d</span> /root/sdb4m/aq*
+-rw-------. <span class="token number">1</span> root root <span class="token number">7168</span> Sep <span class="token number">13</span> <span class="token number">13</span>:26 /root/sdb4m/aquota.group
+-rw-------. <span class="token number">1</span> root root <span class="token number">7168</span> Sep <span class="token number">13</span> <span class="token number">13</span>:26 /root/sdb4m/aquota.user<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>配置文件不用手动去编辑，因为实际上是 Quota 的数据文件，内容会一直变动。</p>
+<h2 id="启动与关闭-quota"><a class="markdownIt-Anchor" href="#启动与关闭-quota"></a> 启动与关闭 Quota</h2>
+<p>启动 quota 服务使用命令<code>quotaon</code>，加入<code>-auvg</code>参数来启动所有功能：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ quotaon <span class="token parameter variable">-avug</span>
+/dev/sdb4 <span class="token punctuation">[</span>/root/sdb4m<span class="token punctuation">]</span>: group quotas turned on
+/dev/sdb4 <span class="token punctuation">[</span>/root/sdb4m<span class="token punctuation">]</span>: user quotas turned on<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>quota 启动一次后，系统的<code>/etc/rc.d/rc.sysinit</code>初始化脚本都会自动执行该命令。</p>
+<p>关闭 quota 服务使用<code>quotaoff</code>命令，用<code>-a</code>参数关闭所有功能：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ quotaoff <span class="token parameter variable">-a</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="编辑-quota"><a class="markdownIt-Anchor" href="#编辑-quota"></a> 编辑 Quota</h2>
+<p>编辑配额使用<code>edquota</code>命令，语法如下：</p>
+<p><code>edquota [-u 用户名] [-g 组]</code></p>
+<p><code>edquota -t 宽限时间</code></p>
+<p><code>edquota -p 范本账号 -u 新账号</code></p>
+<p>例如设置用户<code>user1</code>的 Quota 限制值为 hard=10MB，soft=8MB：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ edquota <span class="token parameter variable">-u</span> user1
+Disk quotas <span class="token keyword">for</span> user user1 <span class="token punctuation">(</span>uid <span class="token number">1003</span><span class="token punctuation">)</span>:
+  Filesystem                   blocks       soft       hard     inodes     soft     hard
+  /dev/sdb4                         <span class="token number">2</span>       <span class="token number">8000</span>      <span class="token number">10000</span>          <span class="token number">1</span>        <span class="token number">0</span>        <span class="token number">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>会进入到编辑页面，总共七个字段说明如下：</p>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Filesystem</td>
+<td>说明针对的文件系统</td>
+</tr>
+<tr>
+<td>2</td>
+<td>blocks</td>
+<td>磁盘容量，单位为 KB</td>
+</tr>
+<tr>
+<td>3</td>
+<td>soft</td>
+<td>磁盘容量的 soft 限制值，单位 KB</td>
+</tr>
+<tr>
+<td>4</td>
+<td>hard</td>
+<td>磁盘容量的 hard 限制值，单位 KB</td>
+</tr>
+<tr>
+<td>5</td>
+<td>inodes</td>
+<td>文件数量</td>
+</tr>
+<tr>
+<td>6</td>
+<td>soft</td>
+<td>文件数量的 soft 限制值</td>
+</tr>
+<tr>
+<td>7</td>
+<td>hard</td>
+<td>文件数量的 hard 限制值</td>
+</tr>
+</tbody>
+</table>
+<p>修改宽限时间为 14 天：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ edquota <span class="token parameter variable">-t</span>
+Grace period before enforcing soft limits <span class="token keyword">for</span> users:
+Time <span class="token function">units</span> may be: days, hours, minutes, or seconds
+  Filesystem             Block grace period     Inode grace period
+  /dev/sdb4                    14days                  7days<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="设置-quota"><a class="markdownIt-Anchor" href="#设置-quota"></a> 设置 Quota</h2>
+<p>除了修改配置文件，还可以通过<code>setquota</code>命令来设置 Quota 的值。命令语法如下：</p>
+<p><code>setquota [-u|-g] 用户名|组名 容量限制(soft) 容量限制(hard) 文件数限制(soft) 文件数限制(hard)</code></p>
+<p>例如，将<code>user1</code>的文件数限制设置为 1000/2000：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ setquota <span class="token parameter variable">-u</span> user1 <span class="token number">0</span> <span class="token number">0</span> <span class="token number">1000</span> <span class="token number">2000</span> /root/sdb4m<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="quota-报表"><a class="markdownIt-Anchor" href="#quota-报表"></a> Quota 报表</h2>
+<p>针对用户或组查询限额报表使用 <code>quota</code> 命令，命令语法如下：</p>
+<p><code>quota [-uvs] [用户名]</code></p>
+<p><code>quota [-gvs] [组名]</code></p>
+<p>例如查询用户<code>user1</code>的限额：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">quota</span> <span class="token parameter variable">-uvs</span> user1
+Disk quotas <span class="token keyword">for</span> user user1 <span class="token punctuation">(</span>uid <span class="token number">1003</span><span class="token punctuation">)</span>: 
+     Filesystem   space   <span class="token function">quota</span>   limit   grace   files   <span class="token function">quota</span>   limit   grace
+      /dev/sdb4   9250K*  8000K  10000K  13days       <span class="token number">5</span>       <span class="token number">0</span>       <span class="token number">0</span>   <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>显示的内容和<code>edquota</code>编辑时看到的字段差不多，多了一个宽限日期。</p>
+<p>针对整个文件系统配额查询可以使用<code>repquota</code>命令：</p>
+<p><code>repquota -a [-vugs]</code></p>
+<p>参数如下:</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-a</td>
+<td>直接到<code>/etc/mtab</code>查询具有 quota 标志的文件系统，并报告 quota 的结果</td>
+</tr>
+<tr>
+<td>-v</td>
+<td>输出的数据将含有文件系统相关的详细信息</td>
+</tr>
+<tr>
+<td>-u</td>
+<td>显示出用户的 quota 限值</td>
+</tr>
+<tr>
+<td>-g</td>
+<td>显示出个别用户组的 quota 限值</td>
+</tr>
+<tr>
+<td>-s</td>
+<td>以 M，G 为单位显示结果</td>
+</tr>
+</tbody>
+</table>
+<p>例如查询所有用户的 quota 限制情况：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ repquota <span class="token parameter variable">-auvs</span>
+*** Report <span class="token keyword">for</span> user quotas on device /dev/sdb4
+Block grace time: 14days<span class="token punctuation">;</span> Inode grace time: 7days
+                        Space limits                File limits
+User            used    soft    hard  grace    used  soft  hard  grace
+----------------------------------------------------------------------
+root      --     78K      0K      0K             <span class="token number">17</span>     <span class="token number">0</span>     <span class="token number">0</span>       
+user1     +-   9250K   8000K  10000K 13days       <span class="token number">5</span>     <span class="token number">0</span>     <span class="token number">0</span>       
+
+Statistics:
+Total blocks: <span class="token number">7</span>
+Data blocks: <span class="token number">1</span>
+Entries: <span class="token number">2</span>
+Used average: <span class="token number">2.000000</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="xfs-文件系统磁盘配额"><a class="markdownIt-Anchor" href="#xfs-文件系统磁盘配额"></a> XFS 文件系统磁盘配额</h1>
+<p>在 xfs 文件系统下，主要使用 <code>xfs_quota</code> 命令进行配额管理。</p>
+<h2 id="查询状态"><a class="markdownIt-Anchor" href="#查询状态"></a> 查询状态</h2>
+<p>基本使用方法为:<code>xfs_quota -x -c &quot;指令&quot; [挂载点]</code>，其中 <code>-x</code> 表示使用专家模式，<code>-c</code> 后面加的指令有以下：</p>
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>print</td>
+<td>单纯列出目前主机内的文件系统参数等数据</td>
+</tr>
+<tr>
+<td>df</td>
+<td>与原本 <code>df</code> 一样的功能，可加上 <code>-b</code>、<code>-i</code>、<code>-h</code> 等参数</td>
+</tr>
+<tr>
+<td>report</td>
+<td>列出目前的 quota 项目，有 <code>-ugr</code> 及 <code>-bi</code> 等数据</td>
+</tr>
+<tr>
+<td>state</td>
+<td>说明目前支持 quota 的文件系统信息，有没有启动相关项目等</td>
+</tr>
+</tbody>
+</table>
+<p>在使用了 <code>usrquota</code>、<code>grpquota</code> 参数挂载完文件系统后，可以用 <code>print</code> 指令查询：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"print"</span>
+Filesystem          Pathname
+/                   /dev/mapper/centos-root
+/boot               /dev/sda1
+/xfs333             /dev/sdd1 <span class="token punctuation">(</span>uquota, gquota<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>查询挂载点 <code>/xfs333</code> 文件系统使用情况：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"df -h"</span> /xfs333/
+Filesystem     Size   Used  Avail Use% Pathname
+/dev/sdd1    <span class="token number">496</span>.7M  <span class="token number">55</span>.8M <span class="token number">440</span>.8M  <span class="token number">11</span>% /xfs333<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>列出目前 <code>/xfs333</code> 的所有用户 quota 限制值：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"report -ubih"</span> /xfs333
+User <span class="token function">quota</span> on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
+                        Blocks                            Inodes              
+User ID      Used   Soft   Hard Warn/Grace     Used   Soft   Hard Warn/Grace  
+---------- --------------------------------- --------------------------------- 
+root        <span class="token number">30</span>.0M      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>      <span class="token number">7</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到目前只有 <code>root</code> 在目录中使用了 30MB，而且没有设限。使用 <code>state</code> 指令查询 <code>/xfs333</code> 的 quota 功能启用情况：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"state"</span>
+User <span class="token function">quota</span> state on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
+  Accounting: ON
+  Enforcement: ON
+  Inode: <span class="token comment">#68 (1 blocks, 1 extents)</span>
+Group <span class="token function">quota</span> state on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
+  Accounting: ON
+  Enforcement: ON
+  Inode: <span class="token comment">#69 (1 blocks, 1 extents)</span>
+Project <span class="token function">quota</span> state on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
+  Accounting: OFF
+  Enforcement: OFF
+  Inode: <span class="token comment">#69 (1 blocks, 1 extents)</span>
+Blocks grace time: <span class="token punctuation">[</span><span class="token number">7</span> days<span class="token punctuation">]</span>
+Inodes grace time: <span class="token punctuation">[</span><span class="token number">7</span> days<span class="token punctuation">]</span>
+Realtime Blocks grace time: <span class="token punctuation">[</span><span class="token number">7</span> days<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="针对用户和组设置-quota"><a class="markdownIt-Anchor" href="#针对用户和组设置-quota"></a> 针对用户和组设置 Quota</h2>
+<p>设置使用的命令格式为：</p>
+<p><code>xfs_quota -x -c &quot;limit [-ug] b[soft|hard]=限制值 i[soft|hard]=限制值 用户或组名&quot; 挂载点</code></p>
+<p><code>xfs_quota -x -c &quot;timer [-ug] [-bir] Ndays&quot;</code></p>
+<p>上面命令为限制 block 和 inode，下面命令为设置 grace 时间。针对用户/组设置使用<code>-u</code>/<code>-g</code>参数。</p>
+<p>例如限制用户<code>user1</code>对<code>/xfs333</code>的<code>bsoft</code>为 100MB，<code>bhard</code>为 110MB：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"limit -u bsoft=100M bhard=110M user1"</span> /xfs333/
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"report -ubih"</span> /xfs333/
+User <span class="token function">quota</span> on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
+                        Blocks                            Inodes              
+User ID      Used   Soft   Hard Warn/Grace     Used   Soft   Hard Warn/Grace  
+---------- --------------------------------- --------------------------------- 
+root        <span class="token number">30</span>.0M      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>      <span class="token number">7</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>
+user1           <span class="token number">0</span>   100M   110M  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>      <span class="token number">0</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>限制用户组<code>users</code>对<code>/xfs333</code>的<code>bsoft</code>为 50MB，<code>bhard</code>为 60MB：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"limit -g bsoft=50M bhard=60M users"</span> /xfs333/
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"report -gbih"</span> /xfs333/
+Group <span class="token function">quota</span> on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
+                        Blocks                            Inodes              
+Group ID     Used   Soft   Hard Warn/Grace     Used   Soft   Hard Warn/Grace  
+---------- --------------------------------- --------------------------------- 
+root        <span class="token number">30</span>.0M      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>      <span class="token number">7</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>
+<span class="token function">users</span>           <span class="token number">0</span>    50M    60M  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>      <span class="token number">0</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>设置<code>/xfs333</code>的 grace time 为 14 天：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"timer -g -b 14days"</span> /xfs333/
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"timer -u -b 14days"</span> /xfs333/
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"state"</span> /xfs333/
+Blocks grace time: <span class="token punctuation">[</span><span class="token number">14</span> days<span class="token punctuation">]</span>
+Inodes grace time: <span class="token punctuation">[</span><span class="token number">7</span> days<span class="token punctuation">]</span>
+Realtime Blocks grace time: <span class="token punctuation">[</span><span class="token number">7</span> days<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>测试一下对用户的实际限制情况：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user1@101c7 xfs333<span class="token punctuation">]</span>$ <span class="token function">df</span>
+Filesystem              1K-blocks    Used Available Use% Mounted on
+/dev/sdd1                  <span class="token number">508580</span>   <span class="token number">26416</span>    <span class="token number">482164</span>   <span class="token number">6</span>% /xfs333
+<span class="token punctuation">[</span>user1@101c7 test<span class="token punctuation">]</span>$ <span class="token function">dd</span> <span class="token assign-left variable">if</span><span class="token operator">=</span>/dev/zero <span class="token assign-left variable">of</span><span class="token operator">=</span>100M <span class="token assign-left variable">bs</span><span class="token operator">=</span>1M <span class="token assign-left variable">count</span><span class="token operator">=</span><span class="token number">100</span>
+File size limit exceeded
+<span class="token punctuation">[</span>user1@101c7 test<span class="token punctuation">]</span>$ <span class="token function">dd</span> <span class="token assign-left variable">if</span><span class="token operator">=</span>/dev/zero <span class="token assign-left variable">of</span><span class="token operator">=</span>200M <span class="token assign-left variable">bs</span><span class="token operator">=</span>1M <span class="token assign-left variable">count</span><span class="token operator">=</span><span class="token number">100</span>
+dd: error writing â€˜200Mâ€™: Disk <span class="token function">quota</span> exceeded
+<span class="token punctuation">[</span>user1@101c7 test<span class="token punctuation">]</span>$ ll <span class="token parameter variable">-h</span>
+total 110M
+-rw-rw-r--. <span class="token number">1</span> user1 user1 79M Sep <span class="token number">17</span> <span class="token number">14</span>:20 100M
+-rw-rw-r--. <span class="token number">1</span> user1 user1 31M Sep <span class="token number">17</span> <span class="token number">14</span>:20 200M
+<span class="token punctuation">[</span>root@101c7 xfs333<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"report -ubih"</span> /xfs333/
+User <span class="token function">quota</span> on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
+                        Blocks                            Inodes              
+User ID      Used   Soft   Hard Warn/Grace     Used   Soft   Hard Warn/Grace  
+---------- --------------------------------- --------------------------------- 
+root            <span class="token number">0</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span><span class="token number">0</span> days<span class="token punctuation">]</span>      <span class="token number">3</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>
+user1      <span class="token number">109</span>.1M   100M   110M  00 <span class="token punctuation">[</span><span class="token number">13</span> days<span class="token punctuation">]</span>      <span class="token number">3</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到针对 <code>user1</code> 的限制已经生效，grace time 开始计时。</p>
+<p>再看看针对组的实际限制情况，使用 gid 为 <code>users</code> 的用户 <code>user4</code> 测试：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>user4@101c7 test<span class="token punctuation">]</span>$ <span class="token function">dd</span> <span class="token assign-left variable">if</span><span class="token operator">=</span>/dev/zero <span class="token assign-left variable">of</span><span class="token operator">=</span>200M <span class="token assign-left variable">bs</span><span class="token operator">=</span>1M <span class="token assign-left variable">count</span><span class="token operator">=</span><span class="token number">200</span>
+dd: error writing â€˜200Mâ€™: Disk <span class="token function">quota</span> exceeded
+<span class="token number">61</span>+0 records <span class="token keyword">in</span>
+<span class="token number">60</span>+0 records out
+<span class="token number">62914560</span> bytes <span class="token punctuation">(</span><span class="token number">63</span> MB<span class="token punctuation">)</span> copied, <span class="token number">0.0394094</span> s, <span class="token number">1.6</span> GB/s
+<span class="token punctuation">[</span>user4@101c7 test<span class="token punctuation">]</span>$ ll <span class="token parameter variable">-h</span>
+total 60M
+-rw-r--r--. <span class="token number">1</span> user4 <span class="token function">users</span> 60M Sep <span class="token number">17</span> <span class="token number">14</span>:26 200M
+<span class="token punctuation">[</span>root@101c7 xfs333<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"report -gbih"</span> /xfs333/
+Group <span class="token function">quota</span> on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
+                        Blocks                            Inodes              
+Group ID     Used   Soft   Hard Warn/Grace     Used   Soft   Hard Warn/Grace  
+---------- --------------------------------- --------------------------------- 
+root            <span class="token number">0</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span><span class="token number">0</span> days<span class="token punctuation">]</span>      <span class="token number">3</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>
+<span class="token function">users</span>         60M    50M    60M  00 <span class="token punctuation">[</span><span class="token number">13</span> days<span class="token punctuation">]</span>      <span class="token number">2</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>同样已经生效。</p>
+<h2 id="针对目录设置-quota"><a class="markdownIt-Anchor" href="#针对目录设置-quota"></a> 针对目录设置 Quota</h2>
+<p>先修改<code>/etc/fstab</code>内<code>grpquota</code>挂载参数为<code>prjquota</code>，再重新挂载目录。查看状态：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"state"</span>
+Project <span class="token function">quota</span> state on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
+  Accounting: ON
+  Enforcement: ON
+  Inode: <span class="token comment">#69 (3 blocks, 3 extents)</span>
+Blocks grace time: <span class="token punctuation">[</span><span class="token number">14</span> days<span class="token punctuation">]</span>
+Inodes grace time: <span class="token punctuation">[</span><span class="token number">7</span> days<span class="token punctuation">]</span>
+Realtime Blocks grace time: <span class="token punctuation">[</span><span class="token number">7</span> days<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>然后针对目录<code>/xfs333/test</code>设置 Project 名称和 ID 为<code>dirquo:23</code>到配置文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token string">"23:/xfs333/test"</span> <span class="token operator">></span> /etc/projects
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token string">"dirquo:23"</span>  <span class="token operator">>></span> /etc/projid<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>下面初始化方案：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 /<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"project -s dirquo"</span>
+Setting up project dirquo <span class="token punctuation">(</span>path /xfs333/test<span class="token punctuation">)</span><span class="token punctuation">..</span>.
+Processed <span class="token number">1</span> <span class="token punctuation">(</span>/etc/projects and cmdline<span class="token punctuation">)</span> paths <span class="token keyword">for</span> project dirquo with recursion depth infinite <span class="token punctuation">(</span>-1<span class="token punctuation">)</span>.
+<span class="token punctuation">[</span>root@101c7 /<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"print"</span> /xfs333/
+Filesystem          Pathname
+/xfs333             /dev/sdd1 <span class="token punctuation">(</span>uquota, pquota<span class="token punctuation">)</span>
+/xfs333/test        /dev/sdd1 <span class="token punctuation">(</span>project <span class="token number">23</span>, dirquo<span class="token punctuation">)</span>
+<span class="token punctuation">[</span>root@101c7 /<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"report -pbih"</span> /xfs333/
+Project <span class="token function">quota</span> on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
+                        Blocks                            Inodes              
+Project ID   Used   Soft   Hard Warn/Grace     Used   Soft   Hard Warn/Grace  
+---------- --------------------------------- --------------------------------- 
+<span class="token comment">#0              0      0      0  00 [------]      2      0      0  00 [------]</span>
+dirquo        60M      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span>      <span class="token number">3</span>      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>开始设置对目录的容量为 20M/30M 限制：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 /<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"limit -p bsoft=20M bhard=30M dirquo"</span> /xfs333/
+<span class="token punctuation">[</span>root@101c7 /<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"report -pbin"</span> /xfs333/
+Project <span class="token function">quota</span> on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
+                               Blocks                                          Inodes                     
+Project ID       Used       Soft       Hard    Warn/Grace           Used       Soft       Hard    Warn/ Grace     
+---------- -------------------------------------------------- -------------------------------------------------- 
+<span class="token comment">#0                   0          0          0     00 [--------]          2          0          0     00 [--------]</span>
+<span class="token comment">#23              61440      20480      30720     00 [--none--]          3          0          0     00 [--------]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>目前容量使用已经超过配额，直接使用<code>root</code>测试：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 test<span class="token punctuation">]</span>$ <span class="token function">dd</span> <span class="token assign-left variable">if</span><span class="token operator">=</span>/dev/zero <span class="token assign-left variable">of</span><span class="token operator">=</span><span class="token number">44</span> <span class="token assign-left variable">bs</span><span class="token operator">=</span>1M <span class="token assign-left variable">count</span><span class="token operator">=</span><span class="token number">44</span>
+dd: failed to <span class="token function">open</span> â€˜44â€™: Disk <span class="token function">quota</span> exceeded
+<span class="token punctuation">[</span>root@101c7 test<span class="token punctuation">]</span>$ <span class="token function">rm</span> <span class="token parameter variable">-rf</span> 200M 
+<span class="token punctuation">[</span>root@101c7 test<span class="token punctuation">]</span>$ <span class="token function">dd</span> <span class="token assign-left variable">if</span><span class="token operator">=</span>/dev/zero <span class="token assign-left variable">of</span><span class="token operator">=</span><span class="token number">44</span> <span class="token assign-left variable">bs</span><span class="token operator">=</span>1M <span class="token assign-left variable">count</span><span class="token operator">=</span><span class="token number">44</span>
+dd: error writing â€˜44â€™: No space left on device
+<span class="token number">31</span>+0 records <span class="token keyword">in</span>
+<span class="token number">30</span>+0 records out
+<span class="token number">31457280</span> bytes <span class="token punctuation">(</span><span class="token number">31</span> MB<span class="token punctuation">)</span> copied, <span class="token number">0.0373182</span> s, <span class="token number">843</span> MB/s
+<span class="token punctuation">[</span>root@101c7 test<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"report -pbin"</span> /xfs333/
+Project <span class="token function">quota</span> on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
+                               Blocks                                          Inodes                     
+Project ID       Used       Soft       Hard    Warn/Grace           Used       Soft       Hard    Warn/ Grace     
+---------- -------------------------------------------------- -------------------------------------------------- 
+<span class="token comment">#0                   0          0          0     00 [--------]          2          0          0     00 [--------]</span>
+<span class="token comment">#23              30720      20480      30720     00 [14 days]          3          0          0     00 [--------]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>第一次<code>dd</code>直接拒绝说达到配额限制，将原文件删除后再试，跑到 33MB 提示没有空间，所以对目录限制是不挑用户的。</p>
+<h2 id="管理-quota-功能"><a class="markdownIt-Anchor" href="#管理-quota-功能"></a> 管理 Quota 功能</h2>
+<p>可以使用下面的指令来启停 quota 功能：</p>
+<ul>
+<li><strong>disable</strong>: 暂停 quota 限制</li>
+<li><strong>enable</strong>: 恢复 quota 限制</li>
+<li><strong>off</strong>: 完全关闭 quota 限制，需要重新挂载文件系统才能再次启用</li>
+<li><strong>remove</strong>: 需要在 off 状态下执行，移除 quota 的限制设置。</li>
+</ul>
+<p>暂停后 quota 限制解除，但还是会继续计算用量：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 test<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"state"</span> /xfs333/
+User <span class="token function">quota</span> state on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
+  Accounting: ON
+  Enforcement: OFF
+  Inode: <span class="token comment">#68 (2 blocks, 2 extents)</span>
+Group <span class="token function">quota</span> state on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
+  Accounting: OFF
+  Enforcement: OFF
+  Inode: <span class="token comment">#69 (3 blocks, 3 extents)</span>
+Project <span class="token function">quota</span> state on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
+  Accounting: ON
+  Enforcement: OFF
+  Inode: <span class="token comment">#69 (3 blocks, 3 extents)</span>
+Blocks grace time: <span class="token punctuation">[</span><span class="token number">14</span> days<span class="token punctuation">]</span>
+Inodes grace time: <span class="token punctuation">[</span><span class="token number">7</span> days<span class="token punctuation">]</span>
+Realtime Blocks grace time: <span class="token punctuation">[</span><span class="token number">7</span> days<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>重新启用 quota：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 test<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"enable -up"</span> /xfs333/<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>完全关闭 quota 并取移除 project 限制：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 test<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"off -up"</span> /xfs333/
+<span class="token punctuation">[</span>root@101c7 test<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"enable -up"</span> /xfs333/
+XFS_QUOTAON: Function not implemented
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"remove -p"</span> /xfs333/
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">umount</span> /xfs333/<span class="token punctuation">;</span> <span class="token function">mount</span> <span class="token parameter variable">-a</span>
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ xfs_quota <span class="token parameter variable">-x</span> <span class="token parameter variable">-c</span> <span class="token string">"report -phb"</span> /xfs333/
+Project <span class="token function">quota</span> on /xfs333 <span class="token punctuation">(</span>/dev/sdd1<span class="token punctuation">)</span>
+                        Blocks              
+Project ID   Used   Soft   Hard Warn/Grace   
+---------- --------------------------------- 
+<span class="token comment">#0              0      0      0  00 [------]</span>
+dirquo        30M      <span class="token number">0</span>      <span class="token number">0</span>  00 <span class="token punctuation">[</span>------<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到 dirquo 的设置已经清零了，remove 会清除所有 project 限制。</p>
 ]]></content>
       <categories>
         <category>Linux</category>
