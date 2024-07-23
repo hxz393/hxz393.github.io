@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://lib.baomitu.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://lib.baomitu.com/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://lib.baomitu.com/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://lib.baomitu.com/pace/1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://lib.baomitu.com/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="HTTP 协议 HTTP（超文本传输协议，Hypertext Transfer Protocol）是一种用于分布式、协作式和超媒体信息系统的应用层协议。HTTP 是整个互联网基础，自 1991 年首次发布以来，经历了 3 次迭代修改，目前广泛使用的版本是 HTTP&#x2F;1.1 和 HTTP&#x2F;2。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络概念">
+<meta property="og:url" content="https://blog.x2b.net/33/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="HTTP 协议 HTTP（超文本传输协议，Hypertext Transfer Protocol）是一种用于分布式、协作式和超媒体信息系统的应用层协议。HTTP 是整个互联网基础，自 1991 年首次发布以来，经历了 3 次迭代修改，目前广泛使用的版本是 HTTP&#x2F;1.1 和 HTTP&#x2F;2。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-06-24T15:33:10.000Z">
+<meta property="article:modified_time" content="2024-07-23T09:43:17.396Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/33/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/33/","path":"33/","title":"网络概念"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>网络概念 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">22</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">141</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#http-%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.</span> <span class="nav-text"> HTTP 协议</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#http2"><span class="nav-number">1.1.</span> <span class="nav-text"> HTTP&#x2F;2</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#http-%E8%AF%B7%E6%B1%82"><span class="nav-number">2.</span> <span class="nav-text"> HTTP 请求</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95"><span class="nav-number">2.1.</span> <span class="nav-text"> 请求方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E5%A4%B4%E9%83%A8"><span class="nav-number">2.2.</span> <span class="nav-text"> 请求头部</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E4%BD%93"><span class="nav-number">2.3.</span> <span class="nav-text"> 请求体</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#http-%E5%93%8D%E5%BA%94"><span class="nav-number">3.</span> <span class="nav-text"> HTTP 响应</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%93%8D%E5%BA%94%E7%8A%B6%E6%80%81%E7%A0%81"><span class="nav-number">3.1.</span> <span class="nav-text"> 响应状态码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%93%8D%E5%BA%94%E5%A4%B4%E9%83%A8"><span class="nav-number">3.2.</span> <span class="nav-text"> 响应头部</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%93%8D%E5%BA%94%E4%BD%93"><span class="nav-number">3.3.</span> <span class="nav-text"> 响应体</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#url-%E5%9C%B0%E5%9D%80"><span class="nav-number">4.</span> <span class="nav-text"> URL 地址</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#web-%E5%BA%94%E7%94%A8"><span class="nav-number">5.</span> <span class="nav-text"> Web 应用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#socket"><span class="nav-number">6.</span> <span class="nav-text"> Socket</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#socket-%E7%B1%BB%E5%9E%8B"><span class="nav-number">6.1.</span> <span class="nav-text"> Socket 类型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rpc"><span class="nav-number">7.</span> <span class="nav-text"> RPC</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%8A%80%E6%9C%AF"><span class="nav-number">7.1.</span> <span class="nav-text"> 实现技术</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">141</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/33/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="网络概念 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          网络概念
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-06-24 23:33:10" itemprop="dateCreated datePublished" datetime="2024-06-24T23:33:10+08:00">2024-06-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-23 17:43:17" itemprop="dateModified" datetime="2024-07-23T17:43:17+08:00">2024-07-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Go/5-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">5.网络编程</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>12 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="http-协议"><a class="markdownIt-Anchor" href="#http-协议"></a> HTTP 协议</h1>
+<p>HTTP（超文本传输协议，Hypertext Transfer Protocol）是一种用于分布式、协作式和超媒体信息系统的应用层协议。HTTP 是整个互联网基础，自 1991 年首次发布以来，经历了 3 次迭代修改，目前广泛使用的版本是 HTTP/1.1 和 HTTP/2。</p>
+<p>HTTP 每个新版本都包含大量新特性，但是核心特点没有太多变化：</p>
+<ul>
+<li>
+<p><strong>无状态</strong>：HTTP 是一个无状态协议，服务器不会在两个请求之间保留任何数据（状态）。虽然协议简单可靠，但也限制了应用进行连续交互的能力。为此，通常在应用层使用诸如 Cookies、Tokens 之类的机制来存储状态信息。相对的，类似 FTP、SSH、Telnet 这类面向连接的协议，会在客户端和服务器之间创建一条持续通道。</p>
+</li>
+<li>
+<p><strong>客户端-服务器结构</strong>：在 HTTP 中，客户端（user-agent，用户代理）发起请求，服务器等待请求并发送响应。这种请求-响应模式简化了通信流程，让客户端和服务器的职责明确。</p>
+</li>
+<li>
+<p><strong>可扩展性</strong>：HTTP 头允许传输各种类型的数据，同时也支持内容协商。除了传输 HTML 文档，还可以传输任何类型的数据，包括图像、视频、JSON、XML 等。</p>
+</li>
+<li>
+<p><strong>多种方法</strong>：HTTP 定义了一系列的方法，如 GET、POST、PUT 等，使得客户端能够执行不同类型的动作。</p>
+</li>
+</ul>
+<h2 id="http2"><a class="markdownIt-Anchor" href="#http2"></a> HTTP/2</h2>
+<p>HTTP/2 主要改进体现在网络性能优化上，虽然兼容 HTTP/1.1 语义，但和 HTTP/1.1 比在许多关键方面有显著区别：</p>
+<ul>
+<li><strong>二进制协议</strong>：HTTP/1.1 基于文本，容易阅读和理解，但效率不高。HTTP/2 是基于二进制的，使用二进制帧来传输数据，使得协议的解析、扩展和优化更加高效和简洁。</li>
+<li><strong>多路复用</strong>：HTTP/1.1 在同一时间内，每个 TCP 连接只能处理一个请求-响应，要发起多个请求必须建立多个 TCP 连接，容易导致网络阻塞。HTTP/2 支持多路复用，允许多个请求在单一 TCP 连接上同时进行，这样允许多个请求和响应交错传输，减少了阻塞问题。</li>
+<li><strong>压缩头部</strong>：HTTP/1.1 每次请求和响应都必须重复发送 HTTP 头。HTTP/2 使用 HPACK 压缩算法压缩请求和响应的头部信息，减少了重复头部数据的传输。</li>
+<li><strong>服务器推送</strong>：HTTP/1.1 只支持由客户端发起请求。HTTP/2 允许由服务器推送，预先发送需要资源到客户端。</li>
+</ul>
+<h1 id="http-请求"><a class="markdownIt-Anchor" href="#http-请求"></a> HTTP 请求</h1>
+<p>HTTP 请求由一系列文本行组成，分别为请求行（request-line）、零到多个请求头部（header）、可选的请求体：</p>
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token request-line"><span class="token method property">POST</span> <span class="token request-target url">/api/data</span> <span class="token http-version property">HTTP/1.1</span></span>
+<span class="token header"><span class="token header-name keyword">Host</span><span class="token punctuation">:</span> <span class="token header-value">example.com</span></span>
+<span class="token header"><span class="token header-name keyword">Content-Type</span><span class="token punctuation">:</span> <span class="token header-value">application/json</span></span>
+<span class="token header"><span class="token header-name keyword">Content-Length</span><span class="token punctuation">:</span> <span class="token header-value">81</span></span>
+<span class="token application-json">
+<span class="token punctuation">&#123;</span>
+    <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"John Waters"</span><span class="token punctuation">,</span>
+    <span class="token property">"email"</span><span class="token operator">:</span> <span class="token string">"jw@example.com"</span><span class="token punctuation">,</span>
+    <span class="token property">"age"</span><span class="token operator">:</span> <span class="token number">90</span>
+<span class="token punctuation">&#125;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>第一行为请求行，包括请求方法（request method）、URI（Uniform Resource Identifier，统一资源标识符） 地址和 HTTP 版本，后面三行为请求头，以空行结束。最后部分为请求体。</p>
+<h2 id="请求方法"><a class="markdownIt-Anchor" href="#请求方法"></a> 请求方法</h2>
+<p>HTTP 请求行的首要组成部分是请求方法，定义了对特定资源执行的操作类型。常见的方法包括：</p>
+<ul>
+<li><strong>GET</strong>：请求获取指定资源。</li>
+<li><strong>HEAD</strong>：与 GET 类似，但服务器在响应中只返回头部，不返回实际的数据，用于获取响应头部。</li>
+<li><strong>POST</strong>：用于提交数据，例如表单提交。</li>
+<li><strong>PUT</strong>：用于替换目标资源。</li>
+<li><strong>DELETE</strong>：请求删除指定的资源。</li>
+<li><strong>PATCH</strong>：用于对资源进行部分修改。</li>
+</ul>
+<p>其中，在 HTTP/1.1 版本规定必须实现的方法只有 GET 和 HEAD，其他方法可选，也可自行定义增加。</p>
+<h2 id="请求头部"><a class="markdownIt-Anchor" href="#请求头部"></a> 请求头部</h2>
+<p>请求头部记录了与请求本身以及客户端有关的信息。请求头由任意多个用冒号分隔的纯文本键值对组成，以换行和回车结尾。</p>
+<p>常见的请求头如下：</p>
+<table>
+<thead>
+<tr>
+<th>请求头部</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Accept</code></td>
+<td>告诉服务器客户端能够接收的内容类型</td>
+</tr>
+<tr>
+<td><code>Accept-Charset</code></td>
+<td>浏览器可以接受的字符编码集</td>
+</tr>
+<tr>
+<td><code>Accept-Encoding</code></td>
+<td>浏览器可以支持的压缩类型</td>
+</tr>
+<tr>
+<td><code>Accept-Language</code></td>
+<td>浏览器偏好的语言</td>
+</tr>
+<tr>
+<td><code>Authorization</code></td>
+<td>包含基本身份验证证书</td>
+</tr>
+<tr>
+<td><code>Cache-Control</code></td>
+<td>指定请求和响应遵循的缓存机制</td>
+</tr>
+<tr>
+<td><code>Connection</code></td>
+<td>控制是否需要持久连接</td>
+</tr>
+<tr>
+<td><code>Content-Length</code></td>
+<td>请求体的大小（单位为字节）</td>
+</tr>
+<tr>
+<td><code>Content-Type</code></td>
+<td>请求体的 MIME 类型，如 <code>application/json</code>, <code>text/html</code> 等</td>
+</tr>
+<tr>
+<td><code>Cookie</code></td>
+<td>服务器发送的Cookie</td>
+</tr>
+<tr>
+<td><code>Host</code></td>
+<td>请求发送到的服务器的域名和端口号</td>
+</tr>
+<tr>
+<td><code>Origin</code></td>
+<td>发起一个针对跨域资源共享的请求（CORS 请求）的来源 URI</td>
+</tr>
+<tr>
+<td><code>Referer</code></td>
+<td>包含请求来源 URL</td>
+</tr>
+<tr>
+<td><code>User-Agent</code></td>
+<td>包含客户端应用程序的标识</td>
+</tr>
+</tbody>
+</table>
+<p>大部分请求头是可选的，只有 <code>Host</code> 是强制要求的头部。带有可选头部时，必须带有长度（Content-Length）或编码（Transfer-Encoding）字段。非标准请求头字段以 <code>X-</code> 作为前缀。</p>
+<h2 id="请求体"><a class="markdownIt-Anchor" href="#请求体"></a> 请求体</h2>
+<p>HTTP 请求中的请求体是一个可选部分，包含发送给服务器的数据。请求体主要用于那些需要向服务器提交数据的方法，如 POST、PUT、PATCH 等，GET 和 HEAD 请求通常没有请求体。</p>
+<p>请求体的内容可以是多种类型的数据，由请求头中的 <code>Content-Type</code> 指定。常见类型包括：</p>
+<ul>
+<li><code>application/x-www-form-urlencoded</code>：最常用的 POST 数据提交方式，表单提交的默认方式。发送前编码所有字符（空格转换为 <code>+</code> 加号，特殊符号转换为 ASCII HEX 值）。</li>
+<li><code>multipart/form-data</code>：当表单中需要上传文件时采用的格式。</li>
+<li><code>application/json</code>：用于发送 JSON 格式的数据。</li>
+<li><code>text/xml</code> 或 <code>application/xml</code>：用于发送XML数据。</li>
+<li><code>application/octet-stream</code>：通常用于传输文件或其他二进制数据。</li>
+</ul>
+<h1 id="http-响应"><a class="markdownIt-Anchor" href="#http-响应"></a> HTTP 响应</h1>
+<p>HTTP 响应是由服务器发往客户端的消息，是对之前客户端发起的 HTTP 请求的回应。和 HTTP 请求一样，HTTP 响应也由一系列文本行组成，分别为状态行、零到多个响应头部、可选的响应体：</p>
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token response-status"><span class="token http-version property">HTTP/1.1</span> <span class="token status-code number">200</span> <span class="token reason-phrase string">OK</span></span>
+<span class="token header"><span class="token header-name keyword">Content-Type</span><span class="token punctuation">:</span> <span class="token header-value">text/html</span></span>
+<span class="token header"><span class="token header-name keyword">Content-Length</span><span class="token punctuation">:</span> <span class="token header-value">1234</span></span>
+<span class="token header"><span class="token header-name keyword">Server</span><span class="token punctuation">:</span> <span class="token header-value">Apache/2.4.1 (Unix)</span></span>
+<span class="token text-html">
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>head</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>title</span><span class="token punctuation">></span></span>Example<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>title</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>head</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>body</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>Hello, world!<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>body</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>html</span><span class="token punctuation">></span></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>第一行为状态行，包括 HTTP 版本、状态码（status code）和状态消息（reason phrase），后面三行为响应头，以空行结束。最后一部分为响应体。</p>
+<h2 id="响应状态码"><a class="markdownIt-Anchor" href="#响应状态码"></a> 响应状态码</h2>
+<p>响应状态码为一个三位数字，分为五大类，每一类表示不同类型的响应：</p>
+<ul>
+<li>
+<p><strong>1XX (Informational) 信息响应</strong>：表示临时响应，请求已被接收并且客户端应继续请求。</p>
+</li>
+<li>
+<p><strong>2XX (Success) 成功响应</strong>：表示客户端请求已成功被服务器接收、理解并接受。</p>
+</li>
+<li>
+<p><strong>3XX (Redirection) 重定向</strong>：表示客户端需要采取进一步的操作以完成请求，通常是重定向。</p>
+</li>
+<li>
+<p><strong>4XX (Client Error) 客户端错误</strong>：表示客户端可能发生了错误，导致服务器无法处理请求。</p>
+</li>
+<li>
+<p><strong>5XX (Server Error) 服务器错误</strong>：表示服务器在处理请求时发生了错误。</p>
+</li>
+</ul>
+<h2 id="响应头部"><a class="markdownIt-Anchor" href="#响应头部"></a> 响应头部</h2>
+<p>由冒号分隔的键值对形式的文本，提供了有关服务器、响应体和请求本身的额外信息。</p>
+<p>常见的响应头部：</p>
+<table>
+<thead>
+<tr>
+<th>响应头部</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Content-Type</code></td>
+<td>指定响应体的类型，如 <code>text/html</code>、<code>application/json</code> 等</td>
+</tr>
+<tr>
+<td><code>Content-Length</code></td>
+<td>响应体的长度，以字节为单位</td>
+</tr>
+<tr>
+<td><code>Content-Encoding</code></td>
+<td>响应体使用的编码类型，如 <code>gzip</code>、<code>deflate</code> 等</td>
+</tr>
+<tr>
+<td><code>Set-Cookie</code></td>
+<td>服务器向客户端浏览器发送的 Cookie</td>
+</tr>
+<tr>
+<td><code>Cache-Control</code></td>
+<td>指示响应内容是否可以被缓存，以及缓存的条件</td>
+</tr>
+<tr>
+<td><code>Expires</code></td>
+<td>响应内容过期的日期和时间</td>
+</tr>
+<tr>
+<td><code>Last-Modified</code></td>
+<td>资源的最后修改日期和时间</td>
+</tr>
+<tr>
+<td><code>ETag</code></td>
+<td>资源的特定版本的标识符，通常用于缓存优化</td>
+</tr>
+<tr>
+<td><code>Server</code></td>
+<td>包含处理请求的服务器信息，如 <code>Apache</code>、<code>Nginx</code></td>
+</tr>
+<tr>
+<td><code>WWW-Authenticate</code></td>
+<td>告知客户端进行认证的方法</td>
+</tr>
+<tr>
+<td><code>Location</code></td>
+<td>用于重定向，提供重定向的目标 URL</td>
+</tr>
+<tr>
+<td><code>Strict-Transport-Security</code></td>
+<td>HTTP 严格传输安全，强制客户端使用 HTTPS 连接</td>
+</tr>
+</tbody>
+</table>
+<h2 id="响应体"><a class="markdownIt-Anchor" href="#响应体"></a> 响应体</h2>
+<p>HTTP 响应体是服务器返回给客户端的数据部分，可以是 HTML 文档、JSON 数据、二进制文件等，不是所有响应都有响应体。响应体的具体类型由  HTTP  响应头中的 <code>Content-Type</code> 指定：</p>
+<ul>
+<li><code>text/html</code>：标准的 HTML，通常用于展示网页内容。</li>
+<li><code>application/json</code>：JSON 格式的数据，常用于 API 响应。</li>
+<li><code>text/plain</code>：纯文本数据。</li>
+<li><code>image/png</code>、<code>image/jpeg</code>：图像文件。</li>
+<li><code>application/xml</code>：XML 数据。</li>
+</ul>
+<p>响应体还可以通过 <code>Content-Encoding</code> 响应头进行编码，例如使用 <code>gzip</code> 压缩以减少传输数据的大小。</p>
+<h1 id="url-地址"><a class="markdownIt-Anchor" href="#url-地址"></a> URL 地址</h1>
+<p>URL（Uniform Resource Locator，统一资源定位符）是用于定义互联网资源位置的地址，可以用来访问网页、图像、视频和其他文件。完整的 URL 定义：<code>协议://用户名:密码@子域名.域名.顶级域名:端口/目录/文件名.文件后缀?参数=值#锚点</code>，具体各部分解析如下：</p>
+<ul>
+<li><strong>协议</strong>：也称为方案，定义了服务器和客户端之间如何交换信息。常见的协议包括 <code>http</code>、<code>https</code>、<code>ftp</code> 等</li>
+<li><strong>主机名</strong>：通常是服务器的域名或者 IP 地址。</li>
+<li><strong>端口</strong>（可选）：端口号用于访问服务器上的特定服务，如果省略了端口号，则使用协议的默认端口。</li>
+<li><strong>路径</strong>：路径指向服务器上的特定资源。</li>
+<li><strong>查询字符串</strong>（可选）：开始于问号 <code>?</code>，其后是一个或多个键值对参数，参数之间用 <code>&amp;</code> 符号分隔。查询字符串用于向服务器发送额外的信息，常用于表单提交或页面请求的详细信息。</li>
+<li><strong>锚点</strong>（可选）：也称为片段标识符，始于井号 <code>#</code>，用于使浏览器定位到网页的特定部分。</li>
+</ul>
+<h1 id="web-应用"><a class="markdownIt-Anchor" href="#web-应用"></a> Web 应用</h1>
+<p>Web 应用（Web Application）是通过网络为用户提供功能或服务的应用程序，常见的有网上商城、网上银行、社交媒体、协作平台和流媒体服务等。</p>
+<p>典型的 Web 应用有几个特点：</p>
+<ul>
+<li>
+<p><strong>客户端-服务器架构</strong>：Web 应用通常采用客户端-服务器模型，客户端负责呈现用户界面和用户交互，而服务器则处理后台数据处理、业务逻辑和数据库交互。</p>
+</li>
+<li>
+<p><strong>跨平台访问</strong>：用户可以通过任何支持现代网络浏览器的设备访问 Web 应用，支持多种操作系统和设备。</p>
+</li>
+<li>
+<p><strong>集中更新和维护</strong>：开发者在服务器端集中更新应用，所有客户都能即时访问到应用的最新版本。</p>
+</li>
+<li>
+<p><strong>交互性</strong>：现代 Web 应用通过动态网页技术，提供与传统桌面应用类似互动性。</p>
+</li>
+<li>
+<p><strong>依赖于网络连接</strong>：大多数 Web 应用依赖于活跃的网络连接。</p>
+</li>
+</ul>
+<p>从 Go 语言开发角度，Web 应用也能被分为处理器（handler）和模板引擎（template engine）两部分，处理器负责处理业务逻辑和 HTTP 请求，而模板引擎则负责生成动态的 HTML 内容。</p>
+<h1 id="socket"><a class="markdownIt-Anchor" href="#socket"></a> Socket</h1>
+<p>Socket 是网络通信过程的一个端点，提供了操作系统或网络服务的一个编程接口。Socket 使应用程序能够读写与网络协议栈的交互，通过 Socket 网络中运行的程序可以发送和接收数据包。</p>
+<p>Socket 通常用于实现网络中的客户端和服务器之间的通信。一个服务器程序会创建一个 Socket，然后监听指定的网络地址和端口，等待客户端的连接请求。客户端程序也会创建一个 Socket，用来向服务器的指定地址和端口发起连接请求，一旦连接建立，客户端和服务器就可以通过 Socket 交换数据。</p>
+<h2 id="socket-类型"><a class="markdownIt-Anchor" href="#socket-类型"></a> Socket 类型</h2>
+<p>在网络编程中常见的类型有三种：</p>
+<ul>
+<li>
+<p><strong>流式套接字（Stream Sockets）</strong>：也称为 TCP Socket（SOCK_STREAM），是一个可靠的、面向连接的、基于字节流的通信通道，保证数据正确性和顺序性。</p>
+</li>
+<li>
+<p><strong>数据报套接字（Datagram Sockets）</strong>：也称为 UDP Socket（SOCK_DGRAM），是一个不可靠的、无连接的服务，通过发送独立的包进行通信。UDP Socket 不保证消息的顺序或可靠性，所以速度一般比 TCP Socket 快，但是必须由应用程序处理可能出现的错误和数据丢失。</p>
+</li>
+<li>
+<p><strong>原始套接字（Raw Sockets）</strong>：允许对较低层次的协议（如 IP 或 ICMP）直接访问，用于需要细粒度控制数据传输的应用，常用于开发新的自定义协议。</p>
+</li>
+</ul>
+<h1 id="rpc"><a class="markdownIt-Anchor" href="#rpc"></a> RPC</h1>
+<p>RPC（Remote Procedure Call，远程过程调用）是一种在网络中的不同计算机之间通信的技术，允许一台计算机上的程序调用另一台计算机上的程序或方法，就像这些程序运行在同一台服务器中一样。RPC 抽象了网络通信的细节，让开发可以专注于业务逻辑的实现，而不用深入处理网络交互的复杂性。</p>
+<p>RPC 的基本工作原理是将一个过程调用的参数打包（序列化），通过网络发送到远程系统，由远程系统解包（反序列化），执行过程，并将结果返回给调用者。</p>
+<h2 id="实现技术"><a class="markdownIt-Anchor" href="#实现技术"></a> 实现技术</h2>
+<p>RPC 技术的实现有很多：</p>
+<ul>
+<li><strong>XML-RPC</strong>：使用 XML 编码调用，这是一种简单的协议，允许执行远程过程调用。</li>
+<li><strong>JSON-RPC</strong>：类似于 XML-RPC，但使用 JSON 而不是 XML 格式。</li>
+<li><strong>gRPC</strong>：由 Google 开发，使用 Protocol Buffers 作为接口定义语言和数据交换格式，支持多种编程语言。</li>
+<li><strong>SOAP</strong>：基于 XML 的协议，提供了丰富的数据类型和强大的兼容性，通常用于企业级应用。</li>
+</ul>
+<p>RPC 广泛应用于各种分布式系统中，特别是使用微服务架构的应用程序。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/33/" title="网络概念">https://blog.x2b.net/33/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../43/" rel="prev" title="日志管理">
+                  <i class="fa fa-chevron-left"></i> 日志管理
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../29/" rel="next" title="HTTP 服务器">
+                  HTTP 服务器 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">403k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">22:24</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://lib.baomitu.com/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://lib.baomitu.com/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://lib.baomitu.com/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://lib.baomitu.com/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://lib.baomitu.com/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.4/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://lib.baomitu.com/KaTeX/0.16.4/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://lib.baomitu.com/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/33/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://lib.baomitu.com/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://lib.baomitu.com/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

@@ -92,7 +92,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">16</span></a></li><li class="menu-item menu-item-archives"><a href="../../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">94</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">22</span></a></li><li class="menu-item menu-item-archives"><a href="../../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">141</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -157,13 +157,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="../../archives/">
-          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-count">141</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="../../categories/">
-        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
@@ -215,7 +215,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/1856695493/">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/29/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="../../images/avatar.jpg">
@@ -233,7 +233,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="../../1856695493/" class="post-title-link" itemprop="url">Deployment 模板</a>
+          <a href="../../29/" class="post-title-link" itemprop="url">HTTP 服务器</a>
         </h2>
 
         <div class="post-meta-container">
@@ -244,14 +244,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2022-03-20 09:01:17" itemprop="dateCreated datePublished" datetime="2022-03-20T09:01:17+08:00">2022-03-20</time>
+      <time title="创建时间：2024-06-27 01:35:03" itemprop="dateCreated datePublished" datetime="2024-06-27T01:35:03+08:00">2024-06-27</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-16 23:48:40" itemprop="dateModified" datetime="2023-05-16T23:48:40+08:00">2023-05-16</time>
+      <time title="修改时间：2024-07-23 17:43:17" itemprop="dateModified" datetime="2024-07-23T17:43:17+08:00">2024-07-23</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -259,11 +259,11 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Kubernets/" itemprop="url" rel="index"><span itemprop="name">Kubernets</span></a>
+          <a href="../../categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a>
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Kubernets/3-%E5%8F%82%E8%80%83%E6%96%87%E4%BB%B6/" itemprop="url" rel="index"><span itemprop="name">3.参考文件</span></a>
+          <a href="../../categories/Go/5-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">5.网络编程</span></a>
         </span>
     </span>
 
@@ -274,7 +274,231 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>791</span>
+      <span>1.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="启动服务"><a class="markdownIt-Anchor" href="#启动服务"></a> 启动服务</h1>
+<p>要创建一个简单的 HTTP 服务器端，首先要使用 <code>http.HandleFunc</code> 函数注册路由，然后通过 <code>http.ListenAndServe</code> 函数绑定地址和端口，开启对客户端的监听。<code>http.ListenAndServe</code> 函数的第二个参数通常为空，表示调用 <code>http.DefaultServeMux</code> 进行处理，在服务端编写的业务逻辑处理程序 <code>http.Handle</code> 或 <code>http.HandleFunc</code> 会默认注入其中。：</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="../../29/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/33/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="../../33/" class="post-title-link" itemprop="url">网络概念</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-06-24 23:33:10" itemprop="dateCreated datePublished" datetime="2024-06-24T23:33:10+08:00">2024-06-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-23 17:43:17" itemprop="dateModified" datetime="2024-07-23T17:43:17+08:00">2024-07-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../../categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../../categories/Go/5-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">5.网络编程</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>12 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="http-协议"><a class="markdownIt-Anchor" href="#http-协议"></a> HTTP 协议</h1>
+<p>HTTP（超文本传输协议，Hypertext Transfer Protocol）是一种用于分布式、协作式和超媒体信息系统的应用层协议。HTTP 是整个互联网基础，自 1991 年首次发布以来，经历了 3 次迭代修改，目前广泛使用的版本是 HTTP/1.1 和 HTTP/2。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="../../33/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/43/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="../../43/" class="post-title-link" itemprop="url">日志管理</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-06-24 14:33:45" itemprop="dateCreated datePublished" datetime="2024-06-24T14:33:45+08:00">2024-06-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-23 17:43:17" itemprop="dateModified" datetime="2024-07-23T17:43:17+08:00">2024-07-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../../categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../../categories/Go/4-%E5%9F%BA%E6%9C%AC%E5%BA%94%E7%94%A8/" itemprop="url" rel="index"><span itemprop="name">4.基本应用</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>930</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -292,11 +516,11 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="deployment-模板"><a class="markdownIt-Anchor" href="#deployment-模板"></a> Deployment 模板</h1>
-<p>以下是一个完整的 Deployment 模板：</p>
+          <h1 id="log-库"><a class="markdownIt-Anchor" href="#log-库"></a> Log 库</h1>
+<p>日志指记录程序执行期间发生的信息。可以使用自带 <code>log</code> 包来进行日志管理。<code>log</code> 包提供的功能包括日志记录、自定义日志格式和日志输出定位：</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="../../1856695493/#more" rel="contents">
+              <a class="btn" href="../../43/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -327,7 +551,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/3537711107/">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/46/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="../../images/avatar.jpg">
@@ -345,7 +569,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="../../3537711107/" class="post-title-link" itemprop="url">CronJob 模板</a>
+          <a href="../../46/" class="post-title-link" itemprop="url">正则表达式</a>
         </h2>
 
         <div class="post-meta-container">
@@ -356,14 +580,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2022-03-20 09:01:17" itemprop="dateCreated datePublished" datetime="2022-03-20T09:01:17+08:00">2022-03-20</time>
+      <time title="创建时间：2024-06-20 16:15:06" itemprop="dateCreated datePublished" datetime="2024-06-20T16:15:06+08:00">2024-06-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-16 16:28:22" itemprop="dateModified" datetime="2023-05-16T16:28:22+08:00">2023-05-16</time>
+      <time title="修改时间：2024-07-23 17:43:17" itemprop="dateModified" datetime="2024-07-23T17:43:17+08:00">2024-07-23</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -371,11 +595,11 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Kubernets/" itemprop="url" rel="index"><span itemprop="name">Kubernets</span></a>
+          <a href="../../categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a>
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Kubernets/3-%E5%8F%82%E8%80%83%E6%96%87%E4%BB%B6/" itemprop="url" rel="index"><span itemprop="name">3.参考文件</span></a>
+          <a href="../../categories/Go/4-%E5%9F%BA%E6%9C%AC%E5%BA%94%E7%94%A8/" itemprop="url" rel="index"><span itemprop="name">4.基本应用</span></a>
         </span>
     </span>
 
@@ -386,14 +610,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>195</span>
+      <span>836</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>3 分钟</span>
     </span>
 </div>
 
@@ -404,11 +628,11 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="cronjob-模板"><a class="markdownIt-Anchor" href="#cronjob-模板"></a> CronJob 模板</h1>
-<p>以下是一个完整的 CronJob 模板：</p>
+          <h1 id="正则表达式引擎"><a class="markdownIt-Anchor" href="#正则表达式引擎"></a> 正则表达式引擎</h1>
+<p>Go 语言中的正则表达式功能由 <code>regexp</code> 包提供，<code>regexp</code> 包使用 RE2 正则表达式引擎，大致与 Perl 和 Python 语法相同。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="../../3537711107/#more" rel="contents">
+              <a class="btn" href="../../46/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -439,7 +663,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/94081894/">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="../../images/avatar.jpg">
@@ -457,7 +681,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="../../94081894/" class="post-title-link" itemprop="url">Pod 模板</a>
+          <a href="../../8/" class="post-title-link" itemprop="url">并发</a>
         </h2>
 
         <div class="post-meta-container">
@@ -468,14 +692,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2022-03-20 09:01:17" itemprop="dateCreated datePublished" datetime="2022-03-20T09:01:17+08:00">2022-03-20</time>
+      <time title="创建时间：2024-06-17 15:39:33" itemprop="dateCreated datePublished" datetime="2024-06-17T15:39:33+08:00">2024-06-17</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-16 23:46:43" itemprop="dateModified" datetime="2023-05-16T23:46:43+08:00">2023-05-16</time>
+      <time title="修改时间：2024-07-23 17:43:17" itemprop="dateModified" datetime="2024-07-23T17:43:17+08:00">2024-07-23</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -483,11 +707,11 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Kubernets/" itemprop="url" rel="index"><span itemprop="name">Kubernets</span></a>
+          <a href="../../categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a>
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Kubernets/3-%E5%8F%82%E8%80%83%E6%96%87%E4%BB%B6/" itemprop="url" rel="index"><span itemprop="name">3.参考文件</span></a>
+          <a href="../../categories/Go/3-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/" itemprop="url" rel="index"><span itemprop="name">3.核心概念</span></a>
         </span>
     </span>
 
@@ -498,14 +722,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.1k</span>
+      <span>5.9k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>4 分钟</span>
+      <span>20 分钟</span>
     </span>
 </div>
 
@@ -516,235 +740,11 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="pod-模板"><a class="markdownIt-Anchor" href="#pod-模板"></a> Pod 模板</h1>
-<p>以下是一个完整的 Pod 模板：</p>
+          <h1 id="并发和并行"><a class="markdownIt-Anchor" href="#并发和并行"></a> 并发和并行</h1>
+<p>并发（Concurrent）和并行（Parallel）是计算机科学中两个关键概念，描述系统如何同时处理多个任务。简单来说，并发是同时处理很多事情，而并行是同时做很多事情。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="../../94081894/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/1958383264/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="../../images/avatar.jpg">
-      <meta itemprop="name" content="assassing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="X to Bytes">
-      <meta itemprop="description" content="技术分享">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | X to Bytes">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="../../1958383264/" class="post-title-link" itemprop="url">PVC 模板</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-03-20 09:01:17" itemprop="dateCreated datePublished" datetime="2022-03-20T09:01:17+08:00">2022-03-20</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-11-17 10:10:15" itemprop="dateModified" datetime="2023-11-17T10:10:15+08:00">2023-11-17</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Kubernets/" itemprop="url" rel="index"><span itemprop="name">Kubernets</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Kubernets/3-%E5%8F%82%E8%80%83%E6%96%87%E4%BB%B6/" itemprop="url" rel="index"><span itemprop="name">3.参考文件</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>87</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="pvc-模板"><a class="markdownIt-Anchor" href="#pvc-模板"></a> PVC 模板</h1>
-<p>以下是一个完整的 PVC 模板：</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="../../1958383264/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/2406232821/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="../../images/avatar.jpg">
-      <meta itemprop="name" content="assassing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="X to Bytes">
-      <meta itemprop="description" content="技术分享">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | X to Bytes">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="../../2406232821/" class="post-title-link" itemprop="url">PV 模板</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-03-20 09:01:17" itemprop="dateCreated datePublished" datetime="2022-03-20T09:01:17+08:00">2022-03-20</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-16 23:47:56" itemprop="dateModified" datetime="2023-05-16T23:47:56+08:00">2023-05-16</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Kubernets/" itemprop="url" rel="index"><span itemprop="name">Kubernets</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../../categories/Kubernets/3-%E5%8F%82%E8%80%83%E6%96%87%E4%BB%B6/" itemprop="url" rel="index"><span itemprop="name">3.参考文件</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>112</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="pv-模板"><a class="markdownIt-Anchor" href="#pv-模板"></a> PV 模板</h1>
-<p>以下是一个完整的 PV 模板：</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="../../2406232821/#more" rel="contents">
+              <a class="btn" href="../../8/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -768,7 +768,7 @@
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="../3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="../../">1</a><span class="space">&hellip;</span><a class="page-number" href="../3/">3</a><span class="page-number current">4</span><a class="page-number" href="../5/">5</a><span class="space">&hellip;</span><a class="page-number" href="../19/">19</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="../5/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="../3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="../../">1</a><span class="space">&hellip;</span><a class="page-number" href="../3/">3</a><span class="page-number current">4</span><a class="page-number" href="../5/">5</a><span class="space">&hellip;</span><a class="page-number" href="../29/">29</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="../5/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
@@ -791,13 +791,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">294k</span>
+    <span title="站点总字数">403k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">16:21</span>
+    <span title="站点阅读时长">22:24</span>
   </span>
 </div>
 <div class="busuanzi-count">
