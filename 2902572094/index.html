@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://lib.baomitu.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://lib.baomitu.com/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://lib.baomitu.com/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://lib.baomitu.com/pace/1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://lib.baomitu.com/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="方法定义 在 Go 语言中，方法是作用在接收者（receiver）上的一种特殊类型的函数，接收者可以是除了接口和指针外的任意类型，方法可以访问该类型的内部数据。一个类型加方法就像面向对象中的一个类，方法接收者类似于类中的 this 或 self。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go 语言方法">
+<meta property="og:url" content="https://blog.x2b.net/2902572094/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="方法定义 在 Go 语言中，方法是作用在接收者（receiver）上的一种特殊类型的函数，接收者可以是除了接口和指针外的任意类型，方法可以访问该类型的内部数据。一个类型加方法就像面向对象中的一个类，方法接收者类似于类中的 this 或 self。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-03-11T05:41:18.000Z">
+<meta property="article:modified_time" content="2024-07-23T10:01:39.332Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/2902572094/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/2902572094/","path":"2902572094/","title":"Go 语言方法"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Go 语言方法 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">22</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">141</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E5%AE%9A%E4%B9%89"><span class="nav-number">1.</span> <span class="nav-text"> 方法定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E5%A3%B0%E6%98%8E"><span class="nav-number">2.</span> <span class="nav-text"> 方法声明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E6%96%B0%E5%A2%9E"><span class="nav-number">3.</span> <span class="nav-text"> 方法新增</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E5%80%BC"><span class="nav-number">4.</span> <span class="nav-text"> 方法值</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E8%BD%AC%E5%8F%91"><span class="nav-number">5.</span> <span class="nav-text"> 方法转发</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E9%87%8D%E5%86%99"><span class="nav-number">6.</span> <span class="nav-text"> 方法重写</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">141</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/2902572094/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Go 语言方法 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Go 语言方法
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-03-11 13:41:18" itemprop="dateCreated datePublished" datetime="2024-03-11T13:41:18+08:00">2024-03-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-23 18:01:39" itemprop="dateModified" datetime="2024-07-23T18:01:39+08:00">2024-07-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Go/3-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/" itemprop="url" rel="index"><span itemprop="name">3.核心概念</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="方法定义"><a class="markdownIt-Anchor" href="#方法定义"></a> 方法定义</h1>
+<p>在 Go 语言中，方法是作用在接收者（receiver）上的一种特殊类型的函数，接收者可以是除了接口和指针外的任意类型，方法可以访问该类型的内部数据。一个类型加方法就像面向对象中的一个类，方法接收者类似于类中的 <code>this</code> 或 <code>self</code>。</p>
+<p>任何方法实际上都可以通过调整其签名转换为等价函数，即转移接收者作为其第一个参数：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token comment">// Rectangle 定义一个长方形结构体类型</span>
+<span class="token keyword">type</span> Rectangle <span class="token keyword">struct</span> <span class="token punctuation">&#123;</span>
+	width<span class="token punctuation">,</span> height <span class="token builtin">int</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// Area 方法作用在 Rectangle 类型的接收者上</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>r Rectangle<span class="token punctuation">)</span> <span class="token function">Area</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token builtin">int</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">return</span> r<span class="token punctuation">.</span>width <span class="token operator">*</span> r<span class="token punctuation">.</span>height
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// Area 函数和 Rectangle 类型上的 Area 方法等价</span>
+<span class="token keyword">func</span> <span class="token function">Area</span><span class="token punctuation">(</span>r Rectangle<span class="token punctuation">)</span> <span class="token builtin">int</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">return</span> r<span class="token punctuation">.</span>width <span class="token operator">*</span> r<span class="token punctuation">.</span>height
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	rect <span class="token operator">:=</span> Rectangle<span class="token punctuation">&#123;</span>width<span class="token punctuation">:</span> <span class="token number">10</span><span class="token punctuation">,</span> height<span class="token punctuation">:</span> <span class="token number">5</span><span class="token punctuation">&#125;</span>
+
+	<span class="token comment">// 调用方法</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"方法调用: "</span><span class="token punctuation">,</span> rect<span class="token punctuation">.</span><span class="token function">Area</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+	<span class="token comment">// 调用等价的函数</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"函数调用: "</span><span class="token punctuation">,</span> <span class="token function">Area</span><span class="token punctuation">(</span>rect<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>等价的函数与类型之间虽然相互依赖，但没有直接的绑定关系。从代码结构组织方面看，使用方法更合理。</p>
+<h1 id="方法声明"><a class="markdownIt-Anchor" href="#方法声明"></a> 方法声明</h1>
+<p>定义方法在定义函数的基础上多了一个接收者和接收者类型：<code>func (接收者 接收者类型) 方法名(参数列表) (返回列表) &#123; ... &#125;</code>。接收者命名通常采用接收者类型的第一个小写字母。</p>
+<p>一个方法只能有一个接收者，但不同接收者可以具有同名方法，直接使用 <code>接收者.方法</code> 来调用方法：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token comment">// Rectangle 结构体，存储矩形的宽度和高度</span>
+<span class="token keyword">type</span> Rectangle <span class="token keyword">struct</span> <span class="token punctuation">&#123;</span>
+	Width<span class="token punctuation">,</span> Height <span class="token builtin">float64</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// SetSize 方法使用指针接收者，允许修改矩形的尺寸</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>r <span class="token operator">*</span>Rectangle<span class="token punctuation">)</span> <span class="token function">SetSize</span><span class="token punctuation">(</span>width<span class="token punctuation">,</span> height <span class="token builtin">float64</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	r<span class="token punctuation">.</span>Width <span class="token operator">=</span> width
+	r<span class="token punctuation">.</span>Height <span class="token operator">=</span> height
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// Area 方法使用值接收者，计算矩形的面积</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>r Rectangle<span class="token punctuation">)</span> <span class="token function">Area</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token builtin">float64</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">return</span> r<span class="token punctuation">.</span>Width <span class="token operator">*</span> r<span class="token punctuation">.</span>Height
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	rect <span class="token operator">:=</span> Rectangle<span class="token punctuation">&#123;</span>Width<span class="token punctuation">:</span> <span class="token number">10</span><span class="token punctuation">,</span> Height<span class="token punctuation">:</span> <span class="token number">5</span><span class="token punctuation">&#125;</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"计算面积："</span><span class="token punctuation">)</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"Width: %.2f, Height: %.2f, Area: %.2f\n"</span><span class="token punctuation">,</span> rect<span class="token punctuation">.</span>Width<span class="token punctuation">,</span> rect<span class="token punctuation">.</span>Height<span class="token punctuation">,</span> rect<span class="token punctuation">.</span><span class="token function">Area</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"通过指针修改尺寸后计算面积："</span><span class="token punctuation">)</span>
+	rect<span class="token punctuation">.</span><span class="token function">SetSize</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"Width: %.2f, Height: %.2f, Area: %.2f\n"</span><span class="token punctuation">,</span> rect<span class="token punctuation">.</span>Width<span class="token punctuation">,</span> rect<span class="token punctuation">.</span>Height<span class="token punctuation">,</span> rect<span class="token punctuation">.</span><span class="token function">Area</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果函数接收参数为指针，则不能传入值作为参数。和函数不同，方法接收者无论是值还是指针，都能自动处理方法调用时的引用和解引用。例如上面的实例值 <code>rect := Rectangle&#123;Width: 10, Height: 5&#125;</code> 改成实例指针 <code>rect := &amp;Rectangle&#123;Width: 10, Height: 5&#125;</code>，调用方法时没有区别。</p>
+<p>如果一个结构体的方法使用了指针接收者，出于一致性和维护性的考虑，其他方法即使不修改数据也应使用指针接收者。</p>
+<h1 id="方法新增"><a class="markdownIt-Anchor" href="#方法新增"></a> 方法新增</h1>
+<p>可以给任何已定义的类型（除了来自其他包的基础类型）增加新的方法，以在不改变原始类型定义的情况下，扩展其功能。例如给内置类型的别名增加方法：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token comment">// MyInt 是 int 的一个别名</span>
+<span class="token keyword">type</span> MyInt <span class="token builtin">int</span>
+
+<span class="token comment">// Double 方法用来将 MyInt 的值翻倍</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>mi <span class="token operator">*</span>MyInt<span class="token punctuation">)</span> <span class="token function">Double</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token operator">*</span>mi <span class="token operator">*=</span> <span class="token number">2</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	v <span class="token operator">:=</span> <span class="token function">MyInt</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"原始值:"</span><span class="token punctuation">,</span> v<span class="token punctuation">)</span>
+
+	v<span class="token punctuation">.</span><span class="token function">Double</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"翻倍后的值:"</span><span class="token punctuation">,</span> v<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="方法值"><a class="markdownIt-Anchor" href="#方法值"></a> 方法值</h1>
+<p>类似于将函数赋值给一个变量，也可以将方法赋值给一个变量，然后通过这个变量来调用该方法，这个变量就叫方法值（method value）：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+	<span class="token string">"fmt"</span>
+	<span class="token string">"math"</span>
+<span class="token punctuation">)</span>
+
+<span class="token comment">// Circle 结构体定义</span>
+<span class="token keyword">type</span> Circle <span class="token keyword">struct</span> <span class="token punctuation">&#123;</span>
+	Radius <span class="token builtin">float64</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// Area 方法计算圆的面积</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>c Circle<span class="token punctuation">)</span> <span class="token function">Area</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token builtin">float64</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">return</span> math<span class="token punctuation">.</span>Pi <span class="token operator">*</span> c<span class="token punctuation">.</span>Radius <span class="token operator">*</span> c<span class="token punctuation">.</span>Radius
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	c <span class="token operator">:=</span> Circle<span class="token punctuation">&#123;</span>Radius<span class="token punctuation">:</span> <span class="token number">5</span><span class="token punctuation">&#125;</span>
+	<span class="token comment">// 声明方法值</span>
+	areaMethod <span class="token operator">:=</span> c<span class="token punctuation">.</span>Area
+	<span class="token comment">// 通过方法值调用 Area 方法</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"Area of the circle:"</span><span class="token punctuation">,</span> <span class="token function">areaMethod</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="方法转发"><a class="markdownIt-Anchor" href="#方法转发"></a> 方法转发</h1>
+<p>当使用结构体嵌入时，外部类型自动继承内部类型的方法，在 Go 中被称为组合。</p>
+<p>使用匿名字段时，外部不需要（也没有）通过字段名来访问内部类型的方法，方法可以直接被调用。对于具名字段，则需要通过具名字段来访问内部类型的方法：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+	<span class="token string">"fmt"</span>
+<span class="token punctuation">)</span>
+
+<span class="token comment">// Shape 基本形状类型</span>
+<span class="token keyword">type</span> Shape <span class="token keyword">struct</span> <span class="token punctuation">&#123;</span>
+	ShapeType <span class="token builtin">string</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// Type 方法返回形状类型</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>s Shape<span class="token punctuation">)</span> <span class="token function">Type</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token builtin">string</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">return</span> s<span class="token punctuation">.</span>ShapeType
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// Circle 圆形，使用匿名字段继承 Shape</span>
+<span class="token keyword">type</span> Circle <span class="token keyword">struct</span> <span class="token punctuation">&#123;</span>
+	Shape
+	Radius <span class="token builtin">float64</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// Rectangle 矩形，使用具名字段继承 Shape</span>
+<span class="token keyword">type</span> Rectangle <span class="token keyword">struct</span> <span class="token punctuation">&#123;</span>
+	ShapeInfo Shape
+	Length    <span class="token builtin">float64</span>
+	Width     <span class="token builtin">float64</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token comment">// 创建一个 Circle 实例，匿名字段的方法继承</span>
+	circle <span class="token operator">:=</span> Circle<span class="token punctuation">&#123;</span>Shape<span class="token punctuation">&#123;</span><span class="token string">"Circle"</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">&#125;</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>circle<span class="token punctuation">.</span><span class="token function">Type</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">// 在 Circle 类型直接调用 Shape 的 Type 方法</span>
+
+	<span class="token comment">// 创建一个 Rectangle 实例，具名字段的方法继承</span>
+	rectangle <span class="token operator">:=</span> Rectangle<span class="token punctuation">&#123;</span>Shape<span class="token punctuation">&#123;</span><span class="token string">"Rectangle"</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">&#125;</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>rectangle<span class="token punctuation">.</span>ShapeInfo<span class="token punctuation">.</span><span class="token function">Type</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">// 必须通过 ShapeInfo 调用 Shape 的方法</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>作为自定义类型 <code>Shape</code> 的外层结构，<code>Circle</code> 和 <code>Rectangle</code> 都继承了 <code>Shape</code> 所拥有的方法 <code>Type</code>。在实际调用时，<code>circle.Type</code> 方法调用会被传给 <code>Circle</code> 实例中的 <code>Shape</code> 实例。</p>
+<h1 id="方法重写"><a class="markdownIt-Anchor" href="#方法重写"></a> 方法重写</h1>
+<p>嵌套结构体中，如果外部类型定义了与内部类型同名的方法，根据嵌套类型是否匿名，将有不同效果。</p>
+<p>使用匿名字段时，外部方法会重写（隐藏）内部类型的方法。对于具名字段，外部与内部类型的同名方法属于不同的上下文，互不影响：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+	<span class="token string">"fmt"</span>
+<span class="token punctuation">)</span>
+
+<span class="token comment">// Shape 基本形状类型</span>
+<span class="token keyword">type</span> Shape <span class="token keyword">struct</span> <span class="token punctuation">&#123;</span>
+	ShapeType <span class="token builtin">string</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// Type 作用于 Shape 返回形状类型的方法</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>s Shape<span class="token punctuation">)</span> <span class="token function">Type</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token builtin">string</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">return</span> <span class="token string">"Shape: "</span> <span class="token operator">+</span> s<span class="token punctuation">.</span>ShapeType
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// Circle 圆形，使用匿名字段继承 Shape</span>
+<span class="token keyword">type</span> Circle <span class="token keyword">struct</span> <span class="token punctuation">&#123;</span>
+	Shape
+	Radius <span class="token builtin">float64</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// Type 方法作用于 Circle，隐藏了匿名 Shape 字段的 Type 方法</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>c Circle<span class="token punctuation">)</span> <span class="token function">Type</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token builtin">string</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">return</span> <span class="token string">"Circle with radius: "</span> <span class="token operator">+</span> fmt<span class="token punctuation">.</span><span class="token function">Sprint</span><span class="token punctuation">(</span>c<span class="token punctuation">.</span>Radius<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// Rectangle 矩形，使用具名字段继承 Shape</span>
+<span class="token keyword">type</span> Rectangle <span class="token keyword">struct</span> <span class="token punctuation">&#123;</span>
+	ShapeInfo Shape
+	Length    <span class="token builtin">float64</span>
+	Width     <span class="token builtin">float64</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// Type 方法作用于 Rectangle，和具名字段 ShapeInfo 的 Type 方法不冲突</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>r Rectangle<span class="token punctuation">)</span> <span class="token function">Type</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token builtin">string</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">return</span> <span class="token string">"Rectangle with width: "</span> <span class="token operator">+</span> fmt<span class="token punctuation">.</span><span class="token function">Sprint</span><span class="token punctuation">(</span>r<span class="token punctuation">.</span>Width<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// 主函数</span>
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token comment">// 创建一个 Circle 实例，调用 Circle 的 Type 方法，隐藏了 Shape 的 Type 方法</span>
+	circle <span class="token operator">:=</span> Circle<span class="token punctuation">&#123;</span>Shape<span class="token punctuation">&#123;</span><span class="token string">"Circle"</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">&#125;</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>circle<span class="token punctuation">.</span><span class="token function">Type</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">// 输出 Circle 的 Type 方法结果</span>
+
+	<span class="token comment">// 创建一个 Rectangle 实例，通过具名字段调用 Shape 的 Type 方法</span>
+	rectangle <span class="token operator">:=</span> Rectangle<span class="token punctuation">&#123;</span>Shape<span class="token punctuation">&#123;</span><span class="token string">"Rectangle"</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">&#125;</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>rectangle<span class="token punctuation">.</span>ShapeInfo<span class="token punctuation">.</span><span class="token function">Type</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">// 调用 Shape 的 Type 方法</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>rectangle<span class="token punctuation">.</span><span class="token function">Type</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>           <span class="token comment">// 调用 Rectangle 的 Type 方法</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/2902572094/" title="Go 语言方法">https://blog.x2b.net/2902572094/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../3126418019/" rel="prev" title="Go 语言数据类型">
+                  <i class="fa fa-chevron-left"></i> Go 语言数据类型
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../1498536549/" rel="next" title="Go 语言类型：接口">
+                  Go 语言类型：接口 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">403k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">22:24</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://lib.baomitu.com/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://lib.baomitu.com/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://lib.baomitu.com/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://lib.baomitu.com/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://lib.baomitu.com/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.4/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://lib.baomitu.com/KaTeX/0.16.4/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://lib.baomitu.com/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/2902572094/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://lib.baomitu.com/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://lib.baomitu.com/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://lib.baomitu.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://lib.baomitu.com/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://lib.baomitu.com/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://lib.baomitu.com/pace/1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://lib.baomitu.com/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="数据库接口 在 Go 语言中，没有包含针对具体数据库的包，而是提供一个标准库 database&#x2F;sql 包来实现通用的数据库操作，开发者可以根据定义的接口来开发相应的数据库驱动。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go 语言操作数据库">
+<meta property="og:url" content="https://blog.x2b.net/1772087966/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="数据库接口 在 Go 语言中，没有包含针对具体数据库的包，而是提供一个标准库 database&#x2F;sql 包来实现通用的数据库操作，开发者可以根据定义的接口来开发相应的数据库驱动。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-07-15T11:38:09.000Z">
+<meta property="article:modified_time" content="2024-07-23T10:06:34.097Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/1772087966/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/1772087966/","path":"1772087966/","title":"Go 语言操作数据库"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Go 语言操作数据库 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">22</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">141</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8E%A5%E5%8F%A3"><span class="nav-number">1.</span> <span class="nav-text"> 数据库接口</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#mysql"><span class="nav-number">2.</span> <span class="nav-text"> MySQL</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E9%A9%B1%E5%8A%A8"><span class="nav-number">2.1.</span> <span class="nav-text"> 安装驱动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5%E9%A9%B1%E5%8A%A8"><span class="nav-number">2.2.</span> <span class="nav-text"> 导入驱动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">2.3.</span> <span class="nav-text"> 连接数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E6%93%8D%E4%BD%9C"><span class="nav-number">2.4.</span> <span class="nav-text"> 数据库操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E4%BA%8B%E5%8A%A1"><span class="nav-number">2.5.</span> <span class="nav-text"> 使用事务</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#mongo"><span class="nav-number">3.</span> <span class="nav-text"> Mongo</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E9%A9%B1%E5%8A%A8-2"><span class="nav-number">3.1.</span> <span class="nav-text"> 安装驱动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5%E9%A9%B1%E5%8A%A8-2"><span class="nav-number">3.2.</span> <span class="nav-text"> 导入驱动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93-2"><span class="nav-number">3.3.</span> <span class="nav-text"> 连接数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E6%93%8D%E4%BD%9C-2"><span class="nav-number">3.4.</span> <span class="nav-text"> 数据库操作</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">技术分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">141</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/1772087966/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="技术分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Go 语言操作数据库 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Go 语言操作数据库
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-07-15 19:38:09" itemprop="dateCreated datePublished" datetime="2024-07-15T19:38:09+08:00">2024-07-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-23 18:06:34" itemprop="dateModified" datetime="2024-07-23T18:06:34+08:00">2024-07-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Go/5-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">5.网络编程</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="数据库接口"><a class="markdownIt-Anchor" href="#数据库接口"></a> 数据库接口</h1>
+<p>在 Go 语言中，没有包含针对具体数据库的包，而是提供一个标准库 <code>database/sql</code> 包来实现通用的数据库操作，开发者可以根据定义的接口来开发相应的数据库驱动。</p>
+<p>在每个第三方数据库驱动中，都会实现一个 <code>init</code> 函数，通过 <code>sql.Register</code> 方法来完成驱动注册。通过注册函数可以一次性注册多个数据库驱动。</p>
+<h1 id="mysql"><a class="markdownIt-Anchor" href="#mysql"></a> MySQL</h1>
+<p>MySQL 是最流行的关系型数据库，下面演示对 MySQL 的连接和增删改查操作。</p>
+<h2 id="安装驱动"><a class="markdownIt-Anchor" href="#安装驱动"></a> 安装驱动</h2>
+<p>首先需要安装 MySQL 的 Go 语言驱动：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">go get <span class="token parameter variable">-u</span> github.com/go-sql-driver/mysql<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="导入驱动"><a class="markdownIt-Anchor" href="#导入驱动"></a> 导入驱动</h2>
+<p>在的 Go 文件中，导入 <code>database/sql</code> 包以及相应的数据库驱动：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">import</span> <span class="token punctuation">(</span>
+    <span class="token string">"database/sql"</span>
+    <span class="token boolean">_</span> <span class="token string">"github.com/go-sql-driver/mysql"</span>    <span class="token comment">// MySQL 驱动</span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>_</code> 前缀表示导入该包，但不直接使用包中的任何函数或变量，仅用于确保驱动初始化。</p>
+<h2 id="连接数据库"><a class="markdownIt-Anchor" href="#连接数据库"></a> 连接数据库</h2>
+<p>使用 <code>sql.Open</code> 函数连接到数据库，需要指定数据库类型和连接字符串，返回一个可操作的 DB 对象：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">connectDB</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">*</span>sql<span class="token punctuation">.</span>DB <span class="token punctuation">&#123;</span>
+	<span class="token comment">// 连接信息包括用户名、密码、地址和库名</span>
+	dsn <span class="token operator">:=</span> <span class="token string">"root:QeqAr:%R+s5:hYnz@tcp(192.168.2.204:3307)/admin"</span>
+	db<span class="token punctuation">,</span> err <span class="token operator">:=</span> sql<span class="token punctuation">.</span><span class="token function">Open</span><span class="token punctuation">(</span><span class="token string">"mysql"</span><span class="token punctuation">,</span> dsn<span class="token punctuation">)</span>
+	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+		log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+
+	<span class="token comment">// 检查数据库连接</span>
+	err <span class="token operator">=</span> db<span class="token punctuation">.</span><span class="token function">Ping</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+		log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+
+	<span class="token keyword">return</span> db
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在调用时需要注意随手关闭 <code>defer db.Close</code>。</p>
+<h2 id="数据库操作"><a class="markdownIt-Anchor" href="#数据库操作"></a> 数据库操作</h2>
+<p>修改数据库时，主要使用 <code>Exec</code> 方法。方法返回一个结果接口和错误信息，通过结果接口可以查询到操作数据的信息和影响行数。建议对每个操作语句使用独立的函数封装，便于调用和复用。</p>
+<p>插入（Insert）操作函数：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">insertUser</span><span class="token punctuation">(</span>db <span class="token operator">*</span>sql<span class="token punctuation">.</span>DB<span class="token punctuation">,</span> account<span class="token punctuation">,</span> password <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token comment">// 直接插入多条数据，一般不使用这种方式</span>
+	query <span class="token operator">:=</span> <span class="token string">`INSERT INTO t_admin (account, password) VALUES ("a1", "a1pass"),("a2", "a2pass")`</span>
+	result<span class="token punctuation">,</span> err <span class="token operator">:=</span> db<span class="token punctuation">.</span><span class="token function">Exec</span><span class="token punctuation">(</span>query<span class="token punctuation">)</span>
+
+	<span class="token comment">// 格式化的插入语句</span>
+	query <span class="token operator">=</span> <span class="token string">`INSERT INTO t_admin (account, password) VALUES (?, ?)`</span>
+	result<span class="token punctuation">,</span> err <span class="token operator">=</span> db<span class="token punctuation">.</span><span class="token function">Exec</span><span class="token punctuation">(</span>query<span class="token punctuation">,</span> account<span class="token punctuation">,</span> password<span class="token punctuation">)</span>
+	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+		log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+
+	<span class="token comment">// 返回插入的 ID</span>
+	id<span class="token punctuation">,</span> err <span class="token operator">:=</span> result<span class="token punctuation">.</span><span class="token function">LastInsertId</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+		log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+
+	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"Inserted user %s with ID: %d\n"</span><span class="token punctuation">,</span> account<span class="token punctuation">,</span> id<span class="token punctuation">)</span>
+
+	<span class="token comment">// 预编译方式，一般用于批量操作</span>
+	stmt<span class="token punctuation">,</span> err <span class="token operator">:=</span> db<span class="token punctuation">.</span><span class="token function">Prepare</span><span class="token punctuation">(</span>query<span class="token punctuation">)</span>
+	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+		log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token keyword">defer</span> stmt<span class="token punctuation">.</span><span class="token function">Close</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+	res<span class="token punctuation">,</span> err <span class="token operator">:=</span> stmt<span class="token punctuation">.</span><span class="token function">Exec</span><span class="token punctuation">(</span>account<span class="token punctuation">,</span> password<span class="token punctuation">)</span>
+	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+		log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+
+	<span class="token comment">// 得到插入的行数</span>
+	rowsAffected<span class="token punctuation">,</span> err <span class="token operator">:=</span> res<span class="token punctuation">.</span><span class="token function">RowsAffected</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+		log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+
+	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"Inserted %d rows\n"</span><span class="token punctuation">,</span> rowsAffected<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>修改（Update）操作函数：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">updateUser</span><span class="token punctuation">(</span>db <span class="token operator">*</span>sql<span class="token punctuation">.</span>DB<span class="token punctuation">,</span> account<span class="token punctuation">,</span> password <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	query <span class="token operator">:=</span> <span class="token string">`UPDATE t_admin SET password = ? WHERE account = ?`</span>
+	<span class="token boolean">_</span><span class="token punctuation">,</span> err <span class="token operator">:=</span> db<span class="token punctuation">.</span><span class="token function">Exec</span><span class="token punctuation">(</span>query<span class="token punctuation">,</span> password<span class="token punctuation">,</span> account<span class="token punctuation">)</span>
+	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+		log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+
+	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"Updated user %s password"</span><span class="token punctuation">,</span> account<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>读取（Read）操作函数：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">getUsers</span><span class="token punctuation">(</span>db <span class="token operator">*</span>sql<span class="token punctuation">.</span>DB<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	query <span class="token operator">:=</span> <span class="token string">`SELECT account, password FROM t_admin`</span>
+	<span class="token comment">// 返回多行结果</span>
+	rows<span class="token punctuation">,</span> err <span class="token operator">:=</span> db<span class="token punctuation">.</span><span class="token function">Query</span><span class="token punctuation">(</span>query<span class="token punctuation">)</span>
+	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+		log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token keyword">defer</span> rows<span class="token punctuation">.</span><span class="token function">Close</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+	<span class="token comment">// 使用 Next 来遍历打印输出</span>
+	<span class="token keyword">for</span> rows<span class="token punctuation">.</span><span class="token function">Next</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		<span class="token keyword">var</span> account <span class="token builtin">string</span>
+		<span class="token keyword">var</span> password <span class="token builtin">string</span>
+        <span class="token comment">// 将扫描到的每列数据赋予给指定变量</span>
+		err <span class="token operator">=</span> rows<span class="token punctuation">.</span><span class="token function">Scan</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>account<span class="token punctuation">,</span> <span class="token operator">&amp;</span>password<span class="token punctuation">)</span>
+		<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+			log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+		<span class="token punctuation">&#125;</span>
+		fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"Account: %s, Password: %s\n"</span><span class="token punctuation">,</span> account<span class="token punctuation">,</span> password<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>删除（Delete）操作函数：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">deleteUser</span><span class="token punctuation">(</span>db <span class="token operator">*</span>sql<span class="token punctuation">.</span>DB<span class="token punctuation">,</span> account <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	query <span class="token operator">:=</span> <span class="token string">`DELETE FROM t_admin WHERE account = ?`</span>
+	<span class="token boolean">_</span><span class="token punctuation">,</span> err <span class="token operator">:=</span> db<span class="token punctuation">.</span><span class="token function">Exec</span><span class="token punctuation">(</span>query<span class="token punctuation">,</span> account<span class="token punctuation">)</span>
+	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+		log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"Deleted user"</span><span class="token punctuation">,</span> account<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在主函数中调用：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	db <span class="token operator">:=</span> <span class="token function">connectDB</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">defer</span> db<span class="token punctuation">.</span><span class="token function">Close</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+	<span class="token function">insertUser</span><span class="token punctuation">(</span>db<span class="token punctuation">,</span> <span class="token string">"hxz393"</span><span class="token punctuation">,</span> <span class="token string">"123"</span><span class="token punctuation">)</span>
+	<span class="token function">updateUser</span><span class="token punctuation">(</span>db<span class="token punctuation">,</span> <span class="token string">"hxz393"</span><span class="token punctuation">,</span> <span class="token string">"123abc"</span><span class="token punctuation">)</span>
+	<span class="token function">getUsers</span><span class="token punctuation">(</span>db<span class="token punctuation">)</span>
+	<span class="token function">deleteUser</span><span class="token punctuation">(</span>db<span class="token punctuation">,</span> <span class="token string">"hxz393"</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="使用事务"><a class="markdownIt-Anchor" href="#使用事务"></a> 使用事务</h2>
+<p>Go 语言的 <code>database/sql</code> 包提供了对事务的支持，可以使用 <code>db.Begin</code> 来开始一个事务，使用 <code>tx.Commit</code> 或 <code>tx.Rollback</code> 来提交或回滚事务:</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">transactionExample</span><span class="token punctuation">(</span>db <span class="token operator">*</span>sql<span class="token punctuation">.</span>DB<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	tx<span class="token punctuation">,</span> err <span class="token operator">:=</span> db<span class="token punctuation">.</span><span class="token function">Begin</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+		log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+
+	<span class="token boolean">_</span><span class="token punctuation">,</span> err <span class="token operator">=</span> tx<span class="token punctuation">.</span><span class="token function">Exec</span><span class="token punctuation">(</span><span class="token string">"UPDATE t_admin SET name = account WHERE account = ?"</span><span class="token punctuation">,</span> <span class="token string">"a1111"</span><span class="token punctuation">)</span>
+	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+		<span class="token comment">// 失败时回滚</span>
+		tx<span class="token punctuation">.</span><span class="token function">Rollback</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+		log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+
+	<span class="token comment">// 提交事务</span>
+	err <span class="token operator">=</span> tx<span class="token punctuation">.</span><span class="token function">Commit</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+		log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"Transaction completed"</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="mongo"><a class="markdownIt-Anchor" href="#mongo"></a> Mongo</h1>
+<p>操作 MongoDB 数据库可以使用官方提供的 <code>mongo-go-driver</code> 驱动包。</p>
+<h2 id="安装驱动-2"><a class="markdownIt-Anchor" href="#安装驱动-2"></a> 安装驱动</h2>
+<p>首先需要安装 MongoDB 的 Go 驱动：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">go get go.mongodb.org/mongo-driver/mongo<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="导入驱动-2"><a class="markdownIt-Anchor" href="#导入驱动-2"></a> 导入驱动</h2>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">import</span> <span class="token punctuation">(</span>
+    <span class="token string">"context"</span>
+    <span class="token string">"log"</span>
+    <span class="token string">"time"</span>
+
+    <span class="token string">"go.mongodb.org/mongo-driver/bson"</span>
+    <span class="token string">"go.mongodb.org/mongo-driver/mongo"</span>
+    <span class="token string">"go.mongodb.org/mongo-driver/mongo/options"</span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="连接数据库-2"><a class="markdownIt-Anchor" href="#连接数据库-2"></a> 连接数据库</h2>
+<p>以下是如何连接到一个运行在本地的 MongoDB 实例：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">getMongoClient</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">*</span>mongo<span class="token punctuation">.</span>Client <span class="token punctuation">&#123;</span>
+	<span class="token comment">// 设置客户端选项，比如服务器地址和连接超时时间</span>
+	clientOptions <span class="token operator">:=</span> options<span class="token punctuation">.</span><span class="token function">Client</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">ApplyURI</span><span class="token punctuation">(</span><span class="token string">"mongodb://localhost:27017"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">SetConnectTimeout</span><span class="token punctuation">(</span><span class="token number">10</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
+
+	<span class="token comment">// 连接到 MongoDB</span>
+	client<span class="token punctuation">,</span> err <span class="token operator">:=</span> mongo<span class="token punctuation">.</span><span class="token function">Connect</span><span class="token punctuation">(</span>context<span class="token punctuation">.</span><span class="token function">TODO</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> clientOptions<span class="token punctuation">)</span>
+	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+		log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+
+	<span class="token comment">// 检查连接</span>
+	err <span class="token operator">=</span> client<span class="token punctuation">.</span><span class="token function">Ping</span><span class="token punctuation">(</span>context<span class="token punctuation">.</span><span class="token function">TODO</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">nil</span><span class="token punctuation">)</span>
+	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+		log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+
+	<span class="token keyword">return</span> client
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="数据库操作-2"><a class="markdownIt-Anchor" href="#数据库操作-2"></a> 数据库操作</h2>
+<p>由于不是使用标准库 <code>database/sql</code> 包接口，所以操作方式有些不一样。</p>
+<p>创建（Insert）文档时，数据库和集合都不用事先创建：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">insertOne</span><span class="token punctuation">(</span>client <span class="token operator">*</span>mongo<span class="token punctuation">.</span>Client<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 获取集合引用</span>
+    collection <span class="token operator">:=</span> client<span class="token punctuation">.</span><span class="token function">Database</span><span class="token punctuation">(</span><span class="token string">"testdb"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Collection</span><span class="token punctuation">(</span><span class="token string">"users"</span><span class="token punctuation">)</span>
+
+    <span class="token comment">// 创建一个文档</span>
+    doc <span class="token operator">:=</span> bson<span class="token punctuation">.</span>M<span class="token punctuation">&#123;</span><span class="token string">"name"</span><span class="token punctuation">:</span> <span class="token string">"John Doe"</span><span class="token punctuation">,</span> <span class="token string">"age"</span><span class="token punctuation">:</span> <span class="token number">30</span><span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// 插入文档</span>
+    result<span class="token punctuation">,</span> err <span class="token operator">:=</span> collection<span class="token punctuation">.</span><span class="token function">InsertOne</span><span class="token punctuation">(</span>context<span class="token punctuation">.</span><span class="token function">TODO</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> doc<span class="token punctuation">)</span>
+    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+        log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+
+    log<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"Inserted document with _id: %v"</span><span class="token punctuation">,</span> result<span class="token punctuation">.</span>InsertedID<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>读取（Find）文档：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">findOne</span><span class="token punctuation">(</span>client <span class="token operator">*</span>mongo<span class="token punctuation">.</span>Client<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">var</span> result bson<span class="token punctuation">.</span>M
+    collection <span class="token operator">:=</span> client<span class="token punctuation">.</span><span class="token function">Database</span><span class="token punctuation">(</span><span class="token string">"testdb"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Collection</span><span class="token punctuation">(</span><span class="token string">"users"</span><span class="token punctuation">)</span>
+    
+    filter <span class="token operator">:=</span> bson<span class="token punctuation">.</span>M<span class="token punctuation">&#123;</span><span class="token string">"name"</span><span class="token punctuation">:</span> <span class="token string">"John Doe"</span><span class="token punctuation">&#125;</span>
+    
+    err <span class="token operator">:=</span> collection<span class="token punctuation">.</span><span class="token function">FindOne</span><span class="token punctuation">(</span>context<span class="token punctuation">.</span><span class="token function">TODO</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> filter<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Decode</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>result<span class="token punctuation">)</span>
+    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+        log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+    
+    log<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"Found a document: %+v"</span><span class="token punctuation">,</span> result<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>更新（Update）文档：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">updateOne</span><span class="token punctuation">(</span>client <span class="token operator">*</span>mongo<span class="token punctuation">.</span>Client<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    collection <span class="token operator">:=</span> client<span class="token punctuation">.</span><span class="token function">Database</span><span class="token punctuation">(</span><span class="token string">"testdb"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Collection</span><span class="token punctuation">(</span><span class="token string">"users"</span><span class="token punctuation">)</span>
+    
+    filter <span class="token operator">:=</span> bson<span class="token punctuation">.</span>M<span class="token punctuation">&#123;</span><span class="token string">"name"</span><span class="token punctuation">:</span> <span class="token string">"John Doe"</span><span class="token punctuation">&#125;</span>
+    update <span class="token operator">:=</span> bson<span class="token punctuation">.</span>M<span class="token punctuation">&#123;</span><span class="token string">"$set"</span><span class="token punctuation">:</span> bson<span class="token punctuation">.</span>M<span class="token punctuation">&#123;</span><span class="token string">"age"</span><span class="token punctuation">:</span> <span class="token number">31</span><span class="token punctuation">&#125;</span><span class="token punctuation">&#125;</span>
+    
+    result<span class="token punctuation">,</span> err <span class="token operator">:=</span> collection<span class="token punctuation">.</span><span class="token function">UpdateOne</span><span class="token punctuation">(</span>context<span class="token punctuation">.</span><span class="token function">TODO</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> filter<span class="token punctuation">,</span> update<span class="token punctuation">)</span>
+    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+        log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+
+    log<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"Matched %v documents and updated %v documents."</span><span class="token punctuation">,</span> result<span class="token punctuation">.</span>MatchedCount<span class="token punctuation">,</span> result<span class="token punctuation">.</span>ModifiedCount<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>删除（Delete）文档：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">deleteOne</span><span class="token punctuation">(</span>client <span class="token operator">*</span>mongo<span class="token punctuation">.</span>Client<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    collection <span class="token operator">:=</span> client<span class="token punctuation">.</span><span class="token function">Database</span><span class="token punctuation">(</span><span class="token string">"testdb"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Collection</span><span class="token punctuation">(</span><span class="token string">"users"</span><span class="token punctuation">)</span>
+    
+    filter <span class="token operator">:=</span> bson<span class="token punctuation">.</span>M<span class="token punctuation">&#123;</span><span class="token string">"name"</span><span class="token punctuation">:</span> <span class="token string">"John Doe"</span><span class="token punctuation">&#125;</span>
+    
+    result<span class="token punctuation">,</span> err <span class="token operator">:=</span> collection<span class="token punctuation">.</span><span class="token function">DeleteOne</span><span class="token punctuation">(</span>context<span class="token punctuation">.</span><span class="token function">TODO</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> filter<span class="token punctuation">)</span>
+    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+        log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+
+    log<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"Deleted %v documents."</span><span class="token punctuation">,</span> result<span class="token punctuation">.</span>DeletedCount<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在主函数中调用：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	client <span class="token operator">:=</span> <span class="token function">getMongoClient</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">defer</span> client<span class="token punctuation">.</span><span class="token function">Disconnect</span><span class="token punctuation">(</span>context<span class="token punctuation">.</span><span class="token function">TODO</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+	<span class="token function">insertOne</span><span class="token punctuation">(</span>client<span class="token punctuation">)</span>
+	<span class="token function">findOne</span><span class="token punctuation">(</span>client<span class="token punctuation">)</span>
+	<span class="token function">updateOne</span><span class="token punctuation">(</span>client<span class="token punctuation">)</span>
+	<span class="token function">deleteOne</span><span class="token punctuation">(</span>client<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/1772087966/" title="Go 语言操作数据库">https://blog.x2b.net/1772087966/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../3655471880/" rel="prev" title="Go 语言使用 RPC 协议">
+                  <i class="fa fa-chevron-left"></i> Go 语言使用 RPC 协议
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../820096756/" rel="next" title="Go 语言中路由框架">
+                  Go 语言中路由框架 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">403k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">22:24</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://lib.baomitu.com/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://lib.baomitu.com/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://lib.baomitu.com/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://lib.baomitu.com/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://lib.baomitu.com/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.4/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://lib.baomitu.com/KaTeX/0.16.4/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://lib.baomitu.com/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/1772087966/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://lib.baomitu.com/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://lib.baomitu.com/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
