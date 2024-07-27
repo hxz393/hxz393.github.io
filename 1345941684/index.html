@@ -22,15 +22,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
 
-    <meta name="description" content="工具链 Go 语言工具链（Go toolchain）是一组核心工具，用于帮助开发、构建、测试、维护和分发 Go 应用程序。这些工具由 Go 语言开发团队设计和维护，其中最常用工具会被包含在发行版（安装包）中。额外工具和库位于 golang.org&#x2F;x 命名空间中，包含特定或高级功能，也被称为 Go 扩展库（Go eXtensions）。">
+    <meta name="description" content="介绍 在 K8s 中，可以使用 NFS 网络文件系统服务，来共享与备份发布有关的 YAML 文件和部分服务配置文件。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Go 语言工具链">
+<meta property="og:title" content="使用 NFS 同步 K8s 配置">
 <meta property="og:url" content="https://blog.x2b.net/1345941684/index.html">
 <meta property="og:site_name" content="X to Bytes">
-<meta property="og:description" content="工具链 Go 语言工具链（Go toolchain）是一组核心工具，用于帮助开发、构建、测试、维护和分发 Go 应用程序。这些工具由 Go 语言开发团队设计和维护，其中最常用工具会被包含在发行版（安装包）中。额外工具和库位于 golang.org&#x2F;x 命名空间中，包含特定或高级功能，也被称为 Go 扩展库（Go eXtensions）。">
+<meta property="og:description" content="介绍 在 K8s 中，可以使用 NFS 网络文件系统服务，来共享与备份发布有关的 YAML 文件和部分服务配置文件。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-07-24T13:32:07.000Z">
-<meta property="article:modified_time" content="2024-07-26T10:50:57.795Z">
+<meta property="article:published_time" content="2023-05-21T07:51:48.000Z">
+<meta property="article:modified_time" content="2023-05-21T14:07:43.652Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python go">
 <meta name="twitter:card" content="summary">
@@ -40,10 +40,10 @@
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/1345941684/","path":"1345941684/","title":"Go 语言工具链"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/1345941684/","path":"1345941684/","title":"使用 NFS 同步 K8s 配置"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Go 语言工具链 | X to Bytes</title>
+<title>使用 NFS 同步 K8s 配置 | X to Bytes</title>
   
 
   <script src="../js/third-party/analytics/baidu-analytics.js"></script>
@@ -94,7 +94,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">18</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">96</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">18</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">97</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -145,7 +145,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E9%93%BE"><span class="nav-number">1.</span> <span class="nav-text"> 工具链</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%85%E7%BD%AE%E5%B7%A5%E5%85%B7"><span class="nav-number">2.</span> <span class="nav-text"> 内置工具</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A2%9D%E5%A4%96%E5%8A%9F%E8%83%BD"><span class="nav-number">3.</span> <span class="nav-text"> 额外功能</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A2%9D%E5%A4%96%E5%B7%A5%E5%85%B7"><span class="nav-number">4.</span> <span class="nav-text"> 额外工具</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%B7%A5%E5%85%B7"><span class="nav-number">5.</span> <span class="nav-text"> 安装工具</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text"> 介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">2.</span> <span class="nav-text"> 安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BC%98%E5%8C%96"><span class="nav-number">3.</span> <span class="nav-text"> 优化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text"> 配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B"><span class="nav-number">5.</span> <span class="nav-text"> 查看</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8C%82%E8%BD%BD"><span class="nav-number">6.</span> <span class="nav-text"> 挂载</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5"><span class="nav-number">7.</span> <span class="nav-text"> 同步</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -160,7 +160,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="../archives/">
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -232,12 +232,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Go 语言工具链 | X to Bytes">
+      <meta itemprop="name" content="使用 NFS 同步 K8s 配置 | X to Bytes">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Go 语言工具链
+          使用 NFS 同步 K8s 配置
         </h1>
 
         <div class="post-meta-container">
@@ -247,15 +247,9 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2024-07-24 21:32:07" itemprop="dateCreated datePublished" datetime="2024-07-24T21:32:07+08:00">2024-07-24</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-07-26 18:50:57" itemprop="dateModified" datetime="2024-07-26T18:50:57+08:00">2024-07-26</time>
+      <time title="创建时间：2023-05-21 15:51:48 / 修改时间：22:07:43" itemprop="dateCreated datePublished" datetime="2023-05-21T15:51:48+08:00">2023-05-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -263,11 +257,11 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a>
+          <a href="../categories/Kubernets/" itemprop="url" rel="index"><span itemprop="name">Kubernets</span></a>
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../categories/Go/1-%E5%85%A5%E9%97%A8%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">1.入门基础</span></a>
+          <a href="../categories/Kubernets/4-%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" itemprop="url" rel="index"><span itemprop="name">4.最佳实践</span></a>
         </span>
     </span>
 
@@ -285,14 +279,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1k</span>
+      <span>1.2k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>3 分钟</span>
+      <span>4 分钟</span>
     </span>
 </div>
 
@@ -303,53 +297,144 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="工具链"><a class="markdownIt-Anchor" href="#工具链"></a> 工具链</h1>
-<p>Go 语言工具链（Go toolchain）是一组核心工具，用于帮助开发、构建、测试、维护和分发 Go 应用程序。这些工具由 Go 语言开发团队设计和维护，其中最常用工具会被包含在发行版（安装包）中。额外工具和库位于 <code>golang.org/x</code> 命名空间中，包含特定或高级功能，也被称为 Go 扩展库（Go eXtensions）。</p>
-<p>内置工具在命令行直接执行，是日常开发中必备功能，例如打包和测试。而外置工具需要通过 <code>go install</code> 命令安装后才能使用，扩展库外置可以避免语言核心变得过于庞大。</p>
-<h1 id="内置工具"><a class="markdownIt-Anchor" href="#内置工具"></a> 内置工具</h1>
-<p>在命令行单独输入 <code>go</code> 命令时，子命令都对应着内置工具。主要是下面这些：</p>
+        <h1 id="介绍"><a class="markdownIt-Anchor" href="#介绍"></a> 介绍</h1>
+<p>在 K8s 中，可以使用 NFS 网络文件系统服务，来共享与备份发布有关的 YAML 文件和部分服务配置文件。</p>
+<p>本地环境中，需要用到 NFS 服务的有：</p>
 <ul>
-<li><code>build</code>：编译源代码包及其依赖，对 <code>main</code> 包编译将生成一个可执行文件。</li>
-<li><code>clean</code>：删除源码包中编译生成物。</li>
-<li><code>doc</code>：显示 Go 内置文档，支持第三方包。</li>
-<li><code>env</code>：打印 Go 语言环境变量信息。</li>
-<li><code>fix</code>：修复 Go 版本升级后不兼容代码。</li>
-<li><code>fmt</code>：格式化代码。</li>
-<li><code>get</code>：下载并安装指定包到本地，支持 GitHub 地址。从 Go 1.11 版本开始，默认启用模块模式，功能变为添加项目依赖模块并更新 <code>go.mod</code> 文件，也用于更新模块版本。</li>
-<li><code>install</code>：编译并安装指定包，生成可执行文件到 <code>bin</code> 目录，包文件到 <code>pkg</code> 目录。从 Go 1.16 版本开始，用于安装外部工具，避免修改项目 <code>go.mod</code> 文件。</li>
-<li><code>list</code>：列出当前包信息。</li>
-<li><code>mod</code>：用于管理模块。包括多个子命令，如 <code>go mod tidy</code>、<code>go mod download</code> 等。</li>
-<li><code>run</code>：编译并运行程序。构建临时可执行文件，并输出程序执行结果。</li>
-<li><code>test</code>：测试源码包。自动识别源码目录下以 <code>_test.go</code> 结尾文件，并执行测试，展示结果。</li>
-<li><code>tool</code>：运行指定工具。</li>
-<li><code>version</code>：显示 Go 语言版本信息。</li>
-<li><code>vet</code>：检查源码错误。</li>
+<li>k8s-101、k8s-102、k8s-103：K8s 主节点，同步 <code>/hxz393</code> 目录。用于存放集群发布文件和配置。</li>
+<li>k8s-106：专职备份节点，共享 <code>/backup</code> 目录。</li>
 </ul>
-<p>内置工具可执行文件实际存放在 <code>$GOROOT/pkg/tool/&lt;platform&gt;</code> 目录下。可以通过使用 <code>go help [命令]</code> 来查看每个命令用法。</p>
-<h1 id="额外功能"><a class="markdownIt-Anchor" href="#额外功能"></a> 额外功能</h1>
-<p>这里指在标准库中同名，但是提供额外功能的包。基于用户反馈，这些功能可能最终会并入标准库。例如下面这些：</p>
-<ul>
-<li><code>golang.org/x/net</code>：提供额外网络协议、功能和工具，例如 WebSocket 协议。</li>
-<li><code>golang.org/x/crypto</code>：提供额外加密函数和加密算法，例如 SSH 协议实现。</li>
-<li><code>golang.org/x/sync</code>：提供额外同步原语，比如信号量。</li>
-<li><code>golang.org/x/mobile</code>：用于支持开发移动端应用程序。</li>
-</ul>
-<h1 id="额外工具"><a class="markdownIt-Anchor" href="#额外工具"></a> 额外工具</h1>
-<p>额外工具放在 <code>golang.org/x/tools</code> 下面，主要包括用于代码重构、静态分析、编辑器集成、性能分析等方面工具，很多已经集成到流行 IDE 中，例如下面这些：</p>
-<ul>
-<li><strong>gopls</strong>：<code>gopls</code> 是一个语言服务器，支持 LSP（Language Server Protocol）。提供代码自动完成、定义跳转、符号搜索、重命名、格式化和诊断等强大功能，是 Go 代码编辑环境核心组件。</li>
-<li><strong>goimports</strong>：<code>goimports</code> 在 <code>gofmt</code> 基础上增加自动维护导入包功能。</li>
-<li><strong>guru</strong>：<code>guru</code> 是一个代码导航工具，用于查询 Go 代码结构，如查找符号定义、被引用位置、类型方法等。</li>
-<li><strong>godoc</strong>：<code>godoc</code> 原本是内置工具，<code>golang.org/x/tools</code> 版本提供更多功能，如启动本地服务器查看文档等。</li>
-<li><strong>gorename</strong>：<code>gorename</code> 提供重命名变量、函数、类型等标识符功能，并确保代码库中所有引用同步更新。</li>
-<li><strong>benchcmp</strong>：用于比较和分析基准测试结果。</li>
-<li><strong>cover</strong>：提供测试覆盖率工具。</li>
-</ul>
-<h1 id="安装工具"><a class="markdownIt-Anchor" href="#安装工具"></a> 安装工具</h1>
-<p>安装二进制工具命令格式为：<code>go install some/package@version</code> ，可执行文件会被安装到 <code>$GOPATH/bin</code> 或 <code>$GOBIN</code> 目录。安装版本可自由指定，要省事可一律指定为 <code>@latest</code>。</p>
-<p>例如安装 <code>godoc</code>：</p>
-<pre class="line-numbers language-cmd" data-language="cmd"><code class="language-cmd">go install golang.org&#x2F;x&#x2F;tools&#x2F;cmd&#x2F;godoc@latest<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>安装完成后，可以通过命令行直接运行 <code>godoc</code> 命令。</p>
+<p>如果生产环境使用的云服务商，可以直接购买云服务商提供的 NFS 服务，价格便宜且稳定。购买之后，只需要将其挂载并开机挂载到本地指定目录即可。</p>
+<h1 id="安装"><a class="markdownIt-Anchor" href="#安装"></a> 安装</h1>
+<p>在 4 个节点上使用 <code>yum</code> 安装并启动相关服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># yum install nfs-utils rpcbind -y</span>
+<span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># systemctl enable --now rpcbind</span>
+<span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># systemctl enable --now nfs</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h1 id="优化"><a class="markdownIt-Anchor" href="#优化"></a> 优化</h1>
+<p>增加 NFS 最大连接客户端数量,默认为 2:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># echo "options sunrpc tcp_slot_table_entries=128" >> /etc/modprobe.d/sunrpc.conf</span>
+<span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># echo "options sunrpc tcp_max_slot_table_entries=128" >>  /etc/modprobe.d/sunrpc.conf</span>
+<span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># sysctl -w sunrpc.tcp_slot_table_entries=128</span>
+sunrpc.tcp_slot_table_entries <span class="token operator">=</span> <span class="token number">128</span>
+<span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># systemctl restart rpcbind &amp;&amp; systemctl restart nfs-server</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="配置"><a class="markdownIt-Anchor" href="#配置"></a> 配置</h1>
+<p>在主节点上新建目录 <code>/hxz393</code>，配置成共享并立即生效：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-102 ~<span class="token punctuation">]</span><span class="token comment"># mkdir /hxz393</span>
+<span class="token punctuation">[</span>root@k8s-102 ~<span class="token punctuation">]</span><span class="token comment"># echo -e "/hxz393 *(rw,no_root_squash,sync,no_subtree_check)">>/etc/exports</span>
+<span class="token punctuation">[</span>root@k8s-102 ~<span class="token punctuation">]</span><span class="token comment"># exportfs -r</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>同样在备份节点上新建并共享目录 <code>/backup</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-106 ~<span class="token punctuation">]</span><span class="token comment"># mkdir /backup</span>
+<span class="token punctuation">[</span>root@k8s-102 ~<span class="token punctuation">]</span><span class="token comment"># echo -e "/backup *(rw,no_root_squash,sync,no_subtree_check)">>/etc/exports</span>
+<span class="token punctuation">[</span>root@k8s-102 ~<span class="token punctuation">]</span><span class="token comment"># exportfs -r</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h1 id="查看"><a class="markdownIt-Anchor" href="#查看"></a> 查看</h1>
+<p>查询挂载目录，验证配置：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># showmount -e k8s-101</span>
+Export list <span class="token keyword">for</span> k8s-101:
+/hxz393 *
+<span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># showmount -e 192.168.1.106</span>
+Export list <span class="token keyword">for</span> <span class="token number">192.168</span>.1.106:
+/backup *<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="挂载"><a class="markdownIt-Anchor" href="#挂载"></a> 挂载</h1>
+<p>挂载命令为 <code>mount</code> 后面接远程目录和本地目录。本地目录需要事先建立好：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># mkdir /backup</span>
+<span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># mount 192.168.1.106:/backup /backup</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>可以按需求，将 NFS 共享目录设为开机挂载。只需要将挂载命令写入到 <code>/etc/rc.d/rc.local</code> 文件中：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># echo "mount 192.168.1.106:/backup /backup" >>/etc/rc.d/rc.local</span>
+<span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># chmod ug+x /etc/rc.d/rc.local</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>但这样做会有个风险：如果在开机时网络未就绪或 NFS 服务器无法访问，那么在等待很长一段时间后会挂载失败。之后在系统中任何对挂载目录的操作，都会卡成僵尸。</p>
+<p>所以保守点还是在需要用的时候挂载，不需要用了及时卸载：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># umount /backup</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="同步"><a class="markdownIt-Anchor" href="#同步"></a> 同步</h1>
+<p>对主节点上关键目录 <code>/hxz393</code> 用 <code>rsync</code> + <code>inotify</code> 做同步。先安装工具：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># yum -y install rsync inotify-tools</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>修改 k8s-101 上 rsync 配置文件如下。节点 k8s-102 和 k8s-103 只能从 k8s-101 单向同步，因此配置文件中将 <code>master_web</code> 改为 <code>slave_web</code>。具体配置说明可见注释：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># tee /etc/rsyncd.conf&lt;&lt;EOF</span>
+<span class="token comment">#rsync通用配置文件,配置的注释不要写在配置后面</span>
+uid <span class="token operator">=</span> root
+gid <span class="token operator">=</span> root
+use <span class="token function">chroot</span> <span class="token operator">=</span> <span class="token number">0</span>
+port <span class="token operator">=</span> <span class="token number">873</span>
+<span class="token comment">##允许ip访问设置</span>
+hosts allow <span class="token operator">=</span> <span class="token number">192.168</span>.1.0/24
+max connections <span class="token operator">=</span> <span class="token number">0</span>
+<span class="token function">timeout</span> <span class="token operator">=</span> <span class="token number">300</span>
+pid <span class="token function">file</span> <span class="token operator">=</span> /var/run/rsyncd.pid
+lock <span class="token function">file</span> <span class="token operator">=</span> /var/run/rsyncd.lock
+log <span class="token function">file</span> <span class="token operator">=</span> /var/log/rsyncd.log
+log <span class="token function">format</span> <span class="token operator">=</span> %t %a %m %f %b
+transfer logging <span class="token operator">=</span> <span class="token function">yes</span>
+syslog facility <span class="token operator">=</span> local3
+<span class="token comment">#方括号中为模块声明,这里master_web对应了主web机配置,从服务器可都为[slave_web],方便inotify脚本配置</span>
+<span class="token punctuation">[</span>master_web<span class="token punctuation">]</span>
+<span class="token comment">#指定当前模块在rsync服务器上的同步路径，该参数是必须指定的</span>
+path <span class="token operator">=</span> /hxz393/
+<span class="token comment">#注释,可以同模块名一样,从服务器可都为slave_web</span>
+comment <span class="token operator">=</span> master_web
+ignore errors
+<span class="token comment">##是否允许客户端上传文件</span>
+<span class="token builtin class-name">read</span> only <span class="token operator">=</span> no
+list <span class="token operator">=</span> no
+<span class="token comment">##指定由空格或逗号分隔的用户名列表，只有这些用户才允许连接该模块</span>
+auth <span class="token function">users</span> <span class="token operator">=</span> <span class="token function">rsync</span>
+<span class="token comment">##保存密码和用户名文件，需要自己生成</span>
+secrets <span class="token function">file</span> <span class="token operator">=</span> /etc/rsyncd.passwd
+EOF<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>生成密码文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># echo "rsync:kKWA.J2V3tq3" > /etc/rsyncd.passwd</span>
+<span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># mkdir -p /hxz393/local/nfs/config</span>
+<span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># echo "kKWA.J2V3tq3" > /hxz393/local/nfs/config/rsyncd.passwd</span>
+<span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># chmod 600 /etc/rsyncd.passwd /hxz393/local/nfs/config/rsyncd.passwd</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>启动服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># systemctl restart rsyncd</span>
+<span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># systemctl enable rsyncd</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>在 k8s-101 上测试下同步 <code>/hxz393</code> 到 k8s-102：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># rsync -avzp --delete  /hxz393/ rsync@192.168.1.102::slave_web --password-file=/hxz393/local/nfs/config/rsyncd.passwd</span>
+sending incremental <span class="token function">file</span> list
+./
+local/
+local/k8s/
+local/k8s/apply/
+local/k8s/apply/kube-flannel.yml
+local/k8s/apply/kube-namespaces.yml
+local/k8s/config/
+local/k8s/config/admin.conf
+local/k8s/config/kubeadm-config.yaml
+local/nfs/
+local/nfs/config/
+local/nfs/config/rsyncd.passwd
+
+sent <span class="token number">6,380</span> bytes  received <span class="token number">156</span> bytes  <span class="token number">13,072</span>.00 bytes/sec
+total size is <span class="token number">11,704</span>  speedup is <span class="token number">1.79</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>同步测试没问题后，在 k8s-101 上写入开机自启动脚本：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># vi /hxz393/local/nfs/rsync.sh</span>
+<span class="token comment">#!/bin/bash</span>
+<span class="token builtin class-name">set</span> <span class="token parameter variable">-e</span>
+
+<span class="token assign-left variable">host1</span><span class="token operator">=</span><span class="token string">"192.168.1.102"</span>
+<span class="token assign-left variable">host2</span><span class="token operator">=</span><span class="token string">"192.168.1.103"</span>
+<span class="token assign-left variable">src</span><span class="token operator">=</span><span class="token string">"/hxz393/"</span>
+<span class="token assign-left variable">des</span><span class="token operator">=</span><span class="token string">"slave_web"</span>
+<span class="token assign-left variable">password</span><span class="token operator">=</span><span class="token string">"/hxz393/local/nfs/config/rsyncd.passwd"</span>
+<span class="token assign-left variable">user</span><span class="token operator">=</span><span class="token string">"rsync"</span>
+<span class="token assign-left variable">inotifywait</span><span class="token operator">=</span><span class="token string">"/usr/bin/inotifywait"</span>
+<span class="token assign-left variable">log</span><span class="token operator">=</span><span class="token string">"/tmp/rsync.log"</span>
+
+<span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token operator">!</span> <span class="token parameter variable">-f</span> <span class="token string">"<span class="token variable">$&#123;inotifywait&#125;</span>"</span> <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+    <span class="token builtin class-name">echo</span> <span class="token string">"inotifywait tool does not exist."</span>
+    <span class="token builtin class-name">exit</span> <span class="token number">1</span>
+<span class="token keyword">fi</span>
+
+<span class="token variable">$&#123;inotifywait&#125;</span> <span class="token parameter variable">-mrq</span> <span class="token parameter variable">--timefmt</span> <span class="token string">'%Y%m%d %H:%M'</span> <span class="token parameter variable">--format</span> <span class="token string">'%T %w%f%e'</span> <span class="token parameter variable">-e</span> modify,delete,create,attrib <span class="token variable">$&#123;src&#125;</span> <span class="token punctuation">\</span>
+<span class="token operator">|</span> <span class="token keyword">while</span> <span class="token builtin class-name">read</span> files <span class="token punctuation">;</span><span class="token keyword">do</span>
+ <span class="token function">rsync</span> <span class="token parameter variable">-avzP</span> <span class="token parameter variable">--delete</span> <span class="token parameter variable">--timeout</span><span class="token operator">=</span><span class="token number">100</span> --password-file<span class="token operator">=</span><span class="token variable">$&#123;password&#125;</span> <span class="token variable">$&#123;src&#125;</span> <span class="token variable">$&#123;user&#125;</span>@<span class="token variable">$&#123;host1&#125;</span>::<span class="token variable">$&#123;des&#125;</span> <span class="token operator">>></span><span class="token variable">$&#123;log&#125;</span> <span class="token operator"><span class="token file-descriptor important">2</span>></span><span class="token file-descriptor important">&amp;1</span>
+ <span class="token builtin class-name">echo</span> <span class="token string">"<span class="token variable">$&#123;files&#125;</span> 同步到<span class="token variable">$&#123;host1&#125;</span>"</span> <span class="token operator">>></span><span class="token variable">$&#123;log&#125;</span>
+ <span class="token function">rsync</span> <span class="token parameter variable">-avzP</span> <span class="token parameter variable">--delete</span> <span class="token parameter variable">--timeout</span><span class="token operator">=</span><span class="token number">100</span> --password-file<span class="token operator">=</span><span class="token variable">$&#123;password&#125;</span> <span class="token variable">$&#123;src&#125;</span> <span class="token variable">$&#123;user&#125;</span>@<span class="token variable">$&#123;host2&#125;</span>::<span class="token variable">$&#123;des&#125;</span> <span class="token operator">>></span><span class="token variable">$&#123;log&#125;</span> <span class="token operator"><span class="token file-descriptor important">2</span>></span><span class="token file-descriptor important">&amp;1</span>
+ <span class="token builtin class-name">echo</span> <span class="token string">"<span class="token variable">$&#123;files&#125;</span> 同步到<span class="token variable">$&#123;host2&#125;</span>"</span> <span class="token operator">>></span><span class="token variable">$&#123;log&#125;</span>
+<span class="token keyword">done</span>
+<span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># bash -n /hxz393/local/nfs/rsync.sh</span>
+<span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># chmod 755 /hxz393/local/nfs/rsync.sh</span>
+<span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># echo "nohup bash /hxz393/local/nfs/rsync.sh > /tmp/rsync.sh.log 2>&amp;1 &amp;" >> /etc/rc.d/rc.local</span>
+<span class="token punctuation">[</span>root@k8s-101 ~<span class="token punctuation">]</span><span class="token comment"># chmod 744 /etc/rc.d/rc.local</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
     </div>
 
@@ -381,7 +466,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://blog.x2b.net/1345941684/" title="Go 语言工具链">https://blog.x2b.net/1345941684/</a>
+      <a href="https://blog.x2b.net/1345941684/" title="使用 NFS 同步 K8s 配置">https://blog.x2b.net/1345941684/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
@@ -411,11 +496,14 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="../4130112683/" rel="prev" title="Go 语言环境安装配置">
-                  <i class="fa fa-chevron-left"></i> Go 语言环境安装配置
+                <a href="../3127212691/" rel="prev" title="独立博客搭建方案对比">
+                  <i class="fa fa-chevron-left"></i> 独立博客搭建方案对比
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="../4130112683/" rel="next" title="Go 语言环境安装配置">
+                  Go 语言环境安装配置 <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
     </footer>
@@ -448,13 +536,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">298k</span>
+    <span title="站点总字数">300k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">16:34</span>
+    <span title="站点阅读时长">16:41</span>
   </span>
 </div>
 <div class="busuanzi-count">
