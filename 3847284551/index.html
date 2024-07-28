@@ -22,15 +22,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
 
-    <meta name="description" content="提取数据列 可以使用 cut 命令按行提取数据并删除所需部分，命令格式如下：">
+    <meta name="description" content="系统例行性工作 在 Linux 系统常见的例行性任务有：">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux 文件内容处理">
+<meta property="og:title" content="Linux 工作调度与定时任务">
 <meta property="og:url" content="https://blog.x2b.net/3847284551/index.html">
 <meta property="og:site_name" content="X to Bytes">
-<meta property="og:description" content="提取数据列 可以使用 cut 命令按行提取数据并删除所需部分，命令格式如下：">
+<meta property="og:description" content="系统例行性工作 在 Linux 系统常见的例行性任务有：">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-09-18T03:57:47.000Z">
-<meta property="article:modified_time" content="2023-05-07T10:20:52.162Z">
+<meta property="article:published_time" content="2021-09-18T04:50:00.000Z">
+<meta property="article:modified_time" content="2023-05-07T10:25:14.119Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python go">
 <meta name="twitter:card" content="summary">
@@ -40,10 +40,10 @@
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/3847284551/","path":"3847284551/","title":"Linux 文件内容处理"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/3847284551/","path":"3847284551/","title":"Linux 工作调度与定时任务"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Linux 文件内容处理 | X to Bytes</title>
+<title>Linux 工作调度与定时任务 | X to Bytes</title>
   
 
   <script src="../js/third-party/analytics/baidu-analytics.js"></script>
@@ -94,7 +94,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">19</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">99</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">19</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">100</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -145,7 +145,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8F%90%E5%8F%96%E6%95%B0%E6%8D%AE%E5%88%97"><span class="nav-number">1.</span> <span class="nav-text"> 提取数据列</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8A%93%E5%8F%96%E6%95%B0%E6%8D%AE"><span class="nav-number">2.</span> <span class="nav-text"> 抓取数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F%E5%91%BD%E4%BB%A4"><span class="nav-number">3.</span> <span class="nav-text"> 排序命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E6%96%87%E4%BB%B6%E4%BF%A1%E6%81%AF"><span class="nav-number">4.</span> <span class="nav-text"> 统计文件信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E8%BD%AC%E6%8D%A2%E5%91%BD%E4%BB%A4"><span class="nav-number">5.</span> <span class="nav-text"> 字符转换命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BD%AC%E6%8D%A2-tab-%E4%B8%BA%E7%A9%BA%E6%A0%BC"><span class="nav-number">6.</span> <span class="nav-text"> 转换 Tab 为空格</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BD%AC%E6%8D%A2%E6%96%AD%E8%A1%8C%E7%AC%A6"><span class="nav-number">7.</span> <span class="nav-text"> 转换断行符</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F%E5%8C%96%E8%A1%8C"><span class="nav-number">8.</span> <span class="nav-text"> 格式化行</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%AE%B5%E8%90%BD"><span class="nav-number">9.</span> <span class="nav-text"> 格式化段落</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BC%96%E7%A0%81%E8%BD%AC%E6%8D%A2"><span class="nav-number">10.</span> <span class="nav-text"> 编码转换</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E5%90%88%E5%B9%B6"><span class="nav-number">11.</span> <span class="nav-text"> 文件合并</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E5%88%87%E5%89%B2"><span class="nav-number">12.</span> <span class="nav-text"> 文件切割</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%AF%94%E8%BE%83"><span class="nav-number">13.</span> <span class="nav-text"> 文件比较</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E4%BE%8B%E8%A1%8C%E6%80%A7%E5%B7%A5%E4%BD%9C"><span class="nav-number">1.</span> <span class="nav-text"> 系统例行性工作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%95%E6%AC%A1%E5%B7%A5%E4%BD%9C%E8%B0%83%E5%BA%A6"><span class="nav-number">2.</span> <span class="nav-text"> 单次工作调度</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF%E5%B7%A5%E4%BD%9C%E8%B0%83%E5%BA%A6"><span class="nav-number">3.</span> <span class="nav-text"> 循环工作调度</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E4%BE%8B%E8%A1%8C%E8%B0%83%E5%BA%A6"><span class="nav-number">4.</span> <span class="nav-text"> 系统例行调度</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%94%A4%E9%86%92%E5%81%9C%E6%9C%BA%E6%9C%9F%E9%97%B4%E7%9A%84%E5%B7%A5%E4%BD%9C%E4%BB%BB%E5%8A%A1"><span class="nav-number">5.</span> <span class="nav-text"> 唤醒停机期间的工作任务</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -160,7 +160,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="../archives/">
-          <span class="site-state-item-count">99</span>
+          <span class="site-state-item-count">100</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -232,12 +232,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Linux 文件内容处理 | X to Bytes">
+      <meta itemprop="name" content="Linux 工作调度与定时任务 | X to Bytes">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Linux 文件内容处理
+          Linux 工作调度与定时任务
         </h1>
 
         <div class="post-meta-container">
@@ -248,14 +248,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2021-09-18 11:57:47" itemprop="dateCreated datePublished" datetime="2021-09-18T11:57:47+08:00">2021-09-18</time>
+      <time title="创建时间：2021-09-18 12:50:00" itemprop="dateCreated datePublished" datetime="2021-09-18T12:50:00+08:00">2021-09-18</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-07 18:20:52" itemprop="dateModified" datetime="2023-05-07T18:20:52+08:00">2023-05-07</time>
+      <time title="修改时间：2023-05-07 18:25:14" itemprop="dateModified" datetime="2023-05-07T18:25:14+08:00">2023-05-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -285,14 +285,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>3.2k</span>
+      <span>2.2k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>11 分钟</span>
+      <span>7 分钟</span>
     </span>
 </div>
 
@@ -303,11 +303,49 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="提取数据列"><a class="markdownIt-Anchor" href="#提取数据列"></a> 提取数据列</h1>
-<p>可以使用 <code>cut</code> 命令按行提取数据并删除所需部分，命令格式如下：</p>
-<p><code>cut -d '分隔字符' -f 编号</code></p>
-<p><code>cut -c 字符范围</code></p>
-<p>可用参数如下：</p>
+        <h1 id="系统例行性工作"><a class="markdownIt-Anchor" href="#系统例行性工作"></a> 系统例行性工作</h1>
+<p>在 Linux 系统常见的例行性任务有：</p>
+<ul>
+<li>
+<p><strong>进行日志文件的轮替</strong></p>
+<p>Linux 会主动将系统所发生的各种事件都记录到日志文件，日志轮替会不时检查，将旧日志与新日志分别存放。</p>
+</li>
+<li>
+<p><strong>日志文件分析</strong></p>
+<p>CentOS 提供 <code>logwatch</code> 来主动分析日志信息。</p>
+</li>
+<li>
+<p><strong>更新 locate 数据库</strong></p>
+<p>默认每天都更新一次存放在 <code>/var/lib/mlocate</code> 中的数据库。</p>
+</li>
+<li>
+<p><strong>更新 RPM 软件数据库</strong></p>
+<p>由于系统中软件经常变更，需要系统帮我们将文件名做个排序记录，生成 RPM 数据库。</p>
+</li>
+<li>
+<p><strong>删除临时文件</strong></p>
+<p>系统通过调用 <code>tmpwatch</code> 命令来删除软件运行时所产生的不再需要的临时文件。</p>
+</li>
+<li>
+<p><strong>与网络服务有关的分析行为</strong></p>
+<p>如果安装了 WWW 服务器，系统会主动分析软件的入口文件。</p>
+</li>
+</ul>
+<h1 id="单次工作调度"><a class="markdownIt-Anchor" href="#单次工作调度"></a> 单次工作调度</h1>
+<p>单次工作调度任务主要由 atd 服务提供，使用 <code>at</code> 命令来生成所需要运行的工作，再将工作写入 <code>/var/spool/at</code> 目录内。</p>
+<p>可以运行 <code>at</code> 的账号记录在 <code>/etc/at.allow</code> 中，禁止运行 <code>at</code> 的账号记录在 <code>/etc/at.deny</code> 中。如果两个文件都不存在，则只有 root 可以使用 <code>at</code> 命令。如果账号在两个文件中都有记录，以 <code>/etc/at.allow</code> 优先。</p>
+<p>可以使用 <code>service</code> 命令查询启动 <code>atd</code> 服务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">service</span> atd status
+Redirecting to /bin/systemctl status atd.service
+a—? atd.service - Job spooling tools
+   Loaded: loaded <span class="token punctuation">(</span>/usr/lib/systemd/system/atd.service<span class="token punctuation">;</span> enabled<span class="token punctuation">;</span> vendor preset: enabled<span class="token punctuation">)</span>
+   Active: inactive <span class="token punctuation">(</span>dead<span class="token punctuation">)</span>
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">service</span> atd start
+Redirecting to /bin/systemctl start atd.service<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>设置开机启动使用 <code>chkconfig</code> 配置或 <code>systemctl enable atd</code> 开启：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">chkconfig</span> atd on
+Note: Forwarding request to <span class="token string">'systemctl enable atd.service'</span><span class="token builtin class-name">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p><code>at</code> 命令的基本语法为 <code>at [-mldv] 时间</code>，其中可以使用的参数如下：</p>
 <table>
 <thead>
 <tr>
@@ -316,193 +354,80 @@
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>-m</td>
+<td>当 <code>at</code> 的工作完成后，即使没有输出信息，也会发送邮件通知用户工作已完成</td>
+</tr>
+<tr>
+<td>-l</td>
+<td>相当于 <code>atq</code>，列出目前系统上所有该用户的 <code>at</code> 调度</td>
+</tr>
 <tr>
 <td>-d</td>
-<td>后面接分隔字符，与 -f 一起使用。</td>
-</tr>
-<tr>
-<td>-f</td>
-<td>选取被切割后的第几段数据。</td>
-</tr>
-<tr>
-<td>-c</td>
-<td>以字符为单位取出固定字符区间。</td>
-</tr>
-</tbody>
-</table>
-<p>例如以 <code>:</code> 为分隔符，取出 <code>PATH</code> 变量第 3 和第 5 段：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 abc<span class="token punctuation">]</span>$ <span class="token builtin class-name">echo</span> <span class="token environment constant">$PATH</span> <span class="token operator">|</span> <span class="token function">cut</span> <span class="token parameter variable">-d</span> <span class="token string">":"</span> <span class="token parameter variable">-f</span> <span class="token number">3,5</span>
-/usr/sbin:/root/bin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>将 <code>export</code> 输出信息取得第 12 个字符以后的所有字符串：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 abc<span class="token punctuation">]</span>$ <span class="token builtin class-name">export</span><span class="token operator">|</span><span class="token function">head</span> -4<span class="token punctuation">;</span><span class="token builtin class-name">echo</span> <span class="token string">"-----"</span><span class="token punctuation">;</span><span class="token builtin class-name">export</span> <span class="token operator">|</span> <span class="token function">cut</span> <span class="token parameter variable">-c</span> <span class="token number">12</span>- <span class="token operator">|</span> <span class="token function">head</span> <span class="token parameter variable">-4</span>
-<span class="token builtin class-name">declare</span> <span class="token parameter variable">-x</span> <span class="token assign-left variable"><span class="token environment constant">HISTCONTROL</span></span><span class="token operator">=</span><span class="token string">"ignoredups"</span>
-<span class="token builtin class-name">declare</span> <span class="token parameter variable">-x</span> <span class="token assign-left variable"><span class="token environment constant">HISTSIZE</span></span><span class="token operator">=</span><span class="token string">"1000"</span>
-<span class="token builtin class-name">declare</span> <span class="token parameter variable">-x</span> <span class="token assign-left variable"><span class="token environment constant">HOME</span></span><span class="token operator">=</span><span class="token string">"/root"</span>
-<span class="token builtin class-name">declare</span> <span class="token parameter variable">-x</span> <span class="token assign-left variable"><span class="token environment constant">HOSTNAME</span></span><span class="token operator">=</span><span class="token string">"101c7"</span>
------
-<span class="token assign-left variable"><span class="token environment constant">HISTCONTROL</span></span><span class="token operator">=</span><span class="token string">"ignoredups"</span>
-<span class="token assign-left variable"><span class="token environment constant">HISTSIZE</span></span><span class="token operator">=</span><span class="token string">"1000"</span>
-<span class="token assign-left variable"><span class="token environment constant">HOME</span></span><span class="token operator">=</span><span class="token string">"/root"</span>
-<span class="token assign-left variable"><span class="token environment constant">HOSTNAME</span></span><span class="token operator">=</span><span class="token string">"101c7"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>如果要选取的值是 12 到 20 个字符，那么使用 <code>cut -c 12-20</code>。</p>
-<h1 id="抓取数据"><a class="markdownIt-Anchor" href="#抓取数据"></a> 抓取数据</h1>
-<p>使用 grep 则是分析一行信息,有需要的信息则将整行取出.简单语法如下:</p>
-<p><code>grep [-acinv] '查找字符串' 文件名</code></p>
-<p><code>grep -[AB] '查找字符串' 文件名</code></p>
-<p>可用参数如下:</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>-a</td>
-<td>将二进制文件以 text 文件的方式查找数据</td>
-</tr>
-<tr>
-<td>-c</td>
-<td>计算找到 ‘查找字符串’ 的次数</td>
-</tr>
-<tr>
-<td>-i</td>
-<td>忽略大小写</td>
-</tr>
-<tr>
-<td>-n</td>
-<td>输出行号</td>
+<td>相当于 <code>atrm</code>，可以取消一个在 <code>at</code> 调度中的任务</td>
 </tr>
 <tr>
 <td>-v</td>
-<td>反向选择</td>
-</tr>
-<tr>
-<td>-E</td>
-<td>使用扩展正则表达式，默认使用基础正则表达式</td>
-</tr>
-<tr>
-<td>-P</td>
-<td>使用 Perl 正则表达式</td>
-</tr>
-<tr>
-<td>-F</td>
-<td>关闭正则表达式模式，将所有的字母都看作单词</td>
-</tr>
-<tr>
-<td>-A/Bn</td>
-<td>列出找到结果的后/前 n 行</td>
-</tr>
-</tbody>
-</table>
-<p>例如取出 /etc/man_db.conf 中含有 MANPATH 的行：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token string">'MANPATH'</span> /etc/man_db.conf 
-<span class="token comment"># MANDATORY_MANPATH                     manpath_element</span>
-<span class="token comment"># MANPATH_MAP           path_element    manpath_element</span>
-<span class="token comment"># every automatically generated MANPATH includes these fields</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>忽略大小写，使用扩展正则表达式搜索打印出以 pw 开头的行，并显示行号：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> anaconda-ks.cfg <span class="token operator">|</span> <span class="token function">grep</span> <span class="token parameter variable">-E</span> <span class="token parameter variable">-n</span> <span class="token parameter variable">-i</span> <span class="token string">'^pw.*'</span>
-<span class="token number">45</span>:pwpolicy root <span class="token parameter variable">--minlen</span><span class="token operator">=</span><span class="token number">6</span> <span class="token parameter variable">--minquality</span><span class="token operator">=</span><span class="token number">1</span> <span class="token parameter variable">--notstrict</span> <span class="token parameter variable">--nochanges</span> <span class="token parameter variable">--notempty</span>
-<span class="token number">46</span>:pwpolicy user <span class="token parameter variable">--minlen</span><span class="token operator">=</span><span class="token number">6</span> <span class="token parameter variable">--minquality</span><span class="token operator">=</span><span class="token number">1</span> <span class="token parameter variable">--notstrict</span> <span class="token parameter variable">--nochanges</span> <span class="token parameter variable">--emptyok</span>
-<span class="token number">47</span>:pwpolicy luks <span class="token parameter variable">--minlen</span><span class="token operator">=</span><span class="token number">6</span> <span class="token parameter variable">--minquality</span><span class="token operator">=</span><span class="token number">1</span> <span class="token parameter variable">--notstrict</span> <span class="token parameter variable">--nochanges</span> <span class="token parameter variable">--notempty</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>向搜索以 # 开头以 s 结尾的行：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token parameter variable">-E</span> <span class="token parameter variable">-i</span> <span class="token parameter variable">-vn</span> <span class="token string">'^#.*s$'</span> anaconda-ks.cfg 
-<span class="token number">1</span>:<span class="token comment">#version=DEVEL</span>
-<span class="token number">2</span>:<span class="token comment"># System authorization information</span>
-<span class="token number">3</span>:auth <span class="token parameter variable">--enableshadow</span> <span class="token parameter variable">--passalgo</span><span class="token operator">=</span>sha512<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="排序命令"><a class="markdownIt-Anchor" href="#排序命令"></a> 排序命令</h1>
-<p>使用 <code>sort</code> 命令能对文件内容进行排序。该命令的主要参数包括：</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>-f</td>
-<td>忽略大小写差异；</td>
-</tr>
-<tr>
-<td>-b</td>
-<td>忽略最前面的空格；</td>
-</tr>
-<tr>
-<td>-M</td>
-<td>以月份的名字来排序；</td>
-</tr>
-<tr>
-<td>-n</td>
-<td>使用纯数字进行排序；</td>
-</tr>
-<tr>
-<td>-r</td>
-<td>反向排序；</td>
-</tr>
-<tr>
-<td>-u</td>
-<td>去除重复行；</td>
-</tr>
-<tr>
-<td>-t</td>
-<td>分隔符，默认是 TAB；</td>
-</tr>
-<tr>
-<td>-k</td>
-<td>以哪个分割区间来进行排序。</td>
-</tr>
-</tbody>
-</table>
-<p>例如，将 <code>passwd</code> 文件内容按第一个字符排序：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/passwd <span class="token operator">|</span> <span class="token function">sort</span> <span class="token operator">|</span> <span class="token function">head</span> <span class="token parameter variable">-4</span>
-adm:x:3:4:adm:/var/adm:/sbin/nologin
-bin:x:1:1:bin:/bin:/sbin/nologin
-chrony:x:998:996::/var/lib/chrony:/sbin/nologin
-daemon:x:2:2:daemon:/sbin:/sbin/nologin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>以 <code>:</code> 为分隔符，按第 3 列（数字）排序。也可以使用 <code>-k 3,4</code> 参数来先按第三列排序，再按第四列排序：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/passwd <span class="token operator">|</span> <span class="token function">sort</span> <span class="token parameter variable">-t</span> <span class="token string">':'</span> <span class="token parameter variable">-k</span> <span class="token number">3</span> <span class="token parameter variable">-n</span> <span class="token operator">|</span> <span class="token function">head</span> <span class="token parameter variable">-5</span>
-root:x:0:0:root:/root:/bin/bash
-bin:x:1:1:bin:/bin:/sbin/nologin
-daemon:x:2:2:daemon:/sbin:/sbin/nologin
-adm:x:3:4:adm:/var/adm:/sbin/nologin
-lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>如果要统计重复数据，可以使用 <code>uniq</code> 命令。需要注意的是，<code>uniq</code> 的输入必须是有序的。例如，使用 <code>-c</code> 参数统计用户登录次数，再以从少到多排序：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ last <span class="token operator">|</span> <span class="token function">cut</span> <span class="token parameter variable">-d</span> <span class="token string">' '</span> <span class="token parameter variable">-f</span> <span class="token number">1</span> <span class="token operator">|</span> <span class="token function">sort</span> <span class="token operator">|</span> <span class="token function">uniq</span> <span class="token parameter variable">-c</span> <span class="token operator">|</span> <span class="token function">sort</span> <span class="token parameter variable">-t</span> <span class="token string">' '</span> <span class="token parameter variable">-k</span> <span class="token number">1</span> <span class="token parameter variable">-n</span>
-      <span class="token number">1</span> 
-      <span class="token number">1</span> wtmp
-      <span class="token number">3</span> <span class="token function">reboot</span>
-     <span class="token number">13</span> root<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="统计文件信息"><a class="markdownIt-Anchor" href="#统计文件信息"></a> 统计文件信息</h1>
-<p>使用 <code>wc</code> 命令来统计文件信息，包括行数、单词数和文件大小。该命令可用的选项包括：</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>-l</td>
-<td>查询文件内容行数；</td>
-</tr>
-<tr>
-<td>-w</td>
-<td>查询文件单词数；</td>
+<td>可以使用较明显的时间格式列出 <code>at</code> 调度中的任务列表</td>
 </tr>
 <tr>
 <td>-c</td>
-<td>查询文件大小（单位 B）。</td>
+<td>可以列出后面接的该项工作的实际命令内容</td>
 </tr>
 </tbody>
 </table>
-<p>默认参数为 <code>-lwc</code>。例如，查询文件 <code>anaconda-ks.cfg</code> 的行数、单词数和大小：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">wc</span> anaconda-ks.cfg 
-  <span class="token number">48</span>  <span class="token number">122</span> <span class="token number">1260</span> anaconda-ks.cfg<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h1 id="字符转换命令"><a class="markdownIt-Anchor" href="#字符转换命令"></a> 字符转换命令</h1>
-<p>可以使用 <code>tr</code> 命令删除一段信息中的文字，或进行文字信息的替换。该命令可用的参数包括：</p>
+<p><code>at</code> 命令还支持多种可用的时间格式，包括：</p>
+<table>
+<thead>
+<tr>
+<th>格式</th>
+<th>说明（范例）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HH:MM</td>
+<td>在今天 HH:MM进行，若超时改在明天（15:00）</td>
+</tr>
+<tr>
+<td>HH:MM YYYY-MM-DD</td>
+<td>规定在特定日期和时间执行（16:32 2043-04-01）</td>
+</tr>
+<tr>
+<td>HH:MM[am|pm] [M] [D]</td>
+<td>规定在特定日期和时间进行（01pm March 23）</td>
+</tr>
+<tr>
+<td>HH:MM[am|pm] + n [minutes|hours|days|weeks]</td>
+<td>在某个时间点加上指定时间后进行（04am + 2 days）</td>
+</tr>
+</tbody>
+</table>
+<p>例如，设置在 1 分钟后运行 <code>ls /root</code> 命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ at now + 1minutes
+at<span class="token operator">></span> <span class="token function">ls</span> /root
+at<span class="token operator">></span> <span class="token operator">&lt;</span>EOT<span class="token operator">></span>
+job <span class="token number">1</span> at Tue Sep <span class="token number">14</span> 00:22:00 <span class="token number">2021</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>工作内容输入完毕后，使用 <code>Ctrl+d</code> 结束，系统会出现一行提示信息。</p>
+<p>查询第 3 号任务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ at <span class="token parameter variable">-c</span> <span class="token number">3</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><code>at</code> 执行命令产生的 <code>stdout</code> 和 <code>stderr</code> 会传送到执行者的邮箱。如果想在终端看到输出，可以重定向输出到 <code>/dev/tty1</code>（或 <code>pts/0</code>）。</p>
+<p>删除一个 <code>at</code> 调度中的任务：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ at <span class="token parameter variable">-l</span>
+<span class="token number">7</span>       Tue Sep <span class="token number">14</span> <span class="token number">18</span>:15:00 <span class="token number">2021</span> a root
+<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ at <span class="token parameter variable">-d</span> <span class="token number">7</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>可以使用 <code>batch</code> 命令来控制在 CPU 工作负载小于 0.8 时执行。否则暂缓执行。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ batch
+at<span class="token operator">></span> <span class="token function">sync</span>
+at<span class="token operator">></span> <span class="token operator">&lt;</span>EOT<span class="token operator">></span>
+job <span class="token number">9</span> at Tue Sep <span class="token number">14</span> 00:58:00 <span class="token number">2021</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="循环工作调度"><a class="markdownIt-Anchor" href="#循环工作调度"></a> 循环工作调度</h1>
+<p>循环执行例行工作调度由 <code>crond</code> 这个系统服务控制。</p>
+<p>调用 <code>cron</code> 的用户限制和 <code>at</code> 一样保存在文件中。允许账户保存在 <code>/etc/cron.allow</code>，禁止用户保存在 <code>/etc/cron.deny</code>。系统默认保留 <code>cron.deny</code>，也就是除了 <code>cron.deny</code> 中定义的用户外均可执行 <code>cron</code>。</p>
+<p>用户使用 <code>crontab</code> 命令新建工作调度后，工作被记录到 <code>/var/spool/cron</code> 里面，而且以账号为分类分别建立文件。</p>
+<p><code>cron</code> 执行的每一项工作都会被记录到 <code>/var/log/cron</code> 这个日志文件中。</p>
+<p>命令语法: <code>crontab [-u username] [-l|-e|-r]</code></p>
+<p>使用参数:</p>
 <table>
 <thead>
 <tr>
@@ -512,299 +437,158 @@ lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin<span aria-hidden="true" class="line-num
 </thead>
 <tbody>
 <tr>
-<td>-d</td>
-<td>删除信息中的字符串；</td>
+<td>-u</td>
+<td>只有 root 可以调用，帮助其他用户新建/删除 <code>crontab</code> 工作调度</td>
 </tr>
+<tr>
+<td>-e</td>
+<td>编辑 <code>crontab</code> 的工作内容</td>
+</tr>
+<tr>
+<td>-l</td>
+<td>查询 <code>crontab</code> 的工作内容</td>
+</tr>
+<tr>
+<td>-r</td>
+<td>删除所有的 <code>crontab</code> 的工作内容</td>
+</tr>
+</tbody>
+</table>
+<p>例如每天 13:15 执行一次清空命令历史记录：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">crontab</span> <span class="token parameter variable">-e</span>
+no <span class="token function">crontab</span> <span class="token keyword">for</span> root - using an empty one
+<span class="token number">15</span> <span class="token number">13</span> * * * <span class="token function">history</span> <span class="token parameter variable">-c</span>
+<span class="token string">"/tmp/crontab.0bZmP6"</span> 1L, 22C written
+crontab: installing new <span class="token function">crontab</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>编辑 <code>cron</code> 时分为 6 个字段设置为：<code>分钟 小时 日期 月份 周 命令</code></p>
+<p>周时间设置为 0 等同于 7 表示星期天。</p>
+<p>设定时间时可用的一些特殊字符说明如下：</p>
+<table>
+<thead>
+<tr>
+<th>特殊字符</th>
+<th>代表意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>*（星号）</td>
+<td>代表任何时刻都接受的意思。例如日、月、周都是 *，代表无论何日的 13:15 都会执行</td>
+</tr>
+<tr>
+<td>,（逗号）</td>
+<td>代表分隔时段的意思，例如在小时字段设置 4,11,15 代表执行时间为 4 点、11 点和 15 点</td>
+</tr>
+<tr>
+<td>-（减号）</td>
+<td>代表一段时间范围，例如在小时字段设置 8-12 代表执行时间为 8 点到 12 点每小时执行一次</td>
+</tr>
+<tr>
+<td>/n（斜线）</td>
+<td>n 代表数字，即是每隔 n 单位间隔的意思。例如在分钟字段设置 <code>*/5</code> 代表每五分钟执行一次</td>
+</tr>
+</tbody>
+</table>
+<p><code>cron</code> 不可以使用“几月几号且为星期几”的模式工作，也就是在日、月、周都设置的情况下会报错</p>
+<p>例如，每天在早上 7 点和下午 8 点执行 <code>/root/backup.sh</code> 备份脚本：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">crontab</span> <span class="token parameter variable">-e</span>
+*  <span class="token number">7,20</span> * * * <span class="token function">bash</span> /root/backup.sh<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h1 id="系统例行调度"><a class="markdownIt-Anchor" href="#系统例行调度"></a> 系统例行调度</h1>
+<p>系统例行性任务保存在 <code>/etc/crontab</code> 文件中。<code>cron</code> 每分钟会去读取一次 <code>/etc/crontab</code> 和 <code>/var/spool/cron</code>，所以直接编辑完 <code>/etc/crontab</code> 文件后保存退出即可添加系统调度工作。</p>
+<p>查看 <code>/etc/crontab</code> 文件内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/crontab
+<span class="token assign-left variable"><span class="token environment constant">SHELL</span></span><span class="token operator">=</span>/bin/bash
+<span class="token assign-left variable"><span class="token environment constant">PATH</span></span><span class="token operator">=</span>/sbin:/bin:/usr/sbin:/usr/bin
+<span class="token assign-left variable">MAILTO</span><span class="token operator">=</span>root
+
+<span class="token comment"># For details see man 4 crontabs</span>
+<span class="token comment"># Example of job definition:</span>
+<span class="token comment"># .---------------- minute (0 - 59)</span>
+<span class="token comment"># |  .------------- hour (0 - 23)</span>
+<span class="token comment"># |  |  .---------- day of month (1 - 31)</span>
+<span class="token comment"># |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...</span>
+<span class="token comment"># |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat</span>
+<span class="token comment"># |  |  |  |  |</span>
+<span class="token comment"># *  *  *  *  * user-name  command to be executed</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>
+<p><strong>MAILTO</strong></p>
+<p>表示将 <code>stdout</code> 和 <code>stderr</code> 用邮件发送给指定用户或指定邮箱。</p>
+</li>
+<li>
+<p><strong>user-name</strong></p>
+<p>执行命令使用的用户身份，例如 <code>root</code>。</p>
+</li>
+<li>
+<p><strong>command to be executed</strong></p>
+<p>除了直接运行命令外，还可以以目录为目标批量运行脚本。例如 <code>run-parts /etc/cron.hourly</code>，意思代表将 <code>/etc/cron.hourly/</code> 目录下的所有脚本执行。</p>
+</li>
+</ul>
+<h1 id="唤醒停机期间的工作任务"><a class="markdownIt-Anchor" href="#唤醒停机期间的工作任务"></a> 唤醒停机期间的工作任务</h1>
+<p>如果在<code>crond</code>设定的任务运行时段系统已关机，那么需要借助<code>anacron</code>将关机期间系统<code>crontab</code>运行。</p>
+<p><code>anacron</code>以小时为单位或在开机后立刻进行检查，将停机期间没有进行的<code>crontab</code>任务执行一遍。</p>
+<p>一般不用修改<code>anacron</code>的默认设置，需要手动执行<code>anacron</code>命令语法如下：</p>
+<p><code>anacron [-sfn] [job]..</code></p>
+<p><code>anacron -u [job]..</code></p>
+<p>参数说明如下：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
 <tr>
 <td>-s</td>
-<td>替换掉重复的字符。</td>
+<td>开始连续执行各项工作，会依据时间记录文件的数据判断是否进行</td>
+</tr>
+<tr>
+<td>-f</td>
+<td>强制进行，不判断事件记录文件的时间戳</td>
+</tr>
+<tr>
+<td>-n</td>
+<td>立刻进行未进行的任务，而不延迟等待时间</td>
+</tr>
+<tr>
+<td>-u</td>
+<td>仅更新事件记录文件的时间戳，不进行任何工作</td>
+</tr>
+<tr>
+<td>job</td>
+<td>由<code>/etc/anacrontab</code>定义的各项工作名称</td>
 </tr>
 </tbody>
 </table>
-<p>例如，将 <code>last</code> 命令输出的信息中所有小写字母转换为大写：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ last <span class="token operator">|</span> <span class="token function">tr</span> <span class="token string">'[a-z]'</span> <span class="token string">'[A-Z]'</span>
-ROOT     TTY1                          SAT SEP <span class="token number">11</span> 09:35   STILL LOGGED IN   
-ROOT     PTS/1        <span class="token number">192.168</span>.2.101    SAT SEP <span class="token number">11</span> 08:58   STILL LOGGED IN <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>删除所有 <code>passwd</code> 文件中的 DOS 断行符 <code>\r</code> 并另存为 <code>px.txt</code>：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/passwd <span class="token operator">|</span> <span class="token function">tr</span> <span class="token parameter variable">-d</span> <span class="token string">'\r'</span> <span class="token operator">></span> px.txt<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h1 id="转换-tab-为空格"><a class="markdownIt-Anchor" href="#转换-tab-为空格"></a> 转换 Tab 为空格</h1>
-<p>在 Linux 中，默认每隔 8 个字符有一个制表位（Tab Stop）。可以使用 <code>col</code> 命令将文件中的 Tab 转换成对等的空格。例如：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> <span class="token parameter variable">-A</span> /etc/man_db.conf <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">"#M"</span>
-<span class="token comment">#MANDATORY_MANPATH ^I^I^I/usr/src/pvm3/man$</span>
-<span class="token comment">#MINCATWIDTH^I80$</span>
-<span class="token comment">#MAXCATWIDTH^I80$</span>
-<span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/man_db.conf <span class="token operator">|</span> col <span class="token parameter variable">-x</span> <span class="token operator">|</span> <span class="token function">cat</span> <span class="token parameter variable">-A</span> <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">"#M"</span>
-<span class="token comment">#MANDATORY_MANPATH                      /usr/src/pvm3/man$</span>
-<span class="token comment">#MINCATWIDTH    80$</span>
-<span class="token comment">#MAXCATWIDTH    80$</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>以上命令将制表位转换成了等效的空格，从而消除了 <code>^I</code> 的干扰。</p>
-<p>另外，还可以使用 <code>expand</code> 命令将 Tab 转换成空格。例如，将 <code>/etc/man_db.conf</code> 文件中的制表位设置为 1，并将 Tab 转换成空格：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">grep</span> <span class="token string">"#M"</span> /etc/man_db.conf<span class="token operator">|</span> <span class="token function">expand</span> <span class="token parameter variable">-t</span> <span class="token number">1</span> 
-<span class="token comment">#MANDATORY_MANPATH    /usr/src/pvm3/man</span>
-<span class="token comment">#MINCATWIDTH 80</span>
-<span class="token comment">#MAXCATWIDTH 80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>如果需要将行开头的空格转换成 Tab，可以使用 <code>unexpand</code> 命令。该命令不会操作行中间的空格，因为大多数时候，只需要使用 <code>unexpand</code> 程序进行缩进。您还可以使用 <code>-a</code> 选项将所有空格替换为 Tab。</p>
-<h1 id="转换断行符"><a class="markdownIt-Anchor" href="#转换断行符"></a> 转换断行符</h1>
-<p>在 Windows 中，文本文件的换行符是 <code>CRLF</code>（<code>\r\n</code>），而在 Linux 下则使用 <code>LF</code> 这个换行符。如果在 Linux 环境下执行 Windows 格式的脚本，可能会出现无法执行的错误。</p>
-<p>可以通过 Notepad++ 的扩展搜索功能，将 \r 全部替换掉。也可以使用 <code>dos2unix</code> 和 <code>unix2dos</code> 命令来转换文本文件中的换行符：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ dos2unix <span class="token parameter variable">-k</span> root.txt 
-dos2unix: converting <span class="token function">file</span> root.txt to Unix <span class="token function">format</span> <span class="token punctuation">..</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h1 id="格式化行"><a class="markdownIt-Anchor" href="#格式化行"></a> 格式化行</h1>
-<p>如果需要将长行分隔成短行，可以使用 <code>fold</code> 命令。例如，将 <code>anaconda-ks.cfg</code> 文件中的行宽设置为 10 并且不分离单词：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span>$ <span class="token function">fold</span> <span class="token parameter variable">-s</span> <span class="token parameter variable">-w</span> <span class="token number">10</span> anaconda-ks.cfg 
-<span class="token comment">#version=D</span>
-EVEL
-<span class="token comment"># System </span>
-authorizat<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="格式化段落"><a class="markdownIt-Anchor" href="#格式化段落"></a> 格式化段落</h1>
-<p>如果需要将段落中的各行连接在一起，使段落尽可能短小和紧凑，可以使用 <code>fmt</code> 命令。该命令假定段落由空行分隔，因此一个段落就是一个或多个连续的文本行，不包含空格。</p>
-<p>例如，将文本文件 <code>anaconda-ks.cfg</code> 按照行宽 50 个字符重新格式化段落，并合并连续的空格：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server3 ~<span class="token punctuation">]</span>$ <span class="token function">fmt</span> <span class="token parameter variable">-u</span> <span class="token parameter variable">-w</span> <span class="token number">50</span> anaconda-ks.cfg 
-<span class="token comment">#version=DEVEL # System authorization information</span>
-auth <span class="token parameter variable">--enableshadow</span> <span class="token parameter variable">--passalgo</span><span class="token operator">=</span>sha512 <span class="token comment"># Use</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h1 id="编码转换"><a class="markdownIt-Anchor" href="#编码转换"></a> 编码转换</h1>
-<p>可以使用 <code>locale</code> 命令查看与系统编码相关的设置。例如：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ locale
-<span class="token assign-left variable"><span class="token environment constant">LANG</span></span><span class="token operator">=</span>en_US.UTF-8
-<span class="token assign-left variable">LC_CTYPE</span><span class="token operator">=</span><span class="token string">"en_US.UTF-8"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>如果需要修改系统编码以处理乱码问题，只需要重新定义对应的变量并导出即可。例如：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">export</span> <span class="token assign-left variable"><span class="token environment constant">LANG</span></span><span class="token operator">=</span>en_US.UTF-8 <span class="token punctuation">;</span> locale
-<span class="token assign-left variable"><span class="token environment constant">LANG</span></span><span class="token operator">=</span>en_US.UTF-8
-<span class="token assign-left variable">LC_CTYPE</span><span class="token operator">=</span><span class="token string">"en_US.UTF-8"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>如果需要转换文件编码，可以使用 <code>iconv</code> 命令将文件编码转换为另一种格式。例如，将 <code>1.txt</code> 文件的原始编码 <code>big5</code> 转换为 <code>UTF-8</code>：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">iconv</span> <span class="token parameter variable">-f</span> big5 <span class="token parameter variable">-t</span> utf8 <span class="token number">1</span>.txt <span class="token parameter variable">-o</span> 1utf8.txt
-<span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">file</span> 1utf8.txt 
-1utf8.txt: ASCII text<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>另外，还可以使用 <code>iconv</code> 命令将繁体中文转换为简体中文。例如，将 <code>1.txt</code> 中的繁体中文转换为简体中文 <code>GB2312</code> 编码格式，并将结果保存到 <code>1.gb.txt</code> 文件中：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">iconv</span> <span class="token parameter variable">-f</span> utf8 <span class="token parameter variable">-t</span> big5 <span class="token number">1</span>.txt <span class="token operator">|</span> <span class="token function">iconv</span> <span class="token parameter variable">-f</span> big5 <span class="token parameter variable">-t</span> gb2312 <span class="token operator">|</span> <span class="token function">iconv</span> <span class="token parameter variable">-f</span> gb2312 <span class="token parameter variable">-t</span> utf8 <span class="token parameter variable">-o</span> <span class="token number">1</span>.gb.txt <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h1 id="文件合并"><a class="markdownIt-Anchor" href="#文件合并"></a> 文件合并</h1>
-<p>可以使用 <code>join</code> 命令将两个文件中有相同数据的那一行加在一起。例如，将 <code>passwd</code> 与 <code>shadow</code> 相关的数据整合成一列：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">join</span> <span class="token parameter variable">-t</span> <span class="token string">':'</span> /etc/passwd /etc/shadow
-bin:x:1:1:bin:/bin:/sbin/nologin:*:17632:0:99999:7:::
-daemon:x:2:2:daemon:/sbin:/sbin/nologin:*:17632:0:99999:7:::
-adm:x:3:4:adm:/var/adm:/sbin/nologin:*:17632:0:99999:7:::<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>还可以使用 <code>paste</code> 命令将两个文件按行拼接在一起，用 Tab 分隔两个文件的行。例如：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">paste</span> /etc/passwd /etc/shadow <span class="token operator">|</span> <span class="token function">head</span> <span class="token parameter variable">-3</span>
-bin:x:1:1:bin:/bin:/sbin/nologin        bin:*:17632:0:99999:7:::
-daemon:x:2:2:daemon:/sbin:/sbin/nologin daemon:*:17632:0:99999:7:::<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>以上命令将 <code>passwd</code> 与 <code>shadow</code> 两个文件的每一行按顺序拼接在一起，并用 Tab 分隔两个文件的行。</p>
-<h1 id="文件切割"><a class="markdownIt-Anchor" href="#文件切割"></a> 文件切割</h1>
-<p>可以使用 split 命令将大文件分割成小文件，参数如下：</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>-b</code></td>
-<td>以指定大小进行切割</td>
-</tr>
-<tr>
-<td><code>-l</code></td>
-<td>以行数来进行切割</td>
-</tr>
-<tr>
-<td><code>-d</code></td>
-<td>以两位的数字而不是字母作为后缀</td>
-</tr>
-<tr>
-<td><code>-a</code></td>
-<td>指定在后缀中使用的数字或字符的数量</td>
-</tr>
-<tr>
-<td><code>PREFIX</code></td>
-<td>代表前导符,可作为切割文件的前导文字</td>
-</tr>
-</tbody>
-</table>
-<p>例如将 <code>test.iso</code> 切割成每个文件大小为 5M：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">split</span> <span class="token parameter variable">-b</span> 5M test.iso file.sp <span class="token operator">|</span> ll <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">'file'</span>
--rw-r--r--. <span class="token number">1</span> root root  <span class="token number">5242880</span> Sep <span class="token number">11</span> <span class="token number">12</span>:35 file.spaa
--rw-r--r--. <span class="token number">1</span> root root  <span class="token number">5242880</span> Sep <span class="token number">11</span> <span class="token number">12</span>:35 file.spab
--rw-r--r--. <span class="token number">1</span> root root  <span class="token number">5242880</span> Sep <span class="token number">11</span> <span class="token number">12</span>:35 file.spac
--rw-r--r--. <span class="token number">1</span> root root  <span class="token number">5242880</span> Sep <span class="token number">11</span> <span class="token number">12</span>:35 file.spad<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以使用数据流重定向来合并切割后的文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">cat</span> file1.spa* <span class="token operator">>></span> test1.iso<span class="token punctuation">;</span>ll <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">'test'</span>
--rw-r--r--. <span class="token number">1</span> root root <span class="token number">20971520</span> Sep <span class="token number">11</span> <span class="token number">12</span>:38 test1.iso
--rw-r--r--. <span class="token number">1</span> root root <span class="token number">20971520</span> Sep <span class="token number">11</span> <span class="token number">12</span>:33 test.iso<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>如果不带参数，<code>split</code> 命令会以 1000 行作为切割条件。可以使用 <code>-l</code> 选项指定每 5 行记录成一个文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">ls</span> <span class="token parameter variable">-la</span> <span class="token operator">|</span> <span class="token function">split</span> <span class="token parameter variable">-l</span> <span class="token number">10</span> - lsla<span class="token punctuation">;</span><span class="token function">wc</span> <span class="token parameter variable">-l</span> lsla*
-<span class="token number">10</span> lslaaa
-  <span class="token number">3</span> lslaab
-<span class="token number">13</span> total<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>一般来说，如果需要标准输入输出且没有文件，只有 <code>-</code> 时，<code>-</code> 就被当成标准输入或标准输出。</p>
-<h1 id="文件比较"><a class="markdownIt-Anchor" href="#文件比较"></a> 文件比较</h1>
-<p>在 Linux 系统中，比较文件可以使用 <code>diff</code> 命令。<code>diff</code> 命令会输出将左边的文件转换为右边的文件所需的修改内容。</p>
-<p>命令格式为：<code>diff [-bBi] 要比较的文件 基准文件</code></p>
-<p>参数：</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>-b</td>
-<td>忽略一行中仅有多个空白的区别，例如&quot;a  man&quot;与&quot;a man&quot;视为等同</td>
-</tr>
-<tr>
-<td>-B</td>
-<td>忽略空白行的区别</td>
-</tr>
-<tr>
-<td>-i</td>
-<td>忽略大小写</td>
-</tr>
-</tbody>
-</table>
-<p>例如，比较 <code>c.cfg</code> 和 <code>cnew.txt</code> 两个文件的区别:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">cat</span> c.cfg 
-abcaca
-/root/etc/
-<span class="token number">1.4</span>
-1a4
-<span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">cat</span> cnew.cfg 
-abcaca
-/root/etc
-<span class="token number">1.4</span>
-<span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">diff</span> c.cfg cnew.cfg 
-2c2
-<span class="token operator">&lt;</span> /root/etc/
----
-<span class="token operator">></span> /root/etc
-4d3
-<span class="token operator">&lt;</span> 1a4<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>比较结果说明如下:</p>
-<table>
-<thead>
-<tr>
-<th><strong>行</strong></th>
-<th><strong>值</strong></th>
-<th><strong>说明</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td><strong>2c2</strong></td>
-<td>左边和右边比第 2 行不一样（c=change 改变，d=delete 删除，a=append 追加）</td>
-</tr>
-<tr>
-<td>2</td>
-<td>&lt; /root/etc/</td>
-<td>显示左边文件不同的第 2 行内容</td>
-</tr>
-<tr>
-<td>3</td>
-<td>—</td>
-<td>左右两个文件区分显示的分隔符</td>
-</tr>
-<tr>
-<td>4</td>
-<td>&gt; /root/etc</td>
-<td>显示右边文件不同的第 2 行内容</td>
-</tr>
-<tr>
-<td>5</td>
-<td><strong>4d3</strong></td>
-<td>显示左边第 4 行和右边第 3 行比不同（d 代表删除）</td>
-</tr>
-<tr>
-<td>6</td>
-<td>&lt; 1a4</td>
-<td>显示左边文件第 4 行内容，而右边第 4 行不存在（被删除）</td>
-</tr>
-</tbody>
-</table>
-<p>可以直接将文件比较的区别制作成补丁文件（也叫差分），供要比较的文件使用升级。优点是反升级和升级一样方便。制作补丁参数为 -Naur：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">diff</span> <span class="token parameter variable">-Naur</span> c.cfg cnew.cfg <span class="token operator">></span> c.patch<span class="token punctuation">;</span><span class="token function">cat</span> c.patch
---- c.cfg       <span class="token number">2021</span>-09-12 05:52:16.000000000 <span class="token parameter variable">-0400</span>
-+++ cnew.cfg    <span class="token number">2021</span>-09-12 <span class="token number">13</span>:25:05.000000000 <span class="token parameter variable">-0400</span>
-@@ -1,4 +1,3 @@
-abcaca
--/root/etc/
-+/root/etc
-<span class="token number">1.4</span>
-<span class="token parameter variable">-1a4</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>提供给左侧文件使用的补丁内容：</p>
-<table>
-<thead>
-<tr>
-<th><strong>行</strong></th>
-<th><strong>值</strong></th>
-<th><strong>说明</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>— c.cfg</td>
-<td>左边文件信息，— 表示旧文件</td>
-</tr>
-<tr>
-<td>2</td>
-<td>+++ cnew.cfg</td>
-<td>右边文件信息，+++ 表示新文件</td>
-</tr>
-<tr>
-<td>3</td>
-<td>@@ -1,4 +1,3 @@</td>
-<td>修改数据的界定范围，旧文件在 1-4 行，新文件在 1-3 行</td>
-</tr>
-<tr>
-<td>4</td>
-<td>abcaca</td>
-<td>第一行内容，内容前面没有符号表示不需要变动</td>
-</tr>
-<tr>
-<td>5</td>
-<td><strong>-/root/etc/</strong></td>
-<td>左侧文件第二行内容。减号 - 表示删除此行</td>
-</tr>
-<tr>
-<td>6</td>
-<td><strong>+/root/etc</strong></td>
-<td>右侧文件第二行内容。加号 + 表示增加此行</td>
-</tr>
-<tr>
-<td>7</td>
-<td>1.4</td>
-<td>第三行内容</td>
-</tr>
-<tr>
-<td>8</td>
-<td><strong>-1a4</strong></td>
-<td>左侧文件第四行内容，- 表示要删除此行</td>
-</tr>
-</tbody>
-</table>
-<p>打文件补丁使用 <code>patch</code> 命令，参数为 <code>-pN</code>，其中 N 为数字，表示取消几层目录的意思。</p>
-<p>例如打补丁 c.patch：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ patch <span class="token parameter variable">-p0</span> <span class="token operator">&lt;</span>c.patch <span class="token punctuation">;</span> <span class="token function">cat</span> c.cfg 
-patching <span class="token function">file</span> c.cfg
-abcaca
-/root/etc
-<span class="token number">1.4</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>恢复旧文件内容使用参数 <code>-R -pN</code>：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ patch <span class="token parameter variable">-R</span> <span class="token parameter variable">-p0</span> <span class="token operator">&lt;</span>c.patch <span class="token punctuation">;</span> <span class="token function">cat</span> c.cfg 
-patching <span class="token function">file</span> c.cfg
-abcaca
-/root/etc/
-<span class="token number">1.4</span>
-1a4<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>也可以用 <code>diff</code> 来比较目录下的区别。例如比较不同挂载点下的 lost+found 目录：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">diff</span> /root/sdb4m/lost+found/ /ext333/lost+found/
-Only <span class="token keyword">in</span> /root/sdb4m/lost+found/: <span class="token number">1</span>
-Only <span class="token keyword">in</span> /root/sdb4m/lost+found/: <span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>相对于 <code>diff</code> 以行为单位比较，<code>cmp</code> 则是以字节为单位去比较，因此可以比较任何类型的文件。例如还是比较 c.cfg 与 cnew.cfg：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 sdb4m<span class="token punctuation">]</span>$ <span class="token function">cmp</span> c.cfg cnew.cfg 
-c.cfg cnew.cfg differ: byte <span class="token number">17</span>, line <span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>其结果显示两个文件不同点在第 2 行，第 17 个字节处。</p>
+<p>查看<code>/etc/anacrontab</code>文件的内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/anacrontab 
+<span class="token comment"># /etc/anacrontab: configuration file for anacron</span>
+<span class="token comment"># See anacron(8) and anacrontab(5) for details.</span>
+<span class="token assign-left variable"><span class="token environment constant">SHELL</span></span><span class="token operator">=</span>/bin/sh
+<span class="token assign-left variable"><span class="token environment constant">PATH</span></span><span class="token operator">=</span>/sbin:/bin:/usr/sbin:/usr/bin
+<span class="token assign-left variable">MAILTO</span><span class="token operator">=</span>root
+<span class="token comment"># the maximal random delay added to the base delay of the jobs</span>
+<span class="token assign-left variable">RANDOM_DELAY</span><span class="token operator">=</span><span class="token number">45</span>
+<span class="token comment"># the jobs will be started during the following hours only</span>
+<span class="token assign-left variable">START_HOURS_RANGE</span><span class="token operator">=</span><span class="token number">3</span>-22
+
+<span class="token comment">#period in days   delay in minutes   job-identifier   command</span>
+<span class="token number">1</span>       <span class="token number">5</span>       cron.daily              <span class="token function">nice</span> run-parts /etc/cron.daily
+<span class="token number">7</span>       <span class="token number">25</span>      cron.weekly             <span class="token function">nice</span> run-parts /etc/cron.weekly
+@monthly <span class="token number">45</span>     cron.monthly            <span class="token function">nice</span> run-parts /etc/cron.monthly<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>任务设置分别为四个字段：执行间隔天数、延迟时间（分钟）、工作名称、实际命令。</p>
+<p>查看<code>/var/spool/anacron/cron.daily</code>文件内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /var/spool/anacron/cron.daily
+<span class="token number">20210913</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>用每天进行的任务分析一下<code>anacron</code>的执行过程：</p>
+<ol>
+<li>由<code>/etc/anacrontab</code>分析到<code>cron.daily</code>这项工作的天数为 1 天；</li>
+<li>由<code>/var/spool/anacron/cron.daily</code>取出最近一次执行<code>anacron</code>的时间戳；</li>
+<li>将取出的时间与目前的时间比较，如果差异天数大于等于 1 天旧准备进行命令；</li>
+<li>根据<code>/etc/anacrontab</code>的设置将延迟 5 分钟；</li>
+<li>延迟时间过后开始执行后续命令，即<code>run-parts /etc/cron.daily</code>。</li>
+</ol>
 
     </div>
 
@@ -836,7 +620,7 @@ c.cfg cnew.cfg differ: byte <span class="token number">17</span>, line <span cla
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://blog.x2b.net/3847284551/" title="Linux 文件内容处理">https://blog.x2b.net/3847284551/</a>
+      <a href="https://blog.x2b.net/3847284551/" title="Linux 工作调度与定时任务">https://blog.x2b.net/3847284551/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
@@ -866,13 +650,13 @@ c.cfg cnew.cfg differ: byte <span class="token number">17</span>, line <span cla
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="../1849958032/" rel="prev" title="Linux 用户配置与环境变量">
-                  <i class="fa fa-chevron-left"></i> Linux 用户配置与环境变量
+                <a href="../507701603/" rel="prev" title="Sed 命令简单使用">
+                  <i class="fa fa-chevron-left"></i> Sed 命令简单使用
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="../848908018/" rel="next" title="Linux 挂载和卸载设备操作">
-                  Linux 挂载和卸载设备操作 <i class="fa fa-chevron-right"></i>
+                <a href="../630034191/" rel="next" title="Linux 中程序与进程关系">
+                  Linux 中程序与进程关系 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -906,13 +690,13 @@ c.cfg cnew.cfg differ: byte <span class="token number">17</span>, line <span cla
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">302k</span>
+    <span title="站点总字数">304k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">16:48</span>
+    <span title="站点阅读时长">16:53</span>
   </span>
 </div>
 <div class="busuanzi-count">
