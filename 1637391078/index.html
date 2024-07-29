@@ -22,28 +22,28 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
 
-    <meta name="description" content="数据卷特点 在容器中，文件环境是由 UFS（Union File System）提供的临时层。所有在容器中进行的操作都会随着容器的删除而被丢弃。为了实现从外部获取文件并进行持久化存储的目标，Docker 提出了数据卷（Data Volume）的概念。数据卷是一个挂载在容器内文件系统中的文件或目录，每次启动容器时都会自动挂载到容器中，并且它可以脱离容器的生命周期而独立存在。">
+    <meta name="description" content="字符型定义 字符（rune）用于表示 Unicode 字符，本质上是 int32 类型别名。字符通过使用 int32 类型的数字来保存其 Unicode 编码，Unicode 码点取值范围从 0 到 0x10FFFF，总共有 1114112 个码点。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Docker 数据卷使用">
-<meta property="og:url" content="https://blog.x2b.net/2894555783/index.html">
+<meta property="og:title" content="Go 语言类型：字符型">
+<meta property="og:url" content="https://blog.x2b.net/1637391078/index.html">
 <meta property="og:site_name" content="X to Bytes">
-<meta property="og:description" content="数据卷特点 在容器中，文件环境是由 UFS（Union File System）提供的临时层。所有在容器中进行的操作都会随着容器的删除而被丢弃。为了实现从外部获取文件并进行持久化存储的目标，Docker 提出了数据卷（Data Volume）的概念。数据卷是一个挂载在容器内文件系统中的文件或目录，每次启动容器时都会自动挂载到容器中，并且它可以脱离容器的生命周期而独立存在。">
+<meta property="og:description" content="字符型定义 字符（rune）用于表示 Unicode 字符，本质上是 int32 类型别名。字符通过使用 int32 类型的数字来保存其 Unicode 编码，Unicode 码点取值范围从 0 到 0x10FFFF，总共有 1114112 个码点。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-10-22T01:39:46.000Z">
-<meta property="article:modified_time" content="2023-05-14T15:13:22.555Z">
+<meta property="article:published_time" content="2024-04-16T01:49:21.000Z">
+<meta property="article:modified_time" content="2024-07-29T07:18:10.842Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python go">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://blog.x2b.net/2894555783/">
+<link rel="canonical" href="https://blog.x2b.net/1637391078/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/2894555783/","path":"2894555783/","title":"Docker 数据卷使用"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/1637391078/","path":"1637391078/","title":"Go 语言类型：字符型"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Docker 数据卷使用 | X to Bytes</title>
+<title>Go 语言类型：字符型 | X to Bytes</title>
   
 
   <script src="../js/third-party/analytics/baidu-analytics.js"></script>
@@ -145,7 +145,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%8D%B7%E7%89%B9%E7%82%B9"><span class="nav-number">1.</span> <span class="nav-text"> 数据卷特点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%8D%B7"><span class="nav-number">2.</span> <span class="nav-text"> 创建数据卷</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E6%95%B0%E6%8D%AE%E5%8D%B7"><span class="nav-number">3.</span> <span class="nav-text"> 查询数据卷</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8C%82%E8%BD%BD%E6%95%B0%E6%8D%AE%E5%8D%B7"><span class="nav-number">4.</span> <span class="nav-text"> 挂载数据卷</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E6%95%B0%E6%8D%AE%E5%8D%B7"><span class="nav-number">5.</span> <span class="nav-text"> 删除数据卷</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%8D%B7%E5%AE%B9%E5%99%A8"><span class="nav-number">6.</span> <span class="nav-text"> 数据卷容器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%8D%B7%E5%A4%87%E4%BB%BD"><span class="nav-number">7.</span> <span class="nav-text"> 数据卷备份</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E5%9E%8B%E5%AE%9A%E4%B9%89"><span class="nav-number">1.</span> <span class="nav-text"> 字符型定义</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#utf"><span class="nav-number">1.1.</span> <span class="nav-text"> UTF</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BD%AC%E4%B9%89%E5%AD%97%E7%AC%A6"><span class="nav-number">1.2.</span> <span class="nav-text"> 转义字符</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A3%B0%E6%98%8E%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">2.</span> <span class="nav-text"> 声明和初始化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E5%9E%8B%E5%88%87%E7%89%87"><span class="nav-number">3.</span> <span class="nav-text"> 字符型切片</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -219,7 +219,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/2894555783/">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/1637391078/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="../images/avatar.jpg">
@@ -232,12 +232,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Docker 数据卷使用 | X to Bytes">
+      <meta itemprop="name" content="Go 语言类型：字符型 | X to Bytes">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Docker 数据卷使用
+          Go 语言类型：字符型
         </h1>
 
         <div class="post-meta-container">
@@ -248,14 +248,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2021-10-22 09:39:46" itemprop="dateCreated datePublished" datetime="2021-10-22T09:39:46+08:00">2021-10-22</time>
+      <time title="创建时间：2024-04-16 09:49:21" itemprop="dateCreated datePublished" datetime="2024-04-16T09:49:21+08:00">2024-04-16</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-14 23:13:22" itemprop="dateModified" datetime="2023-05-14T23:13:22+08:00">2023-05-14</time>
+      <time title="修改时间：2024-07-29 15:18:10" itemprop="dateModified" datetime="2024-07-29T15:18:10+08:00">2024-07-29</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -263,11 +263,11 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
+          <a href="../categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a>
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../categories/Docker/2-%E8%BF%9B%E9%98%B6%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">2.进阶操作</span></a>
+          <a href="../categories/Go/2-%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">2.类型系统</span></a>
         </span>
     </span>
 
@@ -285,14 +285,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.4k</span>
+      <span>763</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>5 分钟</span>
+      <span>3 分钟</span>
     </span>
 </div>
 
@@ -303,78 +303,115 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="数据卷特点"><a class="markdownIt-Anchor" href="#数据卷特点"></a> 数据卷特点</h1>
-<p>在容器中，文件环境是由 UFS（Union File System）提供的临时层。所有在容器中进行的操作都会随着容器的删除而被丢弃。为了实现从外部获取文件并进行持久化存储的目标，Docker 提出了数据卷（Data Volume）的概念。数据卷是一个挂载在容器内文件系统中的文件或目录，每次启动容器时都会自动挂载到容器中，并且它可以脱离容器的生命周期而独立存在。</p>
-<p>数据卷作为容器中的一个特殊文件或目录，与其他文件或目录有很大的区别：</p>
+        <h1 id="字符型定义"><a class="markdownIt-Anchor" href="#字符型定义"></a> 字符型定义</h1>
+<p>字符（rune）用于表示 Unicode 字符，本质上是 <code>int32</code> 类型别名。字符通过使用 <code>int32</code> 类型的数字来保存其 Unicode 编码，Unicode 码点取值范围从 <code>0</code> 到 <code>0x10FFFF</code>，总共有 1114112 个码点。</p>
+<h2 id="utf"><a class="markdownIt-Anchor" href="#utf"></a> UTF</h2>
+<p>UTF（Unicode Transformation Format， Unicode 字符集转换格式）是一种编码方式，用于将 Unicode 字符集的字符表示为字节序列，是 Unicode 标准的一部分。目前主流 UTF 编码格式有三种：</p>
 <ul>
-<li>数据卷中的数据不继承自镜像，也不受容器临时层管理的范围。因此，数据卷没有写时复制机制，文件操作的效果会立即生效。这些数据也不会被 <code>docker commit</code> 命令提交到新的镜像中。</li>
-<li>数据卷不依赖于容器，它独立于容器之外。多个容器可以共享同一个数据卷，通过数据卷可以实现容器之间的文件共享和数据交互。</li>
+<li><strong>UTF-8</strong>：采用 1 到 4 个字节的可变长度字符编码方式，完全兼容 ASCII 编码。例如，西文字符通常使用 1 个字节，希腊字母需要 2 个字节，而东亚字符（CJK）则需要 3 个字节。Go 语言中默认使用 UTF-8 编码。</li>
+<li><strong>UTF-16</strong>：使用 2 或 4 个字节无符号整数存储 Unicode 字符，有大端（Big Endian）和小端（Little Endian）之分。处理中文时相比于 UTF-8 更加高效。</li>
+<li><strong>UTF-32</strong>：采用 4 个字节固定长度编码，编码和解码简单。适用于处理速度优先于存储效率的场合。</li>
 </ul>
-<p>数据卷提供了一种方便的方式来处理容器内文件的持久化和共享需求。通过使用数据卷，我们可以更灵活地管理容器中的数据，并实现容器之间的文件共享。</p>
-<h1 id="创建数据卷"><a class="markdownIt-Anchor" href="#创建数据卷"></a> 创建数据卷</h1>
-<p>在创建容器时，可以同时创建数据卷。通过 <code>-v</code> 参数向容器中挂载一个数据卷，Docker 会自动创建该数据卷：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> create <span class="token parameter variable">--name</span> vdisk <span class="token parameter variable">-v</span> /disk alpine
-000385b2005b5f79c1d1d05df5c981ac4dd3cffe1cc4d272691660151aebd26c<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>以上命令为名为 <code>vdisk</code> 的容器创建了一个路径为 <code>/disk</code> 的数据卷。如果需要，可以多次使用 <code>-v</code> 参数来挂载多个数据卷。</p>
-<p>此外，可以使用 <code>docker volume create</code> 命令创建一个自定义名称为 <code>disk1</code> 的数据卷：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> volume create <span class="token parameter variable">--name</span> disk1
-disk1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>所有创建的数据卷默认存放在 <code>/var/lib/docker/volumes/</code> 路径下。</p>
-<h1 id="查询数据卷"><a class="markdownIt-Anchor" href="#查询数据卷"></a> 查询数据卷</h1>
-<p>可以使用 <code>docker volume ls</code> 命令查看已创建的数据卷列表：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> volume <span class="token function">ls</span>
-DRIVER    VOLUME NAME
-<span class="token builtin class-name">local</span>     21470509cc37589319a7eab45bdb9ca12ad4d500ff49228ce0b65cd985fb62fb
-<span class="token builtin class-name">local</span>     disk1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以使用 <code>docker volume inspect</code> 命令查看指定数据卷的基本信息：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> volume inspect disk1
-<span class="token punctuation">[</span>
-    <span class="token punctuation">&#123;</span>
-        <span class="token string">"CreatedAt"</span><span class="token builtin class-name">:</span> <span class="token string">"2021-10-22T09:58:06+08:00"</span>,
-        <span class="token string">"Driver"</span><span class="token builtin class-name">:</span> <span class="token string">"local"</span>,
-        <span class="token string">"Labels"</span><span class="token builtin class-name">:</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>,
-        <span class="token string">"Mountpoint"</span><span class="token builtin class-name">:</span> <span class="token string">"/var/lib/docker/volumes/disk1/_data"</span>,
-        <span class="token string">"Name"</span><span class="token builtin class-name">:</span> <span class="token string">"disk1"</span>,
-        <span class="token string">"Options"</span><span class="token builtin class-name">:</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>,
-        <span class="token string">"Scope"</span><span class="token builtin class-name">:</span> <span class="token string">"local"</span>
-    <span class="token punctuation">&#125;</span>
-<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="挂载数据卷"><a class="markdownIt-Anchor" href="#挂载数据卷"></a> 挂载数据卷</h1>
-<p>在创建容器时，已创建的数据卷会自动挂载到容器中。而使用 <code>docker create</code> 或 <code>docker run</code> 命令创建容器时，可以使用 <code>-v</code> 选项指定挂载数据卷，格式为：<code>-v &lt;volume_name&gt;:&lt;container_path&gt;</code>。数据卷可以绕过分层的联合文件系统，为 Docker 提供持久数据或共享数据。这也意味着对数据卷的修改会直接生效，但当提交或创建镜像时，数据卷不会被包含在镜像中。</p>
-<p>在将宿主机目录或文件挂载到容器时，默认权限是读写（rw），可以对数据的权限进行限制。例如，以只读（ro）的方式挂载目录 <code>/root/disk1</code>，可以保证容器内的程序无法修改该目录中的数据：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> create <span class="token parameter variable">--name</span> vdisk2 <span class="token parameter variable">-v</span> /root/disk1:/disk1:ro alpine
-d44ab826d5ddd43bcdfa966648acb57d19f1982f22b28053f6e4b3b223118351<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>有时候，希望将数据保存在内存中而非宿主机或容器中，可以使用 <code>--tmpfs</code> 参数来挂载只存在于内存中的 tmpfs 数据卷。</p>
-<h1 id="删除数据卷"><a class="markdownIt-Anchor" href="#删除数据卷"></a> 删除数据卷</h1>
-<p>可以使用 <code>docker volume rm</code> 命令来删除数据卷：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> volume <span class="token function">rm</span> disk1
-disk1
-<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ ll /var/lib/docker/volumes/disk1/
-ls: cannot access /var/lib/docker/volumes/disk1/: No such <span class="token function">file</span> or directory<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>删除数据卷时，对应的本地目录也会被一并删除。</p>
-<p>如果是与容器一同创建的数据卷，最好使用 <code>-v</code> 参数一起删除：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> <span class="token function">rm</span> <span class="token parameter variable">-v</span> 000385b <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>批量删除数据卷可以先使用 <code>docker volume ls -q</code> 命令查询数据卷的 ID，然后再进行删除：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ubutu-trusty<span class="token punctuation">]</span>$ <span class="token function">docker</span> volume <span class="token function">rm</span> <span class="token variable"><span class="token variable">$(</span><span class="token function">docker</span> volume <span class="token function">ls</span> <span class="token parameter variable">-q</span><span class="token variable">)</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h1 id="数据卷容器"><a class="markdownIt-Anchor" href="#数据卷容器"></a> 数据卷容器</h1>
-<p>数据卷容器是专门用于存放数据卷的容器，它并不直接管理或控制数据卷，只是作为其他容器使用数据卷的桥梁。其作用是为了保证数据卷的安全性，防止随着其他容器的删除而被删除。</p>
-<p>创建数据卷容器的方法与普通容器的创建方法没有区别，数据卷容器不需要保持运行。创建数据卷容器时所使用的数据卷目录，将作为其他容器连接到该数据卷容器时访问数据卷的目录。</p>
-<p>例如，创建一个专门用于存放日志的数据卷容器：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> create <span class="token parameter variable">--name</span> logdata <span class="token parameter variable">-v</span> /logs alpine 
-118002bf522df93e5e31011c74f0760d317ae235f23dca24f413068a1abe2d7a<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>在需要使用数据卷的容器中，可以使用 <code>--volumes-from</code> 参数挂载指定数据卷容器中的所有数据卷：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> run <span class="token parameter variable">-it</span> <span class="token parameter variable">--rm</span> --volumes-from logdata ubuntu:18.04 /bin/bash
-root@7baf237b2484:/<span class="token comment"># ll -d /logs</span>
-drwxr-xr-x. <span class="token number">2</span> root root <span class="token number">6</span> Oct <span class="token number">22</span> 02:49 /logs/<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>也可以多次使用 <code>--volumes-from</code> 参数来挂载多个不同的数据卷容器，以同时使用多个数据卷。</p>
-<h1 id="数据卷备份"><a class="markdownIt-Anchor" href="#数据卷备份"></a> 数据卷备份</h1>
-<p>使用数据卷容器可以方便地备份数据卷的内容。通过创建一个新的容器，将数据卷容器和宿主机目录连接起来，然后执行打包命令即可快速备份数据卷：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> run <span class="token parameter variable">-it</span> --volumes-from logdata <span class="token parameter variable">-v</span> <span class="token variable"><span class="token variable">$(</span><span class="token builtin class-name">pwd</span><span class="token variable">)</span></span>:/backup <span class="token parameter variable">--rm</span> ubuntu:18.04 <span class="token function">tar</span> cf /backup/logdata.tar /logs
-tar: Removing leading `/' from member names
-<span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ ll logdata.tar 
--rw-r--r--. <span class="token number">1</span> root root <span class="token number">10240</span> Oct <span class="token number">22</span> <span class="token number">11</span>:10 logdata.tar<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>要恢复数据，则需要反向操作：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">docker</span> run <span class="token parameter variable">-it</span> --volumes-from logdata <span class="token parameter variable">-v</span> <span class="token variable"><span class="token variable">$(</span><span class="token builtin class-name">pwd</span><span class="token variable">)</span></span>:/backup <span class="token parameter variable">--rm</span> ubuntu:18.04 <span class="token function">tar</span> xf /backup/logdata.tar<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>Unicode 编码表示格式（BMP）为 <code>U+hhhh</code>，其中 <code>h</code> 代表一个十六进制数字。在 Go 语言中，可以直接使用这种格式定义 Unicode 字符：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">var</span> ch <span class="token builtin">rune</span> <span class="token operator">=</span> <span class="token char">'\u03B2'</span>                <span class="token comment">// Unicode 编码表示</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"%d\n"</span><span class="token punctuation">,</span> ch<span class="token punctuation">)</span>                <span class="token comment">// 输出整数：946</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"%c\n"</span><span class="token punctuation">,</span> ch<span class="token punctuation">)</span>                <span class="token comment">// 输出实际字符：β</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"%X\n"</span><span class="token punctuation">,</span> ch<span class="token punctuation">)</span>                <span class="token comment">// 输出 Unicode 编码值：3B2</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"%U\n"</span><span class="token punctuation">,</span> ch<span class="token punctuation">)</span>                <span class="token comment">// 输出 Unicode 标准形式：U+03B2</span>
+	utf8Bytes <span class="token operator">:=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token function">byte</span><span class="token punctuation">(</span><span class="token function">string</span><span class="token punctuation">(</span><span class="token function">rune</span><span class="token punctuation">(</span>ch<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">// UTF-8 编码多字节字符必须转为字节切片</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"%#X"</span><span class="token punctuation">,</span> utf8Bytes<span class="token punctuation">)</span>          <span class="token comment">// 输出十六进制格式：0XCEB2</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="转义字符"><a class="markdownIt-Anchor" href="#转义字符"></a> 转义字符</h2>
+<p>转义字符用来表示在字符串中不能直接表示的字符。转移字符以一个反斜杠 <code>\</code> 开始，后跟一个或多个字符来构成一个转义序列：</p>
+<table>
+<thead>
+<tr>
+<th>转义序列</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>\\</code></td>
+<td>反斜杠字符「\」</td>
+</tr>
+<tr>
+<td><code>\'</code></td>
+<td>单引号字符「'」</td>
+</tr>
+<tr>
+<td><code>\&quot;</code></td>
+<td>双引号字符「&quot;」</td>
+</tr>
+<tr>
+<td><code>\?</code></td>
+<td>疑问号字符「?」</td>
+</tr>
+<tr>
+<td><code>\b</code></td>
+<td>退格符</td>
+</tr>
+<tr>
+<td><code>\f</code></td>
+<td>换页符</td>
+</tr>
+<tr>
+<td><code>\n</code></td>
+<td>换行符</td>
+</tr>
+<tr>
+<td><code>\r</code></td>
+<td>回车符</td>
+</tr>
+<tr>
+<td><code>\t</code></td>
+<td>水平制表符</td>
+</tr>
+<tr>
+<td><code>\v</code></td>
+<td>垂直制表符</td>
+</tr>
+</tbody>
+</table>
+<h1 id="声明和初始化"><a class="markdownIt-Anchor" href="#声明和初始化"></a> 声明和初始化</h1>
+<p>字符值需要用单引号「'」括起来：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token comment">// 常用</span>
+	<span class="token keyword">var</span> a <span class="token builtin">rune</span>      <span class="token comment">// 类型零值为 0</span>
+	b <span class="token operator">:=</span> <span class="token char">'b'</span>        <span class="token comment">// 短变量声明，使用字面量初始化</span>
+	c <span class="token operator">:=</span> <span class="token function">rune</span><span class="token punctuation">(</span><span class="token number">0x63</span><span class="token punctuation">)</span> <span class="token comment">// 使用十六进制数字初始化</span>
+
+	<span class="token comment">// 不常用</span>
+	<span class="token keyword">var</span> d <span class="token operator">=</span> <span class="token char">'\u0064'</span>          <span class="token comment">// 使用 Unicode 编码值初始化</span>
+	<span class="token keyword">var</span> e <span class="token builtin">rune</span> <span class="token operator">=</span> <span class="token char">'\U00010330'</span> <span class="token comment">// 支持补充平面</span>
+
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">,</span> c<span class="token punctuation">,</span> d<span class="token punctuation">,</span> e<span class="token punctuation">)</span>                    <span class="token comment">// 打印出整数</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"%c %c %c %c %c\n"</span><span class="token punctuation">,</span> a<span class="token punctuation">,</span> b<span class="token punctuation">,</span> c<span class="token punctuation">,</span> d<span class="token punctuation">,</span> e<span class="token punctuation">)</span> <span class="token comment">// 打印字符</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="字符型切片"><a class="markdownIt-Anchor" href="#字符型切片"></a> 字符型切片</h1>
+<p>字符型切片用于正确处理可能包含多字节字符的 UTF-8 编码字符串：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token comment">// 直接创建一个字符型切片并初始化其值</span>
+	runeSlice <span class="token operator">:=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">rune</span><span class="token punctuation">&#123;</span><span class="token char">'G'</span><span class="token punctuation">,</span> <span class="token char">'o'</span><span class="token punctuation">,</span> <span class="token char">'语'</span><span class="token punctuation">,</span> <span class="token char">'言'</span><span class="token punctuation">&#125;</span>
+	<span class="token comment">// 将字符串转换为字符切片，来处理每个 Unicode 字符</span>
+	runeSliceFromString <span class="token operator">:=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token function">rune</span><span class="token punctuation">(</span><span class="token string">"你好世界"</span><span class="token punctuation">)</span>
+
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>runeSlice<span class="token punctuation">)</span>                  <span class="token comment">// 输出字符切片的数字表示：[71 111 35821 35328]</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"%q\n"</span><span class="token punctuation">,</span> runeSliceFromString<span class="token punctuation">)</span> <span class="token comment">// 输出字符形式：['你' '好' '世' '界']</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
     </div>
 
@@ -406,7 +443,7 @@ tar: Removing leading `/' from member names
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://blog.x2b.net/2894555783/" title="Docker 数据卷使用">https://blog.x2b.net/2894555783/</a>
+      <a href="https://blog.x2b.net/1637391078/" title="Go 语言类型：字符型">https://blog.x2b.net/1637391078/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
@@ -436,13 +473,13 @@ tar: Removing leading `/' from member names
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="../2679776821/" rel="prev" title="Docker 容器操作">
-                  <i class="fa fa-chevron-left"></i> Docker 容器操作
+                <a href="../4045392638/" rel="prev" title="Go 语言类型：字节型">
+                  <i class="fa fa-chevron-left"></i> Go 语言类型：字节型
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="../1910773265/" rel="next" title="Docker 网络模式">
-                  Docker 网络模式 <i class="fa fa-chevron-right"></i>
+                <a href="../1345941684/" rel="next" title="Go 语言工具链">
+                  Go 语言工具链 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -552,7 +589,7 @@ tar: Removing leading `/' from member names
 
 
   <script src="https://lib.baomitu.com/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
-  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/2894555783/"}</script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/1637391078/"}</script>
   <script src="../js/third-party/quicklink.js"></script>
 <link rel="stylesheet" href="https://lib.baomitu.com/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
