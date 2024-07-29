@@ -22,28 +22,28 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
 
-    <meta name="description" content="NTP 通信协议 NTP 是网络校时协议（Network Time Protocol）。为了修正因为 BIOS 内部芯片问题导致与标准时间（UTC, Coordinated Universal Time）存在的偏差，而通过网络进行时间同步（Synchronize）。此外，DTSS（Digital Time Synchronization Protocol）也可实现同样的功能。">
+    <meta name="description" content="复数型定义 复数（Complex-number）是指能写成 a + bi 形式的数，这里的 a 和 b 是实数，i 是虚数单位（即 -1 开根）。Go 语言提供两种复数类型，由两个浮点数来表示，一个表示实部（real），一个表示虚部（imag）：">
 <meta property="og:type" content="article">
-<meta property="og:title" content="NTP 服务">
-<meta property="og:url" content="https://blog.x2b.net/3532663001/index.html">
+<meta property="og:title" content="Go 语言类型：复数型">
+<meta property="og:url" content="https://blog.x2b.net/2942714716/index.html">
 <meta property="og:site_name" content="X to Bytes">
-<meta property="og:description" content="NTP 通信协议 NTP 是网络校时协议（Network Time Protocol）。为了修正因为 BIOS 内部芯片问题导致与标准时间（UTC, Coordinated Universal Time）存在的偏差，而通过网络进行时间同步（Synchronize）。此外，DTSS（Digital Time Synchronization Protocol）也可实现同样的功能。">
+<meta property="og:description" content="复数型定义 复数（Complex-number）是指能写成 a + bi 形式的数，这里的 a 和 b 是实数，i 是虚数单位（即 -1 开根）。Go 语言提供两种复数类型，由两个浮点数来表示，一个表示实部（real），一个表示虚部（imag）：">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-03-20T01:01:17.000Z">
-<meta property="article:modified_time" content="2023-05-11T14:13:39.822Z">
+<meta property="article:published_time" content="2024-04-15T09:15:30.000Z">
+<meta property="article:modified_time" content="2024-07-29T02:30:35.395Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python go">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://blog.x2b.net/3532663001/">
+<link rel="canonical" href="https://blog.x2b.net/2942714716/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/3532663001/","path":"3532663001/","title":"NTP 服务"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/2942714716/","path":"2942714716/","title":"Go 语言类型：复数型"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>NTP 服务 | X to Bytes</title>
+<title>Go 语言类型：复数型 | X to Bytes</title>
   
 
   <script src="../js/third-party/analytics/baidu-analytics.js"></script>
@@ -145,7 +145,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ntp-%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.</span> <span class="nav-text"> NTP 通信协议</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ntp-%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%B1%82%E6%AC%A1"><span class="nav-number">2.</span> <span class="nav-text"> NTP 服务器层次</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%AE%BE%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text"> 服务器设置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AE%A1%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text"> 服务器管理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AE%BE%E7%BD%AE"><span class="nav-number">5.</span> <span class="nav-text"> 客户端设置</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%8D%E6%95%B0%E5%9E%8B%E5%AE%9A%E4%B9%89"><span class="nav-number">1.</span> <span class="nav-text"> 复数型定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%A4%8D%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text"> 创建复数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E5%A4%8D%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text"> 操作复数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%8D%E6%95%B0%E8%BF%90%E7%AE%97"><span class="nav-number">4.</span> <span class="nav-text"> 复数运算</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -219,7 +219,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/3532663001/">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/2942714716/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="../images/avatar.jpg">
@@ -232,12 +232,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="NTP 服务 | X to Bytes">
+      <meta itemprop="name" content="Go 语言类型：复数型 | X to Bytes">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          NTP 服务
+          Go 语言类型：复数型
         </h1>
 
         <div class="post-meta-container">
@@ -248,14 +248,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2022-03-20 09:01:17" itemprop="dateCreated datePublished" datetime="2022-03-20T09:01:17+08:00">2022-03-20</time>
+      <time title="创建时间：2024-04-15 17:15:30" itemprop="dateCreated datePublished" datetime="2024-04-15T17:15:30+08:00">2024-04-15</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-05-11 22:13:39" itemprop="dateModified" datetime="2023-05-11T22:13:39+08:00">2023-05-11</time>
+      <time title="修改时间：2024-07-29 10:30:35" itemprop="dateModified" datetime="2024-07-29T10:30:35+08:00">2024-07-29</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -263,11 +263,11 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+          <a href="../categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a>
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="../categories/Linux/4-%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1/" itemprop="url" rel="index"><span itemprop="name">4.网络服务</span></a>
+          <a href="../categories/Go/2-%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">2.类型系统</span></a>
         </span>
     </span>
 
@@ -285,14 +285,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.3k</span>
+      <span>380</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>4 分钟</span>
+      <span>1 分钟</span>
     </span>
 </div>
 
@@ -303,99 +303,62 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="ntp-通信协议"><a class="markdownIt-Anchor" href="#ntp-通信协议"></a> NTP 通信协议</h1>
-<p>NTP 是网络校时协议（Network Time Protocol）。为了修正因为 BIOS 内部芯片问题导致与标准时间（UTC, Coordinated Universal Time）存在的偏差，而通过网络进行时间同步（Synchronize）。此外，DTSS（Digital Time Synchronization Protocol）也可实现同样的功能。</p>
-<p>Linux 系统中有两个时间：</p>
+        <h1 id="复数型定义"><a class="markdownIt-Anchor" href="#复数型定义"></a> 复数型定义</h1>
+<p>复数（Complex-number）是指能写成 <code>a + bi</code> 形式的数，这里的 <code>a</code> 和 <code>b</code> 是实数，<code>i</code> 是虚数单位（即 <code>-1</code> 开根）。Go 语言提供两种复数类型，由两个浮点数来表示，一个表示实部（real），一个表示虚部（imag）：</p>
 <ul>
-<li>软件时钟：Linux 自己的系统时间，从 1970.1.1 开始记录的时间参数。</li>
-<li>硬件时钟：计算机在 BIOS 记录的实际时间（UTC），通过硬件记录。写入硬件时钟使用 <code>hwclock</code> 命令。</li>
+<li><code>complex64</code>：其中实部和虚部都是 <code>float32</code> 类型，占用空间为 <code>8</code> 字节。</li>
+<li><code>complex128</code> ：其中实部和虚部都是 <code>float64</code> 类型，占用空间为 <code>16</code> 字节。</li>
 </ul>
-<p>NTP 服务器使用的端口为 123，通过 UDP 数据包传输。</p>
-<p>我国授时中心服务器的 IP 地址为 210.72.145.44。</p>
-<h1 id="ntp-服务器层次"><a class="markdownIt-Anchor" href="#ntp-服务器层次"></a> NTP 服务器层次</h1>
-<p>NTP 时间服务器采用类似分级构架（Stratum）来处理时间的同步化，并且采用 Server/Client 的主从构架。网络上会提供一些主要与次要时间服务器，均属于第一级（stratum-1）与第二级（stratum-2）的时间服务器。</p>
-<p>如果我们的 NTP 服务器向二级时间服务器要求时间同步，那么我们的 NTP 服务器即为三级（stratum-3）时间服务器。依此传递下去，最多可达 15 个阶层。</p>
-<p>一般在进行 NTP 主机的设置时，会选择多台上层的 Time Server 来作为我们的 NTP 服务器校时用，这样可以避免某台时间服务器下线造成无法更新。</p>
-<h1 id="服务器设置"><a class="markdownIt-Anchor" href="#服务器设置"></a> 服务器设置</h1>
-<p>启动 NTP 服务器需要安装 <code>ntp</code> 软件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ yum <span class="token parameter variable">-y</span> <span class="token function">install</span> ntp ntpdate<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>修改时区可以使用 <code>timedatectl</code> 命令。例如修改成上海时间：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ timedatectl set-timezone <span class="token string">"Asia/Shanghai"</span>
-<span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ timedatectl
-      Local time: Mon <span class="token number">2021</span>-10-11 05:07:51 CST
-  Universal time: Sun <span class="token number">2021</span>-10-10 <span class="token number">21</span>:07:51 UTC
-        RTC time: Sun <span class="token number">2021</span>-10-10 <span class="token number">21</span>:07:51
-       Time zone: Asia/Shanghai <span class="token punctuation">(</span>CST, +0800<span class="token punctuation">)</span>
-     NTP enabled: <span class="token function">yes</span>
-NTP synchronized: <span class="token function">yes</span>
- RTC <span class="token keyword">in</span> <span class="token builtin class-name">local</span> TZ: no
-      DST active: n/a<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>服务器配置文件位于 <code>/etc/ntp.conf</code>，其内容修改部分如下：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/ntp.conf
-restrict <span class="token number">210.72</span>.145.44
-restrict <span class="token number">192.168</span>.2.0 mask <span class="token number">255.255</span>.255.0 nomodify
-server <span class="token number">210.72</span>.145.44
-server cn.pool.ntp.org
-driftfile /var/lib/ntp/drift
-keys /etc/ntp/keys<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>其中 <code>restrict</code> 行用来控制权限，上面运行局域网内主机通过这部主机来进行网络校时。其他可用参数有：</p>
-<ul>
-<li>ignore：拒绝所有类型的 NTP 连接。</li>
-<li>nomodify：客户端不能使用 <code>ntpc</code> 和 <code>ntpq</code> 来修改服务器的时间参数，但可以通过这部主机来进行网络校时。</li>
-<li>noquery：客户端不能使用 <code>ntpq</code> 和 <code>ntpc</code> 等命令来查询时间服务器，不提供 NTP 的网络校时。</li>
-<li>notrap：不提供 trap 这个远程时间登录（remote event logging）的功能。</li>
-<li>notrust：拒绝没有认证的客户端。</li>
-</ul>
-<p><code>server</code> 行用来设置上层 NTP 服务器地址，可以设置多个。</p>
-<p><code>driftfile</code> 行指定的文件用来记录本机与上层 Time Server 之间振荡周期频率误差。</p>
-<p><code>keys</code> 行指定用来认证的密钥文件。</p>
-<h1 id="服务器管理"><a class="markdownIt-Anchor" href="#服务器管理"></a> 服务器管理</h1>
-<p>配置修改完毕后，可以通过 <code>systemctl</code> 来启动 <code>ntpd</code> 服务：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ systemctl <span class="token builtin class-name">enable</span> <span class="token parameter variable">--now</span> ntpd
-<span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ <span class="token function">netstat</span> <span class="token parameter variable">-ntulp</span> <span class="token operator">|</span> <span class="token function">grep</span> ntpd
-udp     <span class="token number">0</span>      <span class="token number">0</span> <span class="token number">10.1</span>.1.1:123            <span class="token number">0.0</span>.0.0:*                           <span class="token number">30097</span>/ntpd 
-udp     <span class="token number">0</span>      <span class="token number">0</span> <span class="token number">192.168</span>.2.254:123       <span class="token number">0.0</span>.0.0:*                           <span class="token number">30097</span>/ntpd  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>通常，NTP 启动后需要十五分钟内才会和上层 NTP 服务器连接上。可以使用 <code>ntpstat</code> 命令查询：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ ntpstat
-synchronised to NTP server <span class="token punctuation">(</span><span class="token number">111.230</span>.189.174<span class="token punctuation">)</span> at stratum <span class="token number">3</span>
-   <span class="token function">time</span> correct to within <span class="token number">212</span> ms
-   polling server every <span class="token number">64</span> s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>上面结果显示时间矫正了 212 ms，并且每隔 64 秒会主动去更新时间。</p>
-<p>使用 <code>ntpq</code> 可以查询我们的 NTP 与相关上层 NTP 的状态：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server2 ~<span class="token punctuation">]</span>$ ntpq <span class="token parameter variable">-p</span>
-     remote           refid      st t when poll reach   delay   offset  jitter
-<span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span>
- <span class="token number">210.72</span>.145.44   .INIT.          <span class="token number">16</span> u    -   <span class="token number">64</span>    <span class="token number">0</span>    <span class="token number">0.000</span>    <span class="token number">0.000</span>   <span class="token number">0.000</span>
- ntp.wdc1.us.lea <span class="token number">130.133</span>.1.10     <span class="token number">2</span> u    <span class="token number">9</span>   <span class="token number">64</span>   <span class="token number">37</span>  <span class="token number">251.796</span>   <span class="token parameter variable">-4.729</span>   <span class="token number">0.252</span>
-*111.230.189.174 <span class="token number">100.122</span>.36.4     <span class="token number">2</span> u   <span class="token number">65</span>   <span class="token number">64</span>   <span class="token number">17</span>   <span class="token number">21.948</span>   <span class="token parameter variable">-6.164</span>   <span class="token number">0.297</span>
-+ntp6.flashdance <span class="token number">194.58</span>.202.20    <span class="token number">2</span> u   <span class="token number">66</span>   <span class="token number">64</span>   <span class="token number">17</span>  <span class="token number">237.552</span>   <span class="token parameter variable">-6.099</span>   <span class="token number">5.726</span>
-+2402:f000:1:416 <span class="token number">186.195</span>.4.16     <span class="token number">2</span> u   <span class="token number">62</span>   <span class="token number">64</span>   <span class="token number">17</span>   <span class="token number">33.758</span>   <span class="token parameter variable">-3.033</span>   <span class="token number">0.306</span>
-<span class="token parameter variable">-sv1.ggsrv.de</span>    <span class="token number">205.46</span>.178.169   <span class="token number">2</span> u   <span class="token number">65</span>   <span class="token number">64</span>   <span class="token number">17</span>  <span class="token number">280.605</span>   <span class="token number">10.958</span>   <span class="token number">2.962</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>各字段意义如下：</p>
-<ul>
-<li>remote：NTP 主机的 IP 或主机名。最左边符号 * 代表目前使用的 NTP，符号 + 表示已连接的备选 NTP。</li>
-<li>refid：参考的上层 NTP 主机地址。</li>
-<li>st：stratum 阶层等级。</li>
-<li>when：上次时间同步操作后的时间间隔。</li>
-<li>poll：下次时间同步更新操作的时间间隔。</li>
-<li>reach：已经向上层 NTP 服务器要求更新的次数。</li>
-<li>delay：网络传输过程当中的延迟，单位为微秒。</li>
-<li>offset：时间补偿结果，单位为毫秒。</li>
-<li>jitter：Linux 系统时间与 BIOS 硬件时间的差异时间，单位为微秒。</li>
-</ul>
-<h1 id="客户端设置"><a class="markdownIt-Anchor" href="#客户端设置"></a> 客户端设置</h1>
-<p>客户端可以使用 <code>ntpdate</code> 命令来与服务器同步时间：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ ntpdate <span class="token number">192.168</span>.2.254
-<span class="token number">11</span> Oct <span class="token number">15</span>:54:26 ntpdate<span class="token punctuation">[</span><span class="token number">125764</span><span class="token punctuation">]</span>: adjust <span class="token function">time</span> server <span class="token number">192.168</span>.2.254 offset <span class="token parameter variable">-0.002236</span> sec
-<span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">date</span><span class="token punctuation">;</span>hwclock <span class="token parameter variable">-r</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>同步之后使用 <code>hwclock</code> 写入到硬件。<code>ntpd</code> 服务端和客户端之间时间误差不允许超过 1000 秒。</p>
-<p>服务端配置也是修改 <code>/etc/ntp.conf</code> 文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/ntp.conf 
-restrict <span class="token number">192.168</span>.2.254
-server <span class="token number">192.168</span>.2.254<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>之后启动 <code>ntpd</code> 服务，客户端就会自动到服务端同步时间：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server1 ~<span class="token punctuation">]</span>$ systemctl start ntpd<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="创建复数"><a class="markdownIt-Anchor" href="#创建复数"></a> 创建复数</h1>
+<p>复数可以使用 <code>complex</code> 函数创建，或通过字面量直接定义。<code>complex</code> 函数接受两个参数，第一个是实部，第二个是虚部：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
 
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token comment">// 常用</span>
+	<span class="token keyword">var</span> a <span class="token builtin">complex128</span>        <span class="token comment">// 默认值为 0+0i</span>
+	b <span class="token operator">:=</span> <span class="token number">2.3</span> <span class="token operator">+</span> <span class="token number">7.4i</span>         <span class="token comment">// 使用字面量创建复数</span>
+	c <span class="token operator">:=</span> <span class="token function">complex</span><span class="token punctuation">(</span><span class="token number">5.0</span><span class="token punctuation">,</span> <span class="token number">12.0</span><span class="token punctuation">)</span> <span class="token comment">// 使用 complex 函数创建复数 5+12i</span>
+
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">,</span> c<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="操作复数"><a class="markdownIt-Anchor" href="#操作复数"></a> 操作复数</h1>
+<p>复数的实部和虚部可以通过内置函数 <code>real</code> 和 <code>imag</code> 函数获取：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	c <span class="token operator">:=</span> <span class="token number">2.3</span> <span class="token operator">-</span> <span class="token number">7.4i</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"实部为：%v\n虚部为：%v\n"</span><span class="token punctuation">,</span> <span class="token function">real</span><span class="token punctuation">(</span>c<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">imag</span><span class="token punctuation">(</span>c<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="复数运算"><a class="markdownIt-Anchor" href="#复数运算"></a> 复数运算</h1>
+<p>复数类型主要用于科学计算和工程领域，除了使用普通算术运算符，在 <code>math/cmplx</code> 包中有更多复数计算函数：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+	<span class="token string">"fmt"</span>
+	<span class="token string">"math/cmplx"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	a <span class="token operator">:=</span> <span class="token number">1.2</span> <span class="token operator">+</span> <span class="token number">3.4i</span>
+	b <span class="token operator">:=</span> <span class="token number">5.6</span> <span class="token operator">-</span> <span class="token number">1.2i</span>
+
+	<span class="token comment">// 基本运算</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"求和："</span><span class="token punctuation">,</span> a<span class="token operator">+</span>b<span class="token punctuation">)</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"求差："</span><span class="token punctuation">,</span> a<span class="token operator">-</span>b<span class="token punctuation">)</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"求积："</span><span class="token punctuation">,</span> a<span class="token operator">*</span>b<span class="token punctuation">)</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"求商："</span><span class="token punctuation">,</span> a<span class="token operator">/</span>b<span class="token punctuation">)</span>
+
+	<span class="token comment">// 高级运算</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"模（绝对值）："</span><span class="token punctuation">,</span> cmplx<span class="token punctuation">.</span><span class="token function">Abs</span><span class="token punctuation">(</span>a<span class="token punctuation">)</span><span class="token punctuation">)</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"共轭："</span><span class="token punctuation">,</span> cmplx<span class="token punctuation">.</span><span class="token function">Conj</span><span class="token punctuation">(</span>a<span class="token punctuation">)</span><span class="token punctuation">)</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"指数："</span><span class="token punctuation">,</span> cmplx<span class="token punctuation">.</span><span class="token function">Exp</span><span class="token punctuation">(</span>a<span class="token punctuation">)</span><span class="token punctuation">)</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"自然对数："</span><span class="token punctuation">,</span> cmplx<span class="token punctuation">.</span><span class="token function">Log</span><span class="token punctuation">(</span>a<span class="token punctuation">)</span><span class="token punctuation">)</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"幂："</span><span class="token punctuation">,</span> cmplx<span class="token punctuation">.</span><span class="token function">Pow</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
     </div>
 
     
@@ -426,7 +389,7 @@ server <span class="token number">192.168</span>.2.254<span aria-hidden="true" c
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://blog.x2b.net/3532663001/" title="NTP 服务">https://blog.x2b.net/3532663001/</a>
+      <a href="https://blog.x2b.net/2942714716/" title="Go 语言类型：复数型">https://blog.x2b.net/2942714716/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
@@ -456,13 +419,13 @@ server <span class="token number">192.168</span>.2.254<span aria-hidden="true" c
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="../799638542/" rel="prev" title="Linux 网络基础知识">
-                  <i class="fa fa-chevron-left"></i> Linux 网络基础知识
+                <a href="../3158030992/" rel="prev" title="Go 语言类型：浮点型">
+                  <i class="fa fa-chevron-left"></i> Go 语言类型：浮点型
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="../2734315757/" rel="next" title="Shell 脚本基础">
-                  Shell 脚本基础 <i class="fa fa-chevron-right"></i>
+                <a href="../4045392638/" rel="next" title="Go 语言类型：字节型">
+                  Go 语言类型：字节型 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -572,7 +535,7 @@ server <span class="token number">192.168</span>.2.254<span aria-hidden="true" c
 
 
   <script src="https://lib.baomitu.com/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
-  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/3532663001/"}</script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/2942714716/"}</script>
   <script src="../js/third-party/quicklink.js"></script>
 <link rel="stylesheet" href="https://lib.baomitu.com/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
