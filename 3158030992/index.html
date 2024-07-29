@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://lib.baomitu.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://lib.baomitu.com/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://lib.baomitu.com/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://lib.baomitu.com/pace/1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://lib.baomitu.com/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="浮点型定义 浮点型数据（Floating-point-number）用于表示包含小数部分的数值，也称为实数（Real-number）。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go 语言类型：浮点型">
+<meta property="og:url" content="https://blog.x2b.net/3158030992/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="浮点型定义 浮点型数据（Floating-point-number）用于表示包含小数部分的数值，也称为实数（Real-number）。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-04-15T08:26:58.000Z">
+<meta property="article:modified_time" content="2024-07-29T02:06:26.396Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python go">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/3158030992/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/3158030992/","path":"3158030992/","title":"Go 语言类型：浮点型"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Go 语言类型：浮点型 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">19</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">101</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%AE%E7%82%B9%E5%9E%8B%E5%AE%9A%E4%B9%89"><span class="nav-number">1.</span> <span class="nav-text"> 浮点型定义</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%AE%E7%82%B9%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.1.</span> <span class="nav-text"> 浮点类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A8%E7%A4%BA%E6%96%B9%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text"> 表示方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%AE%E7%82%B9%E7%BB%93%E6%9E%84"><span class="nav-number">1.3.</span> <span class="nav-text"> 浮点结构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A3%B0%E6%98%8E%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">2.</span> <span class="nav-text"> 声明和初始化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%AE%E7%82%B9%E8%BF%90%E7%AE%97"><span class="nav-number">3.</span> <span class="nav-text"> 浮点运算</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%88%8D%E5%85%A5%E8%AF%AF%E5%B7%AE"><span class="nav-number">4.</span> <span class="nav-text"> 舍入误差</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E5%80%BC"><span class="nav-number">5.</span> <span class="nav-text"> 特殊值</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">个人笔记</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">101</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/3158030992/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="个人笔记">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Go 语言类型：浮点型 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Go 语言类型：浮点型
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-04-15 16:26:58" itemprop="dateCreated datePublished" datetime="2024-04-15T16:26:58+08:00">2024-04-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-29 10:06:26" itemprop="dateModified" datetime="2024-07-29T10:06:26+08:00">2024-07-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Go/2-%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">2.类型系统</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="浮点型定义"><a class="markdownIt-Anchor" href="#浮点型定义"></a> 浮点型定义</h1>
+<p>浮点型数据（Floating-point-number）用于表示包含小数部分的数值，也称为实数（Real-number）。</p>
+<h2 id="浮点类型"><a class="markdownIt-Anchor" href="#浮点类型"></a> 浮点类型</h2>
+<p>Go 语言提供两种浮点类型 <code>float32</code> 和 <code>float64</code>。这两种类型遵循 IEEE-754 标准，其中 <code>float32</code> 是单精度浮点数，<code>float64</code> 是双精度浮点数：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>字节长度</th>
+<th>精确位数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>float32</td>
+<td>4</td>
+<td>小数点后 7 位</td>
+</tr>
+<tr>
+<td>float64</td>
+<td>8</td>
+<td>小数点后 15 位</td>
+</tr>
+</tbody>
+</table>
+<h2 id="表示方法"><a class="markdownIt-Anchor" href="#表示方法"></a> 表示方法</h2>
+<p>浮点型数据在 Go 语言中有两种表示方式：</p>
+<ul>
+<li>十进制小数：由数字和小数点组成，例如：<code>0.210</code>。</li>
+<li>指数形式：由数字和字母 <code>e</code> 组成，例如表示 <code>1234.5</code> 指数形式为 <code>12.345e2</code> 或 <code>1.2345e3</code>。</li>
+</ul>
+<h2 id="浮点结构"><a class="markdownIt-Anchor" href="#浮点结构"></a> 浮点结构</h2>
+<p>浮点数在计算机中表示基于科学记数法（<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mi>a</mi><mi>l</mi><mi>u</mi><mi>e</mi><mo>=</mo><mi>s</mi><mi>i</mi><mi>g</mi><mi>n</mi><mo>∗</mo><mi>m</mi><mi>a</mi><mi>n</mi><mi>t</mi><mi>i</mi><mi>s</mi><mi>s</mi><mi>a</mi><mo>∗</mo><mi>b</mi><mi>a</mi><mi>s</mi><msup><mi>e</mi><mrow><mi>e</mi><mi>x</mi><mi>p</mi><mi>o</mi><mi>n</mi><mi>e</mi><mi>n</mi><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">value = sign * mantissa * base^{exponent}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal">u</span><span class="mord mathnormal">e</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.85396em;vertical-align:-0.19444em;"></span><span class="mord mathnormal">s</span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.65952em;vertical-align:0em;"></span><span class="mord mathnormal">m</span><span class="mord mathnormal">a</span><span class="mord mathnormal">n</span><span class="mord mathnormal">t</span><span class="mord mathnormal">i</span><span class="mord mathnormal">s</span><span class="mord mathnormal">s</span><span class="mord mathnormal">a</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.7935559999999999em;vertical-align:0em;"></span><span class="mord mathnormal">b</span><span class="mord mathnormal">a</span><span class="mord mathnormal">s</span><span class="mord"><span class="mord mathnormal">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7935559999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">x</span><span class="mord mathnormal mtight">p</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">n</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">n</span><span class="mord mathnormal mtight">t</span></span></span></span></span></span></span></span></span></span></span></span>），在内存中按指数形式储存，分为三部分：符号位（Sign）、指数（Exponent）和尾数（Mantissa）：</p>
+<ul>
+<li><strong>符号位</strong>：用于表示数值正负的  1 个单独位，<code>0</code> 表示正数，<code>1</code> 表示负数。</li>
+<li><strong>指数</strong>：用于表示基数的幂。不是直接存储实际指数值，而是存储一个偏移指数，有利于表达正负。例如，在 <code>float32</code> 类型中，指数部分占用 8 位，偏移量为 <code>127</code>，实际指数值是存储的指数值 - 偏移量。如果存储的指数值是 <code>120</code>，那么实际指数值是 <code>120-127=-7</code>。</li>
+<li><strong>尾数</strong>：用于表示有效数字或分数部分。尾数部分用二进制表示为 <code>1.xxxx</code> 形式，其中 <code>1</code> 默认隐藏（对于规格化的数），不占用存储空间。实际存储值是 <code>xxxx</code>，也就是小数部分。在 <code>float32</code> 中，尾数部分占用 23 位，加上隐含的 <code>1</code>，总共可以提供 24 位精度。</li>
+</ul>
+<p>在十进制中，科学记数法这样表示：<code>±d.d...d * 10^n</code>，其中 <code>d.d...d</code> 是尾数部分，基数为 <code>10</code>，而 <code>n</code> 是指数。在二进制中，基数变成了 <code>2</code>。假设有一个 32 位的 IEEE 754 浮点数：</p>
+<ul>
+<li><strong>符号位</strong>：<code>0</code>，代表是正数。</li>
+<li><strong>指数</strong>：<code>10000011</code> 等于十进制 <code>131</code>，表示实际指数 <code>4</code>。</li>
+<li><strong>尾数</strong>：<code>1010000...</code>（省略后面许多 <code>0</code>，注意隐含前导 <code>1</code>）。</li>
+</ul>
+<p>这个数值是 <code>1.101 * 2^4</code>，转换成十进制大约是 <code>1.625 * 16 = 26</code>。</p>
+<p>反过来，对一个单精度浮点数 <code>6.75</code> 转为科学计数法：</p>
+<ul>
+<li><strong>符号位</strong>：<code>0</code>。</li>
+<li><strong>指数</strong>：实际指数为 <code>2</code>，加上偏移量 <code>127</code> 等于 <code>129</code>，二进制表示为 <code>10000001</code>。</li>
+<li><strong>尾数</strong>：将 <code>6.75</code> 转为二进制浮点数等于 <code>110.11</code>，规范化表示为 <code>1.1011 * 2^2</code>，取小数点后部分 <code>1011</code>，储存时补齐到 23 位就是 <code>10110000...</code>。</li>
+</ul>
+<p>下面是用代码演示推导过程：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+	<span class="token string">"fmt"</span>
+	<span class="token string">"math"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token comment">// 定义一个单精度浮点数</span>
+	<span class="token keyword">var</span> f <span class="token builtin">float32</span> <span class="token operator">=</span> <span class="token number">6.75</span>
+
+	<span class="token comment">// 将浮点数转换为其二进制表示的 uint32 类型</span>
+	bits <span class="token operator">:=</span> math<span class="token punctuation">.</span><span class="token function">Float32bits</span><span class="token punctuation">(</span>f<span class="token punctuation">)</span>
+
+	<span class="token comment">// 提取符号位、指数部分和尾数部分</span>
+	sign <span class="token operator">:=</span> bits <span class="token operator">>></span> <span class="token number">31</span>
+	exponent <span class="token operator">:=</span> <span class="token punctuation">(</span>bits <span class="token operator">>></span> <span class="token number">23</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> <span class="token number">0xFF</span>
+	mantissa <span class="token operator">:=</span> bits <span class="token operator">&amp;</span> <span class="token number">0x7FFFFF</span>
+
+	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"符号位: %d\n"</span><span class="token punctuation">,</span> sign<span class="token punctuation">)</span>                        <span class="token comment">// 输出：0</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"指数部分: %d (%08b)\n"</span><span class="token punctuation">,</span> exponent<span class="token punctuation">,</span> exponent<span class="token punctuation">)</span>  <span class="token comment">// 输出：129 (10000001)</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"尾数部分: %d (%023b)\n"</span><span class="token punctuation">,</span> mantissa<span class="token punctuation">,</span> mantissa<span class="token punctuation">)</span> <span class="token comment">// 输出：5767168 (10110000000000000000000)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这种存储方式使得浮点数能表示非常宽泛的数值，但由于指数和尾数部分储存位数有限，有时候会导致精度问题。例如，<code>0.1</code> 用二进制表示开始为 <code>0.000110011...</code>，后面的 <code>0011</code> 会无限循环，直到达到精度限制。大部分十进制小数在二进制中是无限循环小数，因此在计算机中不能被精确表示。</p>
+<h1 id="声明和初始化"><a class="markdownIt-Anchor" href="#声明和初始化"></a> 声明和初始化</h1>
+<p>浮点数字面量自动类型推断类型默认为 <code>float64</code>：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token comment">// 常用</span>
+	<span class="token keyword">var</span> a <span class="token builtin">float64</span>   <span class="token comment">// 声明但不赋值，初始化零值为 0.0</span>
+	b <span class="token operator">:=</span> <span class="token number">2.10</span>       <span class="token comment">// 短变量声明，自动推导类型为 float64</span>
+	c <span class="token operator">:=</span> <span class="token function">float32</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span> <span class="token comment">// 表达式赋值，强调类型</span>
+
+	<span class="token comment">// 不常用</span>
+	<span class="token keyword">var</span> d <span class="token builtin">float32</span> <span class="token operator">=</span> <span class="token number">4</span>                 <span class="token comment">// 显式声明并赋值</span>
+	<span class="token keyword">var</span> e <span class="token operator">=</span> <span class="token number">5.09999999999999999999999</span> <span class="token comment">// 显式声明并赋值，省略类型，值为 5.1</span>
+
+	<span class="token comment">// 打印变量类型和值</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"类型为：%T\t%T\t%T\t%T\t%T\n"</span><span class="token punctuation">,</span> a<span class="token punctuation">,</span> b<span class="token punctuation">,</span> c<span class="token punctuation">,</span> d<span class="token punctuation">,</span> e<span class="token punctuation">)</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"浮点值：%0.1f\t%.1f\t%.2f\t%0.2f\t%f\n"</span><span class="token punctuation">,</span> a<span class="token punctuation">,</span> b<span class="token punctuation">,</span> c<span class="token punctuation">,</span> d<span class="token punctuation">,</span> e<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="浮点运算"><a class="markdownIt-Anchor" href="#浮点运算"></a> 浮点运算</h1>
+<p>可以对浮点数进行除了 <code>%</code>（要使用 <code>math.Mod</code>） 以外任意数学和比较运算，但计算结果有误差：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">var</span> a<span class="token punctuation">,</span> b <span class="token builtin">float32</span> <span class="token operator">=</span> <span class="token number">5.01</span><span class="token punctuation">,</span> <span class="token number">3.1</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"32 位浮点数加法:"</span><span class="token punctuation">,</span> a<span class="token operator">+</span>b<span class="token punctuation">)</span> <span class="token comment">// 输出：8.110001</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"32 位浮点数减法:"</span><span class="token punctuation">,</span> a<span class="token operator">-</span>b<span class="token punctuation">)</span> <span class="token comment">// 输出：1.9100003</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"32 位浮点数乘法:"</span><span class="token punctuation">,</span> a<span class="token operator">*</span>b<span class="token punctuation">)</span> <span class="token comment">// 输出：15.531</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"32 位浮点数除法:"</span><span class="token punctuation">,</span> a<span class="token operator">/</span>b<span class="token punctuation">)</span> <span class="token comment">// 输出：1.6161292</span>
+
+	<span class="token keyword">var</span> c<span class="token punctuation">,</span> d <span class="token builtin">float64</span> <span class="token operator">=</span> <span class="token number">5.01</span><span class="token punctuation">,</span> <span class="token number">3.1</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"\n64 位浮点数加法:"</span><span class="token punctuation">,</span> c<span class="token operator">+</span>d<span class="token punctuation">)</span> <span class="token comment">// 输出：8.11</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"64 位浮点数减法:"</span><span class="token punctuation">,</span> c<span class="token operator">-</span>d<span class="token punctuation">)</span>   <span class="token comment">// 输出：1.9099999999999997</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"64 位浮点数乘法:"</span><span class="token punctuation">,</span> c<span class="token operator">*</span>d<span class="token punctuation">)</span>   <span class="token comment">// 输出：15.531</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"64 位浮点数除法:"</span><span class="token punctuation">,</span> c<span class="token operator">/</span>d<span class="token punctuation">)</span>   <span class="token comment">// 输出：1.6161290322580644</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>从上面结果可以看出，精度越高误差越小。</p>
+<h1 id="舍入误差"><a class="markdownIt-Anchor" href="#舍入误差"></a> 舍入误差</h1>
+<p>当 <code>float64</code> 类型变量值小数位数超过 15 位时，超出部分会被舍去。同理，<code>float32</code> 类型在小数位数超过 7 位时会发生截断，因此不要直接比较两个浮点数相等性：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token comment">// 定义两个 float64 类型变量，尝试赋予 b 超出 float64 精度的值</span>
+	a<span class="token punctuation">,</span> b <span class="token operator">:=</span> <span class="token number">1.0</span><span class="token punctuation">,</span> <span class="token number">1.0000000000000001</span>
+
+	<span class="token comment">// 检查两个浮点数是否相等。由于精度限制，b 被视为与 a 相等</span>
+	<span class="token keyword">if</span> a <span class="token operator">==</span> b <span class="token punctuation">&#123;</span>
+		fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"a 等于 b\na 的值为：%v\nb 的值为：%v\n"</span><span class="token punctuation">,</span> a<span class="token punctuation">,</span> b<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>导致浮点数错误的极限值称为机器精度（machine epsilon）。高精度科学计算中，应当使用 <code>math</code> 标准库中相关功能来避免舍入误差。</p>
+<h1 id="特殊值"><a class="markdownIt-Anchor" href="#特殊值"></a> 特殊值</h1>
+<p>除法运算中，除数为浮点数 0，结果会得到特殊值正无穷大（<code>+Inf</code>）、负无穷大（<code>-Inf</code>）和非数（<code>NaN</code>）：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+	<span class="token string">"fmt"</span>
+	<span class="token string">"math"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	b <span class="token operator">:=</span> <span class="token function">float64</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+
+	<span class="token comment">// 正数除以浮点数 0，结果为正无穷大</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"正无穷大："</span><span class="token punctuation">,</span> <span class="token number">1.1</span><span class="token operator">/</span>b<span class="token punctuation">,</span> math<span class="token punctuation">.</span><span class="token function">Inf</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">// 输出：+Inf</span>
+
+	<span class="token comment">// 负数除以浮点数 0，结果为负无穷大</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"负无穷大："</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1.1</span><span class="token operator">/</span>b<span class="token punctuation">,</span> math<span class="token punctuation">.</span><span class="token function">Inf</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">// 输出：-Inf</span>
+
+	<span class="token comment">// 被除数为 0，结果为 Not a Number</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"非数:"</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token operator">/</span>b<span class="token punctuation">,</span> math<span class="token punctuation">.</span><span class="token function">NaN</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">// 输出：NaN</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/3158030992/" title="Go 语言类型：浮点型">https://blog.x2b.net/3158030992/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../3232286694/" rel="prev" title="Go 语言类型：整型">
+                  <i class="fa fa-chevron-left"></i> Go 语言类型：整型
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../1345941684/" rel="next" title="Go 语言工具链">
+                  Go 语言工具链 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">305k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">16:58</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://lib.baomitu.com/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://lib.baomitu.com/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://lib.baomitu.com/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://lib.baomitu.com/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://lib.baomitu.com/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.4/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://lib.baomitu.com/KaTeX/0.16.4/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://lib.baomitu.com/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/3158030992/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://lib.baomitu.com/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://lib.baomitu.com/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
