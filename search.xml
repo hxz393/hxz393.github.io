@@ -1945,6 +1945,269 @@ ok      <span class="token builtin">new</span>     <span class="token number">2<
       </categories>
   </entry>
   <entry>
+    <title>Go 语言类型 映射</title>
+    <url>/2096879394/</url>
+    <content><![CDATA[<h1 id="映射定义"><a class="markdownIt-Anchor" href="#映射定义"></a> 映射定义</h1>
+<p>映射（Map）是用于储存一系列无序键值对的数据结构。映射类型适合用于存储和检索关联数据，类似其他编程语言中的哈希表或字典。</p>
+<p>在 Go 语言映射中，键（key）和值（value）是组成映射的基本元素，每个键都关联到一个特定值：</p>
+<ul>
+<li><strong>键</strong>：键用来在映射中唯一标识值。键类型必须是可比较类型，包括所有基本类型以及数组和结构体，不包括引用类型。</li>
+<li><strong>值</strong>：值是映射中与键相关联的数据。在同一个映射中，所有值类型都必须相同，值类型可以是任意类型，包括映射或结构体。</li>
+</ul>
+<p>映射提供一种直观方式来表达数据之间的联系，底层实现是一个散列表，属于引用类型。</p>
+<h1 id="创建映射"><a class="markdownIt-Anchor" href="#创建映射"></a> 创建映射</h1>
+<p>映射在使用前必须初始化，为其分配内存空间，才能存储键值对。</p>
+<h2 id="声明和初始化"><a class="markdownIt-Anchor" href="#声明和初始化"></a> 声明和初始化</h2>
+<p>以下是声明和初始化映射方法：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token comment">// 声明一个 nil 映射，不能直接使用</span>
+	<span class="token comment">// 切片不能作为键，但数组可以</span>
+	<span class="token keyword">var</span> a <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">]</span><span class="token builtin">int</span>
+
+	<span class="token comment">// 声明并使用字面量初始化映射</span>
+	<span class="token keyword">var</span> b <span class="token operator">=</span> <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">&#123;</span><span class="token string">"a"</span><span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">"b"</span><span class="token punctuation">:</span> <span class="token number">2</span><span class="token punctuation">&#125;</span>
+
+	<span class="token comment">// 短变量声明，采用多行赋值形式</span>
+	<span class="token comment">// 如果 &#125; 另起一行，最后一个元素后必须加逗号</span>
+	c <span class="token operator">:=</span> <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">&#123;</span>
+		<span class="token string">"c"</span><span class="token punctuation">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+		<span class="token string">"d"</span><span class="token punctuation">:</span> <span class="token number">4</span><span class="token punctuation">,</span>
+	<span class="token punctuation">&#125;</span>
+
+	<span class="token comment">// 使用 make 函数创建并初始化空映射</span>
+	<span class="token comment">// 容量参数可选，预设有助于提高性能</span>
+	d <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">)</span>
+
+	<span class="token comment">// 输出：map[] map[a:1 b:2] map[c:3 d:4] map[]</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">,</span> c<span class="token punctuation">,</span> d<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="nil-映射"><a class="markdownIt-Anchor" href="#nil-映射"></a> nil 映射</h2>
+<p>和 <code>nil</code> 切片不同，<code>nil</code> 映射由于没分配内存，不能直接用于储存键值对。尝试添加键值对会引发运行时错误，必须先通过 <code>make</code> 函数初始化：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token comment">// 声明一个 nil 映射</span>
+	<span class="token keyword">var</span> m <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">int</span>
+
+	<span class="token comment">// 可以读取 nil 映射</span>
+	value <span class="token operator">:=</span> m<span class="token punctuation">[</span><span class="token string">"k"</span><span class="token punctuation">]</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"读取不存在的键值:"</span><span class="token punctuation">,</span> value<span class="token punctuation">)</span> <span class="token comment">// 输出：0</span>
+
+	<span class="token comment">// 尝试添加键值对会导致运行时错误</span>
+	m<span class="token punctuation">[</span><span class="token string">"k"</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1</span> <span class="token comment">// 报错：assignment to entry in nil map</span>
+
+	<span class="token comment">// 使用 make 函数初始化</span>
+	m <span class="token operator">=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">)</span>
+	m<span class="token punctuation">[</span><span class="token string">"k"</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"添加键值后:"</span><span class="token punctuation">,</span> m<span class="token punctuation">)</span> <span class="token comment">// 输出：map[k:1]</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>nil</code> 映射不占用内存，可以用于延迟初始化或作为函数返回值。</p>
+<h1 id="映射操作"><a class="markdownIt-Anchor" href="#映射操作"></a> 映射操作</h1>
+<p>只要映射已初始化，映射操作基本是安全的。</p>
+<h2 id="读取键值"><a class="markdownIt-Anchor" href="#读取键值"></a> 读取键值</h2>
+<p>映射中可以通过键来获取元素值，此外还会获取到键存在标志。如果键值对不存在，存在标志为 <code>false</code> 并返回值类型零值：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	m <span class="token operator">:=</span> <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">&#123;</span><span class="token string">"Alice"</span><span class="token punctuation">:</span> <span class="token number">68000</span><span class="token punctuation">,</span> <span class="token string">"Bob"</span><span class="token punctuation">:</span> <span class="token number">72000</span><span class="token punctuation">&#125;</span>
+
+	<span class="token comment">// 对返回分别赋值</span>
+	salary<span class="token punctuation">,</span> exists <span class="token operator">:=</span> m<span class="token punctuation">[</span><span class="token string">"Charlie"</span><span class="token punctuation">]</span>
+	<span class="token keyword">if</span> exists <span class="token punctuation">&#123;</span>
+		fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>salary<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+		fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>salary<span class="token punctuation">,</span> exists<span class="token punctuation">)</span> <span class="token comment">// exists 值为 false，salary 为 0</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="修改键值"><a class="markdownIt-Anchor" href="#修改键值"></a> 修改键值</h2>
+<p>修改映射键值对通过赋值来实现。如果键不存在，会新增键值对记录；如果键存在，赋值操作会更新该键值：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	m <span class="token operator">:=</span> <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">&#123;</span><span class="token string">"Alice"</span><span class="token punctuation">:</span> <span class="token number">68000</span><span class="token punctuation">,</span> <span class="token string">"Bob"</span><span class="token punctuation">:</span> <span class="token number">72000</span><span class="token punctuation">&#125;</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"初始工资："</span><span class="token punctuation">,</span> m<span class="token punctuation">)</span>
+
+	<span class="token comment">// 添加新记录</span>
+	m<span class="token punctuation">[</span><span class="token string">"Charlie"</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">90000</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"添加操作后："</span><span class="token punctuation">,</span> m<span class="token punctuation">)</span>
+
+	<span class="token comment">// 更新记录</span>
+	m<span class="token punctuation">[</span><span class="token string">"Alice"</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">71000</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"更新操作后："</span><span class="token punctuation">,</span> m<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="遍历映射"><a class="markdownIt-Anchor" href="#遍历映射"></a> 遍历映射</h2>
+<p>可以使用 <code>for</code> 和 <code>range</code> 来遍历映射中所有键值对：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	m <span class="token operator">:=</span> <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">&#123;</span><span class="token string">"Alice"</span><span class="token punctuation">:</span> <span class="token number">101</span><span class="token punctuation">,</span> <span class="token string">"Bob"</span><span class="token punctuation">:</span> <span class="token number">102</span><span class="token punctuation">,</span> <span class="token string">"Charlie"</span><span class="token punctuation">:</span> <span class="token number">104</span><span class="token punctuation">,</span> <span class="token string">"David"</span><span class="token punctuation">:</span> <span class="token number">103</span><span class="token punctuation">&#125;</span>
+
+	<span class="token comment">// 使用 len 获取映射中键值对数量</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"员工数量："</span><span class="token punctuation">,</span> <span class="token function">len</span><span class="token punctuation">(</span>m<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+	<span class="token comment">// 使用 for 和 range 遍历映射，每次迭代输出顺序可能不同</span>
+	<span class="token keyword">for</span> k<span class="token punctuation">,</span> v <span class="token operator">:=</span> <span class="token keyword">range</span> m <span class="token punctuation">&#123;</span>
+		fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"%s 在部门编号：%d\n"</span><span class="token punctuation">,</span> k<span class="token punctuation">,</span> v<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="删除键值"><a class="markdownIt-Anchor" href="#删除键值"></a> 删除键值</h2>
+<p>Go 语言提供内置 <code>delete</code> 函数，用于删除映射中的键值对。 <code>delete</code> 函数没有返回值，如果键值对存在则删除；如果不存在则忽略，不会报错：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	m <span class="token operator">:=</span> <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">&#123;</span><span class="token string">"Alice"</span><span class="token punctuation">:</span> <span class="token number">7000</span><span class="token punctuation">,</span> <span class="token string">"Bob"</span><span class="token punctuation">:</span> <span class="token number">8000</span><span class="token punctuation">,</span> <span class="token string">"Charlie"</span><span class="token punctuation">:</span> <span class="token number">9000</span><span class="token punctuation">&#125;</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"初始映射："</span><span class="token punctuation">,</span> m<span class="token punctuation">)</span>
+
+	<span class="token comment">// 删除存在的键</span>
+	<span class="token function">delete</span><span class="token punctuation">(</span>m<span class="token punctuation">,</span> <span class="token string">"Bob"</span><span class="token punctuation">)</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"第一次删除："</span><span class="token punctuation">,</span> m<span class="token punctuation">)</span>
+
+	<span class="token comment">// 尝试删除不存在的键</span>
+	<span class="token function">delete</span><span class="token punctuation">(</span>m<span class="token punctuation">,</span> <span class="token string">"David"</span><span class="token punctuation">)</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"第二次删除："</span><span class="token punctuation">,</span> m<span class="token punctuation">)</span> <span class="token comment">// 输出没有变化</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="复制映射"><a class="markdownIt-Anchor" href="#复制映射"></a> 复制映射</h1>
+<p>映射是引用类型，所以在函数中对映射修改，会影响所有被传递映射的引用。可以在函数内部创建映射副本，修改副本并返回。复制映射需要创建一个空映射，遍历原始映射键值对来填充新映射：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">func</span> <span class="token function">modify</span><span class="token punctuation">(</span>m <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">int</span> <span class="token punctuation">&#123;</span>
+	<span class="token comment">// 创建映射副本</span>
+	n <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">)</span>
+	<span class="token keyword">for</span> k<span class="token punctuation">,</span> v <span class="token operator">:=</span> <span class="token keyword">range</span> m <span class="token punctuation">&#123;</span>
+		n<span class="token punctuation">[</span>k<span class="token punctuation">]</span> <span class="token operator">=</span> v
+	<span class="token punctuation">&#125;</span>
+
+	n<span class="token punctuation">[</span><span class="token string">"c"</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">3</span>
+
+	<span class="token keyword">return</span> n
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	m <span class="token operator">:=</span> <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">&#123;</span><span class="token string">"a"</span><span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">"b"</span><span class="token punctuation">:</span> <span class="token number">2</span><span class="token punctuation">&#125;</span>
+	n <span class="token operator">:=</span> <span class="token function">modify</span><span class="token punctuation">(</span>m<span class="token punctuation">)</span>
+
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"原始映射："</span><span class="token punctuation">,</span> m<span class="token punctuation">)</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"新映射："</span><span class="token punctuation">,</span> n<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>注意，当映射值是复杂数据结构（如切片、其他映射或包含指针的结构体）时，仅复制键值对复制的可能是指针，不是真正的深度复制。除了手动实现更深层次复制逻辑，也可以借助第三方库 <a href="https://github.com/jinzhu/copier">copier</a> 和 <a href="https://github.com/mohae/deepcopy">deepcopy</a>，或者通过 <code>encoding/gob</code> 包序列化和反序列化对象到内存中来实现深度复制。</p>
+<h1 id="模拟集合"><a class="markdownIt-Anchor" href="#模拟集合"></a> 模拟集合</h1>
+<p>Go 语言没有集合类型，可利用映射键特性来模拟集合去重功能：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token comment">// 原始数组</span>
+	a <span class="token operator">:=</span> <span class="token punctuation">[</span><span class="token operator">...</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">&#123;</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">&#125;</span>
+	<span class="token comment">// 建立一个映射模拟集合</span>
+	m <span class="token operator">:=</span> <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">]</span><span class="token builtin">bool</span><span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+	<span class="token comment">// 创建一个切片来保存结果</span>
+	s <span class="token operator">:=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+
+	<span class="token comment">// 利用键的唯一性填充映射</span>
+	<span class="token keyword">for</span> <span class="token boolean">_</span><span class="token punctuation">,</span> v <span class="token operator">:=</span> <span class="token keyword">range</span> a <span class="token punctuation">&#123;</span>
+		m<span class="token punctuation">[</span>v<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">true</span>
+	<span class="token punctuation">&#125;</span>
+
+	<span class="token comment">// 通过查询键值来判断状态</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>m<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>  <span class="token comment">// 值已存入，输出：true</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>m<span class="token punctuation">[</span><span class="token number">10</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token comment">// 没在映射，输出：false</span>
+
+	<span class="token comment">// 将键存入切片</span>
+	<span class="token keyword">for</span> k <span class="token operator">:=</span> <span class="token keyword">range</span> m <span class="token punctuation">&#123;</span>
+		s <span class="token operator">=</span> <span class="token function">append</span><span class="token punctuation">(</span>s<span class="token punctuation">,</span> k<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token comment">// 输出: [1 2 3]</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="并发映射"><a class="markdownIt-Anchor" href="#并发映射"></a> 并发映射</h1>
+<p>映射类型在并发情况下允许同时读，但同时写会导致运行时错误：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	m <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">)</span>
+
+	<span class="token comment">// 不停写入</span>
+	<span class="token keyword">go</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		<span class="token keyword">for</span> <span class="token punctuation">&#123;</span>
+			m<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0</span>
+		<span class="token punctuation">&#125;</span>
+	<span class="token punctuation">&#125;</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+	<span class="token comment">// 不停读取</span>
+	<span class="token keyword">go</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		<span class="token keyword">for</span> <span class="token punctuation">&#123;</span>
+			<span class="token boolean">_</span> <span class="token operator">=</span> m<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>
+		<span class="token punctuation">&#125;</span>
+	<span class="token punctuation">&#125;</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+	<span class="token comment">// 无限循环，让并发程序在后台执行</span>
+	<span class="token keyword">for</span> <span class="token punctuation">&#123;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上面代码会报错：<code>concurrent map read and map write</code>，指出两个并发函数读写映射时发生竟态问题。</p>
+<p>除了加锁外，可以使用 <code>sync.Map</code> 替代映射。<code>sync.Map</code> 是一个支持并发安全的映射类型，使用上与原生映射不太相同，需要调用专属方法：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+	<span class="token string">"fmt"</span>
+	<span class="token string">"sync"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token comment">// 不需要初始化，直接声明后使用</span>
+	<span class="token keyword">var</span> m sync<span class="token punctuation">.</span>Map
+
+	<span class="token comment">// 储存键值对，以 interface&#123;&#125; 类型保存值</span>
+	m<span class="token punctuation">.</span><span class="token function">Store</span><span class="token punctuation">(</span><span class="token string">"a"</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span>
+	m<span class="token punctuation">.</span><span class="token function">Store</span><span class="token punctuation">(</span><span class="token string">"b"</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
+	<span class="token comment">// 也用于更新键值对</span>
+	m<span class="token punctuation">.</span><span class="token function">Store</span><span class="token punctuation">(</span><span class="token string">"b"</span><span class="token punctuation">,</span> <span class="token number">20</span><span class="token punctuation">)</span>
+
+	<span class="token comment">// 获取键值对</span>
+	v<span class="token punctuation">,</span> ok <span class="token operator">:=</span> m<span class="token punctuation">.</span><span class="token function">Load</span><span class="token punctuation">(</span><span class="token string">"b"</span><span class="token punctuation">)</span>
+	<span class="token keyword">if</span> ok <span class="token punctuation">&#123;</span>
+		fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>v<span class="token punctuation">)</span> <span class="token comment">// 输出：20</span>
+	<span class="token punctuation">&#125;</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>m<span class="token punctuation">.</span><span class="token function">Load</span><span class="token punctuation">(</span><span class="token string">"c"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">// 输出：&lt;nil> false</span>
+
+	<span class="token comment">// 如果键存在则读取值，否则储存键值对</span>
+	v<span class="token punctuation">,</span> ok <span class="token operator">=</span> m<span class="token punctuation">.</span><span class="token function">LoadOrStore</span><span class="token punctuation">(</span><span class="token string">"c"</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>v<span class="token punctuation">,</span> ok<span class="token punctuation">)</span>
+
+	<span class="token comment">// 删除键值对</span>
+	m<span class="token punctuation">.</span><span class="token function">Delete</span><span class="token punctuation">(</span><span class="token string">"a"</span><span class="token punctuation">)</span>
+
+	<span class="token comment">// 遍历键值对需要提供一个函数，函数可以操作键值。这里只打印</span>
+	m<span class="token punctuation">.</span><span class="token function">Range</span><span class="token punctuation">(</span><span class="token keyword">func</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value <span class="token keyword">interface</span><span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span> <span class="token builtin">bool</span> <span class="token punctuation">&#123;</span>
+		fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> <span class="token string">":"</span><span class="token punctuation">,</span> value<span class="token punctuation">)</span>
+		<span class="token keyword">return</span> <span class="token boolean">true</span>
+	<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 <code>sync.Map</code> 能保证并发安全，且对读操作进行过优化，适合读多写少的场景。</p>
+]]></content>
+      <categories>
+        <category>Go</category>
+        <category>2.类型系统</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Go 程序构建编译</title>
     <url>/4098242072/</url>
     <content><![CDATA[<h1 id="编译代码"><a class="markdownIt-Anchor" href="#编译代码"></a> 编译代码</h1>
@@ -6652,6 +6915,594 @@ replicationcontroller/kubia-v2 rolling updated to <span class="token string">"ku
       </categories>
   </entry>
   <entry>
+    <title>K8s 组件介绍</title>
+    <url>/1457906456/</url>
+    <content><![CDATA[<h1 id="api-服务器"><a class="markdownIt-Anchor" href="#api-服务器"></a> API 服务器</h1>
+<p>K8s API 服务器作为中心组件，其他组件或客户端都会调用它。API 服务器以 RESTful API 的形式提供了可以查询、修改集群状态的 CRUD (Create, Read, Update, Delete) 接口，并将状态存储到 etcd 中。</p>
+<p>API 服务器除了提供一种一致的方式来存储对象，还对这些对象进行校验，以确保其合法性。除了校验之外，API 服务器还会处理乐观锁。</p>
+<p>kubectl 是 API 服务的一个客户端之一。</p>
+<h2 id="工作流程"><a class="markdownIt-Anchor" href="#工作流程"></a> 工作流程</h2>
+<p>当 kubectl 通过一个 HTTP POST 请求将配置文件内容发布到 API 服务器后，API 处理的流程如下：</p>
+<ul>
+<li>
+<p>通过认证插件认证客户端</p>
+<p>首先，API 服务器需要对发送请求的客户端进行认证。通过依次调用配置在 API 服务器上的一个或多个认证插件，直到确认请求发送者的身份。根据认证方式，可以从客户端证书或 HTTP 标头中获取用户信息。插件提取客户端的用户名、用户 ID 和归属组信息。</p>
+</li>
+<li>
+<p>通过授权插件为客户端授权</p>
+<p>API 服务器还可以配置使用一个或多个授权插件，以决定认证用户是否可以对请求的资源执行请求操作。一旦确认用户拥有权限，API 服务器进入下一步操作。</p>
+</li>
+<li>
+<p>通过准入控制插件验证并修改资源请求</p>
+<p>如果请求尝试创建、修改或删除资源，则需要经过准入控制插件的验证。这些插件会验证资源请求，并根据不同的原因对资源进行修改。它们可能会将资源定义中未配置的字段初始化为默认值，可能会修改与请求相关的其他资源，同时也可能因为某些原因拒绝请求。</p>
+<p>如果请求只是尝试读取数据，则不会进行准入控制的验证。</p>
+<p>常用的准入控制插件包括：AlwaysPullImages、ServiceAccount、NamespaceLifecycle、ResourceQuota 等。</p>
+</li>
+<li>
+<p>验证资源并进行持久化存储</p>
+<p>请求通过了所有的准入控制插件后，API 服务器会验证存储在 etcd 中的对象，并向客户端返回响应。</p>
+</li>
+</ul>
+<h2 id="资源变更"><a class="markdownIt-Anchor" href="#资源变更"></a> 资源变更</h2>
+<p>API 服务器只负责启动控制器,以及其他一些组件来监控已部署资源的变更.控制面板可以请求订阅资源被创建,修改或删除的通知.</p>
+<p>客户端通过创建到 API 服务器的 HTTP 连接来监听变更.每当更新对象,服务器把新版本对象发送至所有监听该对象的客户端.</p>
+<p>kubectl 工具作为 API 服务器的客户端之一也支持监听资源.例如部署应用时,可以通过在 get 命令后加–watch 参数,每当有变化就会收到通知:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get po <span class="token parameter variable">--watch</span>
+NAME      READY   STATUS    RESTARTS   AGE
+kubia-0   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          19h
+kubia-1   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          19h
+kubia-2   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          19h<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="downward-api"><a class="markdownIt-Anchor" href="#downward-api"></a> Downward API</h2>
+<p>对于无法预先知道的数据，K8s Downward API 允许我们通过环境变量或文件（downwardAPI 卷）将 Pod 的元数据公开给外部（传递给容器内的 Pod）。这种方式主要是将从 Pod 的定义和状态中获取的数据作为环境变量和文件的值传递。</p>
+<p>目前可以传递给容器的数据包括：</p>
+<ul>
+<li>Pod 名称</li>
+<li>Pod 的 IP 地址</li>
+<li>Pod 所属的命名空间</li>
+<li>Pod 运行的节点名称</li>
+<li>Pod 运行的服务账户名称</li>
+<li>每个容器请求的 CPU 和内存使用量</li>
+<li>每个容器可使用的 CPU 和内存限制</li>
+<li>Pod 的标签</li>
+<li>Pod 的注解</li>
+</ul>
+<p>由于可以在 Pod 运行时修改 Pod 的标签和注解，因此无法通过环境变量来公开修改后的新值。</p>
+<p>Downward API 在处理已在环境变量中的部分数据的现有应用程序时特别有用，无需修改应用程序或编写脚本来公开元数据。</p>
+<h3 id="通过环境变量暴露"><a class="markdownIt-Anchor" href="#通过环境变量暴露"></a> 通过环境变量暴露</h3>
+<p>创建一个简单的单容器来暴露 Pod 常见的 7 种数据：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> dow.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: downward
+spec:
+  containers:
+  - name: main
+    image: busybox
+    command: <span class="token punctuation">[</span><span class="token string">"sleep"</span>, <span class="token string">"9999"</span><span class="token punctuation">]</span>
+    resources:
+      requests:
+        cpu: 15m
+        memory: 500Ki
+      limits:
+        cpu: 100m
+        memory: 8Mi
+    env:
+    - name: POD_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.name
+    - name: POD_NAMESPACE
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.namespace
+    - name: POD_IP
+      valueFrom:
+        fieldRef:
+          fieldPath: status.podIP
+    - name: NODE_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.nodeName
+    - name: SERVICE_ACCOUNT
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.serviceAccountName
+    - name: CONTAINER_CPU_REQUEST_MILLICORES
+      valueFrom:
+        resourceFieldRef:
+          resource: requests.cpu
+          divisor: 1m
+    - name: CONTAINER_MEMORY_LIMIT_KIBIBYTES
+      valueFrom:
+        resourceFieldRef:
+          resource: limits.memory
+          divisor: 1Ki<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中，fieldRef 参考的数据来自使用 <code>kubectl get po downward -o yaml</code> 展示的结果，<code>resourceFieldRef</code> 参考的是 <code>spec.containers</code> 中的 <code>resources</code>。如下图所示：</p>
+<p><img data-src="../../../images/%E9%80%9A%E8%BF%87%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E6%9A%B4%E9%9C%B2pod%E5%85%83%E6%95%B0%E6%8D%AE%E5%92%8C%E5%B1%9E%E6%80%A7.jpg" alt="通过环境变量暴露pod元数据和属性" /></p>
+<p>对于暴露的资源请求和限制变量，通过 divisor 设置了一个基数单位，最后暴露的是实际数据除以基数单位得到的值。例如，CPU 请求基数为 1 millicore，环境变量展示的值为 15，内存限制基数为 1 Kibibyte，环境变量展示的值为 8192。</p>
+<p>创建完 Pod 后，查询容器中的所有环境变量：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> downward -- <span class="token function">env</span>
+<span class="token assign-left variable">SERVICE_ACCOUNT</span><span class="token operator">=</span>default
+<span class="token assign-left variable">CONTAINER_CPU_REQUEST_MILLICORES</span><span class="token operator">=</span><span class="token number">15</span>
+<span class="token assign-left variable">CONTAINER_MEMORY_LIMIT_KIBIBYTES</span><span class="token operator">=</span><span class="token number">8192</span>
+<span class="token assign-left variable">POD_NAME</span><span class="token operator">=</span>downward
+<span class="token assign-left variable">POD_NAMESPACE</span><span class="token operator">=</span>default
+<span class="token assign-left variable">POD_IP</span><span class="token operator">=</span><span class="token number">10.244</span>.244.211
+<span class="token assign-left variable">NODE_NAME</span><span class="token operator">=</span>server6-node2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>所有在该容器中运行的进程都可以读取并使用所需的变量。</p>
+<h3 id="通过-downward-api-卷传递"><a class="markdownIt-Anchor" href="#通过-downward-api-卷传递"></a> 通过 Downward API 卷传递</h3>
+<p>使用卷来暴露元数据需要显式地指定元数据字段：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> dow-v.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: downward
+  labels:
+    foo: bar
+  annotations:
+    key1: value1
+    key2: <span class="token operator">|</span>
+      multi
+      line
+      value
+spec:
+  containers:
+  - name: main
+    image: busybox
+    command: <span class="token punctuation">[</span><span class="token string">"sleep"</span>, <span class="token string">"9999"</span><span class="token punctuation">]</span>
+    resources:
+      requests:
+        cpu: 15m
+        memory: 500Ki
+      limits:
+        cpu: 100m
+        memory: 8Mi
+    volumeMounts:
+    - name: downward
+      mountPath: /etc/downward
+  volumes:
+  - name: downward
+    downwardAPI:
+      items:
+      - path: <span class="token string">"podName"</span>
+        fieldRef:
+          fieldPath: metadata.name
+      - path: <span class="token string">"podNamespace"</span>
+        fieldRef:
+          fieldPath: metadata.namespace
+      - path: <span class="token string">"labels"</span>
+        fieldRef:
+          fieldPath: metadata.labels
+      - path: <span class="token string">"annotations"</span>
+        fieldRef:
+          fieldPath: metadata.annotations
+      - path: <span class="token string">"containerCpuRequestMilliCores"</span>
+        resourceFieldRef:
+          containerName: main
+          resource: requests.cpu
+          divisor: 1m
+      - path: <span class="token string">"containerMemoryLimitBytes"</span>
+        resourceFieldRef:
+          containerName: main
+          resource: limits.memory
+          divisor: <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Downward API 卷被挂载到 <code>/etc/downward/</code> 目录下，卷类型为 DownwardAPI，卷包含的文件会通过卷定义中的 <code>downwardAPI.items</code> 属性来定义。如下图所示：</p>
+<p><img data-src="../../../images/%E4%BD%BF%E7%94%A8downwardAPI%E5%8D%B7%E4%BC%A0%E9%80%92%E5%85%83%E6%95%B0%E6%8D%AE.jpg" alt="使用downwardAPI卷传递元数据" /></p>
+<p>在容器中查看：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> downward -- <span class="token function">ls</span> <span class="token parameter variable">-lL</span> /etc/downward
+total <span class="token number">24</span>
+-rw-r--r--    <span class="token number">1</span> root     root           <span class="token number">337</span> Mar <span class="token number">15</span> <span class="token number">22</span>:12 annotations
+-rw-r--r--    <span class="token number">1</span> root     root             <span class="token number">2</span> Mar <span class="token number">15</span> <span class="token number">22</span>:12 containerCpuRequestMilliCores
+-rw-r--r--    <span class="token number">1</span> root     root             <span class="token number">7</span> Mar <span class="token number">15</span> <span class="token number">22</span>:12 containerMemoryLimitBytes
+-rw-r--r--    <span class="token number">1</span> root     root             <span class="token number">9</span> Mar <span class="token number">15</span> <span class="token number">22</span>:12 labels
+-rw-r--r--    <span class="token number">1</span> root     root             <span class="token number">8</span> Mar <span class="token number">15</span> <span class="token number">22</span>:12 podName
+-rw-r--r--    <span class="token number">1</span> root     root             <span class="token number">7</span> Mar <span class="token number">15</span> <span class="token number">22</span>:12 podNamespace
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> downward -- <span class="token function">cat</span> /etc/downward/labels
+<span class="token assign-left variable">foo</span><span class="token operator">=</span><span class="token string">"bar"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>当暴露容器级的元数据时，如资源限制或请求，必须指定容器名称。虽然方式稍微复杂一些，但可以将一个容器的资源字段传递给同一 Pod 中的另一个容器。</p>
+<h2 id="kubernetes-api"><a class="markdownIt-Anchor" href="#kubernetes-api"></a> Kubernetes API</h2>
+<p>通过 Downward API 的方式获取的元数据相当有限。如果需要了解其他 Pod 或其他资源的信息，只能通过直接与 API 服务器进行交互。</p>
+<h3 id="k8s-rest-api"><a class="markdownIt-Anchor" href="#k8s-rest-api"></a> K8s REST API</h3>
+<p>可以通过 <code>kubectl cluster-info</code> 命令获取服务器的地址，但无法直接使用 <code>curl</code> 进行交互：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl cluster-info 
+Kubernetes control plane is running at https://192.168.2.204:6443
+CoreDNS is running at https://192.168.2.204:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> https://192.168.2.204:6443 <span class="token parameter variable">-k</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token string">"kind"</span><span class="token builtin class-name">:</span> <span class="token string">"Status"</span>,
+  <span class="token string">"apiVersion"</span><span class="token builtin class-name">:</span> <span class="token string">"v1"</span>,
+  <span class="token string">"metadata"</span><span class="token builtin class-name">:</span> <span class="token punctuation">&#123;</span>
+    
+  <span class="token punctuation">&#125;</span>,
+  <span class="token string">"status"</span><span class="token builtin class-name">:</span> <span class="token string">"Failure"</span>,
+  <span class="token string">"message"</span><span class="token builtin class-name">:</span> <span class="token string">"forbidden: User <span class="token entity" title="\&quot;">\"</span>system:anonymous<span class="token entity" title="\&quot;">\"</span> cannot get path <span class="token entity" title="\&quot;">\"</span>/<span class="token entity" title="\&quot;">\"</span>"</span>,
+  <span class="token string">"reason"</span><span class="token builtin class-name">:</span> <span class="token string">"Forbidden"</span>,
+  <span class="token string">"details"</span><span class="token builtin class-name">:</span> <span class="token punctuation">&#123;</span>
+    
+  <span class="token punctuation">&#125;</span>,
+  <span class="token string">"code"</span><span class="token builtin class-name">:</span> <span class="token number">403</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>当返回代码为 403 时表示未授权访问，可以通过启动代理 proxy 与服务器进行交互：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl proxy
+Starting to serve on <span class="token number">127.0</span>.0.1:8001
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> <span class="token number">127.0</span>.0.1:8001
+<span class="token punctuation">&#123;</span>
+  <span class="token string">"paths"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"/.well-known/openid-configuration"</span>,
+    <span class="token string">"/api"</span>,
+    <span class="token string">"/api/v1"</span>,
+    <span class="token string">"/apis/batch"</span>,
+    <span class="token string">"/apis/batch/v1"</span>,
+    <span class="token string">"/apis/batch/v1beta1"</span>,<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>服务器会返回一组路径清单，即 REST endpoint 清单。这些路径对应了 apiVersion 定义的路径。以 Job 资源 API 组 <code>/apis/batch</code> 为例，下面列出了两个版本，其中常用的是 v1 版本：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> <span class="token number">127.0</span>.0.1:8001/apis/batch/v1
+<span class="token punctuation">&#123;</span>
+  <span class="token string">"kind"</span><span class="token builtin class-name">:</span> <span class="token string">"APIResourceList"</span>,
+  <span class="token string">"apiVersion"</span><span class="token builtin class-name">:</span> <span class="token string">"v1"</span>,
+  <span class="token string">"groupVersion"</span><span class="token builtin class-name">:</span> <span class="token string">"batch/v1"</span>,
+  <span class="token string">"resources"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">&#123;</span>
+      <span class="token string">"name"</span><span class="token builtin class-name">:</span> <span class="token string">"cronjobs"</span>,
+      <span class="token string">"singularName"</span><span class="token builtin class-name">:</span> <span class="token string">""</span>,
+      <span class="token string">"namespaced"</span><span class="token builtin class-name">:</span> true,
+      <span class="token string">"kind"</span><span class="token builtin class-name">:</span> <span class="token string">"CronJob"</span>,
+      <span class="token string">"verbs"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"create"</span>,
+        <span class="token string">"delete"</span>,
+        <span class="token string">"deletecollection"</span>,
+        <span class="token string">"get"</span>,
+        <span class="token string">"list"</span>,
+        <span class="token string">"patch"</span>,
+        <span class="token string">"update"</span>,
+        <span class="token string">"watch"</span>
+      <span class="token punctuation">]</span>,
+      <span class="token string">"shortNames"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"cj"</span>
+      <span class="token punctuation">]</span>,
+      <span class="token string">"categories"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"all"</span>
+      <span class="token punctuation">]</span>,
+      <span class="token string">"storageVersionHash"</span><span class="token builtin class-name">:</span> <span class="token string">"sd5LIXh4Fjs="</span>
+    <span class="token punctuation">&#125;</span>,
+    <span class="token punctuation">&#123;</span>
+      <span class="token string">"name"</span><span class="token builtin class-name">:</span> <span class="token string">"cronjobs/status"</span>,
+      <span class="token string">"singularName"</span><span class="token builtin class-name">:</span> <span class="token string">""</span>,
+      <span class="token string">"namespaced"</span><span class="token builtin class-name">:</span> true,
+      <span class="token string">"kind"</span><span class="token builtin class-name">:</span> <span class="token string">"CronJob"</span>,
+      <span class="token string">"verbs"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"get"</span>,
+        <span class="token string">"patch"</span>,
+        <span class="token string">"update"</span>
+      <span class="token punctuation">]</span>
+    <span class="token punctuation">&#125;</span>,
+    <span class="token punctuation">&#123;</span>
+      <span class="token string">"name"</span><span class="token builtin class-name">:</span> <span class="token string">"jobs"</span>,
+      <span class="token string">"singularName"</span><span class="token builtin class-name">:</span> <span class="token string">""</span>,
+      <span class="token string">"namespaced"</span><span class="token builtin class-name">:</span> true,
+      <span class="token string">"kind"</span><span class="token builtin class-name">:</span> <span class="token string">"Job"</span>,
+      <span class="token string">"verbs"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"create"</span>,
+        <span class="token string">"delete"</span>,
+        <span class="token string">"deletecollection"</span>,
+        <span class="token string">"get"</span>,
+        <span class="token string">"list"</span>,
+        <span class="token string">"patch"</span>,
+        <span class="token string">"update"</span>,
+        <span class="token string">"watch"</span>
+      <span class="token punctuation">]</span>,
+      <span class="token string">"categories"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"all"</span>
+      <span class="token punctuation">]</span>,
+      <span class="token string">"storageVersionHash"</span><span class="token builtin class-name">:</span> <span class="token string">"mudhfqk/qZY="</span>
+    <span class="token punctuation">&#125;</span>,
+    <span class="token punctuation">&#123;</span>
+      <span class="token string">"name"</span><span class="token builtin class-name">:</span> <span class="token string">"jobs/status"</span>,
+      <span class="token string">"singularName"</span><span class="token builtin class-name">:</span> <span class="token string">""</span>,
+      <span class="token string">"namespaced"</span><span class="token builtin class-name">:</span> true,
+      <span class="token string">"kind"</span><span class="token builtin class-name">:</span> <span class="token string">"Job"</span>,
+      <span class="token string">"verbs"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"get"</span>,
+        <span class="token string">"patch"</span>,
+        <span class="token string">"update"</span>
+      <span class="token punctuation">]</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在 <code>resources</code> 内包含了这个组中所有资源类型，每个资源对应可使用的操作（如创建、删除、获取等），以及其他一些资源的信息。其中，<code>jobs/status</code> 是用于专门修改状态（恢复、打补丁、修改）的资源。</p>
+<p>可以向 <code>/apis/batch/v1/jobs</code> 路径发送 GET 请求，以获取集群中所有 Job 的清单：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> <span class="token number">127.0</span>.0.1:8001/apis/batch/v1/jobs
+<span class="token punctuation">&#123;</span>
+  <span class="token string">"kind"</span><span class="token builtin class-name">:</span> <span class="token string">"JobList"</span>,
+  <span class="token string">"apiVersion"</span><span class="token builtin class-name">:</span> <span class="token string">"batch/v1"</span>,
+  <span class="token string">"metadata"</span><span class="token builtin class-name">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token string">"resourceVersion"</span><span class="token builtin class-name">:</span> <span class="token string">"656352"</span>
+  <span class="token punctuation">&#125;</span>,
+  <span class="token string">"items"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">&#123;</span>
+      <span class="token string">"metadata"</span><span class="token builtin class-name">:</span> <span class="token punctuation">&#123;</span>
+        <span class="token string">"name"</span><span class="token builtin class-name">:</span> <span class="token string">"batch-job"</span>,
+        <span class="token string">"namespace"</span><span class="token builtin class-name">:</span> <span class="token string">"default"</span>,
+        <span class="token string">"uid"</span><span class="token builtin class-name">:</span> <span class="token string">"dfcb1eda-55fc-4a30-ad7c-4769d5baebc4"</span>,
+        <span class="token string">"resourceVersion"</span><span class="token builtin class-name">:</span> <span class="token string">"656319"</span>,<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>获取到的清单包括所有命名空间中的 Job。如果要返回指定的 Job，需要在请求 URL 中指定名称和命名空间。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> <span class="token number">127.0</span>.0.1:8001/apis/batch/v1/namespaces/default/jobs/batch-job
+<span class="token punctuation">&#123;</span>
+  <span class="token string">"kind"</span><span class="token builtin class-name">:</span> <span class="token string">"Job"</span>,
+  <span class="token string">"apiVersion"</span><span class="token builtin class-name">:</span> <span class="token string">"batch/v1"</span>,
+  <span class="token string">"metadata"</span><span class="token builtin class-name">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token string">"name"</span><span class="token builtin class-name">:</span> <span class="token string">"batch-job"</span>,
+    <span class="token string">"namespace"</span><span class="token builtin class-name">:</span> <span class="token string">"default"</span>,<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>通过这种方式获得的结果与执行 <code>kubectl get job batch-job -o json</code> 命令得到的结果相同。</p>
+<h3 id="从-pod-内与-api-服务器交互"><a class="markdownIt-Anchor" href="#从-pod-内与-api-服务器交互"></a> 从 Pod 内与 API 服务器交互</h3>
+<p>一般情况下，Pod 内没有可用的 kubectl，与 API 服务器进行交互需要解决认证问题。这里使用一个安装了 <code>curl</code> 的镜像，在容器内使用 <code>curl</code> 来测试与 API 服务器的交互结果：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> curl.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: <span class="token function">curl</span>
+spec:
+  containers:
+  - name: main
+    image: curlimages/curl
+    command: <span class="token punctuation">[</span><span class="token string">"sleep"</span>, <span class="token string">"999999"</span><span class="token punctuation">]</span>
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> curl.yaml
+pod/curl created
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> <span class="token parameter variable">-it</span> <span class="token function">curl</span> -- <span class="token function">sh</span>
+/ $ <span class="token function">env</span> <span class="token operator">|</span> <span class="token function">grep</span> KUBERNETES_SERVICE
+<span class="token assign-left variable">KUBERNETES_SERVICE_PORT</span><span class="token operator">=</span><span class="token number">443</span>
+<span class="token assign-left variable">KUBERNETES_SERVICE_PORT_HTTPS</span><span class="token operator">=</span><span class="token number">443</span>
+<span class="token assign-left variable">KUBERNETES_SERVICE_HOST</span><span class="token operator">=</span><span class="token number">10.96</span>.0.1
+/ $ <span class="token function">curl</span> https://kubernetes
+curl: <span class="token punctuation">(</span><span class="token number">60</span><span class="token punctuation">)</span> SSL certificate problem: unable to get <span class="token builtin class-name">local</span> issuer certificate
+More details here: https://curl.se/docs/sslcerts.html<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在容器内查询 API 服务器的地址后，尝试访问时会提示证书问题。虽然可以通过 <code>-k</code> 选项来绕过 HTTPS 证书验证，但为了安全起见，应该检查证书以验证 API 服务器的身份，以避免中间人攻击，并防止将应用的验证凭证暴露给攻击者。</p>
+<p>可以查看每个容器的 <code>/var/run/secrets/kubernetes.io/serviceaccount</code> 目录下默认的 Secret（token），其中包含的 <code>ca.crt</code> 可用于对 API 服务器证书进行签名。<code>curl</code> 允许使用 <code>-cacert</code> 选项来指定 CA 证书路径：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">/ $ <span class="token function">ls</span> /var/run/secrets/kubernetes.io/serviceaccount
+ca.crt     namespace  token
+/ $ <span class="token function">curl</span> <span class="token parameter variable">--cacert</span> /var/run/secrets/kubernetes.io/serviceaccount/ca.crt https://kubernetes
+<span class="token punctuation">&#123;</span>
+  <span class="token string">"kind"</span><span class="token builtin class-name">:</span> <span class="token string">"Status"</span>,
+  <span class="token string">"apiVersion"</span><span class="token builtin class-name">:</span> <span class="token string">"v1"</span>,
+  <span class="token string">"metadata"</span><span class="token builtin class-name">:</span> <span class="token punctuation">&#123;</span>
+    
+  <span class="token punctuation">&#125;</span>,
+  <span class="token string">"status"</span><span class="token builtin class-name">:</span> <span class="token string">"Failure"</span>,
+  <span class="token string">"message"</span><span class="token builtin class-name">:</span> <span class="token string">"forbidden: User <span class="token entity" title="\&quot;">\"</span>system:anonymous<span class="token entity" title="\&quot;">\"</span> cannot get path <span class="token entity" title="\&quot;">\"</span>/<span class="token entity" title="\&quot;">\"</span>"</span>,
+  <span class="token string">"reason"</span><span class="token builtin class-name">:</span> <span class="token string">"Forbidden"</span>,
+  <span class="token string">"details"</span><span class="token builtin class-name">:</span> <span class="token punctuation">&#123;</span>
+    
+  <span class="token punctuation">&#125;</span>,
+  <span class="token string">"code"</span><span class="token builtin class-name">:</span> <span class="token number">403</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这次 <code>curl</code> 验证通过了服务器的身份，但提示匿名用户没有查询权限。可以通过设置 CURL_CA_BUNDLE 环境变量来简化 <code>curl</code> 指定 CA 证书的选项：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">/ $ <span class="token builtin class-name">export</span> <span class="token assign-left variable">CURL_CA_BUNDLE</span><span class="token operator">=</span>/var/run/secrets/kubernetes.io/serviceaccount/ca.crt<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>接下来需要获取 API 服务器的授权，以进一步修改或删除部署在集群中的 API 对象。认证凭证可以使用默认的 token 来生成：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">/ $ <span class="token assign-left variable">TOKEN</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">cat</span> /var/run/secrets/kubernetes.io/serviceaccount/token<span class="token variable">)</span></span>
+/ $ <span class="token function">curl</span> <span class="token parameter variable">-k</span> <span class="token parameter variable">-H</span> <span class="token string">"Authorization: Bearer <span class="token variable">$TOKEN</span>"</span> https://10.96.0.1 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>由于服务器使用 RBAC 机制，服务账户依然没有被授权（或部分授权）访问 API 服务器。可以通过修改角色绑定来临时赋予所有服务账户集群管理员权限：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create clusterrolebinding permissive-binding <span class="token parameter variable">--clusterrole</span><span class="token operator">=</span>cluster-admin <span class="token parameter variable">--group</span><span class="token operator">=</span>system:serviceaccounts
+clusterrolebinding.rbac.authorization.k8s.io/permissive-binding created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>Secret 卷中还包含一个命名空间的文件，其中包含了当前运行的 Pod 所在的命名空间。在请求中加入命名空间后再次访问，正常情况下会返回当前 Pod 所在命名空间的所有 Pod 清单：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">/ $ <span class="token assign-left variable">NS</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">cat</span> /var/run/secrets/kubernetes.io/serviceaccount/namespace<span class="token variable">)</span></span>
+/ $ <span class="token function">curl</span> <span class="token parameter variable">-k</span> <span class="token parameter variable">-H</span> <span class="token string">"Authorization: Bearer <span class="token variable">$TOKEN</span>"</span> https://kubernetes/api/v1/namespaces/<span class="token variable">$NS</span>/pods<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>此时，Pod 与 API 服务器的交互已经没有阻碍，其他的 PUT 或 PATCH 请求同样可以操作。示意图如下：</p>
+<p>![通过 default token 与 API 服务器交互](…/…/…/images/通过 default token 与 API 服务器交互.jpg)</p>
+<p>总结一下 Pod 与 Kubernetes 交互的要点如下：</p>
+<ul>
+<li>应用程序应验证 API 服务器的证书是否由受信任的证书机构签发，证书位于 <code>ca.crt</code> 文件中。</li>
+<li>应用程序应使用它在 <code>token</code> 文件中持有的凭证来获取 API 服务器的授权。</li>
+<li>当对 Pod 所在命名空间的 API 对象进行 CRUD（创建、读取、修改、删除）操作时，应使用 <code>namespace</code> 文件来将命名空间信息传递到 API 服务器。</li>
+</ul>
+<h3 id="通过-ambassador-容器与-api-服务器交互"><a class="markdownIt-Anchor" href="#通过-ambassador-容器与-api-服务器交互"></a> 通过 ambassador 容器与 API 服务器交互</h3>
+<p>还有一种更简便与 API 服务器交互的方法，可以在 pod 中增加一个 ambassador 容器，其中运行着 <code>kubectl proxy</code> 命令，通过它来实现与 API 服务器的交互。如下图所示：</p>
+<p>![通过 ambassador 容器与 API 服务器交互](…/…/…/images/通过 ambassador 容器与 API 服务器交互.jpg)</p>
+<p>这种模式下，运行在主容器中的应用通过 HTTP 协议与 ambassador 连接，并由 ambassador 通过 HTTPS 协议来连接 API 服务器，对应用透明地处理安全问题，其同样使用默认凭证 Secret 卷中的文件来认证。</p>
+<p>pod 配置在原先 <code>curl</code> 的基础上增加一个 kubectl-proxy 镜像，启动后进入到 curl 容器中的 shell 环境：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> curl-am.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: curl-am
+spec:
+  containers:
+  - name: main
+    image: curlimages/curl
+    command: <span class="token punctuation">[</span><span class="token string">"sleep"</span>, <span class="token string">"999999"</span><span class="token punctuation">]</span>
+  - name: ambassador
+    image: luksa/kubectl-proxy:1.6.2
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> curl-am.yaml 
+pod/curl-am created
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> <span class="token parameter variable">-it</span> curl-am <span class="token parameter variable">-c</span> main -- <span class="token function">sh</span>
+/ $ <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>接下来试着通过 ambassador 容器来连接 API 服务器。kubectl proxy 默认绑定 8001 端口，由于在同 pod 中可以直接访问本地回环地址：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">/ $ <span class="token function">curl</span> localhost:8001
+<span class="token punctuation">&#123;</span>
+  <span class="token string">"paths"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"/.well-known/openid-configuration"</span>,
+    <span class="token string">"/api"</span>,
+    <span class="token string">"/api/v1"</span>,
+    <span class="token string">"/apis"</span>,
+    <span class="token string">"/apis/"</span>,<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>结果显示 ambassador 容器已经帮忙处理好了凭证和授权问题。</p>
+<p>虽然 ambassador 容器已经足够简便，且能跨多个应用复用，但负面因素是需要运行额外的进程，消耗更多资源。</p>
+<h3 id="使用客户端与-api-服务器交互"><a class="markdownIt-Anchor" href="#使用客户端与-api-服务器交互"></a> 使用客户端与 API 服务器交互</h3>
+<p>如果应用仅仅需要在 API 服务器执行一些简单操作，可以使用一个标准的客户端库来执行简单的 HTTP 请求。但对于执行更复杂的 API 请求，使用某个已有的 K8s API 客户端库会更好。可以到 GitHub 社区查询到<a href="https://github.com/kubernetes/community/blob/master/sig-list.md">具体清单</a>。</p>
+<p>另外，如果选择的开发语言没有可用的客户端，可以使用 Swagger API 框架生成客户端库和文档。具体内容可访问<a href="https://swagger.io/">官网</a>。</p>
+<h1 id="控制器管理器"><a class="markdownIt-Anchor" href="#控制器管理器"></a> 控制器管理器</h1>
+<p>控制器主要工作是通过标签管理 pod，确保系统真实状态朝 API 服务器定义的期望状态收敛。</p>
+<p>它们是 K8s 上的一类对象，包括 ReplicationController、ReplicaSet、Deployment、StatefulSet、Job 等。控制器的定义通常由期望的副本数量、pod 模板和标签选择器组成。</p>
+<h2 id="控制器工作"><a class="markdownIt-Anchor" href="#控制器工作"></a> 控制器工作</h2>
+<p>控制器通过 API 服务器监听资源（部署、服务等）变更，并执行相应操作。将实际状态调整为期望状态（资源 spec 部分定义）后，将新的实际状态写入资源的 status 部分。</p>
+<p>控制器利用监听机制来订阅变更，但仍然会定期执行重列举操作来确保不会漏掉请求。</p>
+<p>生命周期功能包括命名空间创建、事件垃圾回收、pod 终止相关垃圾回收、级联垃圾回收及节点垃圾回收等。</p>
+<p>通过源码分析，控制器工作原理如下：</p>
+<ul>
+<li>每个控制器一般有一个构造器，内部会创建一个 Informer，也就是监听器，每次 API 对象有更新就会被调用。</li>
+<li>通常 Informer 会监听特定类型的资源变更事件。</li>
+<li>控制器需要工作的时候会调用 worker() 方法，实际函数通常保存在一个叫 syncHandler 或类似字段里。该字段也在构造器里初始化，可以在那找到被调用函数名。</li>
+</ul>
+<h2 id="控制器类型"><a class="markdownIt-Anchor" href="#控制器类型"></a> 控制器类型</h2>
+<p>Kubernetes 中有多种类型的控制器，每种控制器都有不同的作用和特点。以下是一些常用的控制器类型。</p>
+<h3 id="replicationcontroller-控制器"><a class="markdownIt-Anchor" href="#replicationcontroller-控制器"></a> ReplicationController 控制器</h3>
+<p>启动 ReplicationController（复制控制器）的控制器称为 ReplicationManager（复制管理器）。ReplicationManager 通过监听机制订阅可能影响复制集数量或符合条件的 pod 数量的变更事件。</p>
+<p>任何变化都会触发 ReplicationController 控制器重新检查期望的复制集数量与实际数量，然后采取相应的操作。它不直接操作 pod，而是通过向 API 服务器创建新的 pod 清单，由 API 服务器通知调度器和 Kubelet 执行 pod 管理操作。其他控制器的工作流程也类似。</p>
+<h3 id="replicaset-daemonset-和-job-控制器"><a class="markdownIt-Anchor" href="#replicaset-daemonset-和-job-控制器"></a> ReplicaSet、DaemonSet 和 Job 控制器</h3>
+<p>这些控制器的工作原理与 ReplicationController 控制器基本相同。</p>
+<h3 id="deployment-控制器"><a class="markdownIt-Anchor" href="#deployment-控制器"></a> Deployment 控制器</h3>
+<p>Deployment 控制器负责同步 Deployment 的实际状态与对应的 Deployment API 对象的期望状态。每次修改 Deployment 对象后，控制器会进行滚动升级到新版本，通过创建一个 ReplicaSet（副本集）来调整 pod 的数量，直到升级完成。</p>
+<h3 id="statefulset-控制器"><a class="markdownIt-Anchor" href="#statefulset-控制器"></a> StatefulSet 控制器</h3>
+<p>StatefulSet 控制器类似于 ReplicaSet 控制器，根据定义创建和管理 pod，但同时还会初始化和管理每个 pod 实例的持久卷声明。</p>
+<h3 id="node-控制器"><a class="markdownIt-Anchor" href="#node-控制器"></a> Node 控制器</h3>
+<p>Node 控制器负责管理 Node 资源，描述集群的工作节点，并确保节点对象列表的正确性。同时监控每个节点的健康状态，删除不可达节点上的 pod。</p>
+<h3 id="service-控制器"><a class="markdownIt-Anchor" href="#service-控制器"></a> Service 控制器</h3>
+<p>Service 控制器用于提供稳定的对 pod 的访问服务。</p>
+<h3 id="endpoint-控制器"><a class="markdownIt-Anchor" href="#endpoint-控制器"></a> Endpoint 控制器</h3>
+<p>Endpoint 控制器负责维护端点列表。控制器同时监听 Service 和 pod，当 Service 或 pod 被添加或修改时，控制器会选择与 Service 中的 pod 选择器匹配的 pod，并将其 IP 和端口添加到 Endpoint 资源中。</p>
+<p>Endpoint 对象是独立的对象，因此在需要时控制器会创建它，并在删除 Service 时一同删除。</p>
+<h3 id="namespace-控制器"><a class="markdownIt-Anchor" href="#namespace-控制器"></a> Namespace 控制器</h3>
+<p>Namespace 控制器负责删除 Namespace 资源时，清除所有属于该命名空间的资源。</p>
+<h3 id="persistentvolume-控制器"><a class="markdownIt-Anchor" href="#persistentvolume-控制器"></a> PersistentVolume 控制器</h3>
+<p>当用户创建 PersistentVolumeClaim（持久卷声明）时，控制器负责找到合适的 PersistentVolume（持久卷）与声明进行绑定。</p>
+<p>查找的方式是保存一个有序的持久卷列表，按容量升序排列，返回列表中的第一个卷。</p>
+<p>当用户删除持久卷声明时，控制器会解绑卷，并根据卷的回收策略进行处理。</p>
+<h1 id="调度器"><a class="markdownIt-Anchor" href="#调度器"></a> 调度器</h1>
+<p>调度器的角色比较简单，就是利用 API 服务器的监听机制等待新创建的 pod，然后给新建的 pod 分配节点。</p>
+<p>调度器不会指示选中的节点运行 pod，而是通过 API 服务器更新 pod 的定义，然后由 API 服务器通知节点上的 Kubelet，告知该 pod 已被调度到此节点，并由目标节点上的 Kubelet 创建并运行 pod 的容器。</p>
+<p>Kubernetes 还支持用户自定义调度器。</p>
+<h2 id="默认的调度算法"><a class="markdownIt-Anchor" href="#默认的调度算法"></a> 默认的调度算法</h2>
+<p>调度器的默认调度算法选择节点的操作可以分为两部分：首先过滤所有节点，找出可分配给 pod 的可用节点列表；然后对可用节点按优先级排序，找出最优节点。如果多个节点的优先级相同，则循环分配，确保 pod 平均分配。</p>
+<h2 id="查找可用节点"><a class="markdownIt-Anchor" href="#查找可用节点"></a> 查找可用节点</h2>
+<p>为了找出可用节点，调度器会对每个节点下发一组配置好的预选函数，检查节点信息：</p>
+<ul>
+<li>节点是否能满足 pod 对硬件资源的请求；</li>
+<li>节点是否耗尽资源；</li>
+<li>pod 是否有节点选择器；</li>
+<li>节点是否符合 pod 中的节点选择器；</li>
+<li>pod 请求绑定的主机端口是否已被占用；</li>
+<li>pod 请求的存储卷是否能加载，是否可用；</li>
+<li>pod 是否能够容忍节点的污点；</li>
+<li>pod 是否定义了节点，以及 pod 的亲和性和反亲和性规则。</li>
+</ul>
+<p>只有当所有的测试都通过时，节点才有资格被调度给 pod。</p>
+<h2 id="高级调度"><a class="markdownIt-Anchor" href="#高级调度"></a> 高级调度</h2>
+<p>默认情况下，属于同一服务和 ReplicaSet 的 pod 会分散在尽可能多的节点上，但可以通过定义 pod 的亲和性或反亲和性规则，强制 pod 在集群内分散或集中在一起。</p>
+<h2 id="多个调度器"><a class="markdownIt-Anchor" href="#多个调度器"></a> 多个调度器</h2>
+<p>可以在集群中运行多个调度器，然后在 pod 的属性中设置 <code>schedulerName</code> 属性来指定调度器来调度它。如果未设置此属性的 pod，则由默认调度器（default-scheduler）进行调度。</p>
+<h1 id="etcd"><a class="markdownIt-Anchor" href="#etcd"></a> etcd</h1>
+<p>etcd 是一个分布式的键值存储数据库，Kubernetes 使用 etcd 来持久化存储集群状态和元数据。API 服务器是与 etcd 通信的唯一组件，所有其他组件通过 API 服务器间接地读写数据到 etcd。</p>
+<h2 id="etcdctl"><a class="markdownIt-Anchor" href="#etcdctl"></a> etcdctl</h2>
+<p>要访问 etcd 数据库，需要在主节点上安装 etcdctl 客户端：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> <span class="token parameter variable">-L</span> https://github.com/etcd-io/etcd/releases/download/v3.5.2/etcd-v3.5.2-linux-amd64.tar.gz <span class="token parameter variable">-o</span> etcd-v3.5.2-linux-amd64.tar.gz
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">tar</span> <span class="token parameter variable">-zxf</span> etcd-v3.5.2-linux-amd64.tar.gz
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">cp</span> etcd-v3.5.2-linux-amd64/etcdctl /usr/local/bin
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ etcdctl version
+etcdctl version: <span class="token number">3.5</span>.2
+API version: <span class="token number">3.5</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>设置好数据库地址、证书路径等到本地变量：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> ~/.bashrc
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">ETCDCTL_ENDPOINTS</span><span class="token operator">=</span>https://127.0.0.1:2379
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">ETCDCTL_CACERT</span><span class="token operator">=</span>/etc/kubernetes/pki/etcd/ca.crt
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">ETCDCTL_CERT</span><span class="token operator">=</span>/etc/kubernetes/pki/etcd/healthcheck-client.crt
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">ETCDCTL_KEY</span><span class="token operator">=</span>/etc/kubernetes/pki/etcd/healthcheck-client.key
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">ETCDCTL_API</span><span class="token operator">=</span><span class="token number">3</span>
+<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">source</span> ~/.bashrc<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>之后就可以直接通过命令来访问 etcd：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ etcdctl get --keys-only <span class="token parameter variable">--prefix</span> /<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="乐观并发控制"><a class="markdownIt-Anchor" href="#乐观并发控制"></a> 乐观并发控制</h2>
+<p>乐观并发控制，也称为乐观锁，指的是一段数据包含一个版本数字，而不是锁住该段数据阻止读写操作。</p>
+<p>每当更新数据时，版本数就会增加。当更新数据时，会检查版本值是否在客户端读取数据时间和提交时间之间被增加过。如果有增加过，更新会被拒绝，客户端必须重新读取新数据，重新尝试更新。</p>
+<p>当两个客户端尝试更新同一个数据条目时，只有第一个会成功。</p>
+<p>所有的 Kubernetes 对象都包含一个 <code>metadata.resourceVersion</code> 字段用来保存版本数字。在更新对象时，客户端需要返回该值到 API 服务器，服务器检查版本值与 etcd 中存储的是否匹配。如果不匹配，服务器会拒绝更新。</p>
+<h2 id="资源储存"><a class="markdownIt-Anchor" href="#资源储存"></a> 资源储存</h2>
+<p>etcd 的版本 v2 和 v3 对资源存储格式有所不同。v2 版本将键存储在一个层级键空间中，使得键值对类似于文件系统的文件。每个键可以是一个目录，包含其他键，或者是一个常规键，对应一个值。v3 版本不支持目录，但由于键格式保持不变，键可以包含斜杠，仍然可以将它们组织成目录结构。</p>
+<p>Kubernetes 将所有数据存储到 etcd 的 <code>/registry</code> 下，可以使用 etcdctl 来查询：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ etcdctl get --keys-only <span class="token parameter variable">--prefix</span> /registry <span class="token operator">|</span> <span class="token function">less</span>
+/registry/apiextensions.k8s.io/customresourcedefinitions/apiservers.operator.tigera.io
+/registry/apiextensions.k8s.io/customresourcedefinitions/bgpconfigurations.crd.projectcalico.org
+/registry/apiextensions.k8s.io/customresourcedefinitions/bgppeers.crd.projectcalico.org
+/registry/apiextensions.k8s.io/customresourcedefinitions/blockaffinities.crd.projectcalico.org<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>会发现键与资源名称相对应。还可以单独查看特定命名空间下的 Pod 列表：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ etcdctl get --keys-only <span class="token parameter variable">--prefix</span> /registry/pods/default
+/registry/pods/default/kubia-0
+/registry/pods/default/kubia-1
+/registry/pods/default/kubia-2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果要查看特定 Pod 在 etcd 中存储的内容，可以执行以下命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ etcdctl get /registry/pods/default/kubia-1
+kube-controller-managerUpdatevFieldsV1:f:metadata<span class="token string">":&#123;"</span>f:generateName<span class="token string">":&#123;&#125;,"</span>f:labels<span class="token string">":&#123;"</span><span class="token builtin class-name">.</span><span class="token string">":&#123;&#125;,"</span>f:app<span class="token string">":&#123;&#125;,"</span>f:controller-revision-hash<span class="token string">":&#123;&#125;,"</span>f:statefulset.kubernetes.io/pod-name<span class="token string">":&#123;&#125;&#125;,"</span>f:ownerReferences<span class="token string">":&#123;"</span><span class="token builtin class-name">.</span><span class="token string">":&#123;&#125;,"</span>k:<span class="token punctuation">&#123;</span><span class="token punctuation">\</span>"uid<span class="token punctuation">\</span>":<span class="token punctuation">\</span>"4142df85-4fb1-4b09-84ab-24ad2d1c309e<span class="token punctuation">\</span>"<span class="token punctuation">&#125;</span><span class="token string">":&#123;&#125;&#125;&#125;,"</span>f:spec<span class="token string">":&#123;"</span>f:containers<span class="token string">":&#123;"</span>k:<span class="token punctuation">&#123;</span><span class="token punctuation">\</span>"name<span class="token punctuation">\</span>":<span class="token punctuation">\</span>"kubia<span class="token punctuation">\</span>"<span class="token punctuation">&#125;</span><span class="token string">":&#123;"</span><span class="token builtin class-name">.</span><span class="token string">":&#123;&#125;,"</span>f:image<span class="token string">":&#123;&#125;,"</span>f:imagePullPolicy<span class="token string">":&#123;&#125;,"</span>f:name<span class="token string">":&#123;&#125;,"</span>f:ports<span class="token string">":&#123;"</span><span class="token builtin class-name">.</span><span class="token string">":&#123;&#125;,"</span>k:<span class="token punctuation">&#123;</span><span class="token punctuation">\</span>"containerPort<span class="token punctuation">\</span>":8080,<span class="token punctuation">\</span>"protocol<span class="token punctuation">\</span>":<span class="token punctuation">\</span>"TCP<span class="token punctuation">\</span>"<span class="token punctuation">&#125;</span><span class="token string">":&#123;"</span><span class="token builtin class-name">.</span><span class="token string">":&#123;&#125;,"</span>f:containerPort<span class="token string">":&#123;&#125;,"</span>f:name<span class="token string">":&#123;&#125;,"</span>f:protocol<span class="token string">":&#123;&#125;&#125;&#125;,"</span>f:resources<span class="token string">":&#123;&#125;,"</span>f:terminati<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>这将返回  JSON 格式的 Pod 定义。</p>
+<h2 id="etcd-集群"><a class="markdownIt-Anchor" href="#etcd-集群"></a> etcd 集群</h2>
+<p>为了保证高可用性，etcd 集群通常会部署多个（奇数个）etcd 实例。etcd 使用 Raft 一致性算法来确保系统达到一致的实际状态。</p>
+<p>该算法要求大部分节点参与才能进行下一个状态的提交，否则集群将分裂成两个不互联的节点组。如果一个组的成员数超过另一个组，大组可以更改集群状态，而小组则不能。当两个组重新恢复连接时，小组的节点会将状态更新为大组节点的状态。下图展示了这个过程：</p>
+<p><img data-src="../../../images/%E8%84%91%E8%A3%82%E5%9C%BA%E6%99%AF.jpg" alt="脑裂场景" /></p>
+<h1 id="kubelet"><a class="markdownIt-Anchor" href="#kubelet"></a> Kubelet</h1>
+<p>Kubelet 是 Kubernetes 中的一个核心组件，它运行在每个节点上，负责管理节点上的容器和与主控组件的通信。</p>
+<h2 id="工作内容"><a class="markdownIt-Anchor" href="#工作内容"></a> 工作内容</h2>
+<p>Kubelet 负责所有运行在工作节点上的内容组件。</p>
+<p>其工作内容是：</p>
+<ul>
+<li>在 API 服务器中创建一个 Node 资源来注册 Kubelet 所在节点。</li>
+<li>持续监控 API 服务器是否将该节点分配给 pod。</li>
+<li>告知节点上的容器运行时拉取镜像，启动容器。</li>
+<li>持续监控运行的容器，向 API 服务器报告它们的状态、事件和资源消耗。</li>
+<li>在 pod 被从 API 服务器删除时，Kubelet 终止容器并通知服务器 pod 已被终止。</li>
+</ul>
+<h2 id="运行静态-pod"><a class="markdownIt-Anchor" href="#运行静态-pod"></a> 运行静态 pod</h2>
+<p>Kubelet 还可以基于本地指定目录下的 pod 清单来运行 pod，主要用于运行容器化版本的控制面板组件。</p>
+<p>静态 pod 总由 Kubelet 创建在 Kubelet 所在的 Node 上运行，由 Kubelet 管理。不能通过 API Server 进行管理，不能与控制器进行关联，Kubelet 也无法对它们进行健康检查。</p>
+<p>启动静态 pod 需要设置 Kubelet 的启动参数 <code>--config</code>，指定需要监控的配置文件所在目录，并根据 YAML 进行创建操作。例如配置 <code>--config=/etc/kubelet.d/</code>，然后重启 Kubelet 服务。在目录下写入 <code>static-web.yaml</code> 文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> static-web.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: static-web
+  labels:
+    name: static-web
+  namespace: default
+spec:
+  containers:
+  - name: static-web
+    image: nginx
+    ports:
+    - name: web
+      containerPort: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>等待一段时间可以看到 pod 被创建出来。假如在 Master 节点删除 pod，会使其变为 Pending 状态且不会被删除。</p>
+<p>还可以通过设置 Kubelet 的启动参数 <code>--manifest-url</code>，Kubelet 将会定期从指定 URL 地址下载定义文件创建 pod。</p>
+<h1 id="proxy"><a class="markdownIt-Anchor" href="#proxy"></a> Proxy</h1>
+<p>Proxy 是一种核心组件，它用于在集群内部提供网络代理服务。它负责处理集群内部各个节点上的网络请求，并将其转发到适当的目标。</p>
+<h2 id="代理作用"><a class="markdownIt-Anchor" href="#代理作用"></a> 代理作用</h2>
+<p>除了 Kubelet，每个工作节点都会运行 kube-proxy，用于确保客户端通过 API 服务器对服务 IP 和端口的连接最终能够到达支持服务（或其他非 Pod 服务终端）的某个 Pod。</p>
+<p>如果一个服务由多个 Pod 支持，那么代理将对 Pod 进行负载均衡。</p>
+<h2 id="代理实现"><a class="markdownIt-Anchor" href="#代理实现"></a> 代理实现</h2>
+<p>kube-proxy 最初被称为 userspace 代理，它利用实际的服务器集成接收连接，并将其代理给 Pod。为了拦截发往服务 IP 的连接，代理配置了 iptables 规则，将连接重定向到代理服务器。如下图所示：</p>
+<p><img data-src="../../../images/userspace%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F.jpg" alt="userspace代理模式" /></p>
+<p>当前的 kube-proxy 仅通过 iptables 或 ipvs 规则将数据包重定向到一个随机选择的后端 Pod，不再需要一个实际的代理服务器。这种模式也被称为 iptables 代理模式。如下图所示：</p>
+<p><img data-src="../../../images/iptables%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F.jpg" alt="iptables代理模式" /></p>
+<p>这两种模式的主要区别在于数据包是否传递给 kube-proxy、是否需要在用户空间进行处理，或者数据包是否仅在内核空间进行处理。这两种模式的性能有很大差异。</p>
+<p>另一个区别是，userspace 代理模式使用轮询模式对连接进行负载均衡，而 iptables 代理模式随机选择 Pod，在客户端连接较少时可能无法平均分配流量。</p>
+<h1 id="其他组件"><a class="markdownIt-Anchor" href="#其他组件"></a> 其他组件</h1>
+<p>除了 Kubernetes 核心组件之外，还有许多第三方组件可以扩展和增强 Kubernetes 的功能。这些组件通常被称为“附加组件”或“扩展组件”，它们提供了各种功能，如网络、存储、监控、日志记录等。</p>
+<p>以下是一些常见的第三方组件，可以根据需求选择和部署：</p>
+<ol>
+<li>容器网络接口（Container Networking Interface，CNI）：CNI 是一个规范，用于定义容器和宿主机之间的网络连接。它允许不同的网络插件与 Kubernetes 集成，并提供容器之间的网络通信。</li>
+<li>存储插件：存储插件用于将外部存储系统与 Kubernetes 集群集成。这些插件可以提供持久化存储解决方案，如网络存储、分布式存储和块存储。</li>
+<li>监控和日志组件：监控和日志组件用于收集、分析和可视化 Kubernetes 集群的监控数据和日志。一些常见的监控和日志工具包括 Prometheus、Grafana、Elasticsearch 和 Fluentd。</li>
+<li>Ingress 控制器：Ingress 控制器是一个负载均衡器，用于将外部流量路由到 Kubernetes 集群内部的服务。它可以提供 HTTP 和 HTTPS 等应用层协议的路由功能。</li>
+<li>安全组件：安全组件用于增强 Kubernetes 集群的安全性。它们可以提供认证、授权、身份管理和访问控制等功能，以保护集群中的资源和敏感数据。</li>
+</ol>
+<h2 id="dns"><a class="markdownIt-Anchor" href="#dns"></a> DNS</h2>
+<p>集群中所有的 Pod 默认配置使用集群内部的 DNS 服务器。Pod 可以通过名称轻松查询集群内的服务，甚至是无头服务的 Pod IP 地址。</p>
+<p>DNS 服务的 Pod 通过 kube-dns 服务对外暴露，DNS 服务的 IP 地址在集群中每个容器的 <code>/etc/resolv.conf</code> 文件中都有定义。</p>
+<p>kube-dns Pod 利用 API 服务器的监控机制来订阅 Service 和 Endpoint 的变动，以及 DNS 记录的变更，从而确保客户端始终获取到最新的 DNS 信息。</p>
+<h2 id="ingress-控制器"><a class="markdownIt-Anchor" href="#ingress-控制器"></a> Ingress 控制器</h2>
+<p>Ingress 控制器运行一个反向代理服务器，类似于 Nginx。它根据集群中定义的 Ingress、Service 和 Endpoint 资源来配置该控制器。因此，需要订阅这些资源，并在发生变化时更新代理服务器的配置。</p>
+<p>尽管 Ingress 资源的定义指向一个 Service，但是 Ingress 控制器会直接将流量转发到服务的 Pod，而不经过服务的 IP。当外部客户端通过 Ingress 控制器连接时，会保存客户端的 IP，而 Service 本身无法实现这一点。</p>
+]]></content>
+      <categories>
+        <category>Kubernets</category>
+        <category>0.基本知识</category>
+      </categories>
+  </entry>
+  <entry>
     <title>K8s 部署指南</title>
     <url>/1488965608/</url>
     <content><![CDATA[<h1 id="快速入门"><a class="markdownIt-Anchor" href="#快速入门"></a> 快速入门</h1>
@@ -8333,594 +9184,6 @@ namespace/pro created<span aria-hidden="true" class="line-numbers-rows"><span></
 <span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ <span class="token function">cp</span> <span class="token parameter variable">-r</span> /root/etcd/ /var/lib/etcd/
 <span class="token punctuation">[</span>root@server4 ~<span class="token punctuation">]</span>$ systemctl start kubelet<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>恢复的数据将回到备份时的状态。</p>
-]]></content>
-      <categories>
-        <category>Kubernets</category>
-        <category>0.基本知识</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>K8s 组件介绍</title>
-    <url>/1457906456/</url>
-    <content><![CDATA[<h1 id="api-服务器"><a class="markdownIt-Anchor" href="#api-服务器"></a> API 服务器</h1>
-<p>K8s API 服务器作为中心组件，其他组件或客户端都会调用它。API 服务器以 RESTful API 的形式提供了可以查询、修改集群状态的 CRUD (Create, Read, Update, Delete) 接口，并将状态存储到 etcd 中。</p>
-<p>API 服务器除了提供一种一致的方式来存储对象，还对这些对象进行校验，以确保其合法性。除了校验之外，API 服务器还会处理乐观锁。</p>
-<p>kubectl 是 API 服务的一个客户端之一。</p>
-<h2 id="工作流程"><a class="markdownIt-Anchor" href="#工作流程"></a> 工作流程</h2>
-<p>当 kubectl 通过一个 HTTP POST 请求将配置文件内容发布到 API 服务器后，API 处理的流程如下：</p>
-<ul>
-<li>
-<p>通过认证插件认证客户端</p>
-<p>首先，API 服务器需要对发送请求的客户端进行认证。通过依次调用配置在 API 服务器上的一个或多个认证插件，直到确认请求发送者的身份。根据认证方式，可以从客户端证书或 HTTP 标头中获取用户信息。插件提取客户端的用户名、用户 ID 和归属组信息。</p>
-</li>
-<li>
-<p>通过授权插件为客户端授权</p>
-<p>API 服务器还可以配置使用一个或多个授权插件，以决定认证用户是否可以对请求的资源执行请求操作。一旦确认用户拥有权限，API 服务器进入下一步操作。</p>
-</li>
-<li>
-<p>通过准入控制插件验证并修改资源请求</p>
-<p>如果请求尝试创建、修改或删除资源，则需要经过准入控制插件的验证。这些插件会验证资源请求，并根据不同的原因对资源进行修改。它们可能会将资源定义中未配置的字段初始化为默认值，可能会修改与请求相关的其他资源，同时也可能因为某些原因拒绝请求。</p>
-<p>如果请求只是尝试读取数据，则不会进行准入控制的验证。</p>
-<p>常用的准入控制插件包括：AlwaysPullImages、ServiceAccount、NamespaceLifecycle、ResourceQuota 等。</p>
-</li>
-<li>
-<p>验证资源并进行持久化存储</p>
-<p>请求通过了所有的准入控制插件后，API 服务器会验证存储在 etcd 中的对象，并向客户端返回响应。</p>
-</li>
-</ul>
-<h2 id="资源变更"><a class="markdownIt-Anchor" href="#资源变更"></a> 资源变更</h2>
-<p>API 服务器只负责启动控制器,以及其他一些组件来监控已部署资源的变更.控制面板可以请求订阅资源被创建,修改或删除的通知.</p>
-<p>客户端通过创建到 API 服务器的 HTTP 连接来监听变更.每当更新对象,服务器把新版本对象发送至所有监听该对象的客户端.</p>
-<p>kubectl 工具作为 API 服务器的客户端之一也支持监听资源.例如部署应用时,可以通过在 get 命令后加–watch 参数,每当有变化就会收到通知:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl get po <span class="token parameter variable">--watch</span>
-NAME      READY   STATUS    RESTARTS   AGE
-kubia-0   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          19h
-kubia-1   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          19h
-kubia-2   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          19h<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="downward-api"><a class="markdownIt-Anchor" href="#downward-api"></a> Downward API</h2>
-<p>对于无法预先知道的数据，K8s Downward API 允许我们通过环境变量或文件（downwardAPI 卷）将 Pod 的元数据公开给外部（传递给容器内的 Pod）。这种方式主要是将从 Pod 的定义和状态中获取的数据作为环境变量和文件的值传递。</p>
-<p>目前可以传递给容器的数据包括：</p>
-<ul>
-<li>Pod 名称</li>
-<li>Pod 的 IP 地址</li>
-<li>Pod 所属的命名空间</li>
-<li>Pod 运行的节点名称</li>
-<li>Pod 运行的服务账户名称</li>
-<li>每个容器请求的 CPU 和内存使用量</li>
-<li>每个容器可使用的 CPU 和内存限制</li>
-<li>Pod 的标签</li>
-<li>Pod 的注解</li>
-</ul>
-<p>由于可以在 Pod 运行时修改 Pod 的标签和注解，因此无法通过环境变量来公开修改后的新值。</p>
-<p>Downward API 在处理已在环境变量中的部分数据的现有应用程序时特别有用，无需修改应用程序或编写脚本来公开元数据。</p>
-<h3 id="通过环境变量暴露"><a class="markdownIt-Anchor" href="#通过环境变量暴露"></a> 通过环境变量暴露</h3>
-<p>创建一个简单的单容器来暴露 Pod 常见的 7 种数据：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> dow.yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: downward
-spec:
-  containers:
-  - name: main
-    image: busybox
-    command: <span class="token punctuation">[</span><span class="token string">"sleep"</span>, <span class="token string">"9999"</span><span class="token punctuation">]</span>
-    resources:
-      requests:
-        cpu: 15m
-        memory: 500Ki
-      limits:
-        cpu: 100m
-        memory: 8Mi
-    env:
-    - name: POD_NAME
-      valueFrom:
-        fieldRef:
-          fieldPath: metadata.name
-    - name: POD_NAMESPACE
-      valueFrom:
-        fieldRef:
-          fieldPath: metadata.namespace
-    - name: POD_IP
-      valueFrom:
-        fieldRef:
-          fieldPath: status.podIP
-    - name: NODE_NAME
-      valueFrom:
-        fieldRef:
-          fieldPath: spec.nodeName
-    - name: SERVICE_ACCOUNT
-      valueFrom:
-        fieldRef:
-          fieldPath: spec.serviceAccountName
-    - name: CONTAINER_CPU_REQUEST_MILLICORES
-      valueFrom:
-        resourceFieldRef:
-          resource: requests.cpu
-          divisor: 1m
-    - name: CONTAINER_MEMORY_LIMIT_KIBIBYTES
-      valueFrom:
-        resourceFieldRef:
-          resource: limits.memory
-          divisor: 1Ki<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>其中，fieldRef 参考的数据来自使用 <code>kubectl get po downward -o yaml</code> 展示的结果，<code>resourceFieldRef</code> 参考的是 <code>spec.containers</code> 中的 <code>resources</code>。如下图所示：</p>
-<p><img data-src="../../../images/%E9%80%9A%E8%BF%87%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E6%9A%B4%E9%9C%B2pod%E5%85%83%E6%95%B0%E6%8D%AE%E5%92%8C%E5%B1%9E%E6%80%A7.jpg" alt="通过环境变量暴露pod元数据和属性" /></p>
-<p>对于暴露的资源请求和限制变量，通过 divisor 设置了一个基数单位，最后暴露的是实际数据除以基数单位得到的值。例如，CPU 请求基数为 1 millicore，环境变量展示的值为 15，内存限制基数为 1 Kibibyte，环境变量展示的值为 8192。</p>
-<p>创建完 Pod 后，查询容器中的所有环境变量：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> downward -- <span class="token function">env</span>
-<span class="token assign-left variable">SERVICE_ACCOUNT</span><span class="token operator">=</span>default
-<span class="token assign-left variable">CONTAINER_CPU_REQUEST_MILLICORES</span><span class="token operator">=</span><span class="token number">15</span>
-<span class="token assign-left variable">CONTAINER_MEMORY_LIMIT_KIBIBYTES</span><span class="token operator">=</span><span class="token number">8192</span>
-<span class="token assign-left variable">POD_NAME</span><span class="token operator">=</span>downward
-<span class="token assign-left variable">POD_NAMESPACE</span><span class="token operator">=</span>default
-<span class="token assign-left variable">POD_IP</span><span class="token operator">=</span><span class="token number">10.244</span>.244.211
-<span class="token assign-left variable">NODE_NAME</span><span class="token operator">=</span>server6-node2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>所有在该容器中运行的进程都可以读取并使用所需的变量。</p>
-<h3 id="通过-downward-api-卷传递"><a class="markdownIt-Anchor" href="#通过-downward-api-卷传递"></a> 通过 Downward API 卷传递</h3>
-<p>使用卷来暴露元数据需要显式地指定元数据字段：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> dow-v.yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: downward
-  labels:
-    foo: bar
-  annotations:
-    key1: value1
-    key2: <span class="token operator">|</span>
-      multi
-      line
-      value
-spec:
-  containers:
-  - name: main
-    image: busybox
-    command: <span class="token punctuation">[</span><span class="token string">"sleep"</span>, <span class="token string">"9999"</span><span class="token punctuation">]</span>
-    resources:
-      requests:
-        cpu: 15m
-        memory: 500Ki
-      limits:
-        cpu: 100m
-        memory: 8Mi
-    volumeMounts:
-    - name: downward
-      mountPath: /etc/downward
-  volumes:
-  - name: downward
-    downwardAPI:
-      items:
-      - path: <span class="token string">"podName"</span>
-        fieldRef:
-          fieldPath: metadata.name
-      - path: <span class="token string">"podNamespace"</span>
-        fieldRef:
-          fieldPath: metadata.namespace
-      - path: <span class="token string">"labels"</span>
-        fieldRef:
-          fieldPath: metadata.labels
-      - path: <span class="token string">"annotations"</span>
-        fieldRef:
-          fieldPath: metadata.annotations
-      - path: <span class="token string">"containerCpuRequestMilliCores"</span>
-        resourceFieldRef:
-          containerName: main
-          resource: requests.cpu
-          divisor: 1m
-      - path: <span class="token string">"containerMemoryLimitBytes"</span>
-        resourceFieldRef:
-          containerName: main
-          resource: limits.memory
-          divisor: <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>Downward API 卷被挂载到 <code>/etc/downward/</code> 目录下，卷类型为 DownwardAPI，卷包含的文件会通过卷定义中的 <code>downwardAPI.items</code> 属性来定义。如下图所示：</p>
-<p><img data-src="../../../images/%E4%BD%BF%E7%94%A8downwardAPI%E5%8D%B7%E4%BC%A0%E9%80%92%E5%85%83%E6%95%B0%E6%8D%AE.jpg" alt="使用downwardAPI卷传递元数据" /></p>
-<p>在容器中查看：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> downward -- <span class="token function">ls</span> <span class="token parameter variable">-lL</span> /etc/downward
-total <span class="token number">24</span>
--rw-r--r--    <span class="token number">1</span> root     root           <span class="token number">337</span> Mar <span class="token number">15</span> <span class="token number">22</span>:12 annotations
--rw-r--r--    <span class="token number">1</span> root     root             <span class="token number">2</span> Mar <span class="token number">15</span> <span class="token number">22</span>:12 containerCpuRequestMilliCores
--rw-r--r--    <span class="token number">1</span> root     root             <span class="token number">7</span> Mar <span class="token number">15</span> <span class="token number">22</span>:12 containerMemoryLimitBytes
--rw-r--r--    <span class="token number">1</span> root     root             <span class="token number">9</span> Mar <span class="token number">15</span> <span class="token number">22</span>:12 labels
--rw-r--r--    <span class="token number">1</span> root     root             <span class="token number">8</span> Mar <span class="token number">15</span> <span class="token number">22</span>:12 podName
--rw-r--r--    <span class="token number">1</span> root     root             <span class="token number">7</span> Mar <span class="token number">15</span> <span class="token number">22</span>:12 podNamespace
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> downward -- <span class="token function">cat</span> /etc/downward/labels
-<span class="token assign-left variable">foo</span><span class="token operator">=</span><span class="token string">"bar"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>当暴露容器级的元数据时，如资源限制或请求，必须指定容器名称。虽然方式稍微复杂一些，但可以将一个容器的资源字段传递给同一 Pod 中的另一个容器。</p>
-<h2 id="kubernetes-api"><a class="markdownIt-Anchor" href="#kubernetes-api"></a> Kubernetes API</h2>
-<p>通过 Downward API 的方式获取的元数据相当有限。如果需要了解其他 Pod 或其他资源的信息，只能通过直接与 API 服务器进行交互。</p>
-<h3 id="k8s-rest-api"><a class="markdownIt-Anchor" href="#k8s-rest-api"></a> K8s REST API</h3>
-<p>可以通过 <code>kubectl cluster-info</code> 命令获取服务器的地址，但无法直接使用 <code>curl</code> 进行交互：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl cluster-info 
-Kubernetes control plane is running at https://192.168.2.204:6443
-CoreDNS is running at https://192.168.2.204:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> https://192.168.2.204:6443 <span class="token parameter variable">-k</span>
-<span class="token punctuation">&#123;</span>
-  <span class="token string">"kind"</span><span class="token builtin class-name">:</span> <span class="token string">"Status"</span>,
-  <span class="token string">"apiVersion"</span><span class="token builtin class-name">:</span> <span class="token string">"v1"</span>,
-  <span class="token string">"metadata"</span><span class="token builtin class-name">:</span> <span class="token punctuation">&#123;</span>
-    
-  <span class="token punctuation">&#125;</span>,
-  <span class="token string">"status"</span><span class="token builtin class-name">:</span> <span class="token string">"Failure"</span>,
-  <span class="token string">"message"</span><span class="token builtin class-name">:</span> <span class="token string">"forbidden: User <span class="token entity" title="\&quot;">\"</span>system:anonymous<span class="token entity" title="\&quot;">\"</span> cannot get path <span class="token entity" title="\&quot;">\"</span>/<span class="token entity" title="\&quot;">\"</span>"</span>,
-  <span class="token string">"reason"</span><span class="token builtin class-name">:</span> <span class="token string">"Forbidden"</span>,
-  <span class="token string">"details"</span><span class="token builtin class-name">:</span> <span class="token punctuation">&#123;</span>
-    
-  <span class="token punctuation">&#125;</span>,
-  <span class="token string">"code"</span><span class="token builtin class-name">:</span> <span class="token number">403</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>当返回代码为 403 时表示未授权访问，可以通过启动代理 proxy 与服务器进行交互：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl proxy
-Starting to serve on <span class="token number">127.0</span>.0.1:8001
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> <span class="token number">127.0</span>.0.1:8001
-<span class="token punctuation">&#123;</span>
-  <span class="token string">"paths"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
-    <span class="token string">"/.well-known/openid-configuration"</span>,
-    <span class="token string">"/api"</span>,
-    <span class="token string">"/api/v1"</span>,
-    <span class="token string">"/apis/batch"</span>,
-    <span class="token string">"/apis/batch/v1"</span>,
-    <span class="token string">"/apis/batch/v1beta1"</span>,<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>服务器会返回一组路径清单，即 REST endpoint 清单。这些路径对应了 apiVersion 定义的路径。以 Job 资源 API 组 <code>/apis/batch</code> 为例，下面列出了两个版本，其中常用的是 v1 版本：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> <span class="token number">127.0</span>.0.1:8001/apis/batch/v1
-<span class="token punctuation">&#123;</span>
-  <span class="token string">"kind"</span><span class="token builtin class-name">:</span> <span class="token string">"APIResourceList"</span>,
-  <span class="token string">"apiVersion"</span><span class="token builtin class-name">:</span> <span class="token string">"v1"</span>,
-  <span class="token string">"groupVersion"</span><span class="token builtin class-name">:</span> <span class="token string">"batch/v1"</span>,
-  <span class="token string">"resources"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
-    <span class="token punctuation">&#123;</span>
-      <span class="token string">"name"</span><span class="token builtin class-name">:</span> <span class="token string">"cronjobs"</span>,
-      <span class="token string">"singularName"</span><span class="token builtin class-name">:</span> <span class="token string">""</span>,
-      <span class="token string">"namespaced"</span><span class="token builtin class-name">:</span> true,
-      <span class="token string">"kind"</span><span class="token builtin class-name">:</span> <span class="token string">"CronJob"</span>,
-      <span class="token string">"verbs"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
-        <span class="token string">"create"</span>,
-        <span class="token string">"delete"</span>,
-        <span class="token string">"deletecollection"</span>,
-        <span class="token string">"get"</span>,
-        <span class="token string">"list"</span>,
-        <span class="token string">"patch"</span>,
-        <span class="token string">"update"</span>,
-        <span class="token string">"watch"</span>
-      <span class="token punctuation">]</span>,
-      <span class="token string">"shortNames"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
-        <span class="token string">"cj"</span>
-      <span class="token punctuation">]</span>,
-      <span class="token string">"categories"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
-        <span class="token string">"all"</span>
-      <span class="token punctuation">]</span>,
-      <span class="token string">"storageVersionHash"</span><span class="token builtin class-name">:</span> <span class="token string">"sd5LIXh4Fjs="</span>
-    <span class="token punctuation">&#125;</span>,
-    <span class="token punctuation">&#123;</span>
-      <span class="token string">"name"</span><span class="token builtin class-name">:</span> <span class="token string">"cronjobs/status"</span>,
-      <span class="token string">"singularName"</span><span class="token builtin class-name">:</span> <span class="token string">""</span>,
-      <span class="token string">"namespaced"</span><span class="token builtin class-name">:</span> true,
-      <span class="token string">"kind"</span><span class="token builtin class-name">:</span> <span class="token string">"CronJob"</span>,
-      <span class="token string">"verbs"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
-        <span class="token string">"get"</span>,
-        <span class="token string">"patch"</span>,
-        <span class="token string">"update"</span>
-      <span class="token punctuation">]</span>
-    <span class="token punctuation">&#125;</span>,
-    <span class="token punctuation">&#123;</span>
-      <span class="token string">"name"</span><span class="token builtin class-name">:</span> <span class="token string">"jobs"</span>,
-      <span class="token string">"singularName"</span><span class="token builtin class-name">:</span> <span class="token string">""</span>,
-      <span class="token string">"namespaced"</span><span class="token builtin class-name">:</span> true,
-      <span class="token string">"kind"</span><span class="token builtin class-name">:</span> <span class="token string">"Job"</span>,
-      <span class="token string">"verbs"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
-        <span class="token string">"create"</span>,
-        <span class="token string">"delete"</span>,
-        <span class="token string">"deletecollection"</span>,
-        <span class="token string">"get"</span>,
-        <span class="token string">"list"</span>,
-        <span class="token string">"patch"</span>,
-        <span class="token string">"update"</span>,
-        <span class="token string">"watch"</span>
-      <span class="token punctuation">]</span>,
-      <span class="token string">"categories"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
-        <span class="token string">"all"</span>
-      <span class="token punctuation">]</span>,
-      <span class="token string">"storageVersionHash"</span><span class="token builtin class-name">:</span> <span class="token string">"mudhfqk/qZY="</span>
-    <span class="token punctuation">&#125;</span>,
-    <span class="token punctuation">&#123;</span>
-      <span class="token string">"name"</span><span class="token builtin class-name">:</span> <span class="token string">"jobs/status"</span>,
-      <span class="token string">"singularName"</span><span class="token builtin class-name">:</span> <span class="token string">""</span>,
-      <span class="token string">"namespaced"</span><span class="token builtin class-name">:</span> true,
-      <span class="token string">"kind"</span><span class="token builtin class-name">:</span> <span class="token string">"Job"</span>,
-      <span class="token string">"verbs"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
-        <span class="token string">"get"</span>,
-        <span class="token string">"patch"</span>,
-        <span class="token string">"update"</span>
-      <span class="token punctuation">]</span>
-    <span class="token punctuation">&#125;</span>
-  <span class="token punctuation">]</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>在 <code>resources</code> 内包含了这个组中所有资源类型，每个资源对应可使用的操作（如创建、删除、获取等），以及其他一些资源的信息。其中，<code>jobs/status</code> 是用于专门修改状态（恢复、打补丁、修改）的资源。</p>
-<p>可以向 <code>/apis/batch/v1/jobs</code> 路径发送 GET 请求，以获取集群中所有 Job 的清单：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> <span class="token number">127.0</span>.0.1:8001/apis/batch/v1/jobs
-<span class="token punctuation">&#123;</span>
-  <span class="token string">"kind"</span><span class="token builtin class-name">:</span> <span class="token string">"JobList"</span>,
-  <span class="token string">"apiVersion"</span><span class="token builtin class-name">:</span> <span class="token string">"batch/v1"</span>,
-  <span class="token string">"metadata"</span><span class="token builtin class-name">:</span> <span class="token punctuation">&#123;</span>
-    <span class="token string">"resourceVersion"</span><span class="token builtin class-name">:</span> <span class="token string">"656352"</span>
-  <span class="token punctuation">&#125;</span>,
-  <span class="token string">"items"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
-    <span class="token punctuation">&#123;</span>
-      <span class="token string">"metadata"</span><span class="token builtin class-name">:</span> <span class="token punctuation">&#123;</span>
-        <span class="token string">"name"</span><span class="token builtin class-name">:</span> <span class="token string">"batch-job"</span>,
-        <span class="token string">"namespace"</span><span class="token builtin class-name">:</span> <span class="token string">"default"</span>,
-        <span class="token string">"uid"</span><span class="token builtin class-name">:</span> <span class="token string">"dfcb1eda-55fc-4a30-ad7c-4769d5baebc4"</span>,
-        <span class="token string">"resourceVersion"</span><span class="token builtin class-name">:</span> <span class="token string">"656319"</span>,<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>获取到的清单包括所有命名空间中的 Job。如果要返回指定的 Job，需要在请求 URL 中指定名称和命名空间。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> <span class="token number">127.0</span>.0.1:8001/apis/batch/v1/namespaces/default/jobs/batch-job
-<span class="token punctuation">&#123;</span>
-  <span class="token string">"kind"</span><span class="token builtin class-name">:</span> <span class="token string">"Job"</span>,
-  <span class="token string">"apiVersion"</span><span class="token builtin class-name">:</span> <span class="token string">"batch/v1"</span>,
-  <span class="token string">"metadata"</span><span class="token builtin class-name">:</span> <span class="token punctuation">&#123;</span>
-    <span class="token string">"name"</span><span class="token builtin class-name">:</span> <span class="token string">"batch-job"</span>,
-    <span class="token string">"namespace"</span><span class="token builtin class-name">:</span> <span class="token string">"default"</span>,<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>通过这种方式获得的结果与执行 <code>kubectl get job batch-job -o json</code> 命令得到的结果相同。</p>
-<h3 id="从-pod-内与-api-服务器交互"><a class="markdownIt-Anchor" href="#从-pod-内与-api-服务器交互"></a> 从 Pod 内与 API 服务器交互</h3>
-<p>一般情况下，Pod 内没有可用的 kubectl，与 API 服务器进行交互需要解决认证问题。这里使用一个安装了 <code>curl</code> 的镜像，在容器内使用 <code>curl</code> 来测试与 API 服务器的交互结果：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> curl.yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: <span class="token function">curl</span>
-spec:
-  containers:
-  - name: main
-    image: curlimages/curl
-    command: <span class="token punctuation">[</span><span class="token string">"sleep"</span>, <span class="token string">"999999"</span><span class="token punctuation">]</span>
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> curl.yaml
-pod/curl created
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> <span class="token parameter variable">-it</span> <span class="token function">curl</span> -- <span class="token function">sh</span>
-/ $ <span class="token function">env</span> <span class="token operator">|</span> <span class="token function">grep</span> KUBERNETES_SERVICE
-<span class="token assign-left variable">KUBERNETES_SERVICE_PORT</span><span class="token operator">=</span><span class="token number">443</span>
-<span class="token assign-left variable">KUBERNETES_SERVICE_PORT_HTTPS</span><span class="token operator">=</span><span class="token number">443</span>
-<span class="token assign-left variable">KUBERNETES_SERVICE_HOST</span><span class="token operator">=</span><span class="token number">10.96</span>.0.1
-/ $ <span class="token function">curl</span> https://kubernetes
-curl: <span class="token punctuation">(</span><span class="token number">60</span><span class="token punctuation">)</span> SSL certificate problem: unable to get <span class="token builtin class-name">local</span> issuer certificate
-More details here: https://curl.se/docs/sslcerts.html<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>在容器内查询 API 服务器的地址后，尝试访问时会提示证书问题。虽然可以通过 <code>-k</code> 选项来绕过 HTTPS 证书验证，但为了安全起见，应该检查证书以验证 API 服务器的身份，以避免中间人攻击，并防止将应用的验证凭证暴露给攻击者。</p>
-<p>可以查看每个容器的 <code>/var/run/secrets/kubernetes.io/serviceaccount</code> 目录下默认的 Secret（token），其中包含的 <code>ca.crt</code> 可用于对 API 服务器证书进行签名。<code>curl</code> 允许使用 <code>-cacert</code> 选项来指定 CA 证书路径：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">/ $ <span class="token function">ls</span> /var/run/secrets/kubernetes.io/serviceaccount
-ca.crt     namespace  token
-/ $ <span class="token function">curl</span> <span class="token parameter variable">--cacert</span> /var/run/secrets/kubernetes.io/serviceaccount/ca.crt https://kubernetes
-<span class="token punctuation">&#123;</span>
-  <span class="token string">"kind"</span><span class="token builtin class-name">:</span> <span class="token string">"Status"</span>,
-  <span class="token string">"apiVersion"</span><span class="token builtin class-name">:</span> <span class="token string">"v1"</span>,
-  <span class="token string">"metadata"</span><span class="token builtin class-name">:</span> <span class="token punctuation">&#123;</span>
-    
-  <span class="token punctuation">&#125;</span>,
-  <span class="token string">"status"</span><span class="token builtin class-name">:</span> <span class="token string">"Failure"</span>,
-  <span class="token string">"message"</span><span class="token builtin class-name">:</span> <span class="token string">"forbidden: User <span class="token entity" title="\&quot;">\"</span>system:anonymous<span class="token entity" title="\&quot;">\"</span> cannot get path <span class="token entity" title="\&quot;">\"</span>/<span class="token entity" title="\&quot;">\"</span>"</span>,
-  <span class="token string">"reason"</span><span class="token builtin class-name">:</span> <span class="token string">"Forbidden"</span>,
-  <span class="token string">"details"</span><span class="token builtin class-name">:</span> <span class="token punctuation">&#123;</span>
-    
-  <span class="token punctuation">&#125;</span>,
-  <span class="token string">"code"</span><span class="token builtin class-name">:</span> <span class="token number">403</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>这次 <code>curl</code> 验证通过了服务器的身份，但提示匿名用户没有查询权限。可以通过设置 CURL_CA_BUNDLE 环境变量来简化 <code>curl</code> 指定 CA 证书的选项：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">/ $ <span class="token builtin class-name">export</span> <span class="token assign-left variable">CURL_CA_BUNDLE</span><span class="token operator">=</span>/var/run/secrets/kubernetes.io/serviceaccount/ca.crt<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>接下来需要获取 API 服务器的授权，以进一步修改或删除部署在集群中的 API 对象。认证凭证可以使用默认的 token 来生成：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">/ $ <span class="token assign-left variable">TOKEN</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">cat</span> /var/run/secrets/kubernetes.io/serviceaccount/token<span class="token variable">)</span></span>
-/ $ <span class="token function">curl</span> <span class="token parameter variable">-k</span> <span class="token parameter variable">-H</span> <span class="token string">"Authorization: Bearer <span class="token variable">$TOKEN</span>"</span> https://10.96.0.1 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>由于服务器使用 RBAC 机制，服务账户依然没有被授权（或部分授权）访问 API 服务器。可以通过修改角色绑定来临时赋予所有服务账户集群管理员权限：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create clusterrolebinding permissive-binding <span class="token parameter variable">--clusterrole</span><span class="token operator">=</span>cluster-admin <span class="token parameter variable">--group</span><span class="token operator">=</span>system:serviceaccounts
-clusterrolebinding.rbac.authorization.k8s.io/permissive-binding created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>Secret 卷中还包含一个命名空间的文件，其中包含了当前运行的 Pod 所在的命名空间。在请求中加入命名空间后再次访问，正常情况下会返回当前 Pod 所在命名空间的所有 Pod 清单：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">/ $ <span class="token assign-left variable">NS</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">cat</span> /var/run/secrets/kubernetes.io/serviceaccount/namespace<span class="token variable">)</span></span>
-/ $ <span class="token function">curl</span> <span class="token parameter variable">-k</span> <span class="token parameter variable">-H</span> <span class="token string">"Authorization: Bearer <span class="token variable">$TOKEN</span>"</span> https://kubernetes/api/v1/namespaces/<span class="token variable">$NS</span>/pods<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>此时，Pod 与 API 服务器的交互已经没有阻碍，其他的 PUT 或 PATCH 请求同样可以操作。示意图如下：</p>
-<p>![通过 default token 与 API 服务器交互](…/…/…/images/通过 default token 与 API 服务器交互.jpg)</p>
-<p>总结一下 Pod 与 Kubernetes 交互的要点如下：</p>
-<ul>
-<li>应用程序应验证 API 服务器的证书是否由受信任的证书机构签发，证书位于 <code>ca.crt</code> 文件中。</li>
-<li>应用程序应使用它在 <code>token</code> 文件中持有的凭证来获取 API 服务器的授权。</li>
-<li>当对 Pod 所在命名空间的 API 对象进行 CRUD（创建、读取、修改、删除）操作时，应使用 <code>namespace</code> 文件来将命名空间信息传递到 API 服务器。</li>
-</ul>
-<h3 id="通过-ambassador-容器与-api-服务器交互"><a class="markdownIt-Anchor" href="#通过-ambassador-容器与-api-服务器交互"></a> 通过 ambassador 容器与 API 服务器交互</h3>
-<p>还有一种更简便与 API 服务器交互的方法，可以在 pod 中增加一个 ambassador 容器，其中运行着 <code>kubectl proxy</code> 命令，通过它来实现与 API 服务器的交互。如下图所示：</p>
-<p>![通过 ambassador 容器与 API 服务器交互](…/…/…/images/通过 ambassador 容器与 API 服务器交互.jpg)</p>
-<p>这种模式下，运行在主容器中的应用通过 HTTP 协议与 ambassador 连接，并由 ambassador 通过 HTTPS 协议来连接 API 服务器，对应用透明地处理安全问题，其同样使用默认凭证 Secret 卷中的文件来认证。</p>
-<p>pod 配置在原先 <code>curl</code> 的基础上增加一个 kubectl-proxy 镜像，启动后进入到 curl 容器中的 shell 环境：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> curl-am.yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: curl-am
-spec:
-  containers:
-  - name: main
-    image: curlimages/curl
-    command: <span class="token punctuation">[</span><span class="token string">"sleep"</span>, <span class="token string">"999999"</span><span class="token punctuation">]</span>
-  - name: ambassador
-    image: luksa/kubectl-proxy:1.6.2
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl create <span class="token parameter variable">-f</span> curl-am.yaml 
-pod/curl-am created
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ kubectl <span class="token builtin class-name">exec</span> <span class="token parameter variable">-it</span> curl-am <span class="token parameter variable">-c</span> main -- <span class="token function">sh</span>
-/ $ <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>接下来试着通过 ambassador 容器来连接 API 服务器。kubectl proxy 默认绑定 8001 端口，由于在同 pod 中可以直接访问本地回环地址：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">/ $ <span class="token function">curl</span> localhost:8001
-<span class="token punctuation">&#123;</span>
-  <span class="token string">"paths"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
-    <span class="token string">"/.well-known/openid-configuration"</span>,
-    <span class="token string">"/api"</span>,
-    <span class="token string">"/api/v1"</span>,
-    <span class="token string">"/apis"</span>,
-    <span class="token string">"/apis/"</span>,<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>结果显示 ambassador 容器已经帮忙处理好了凭证和授权问题。</p>
-<p>虽然 ambassador 容器已经足够简便，且能跨多个应用复用，但负面因素是需要运行额外的进程，消耗更多资源。</p>
-<h3 id="使用客户端与-api-服务器交互"><a class="markdownIt-Anchor" href="#使用客户端与-api-服务器交互"></a> 使用客户端与 API 服务器交互</h3>
-<p>如果应用仅仅需要在 API 服务器执行一些简单操作，可以使用一个标准的客户端库来执行简单的 HTTP 请求。但对于执行更复杂的 API 请求，使用某个已有的 K8s API 客户端库会更好。可以到 GitHub 社区查询到<a href="https://github.com/kubernetes/community/blob/master/sig-list.md">具体清单</a>。</p>
-<p>另外，如果选择的开发语言没有可用的客户端，可以使用 Swagger API 框架生成客户端库和文档。具体内容可访问<a href="https://swagger.io/">官网</a>。</p>
-<h1 id="控制器管理器"><a class="markdownIt-Anchor" href="#控制器管理器"></a> 控制器管理器</h1>
-<p>控制器主要工作是通过标签管理 pod，确保系统真实状态朝 API 服务器定义的期望状态收敛。</p>
-<p>它们是 K8s 上的一类对象，包括 ReplicationController、ReplicaSet、Deployment、StatefulSet、Job 等。控制器的定义通常由期望的副本数量、pod 模板和标签选择器组成。</p>
-<h2 id="控制器工作"><a class="markdownIt-Anchor" href="#控制器工作"></a> 控制器工作</h2>
-<p>控制器通过 API 服务器监听资源（部署、服务等）变更，并执行相应操作。将实际状态调整为期望状态（资源 spec 部分定义）后，将新的实际状态写入资源的 status 部分。</p>
-<p>控制器利用监听机制来订阅变更，但仍然会定期执行重列举操作来确保不会漏掉请求。</p>
-<p>生命周期功能包括命名空间创建、事件垃圾回收、pod 终止相关垃圾回收、级联垃圾回收及节点垃圾回收等。</p>
-<p>通过源码分析，控制器工作原理如下：</p>
-<ul>
-<li>每个控制器一般有一个构造器，内部会创建一个 Informer，也就是监听器，每次 API 对象有更新就会被调用。</li>
-<li>通常 Informer 会监听特定类型的资源变更事件。</li>
-<li>控制器需要工作的时候会调用 worker() 方法，实际函数通常保存在一个叫 syncHandler 或类似字段里。该字段也在构造器里初始化，可以在那找到被调用函数名。</li>
-</ul>
-<h2 id="控制器类型"><a class="markdownIt-Anchor" href="#控制器类型"></a> 控制器类型</h2>
-<p>Kubernetes 中有多种类型的控制器，每种控制器都有不同的作用和特点。以下是一些常用的控制器类型。</p>
-<h3 id="replicationcontroller-控制器"><a class="markdownIt-Anchor" href="#replicationcontroller-控制器"></a> ReplicationController 控制器</h3>
-<p>启动 ReplicationController（复制控制器）的控制器称为 ReplicationManager（复制管理器）。ReplicationManager 通过监听机制订阅可能影响复制集数量或符合条件的 pod 数量的变更事件。</p>
-<p>任何变化都会触发 ReplicationController 控制器重新检查期望的复制集数量与实际数量，然后采取相应的操作。它不直接操作 pod，而是通过向 API 服务器创建新的 pod 清单，由 API 服务器通知调度器和 Kubelet 执行 pod 管理操作。其他控制器的工作流程也类似。</p>
-<h3 id="replicaset-daemonset-和-job-控制器"><a class="markdownIt-Anchor" href="#replicaset-daemonset-和-job-控制器"></a> ReplicaSet、DaemonSet 和 Job 控制器</h3>
-<p>这些控制器的工作原理与 ReplicationController 控制器基本相同。</p>
-<h3 id="deployment-控制器"><a class="markdownIt-Anchor" href="#deployment-控制器"></a> Deployment 控制器</h3>
-<p>Deployment 控制器负责同步 Deployment 的实际状态与对应的 Deployment API 对象的期望状态。每次修改 Deployment 对象后，控制器会进行滚动升级到新版本，通过创建一个 ReplicaSet（副本集）来调整 pod 的数量，直到升级完成。</p>
-<h3 id="statefulset-控制器"><a class="markdownIt-Anchor" href="#statefulset-控制器"></a> StatefulSet 控制器</h3>
-<p>StatefulSet 控制器类似于 ReplicaSet 控制器，根据定义创建和管理 pod，但同时还会初始化和管理每个 pod 实例的持久卷声明。</p>
-<h3 id="node-控制器"><a class="markdownIt-Anchor" href="#node-控制器"></a> Node 控制器</h3>
-<p>Node 控制器负责管理 Node 资源，描述集群的工作节点，并确保节点对象列表的正确性。同时监控每个节点的健康状态，删除不可达节点上的 pod。</p>
-<h3 id="service-控制器"><a class="markdownIt-Anchor" href="#service-控制器"></a> Service 控制器</h3>
-<p>Service 控制器用于提供稳定的对 pod 的访问服务。</p>
-<h3 id="endpoint-控制器"><a class="markdownIt-Anchor" href="#endpoint-控制器"></a> Endpoint 控制器</h3>
-<p>Endpoint 控制器负责维护端点列表。控制器同时监听 Service 和 pod，当 Service 或 pod 被添加或修改时，控制器会选择与 Service 中的 pod 选择器匹配的 pod，并将其 IP 和端口添加到 Endpoint 资源中。</p>
-<p>Endpoint 对象是独立的对象，因此在需要时控制器会创建它，并在删除 Service 时一同删除。</p>
-<h3 id="namespace-控制器"><a class="markdownIt-Anchor" href="#namespace-控制器"></a> Namespace 控制器</h3>
-<p>Namespace 控制器负责删除 Namespace 资源时，清除所有属于该命名空间的资源。</p>
-<h3 id="persistentvolume-控制器"><a class="markdownIt-Anchor" href="#persistentvolume-控制器"></a> PersistentVolume 控制器</h3>
-<p>当用户创建 PersistentVolumeClaim（持久卷声明）时，控制器负责找到合适的 PersistentVolume（持久卷）与声明进行绑定。</p>
-<p>查找的方式是保存一个有序的持久卷列表，按容量升序排列，返回列表中的第一个卷。</p>
-<p>当用户删除持久卷声明时，控制器会解绑卷，并根据卷的回收策略进行处理。</p>
-<h1 id="调度器"><a class="markdownIt-Anchor" href="#调度器"></a> 调度器</h1>
-<p>调度器的角色比较简单，就是利用 API 服务器的监听机制等待新创建的 pod，然后给新建的 pod 分配节点。</p>
-<p>调度器不会指示选中的节点运行 pod，而是通过 API 服务器更新 pod 的定义，然后由 API 服务器通知节点上的 Kubelet，告知该 pod 已被调度到此节点，并由目标节点上的 Kubelet 创建并运行 pod 的容器。</p>
-<p>Kubernetes 还支持用户自定义调度器。</p>
-<h2 id="默认的调度算法"><a class="markdownIt-Anchor" href="#默认的调度算法"></a> 默认的调度算法</h2>
-<p>调度器的默认调度算法选择节点的操作可以分为两部分：首先过滤所有节点，找出可分配给 pod 的可用节点列表；然后对可用节点按优先级排序，找出最优节点。如果多个节点的优先级相同，则循环分配，确保 pod 平均分配。</p>
-<h2 id="查找可用节点"><a class="markdownIt-Anchor" href="#查找可用节点"></a> 查找可用节点</h2>
-<p>为了找出可用节点，调度器会对每个节点下发一组配置好的预选函数，检查节点信息：</p>
-<ul>
-<li>节点是否能满足 pod 对硬件资源的请求；</li>
-<li>节点是否耗尽资源；</li>
-<li>pod 是否有节点选择器；</li>
-<li>节点是否符合 pod 中的节点选择器；</li>
-<li>pod 请求绑定的主机端口是否已被占用；</li>
-<li>pod 请求的存储卷是否能加载，是否可用；</li>
-<li>pod 是否能够容忍节点的污点；</li>
-<li>pod 是否定义了节点，以及 pod 的亲和性和反亲和性规则。</li>
-</ul>
-<p>只有当所有的测试都通过时，节点才有资格被调度给 pod。</p>
-<h2 id="高级调度"><a class="markdownIt-Anchor" href="#高级调度"></a> 高级调度</h2>
-<p>默认情况下，属于同一服务和 ReplicaSet 的 pod 会分散在尽可能多的节点上，但可以通过定义 pod 的亲和性或反亲和性规则，强制 pod 在集群内分散或集中在一起。</p>
-<h2 id="多个调度器"><a class="markdownIt-Anchor" href="#多个调度器"></a> 多个调度器</h2>
-<p>可以在集群中运行多个调度器，然后在 pod 的属性中设置 <code>schedulerName</code> 属性来指定调度器来调度它。如果未设置此属性的 pod，则由默认调度器（default-scheduler）进行调度。</p>
-<h1 id="etcd"><a class="markdownIt-Anchor" href="#etcd"></a> etcd</h1>
-<p>etcd 是一个分布式的键值存储数据库，Kubernetes 使用 etcd 来持久化存储集群状态和元数据。API 服务器是与 etcd 通信的唯一组件，所有其他组件通过 API 服务器间接地读写数据到 etcd。</p>
-<h2 id="etcdctl"><a class="markdownIt-Anchor" href="#etcdctl"></a> etcdctl</h2>
-<p>要访问 etcd 数据库，需要在主节点上安装 etcdctl 客户端：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">curl</span> <span class="token parameter variable">-L</span> https://github.com/etcd-io/etcd/releases/download/v3.5.2/etcd-v3.5.2-linux-amd64.tar.gz <span class="token parameter variable">-o</span> etcd-v3.5.2-linux-amd64.tar.gz
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">tar</span> <span class="token parameter variable">-zxf</span> etcd-v3.5.2-linux-amd64.tar.gz
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">cp</span> etcd-v3.5.2-linux-amd64/etcdctl /usr/local/bin
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ etcdctl version
-etcdctl version: <span class="token number">3.5</span>.2
-API version: <span class="token number">3.5</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>设置好数据库地址、证书路径等到本地变量：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> ~/.bashrc
-<span class="token builtin class-name">export</span> <span class="token assign-left variable">ETCDCTL_ENDPOINTS</span><span class="token operator">=</span>https://127.0.0.1:2379
-<span class="token builtin class-name">export</span> <span class="token assign-left variable">ETCDCTL_CACERT</span><span class="token operator">=</span>/etc/kubernetes/pki/etcd/ca.crt
-<span class="token builtin class-name">export</span> <span class="token assign-left variable">ETCDCTL_CERT</span><span class="token operator">=</span>/etc/kubernetes/pki/etcd/healthcheck-client.crt
-<span class="token builtin class-name">export</span> <span class="token assign-left variable">ETCDCTL_KEY</span><span class="token operator">=</span>/etc/kubernetes/pki/etcd/healthcheck-client.key
-<span class="token builtin class-name">export</span> <span class="token assign-left variable">ETCDCTL_API</span><span class="token operator">=</span><span class="token number">3</span>
-<span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token builtin class-name">source</span> ~/.bashrc<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>之后就可以直接通过命令来访问 etcd：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ etcdctl get --keys-only <span class="token parameter variable">--prefix</span> /<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="乐观并发控制"><a class="markdownIt-Anchor" href="#乐观并发控制"></a> 乐观并发控制</h2>
-<p>乐观并发控制，也称为乐观锁，指的是一段数据包含一个版本数字，而不是锁住该段数据阻止读写操作。</p>
-<p>每当更新数据时，版本数就会增加。当更新数据时，会检查版本值是否在客户端读取数据时间和提交时间之间被增加过。如果有增加过，更新会被拒绝，客户端必须重新读取新数据，重新尝试更新。</p>
-<p>当两个客户端尝试更新同一个数据条目时，只有第一个会成功。</p>
-<p>所有的 Kubernetes 对象都包含一个 <code>metadata.resourceVersion</code> 字段用来保存版本数字。在更新对象时，客户端需要返回该值到 API 服务器，服务器检查版本值与 etcd 中存储的是否匹配。如果不匹配，服务器会拒绝更新。</p>
-<h2 id="资源储存"><a class="markdownIt-Anchor" href="#资源储存"></a> 资源储存</h2>
-<p>etcd 的版本 v2 和 v3 对资源存储格式有所不同。v2 版本将键存储在一个层级键空间中，使得键值对类似于文件系统的文件。每个键可以是一个目录，包含其他键，或者是一个常规键，对应一个值。v3 版本不支持目录，但由于键格式保持不变，键可以包含斜杠，仍然可以将它们组织成目录结构。</p>
-<p>Kubernetes 将所有数据存储到 etcd 的 <code>/registry</code> 下，可以使用 etcdctl 来查询：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ etcdctl get --keys-only <span class="token parameter variable">--prefix</span> /registry <span class="token operator">|</span> <span class="token function">less</span>
-/registry/apiextensions.k8s.io/customresourcedefinitions/apiservers.operator.tigera.io
-/registry/apiextensions.k8s.io/customresourcedefinitions/bgpconfigurations.crd.projectcalico.org
-/registry/apiextensions.k8s.io/customresourcedefinitions/bgppeers.crd.projectcalico.org
-/registry/apiextensions.k8s.io/customresourcedefinitions/blockaffinities.crd.projectcalico.org<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>会发现键与资源名称相对应。还可以单独查看特定命名空间下的 Pod 列表：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ etcdctl get --keys-only <span class="token parameter variable">--prefix</span> /registry/pods/default
-/registry/pods/default/kubia-0
-/registry/pods/default/kubia-1
-/registry/pods/default/kubia-2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>如果要查看特定 Pod 在 etcd 中存储的内容，可以执行以下命令：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ etcdctl get /registry/pods/default/kubia-1
-kube-controller-managerUpdatevFieldsV1:f:metadata<span class="token string">":&#123;"</span>f:generateName<span class="token string">":&#123;&#125;,"</span>f:labels<span class="token string">":&#123;"</span><span class="token builtin class-name">.</span><span class="token string">":&#123;&#125;,"</span>f:app<span class="token string">":&#123;&#125;,"</span>f:controller-revision-hash<span class="token string">":&#123;&#125;,"</span>f:statefulset.kubernetes.io/pod-name<span class="token string">":&#123;&#125;&#125;,"</span>f:ownerReferences<span class="token string">":&#123;"</span><span class="token builtin class-name">.</span><span class="token string">":&#123;&#125;,"</span>k:<span class="token punctuation">&#123;</span><span class="token punctuation">\</span>"uid<span class="token punctuation">\</span>":<span class="token punctuation">\</span>"4142df85-4fb1-4b09-84ab-24ad2d1c309e<span class="token punctuation">\</span>"<span class="token punctuation">&#125;</span><span class="token string">":&#123;&#125;&#125;&#125;,"</span>f:spec<span class="token string">":&#123;"</span>f:containers<span class="token string">":&#123;"</span>k:<span class="token punctuation">&#123;</span><span class="token punctuation">\</span>"name<span class="token punctuation">\</span>":<span class="token punctuation">\</span>"kubia<span class="token punctuation">\</span>"<span class="token punctuation">&#125;</span><span class="token string">":&#123;"</span><span class="token builtin class-name">.</span><span class="token string">":&#123;&#125;,"</span>f:image<span class="token string">":&#123;&#125;,"</span>f:imagePullPolicy<span class="token string">":&#123;&#125;,"</span>f:name<span class="token string">":&#123;&#125;,"</span>f:ports<span class="token string">":&#123;"</span><span class="token builtin class-name">.</span><span class="token string">":&#123;&#125;,"</span>k:<span class="token punctuation">&#123;</span><span class="token punctuation">\</span>"containerPort<span class="token punctuation">\</span>":8080,<span class="token punctuation">\</span>"protocol<span class="token punctuation">\</span>":<span class="token punctuation">\</span>"TCP<span class="token punctuation">\</span>"<span class="token punctuation">&#125;</span><span class="token string">":&#123;"</span><span class="token builtin class-name">.</span><span class="token string">":&#123;&#125;,"</span>f:containerPort<span class="token string">":&#123;&#125;,"</span>f:name<span class="token string">":&#123;&#125;,"</span>f:protocol<span class="token string">":&#123;&#125;&#125;&#125;,"</span>f:resources<span class="token string">":&#123;&#125;,"</span>f:terminati<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>这将返回  JSON 格式的 Pod 定义。</p>
-<h2 id="etcd-集群"><a class="markdownIt-Anchor" href="#etcd-集群"></a> etcd 集群</h2>
-<p>为了保证高可用性，etcd 集群通常会部署多个（奇数个）etcd 实例。etcd 使用 Raft 一致性算法来确保系统达到一致的实际状态。</p>
-<p>该算法要求大部分节点参与才能进行下一个状态的提交，否则集群将分裂成两个不互联的节点组。如果一个组的成员数超过另一个组，大组可以更改集群状态，而小组则不能。当两个组重新恢复连接时，小组的节点会将状态更新为大组节点的状态。下图展示了这个过程：</p>
-<p><img data-src="../../../images/%E8%84%91%E8%A3%82%E5%9C%BA%E6%99%AF.jpg" alt="脑裂场景" /></p>
-<h1 id="kubelet"><a class="markdownIt-Anchor" href="#kubelet"></a> Kubelet</h1>
-<p>Kubelet 是 Kubernetes 中的一个核心组件，它运行在每个节点上，负责管理节点上的容器和与主控组件的通信。</p>
-<h2 id="工作内容"><a class="markdownIt-Anchor" href="#工作内容"></a> 工作内容</h2>
-<p>Kubelet 负责所有运行在工作节点上的内容组件。</p>
-<p>其工作内容是：</p>
-<ul>
-<li>在 API 服务器中创建一个 Node 资源来注册 Kubelet 所在节点。</li>
-<li>持续监控 API 服务器是否将该节点分配给 pod。</li>
-<li>告知节点上的容器运行时拉取镜像，启动容器。</li>
-<li>持续监控运行的容器，向 API 服务器报告它们的状态、事件和资源消耗。</li>
-<li>在 pod 被从 API 服务器删除时，Kubelet 终止容器并通知服务器 pod 已被终止。</li>
-</ul>
-<h2 id="运行静态-pod"><a class="markdownIt-Anchor" href="#运行静态-pod"></a> 运行静态 pod</h2>
-<p>Kubelet 还可以基于本地指定目录下的 pod 清单来运行 pod，主要用于运行容器化版本的控制面板组件。</p>
-<p>静态 pod 总由 Kubelet 创建在 Kubelet 所在的 Node 上运行，由 Kubelet 管理。不能通过 API Server 进行管理，不能与控制器进行关联，Kubelet 也无法对它们进行健康检查。</p>
-<p>启动静态 pod 需要设置 Kubelet 的启动参数 <code>--config</code>，指定需要监控的配置文件所在目录，并根据 YAML 进行创建操作。例如配置 <code>--config=/etc/kubelet.d/</code>，然后重启 Kubelet 服务。在目录下写入 <code>static-web.yaml</code> 文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@server4-master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> static-web.yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: static-web
-  labels:
-    name: static-web
-  namespace: default
-spec:
-  containers:
-  - name: static-web
-    image: nginx
-    ports:
-    - name: web
-      containerPort: <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>等待一段时间可以看到 pod 被创建出来。假如在 Master 节点删除 pod，会使其变为 Pending 状态且不会被删除。</p>
-<p>还可以通过设置 Kubelet 的启动参数 <code>--manifest-url</code>，Kubelet 将会定期从指定 URL 地址下载定义文件创建 pod。</p>
-<h1 id="proxy"><a class="markdownIt-Anchor" href="#proxy"></a> Proxy</h1>
-<p>Proxy 是一种核心组件，它用于在集群内部提供网络代理服务。它负责处理集群内部各个节点上的网络请求，并将其转发到适当的目标。</p>
-<h2 id="代理作用"><a class="markdownIt-Anchor" href="#代理作用"></a> 代理作用</h2>
-<p>除了 Kubelet，每个工作节点都会运行 kube-proxy，用于确保客户端通过 API 服务器对服务 IP 和端口的连接最终能够到达支持服务（或其他非 Pod 服务终端）的某个 Pod。</p>
-<p>如果一个服务由多个 Pod 支持，那么代理将对 Pod 进行负载均衡。</p>
-<h2 id="代理实现"><a class="markdownIt-Anchor" href="#代理实现"></a> 代理实现</h2>
-<p>kube-proxy 最初被称为 userspace 代理，它利用实际的服务器集成接收连接，并将其代理给 Pod。为了拦截发往服务 IP 的连接，代理配置了 iptables 规则，将连接重定向到代理服务器。如下图所示：</p>
-<p><img data-src="../../../images/userspace%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F.jpg" alt="userspace代理模式" /></p>
-<p>当前的 kube-proxy 仅通过 iptables 或 ipvs 规则将数据包重定向到一个随机选择的后端 Pod，不再需要一个实际的代理服务器。这种模式也被称为 iptables 代理模式。如下图所示：</p>
-<p><img data-src="../../../images/iptables%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F.jpg" alt="iptables代理模式" /></p>
-<p>这两种模式的主要区别在于数据包是否传递给 kube-proxy、是否需要在用户空间进行处理，或者数据包是否仅在内核空间进行处理。这两种模式的性能有很大差异。</p>
-<p>另一个区别是，userspace 代理模式使用轮询模式对连接进行负载均衡，而 iptables 代理模式随机选择 Pod，在客户端连接较少时可能无法平均分配流量。</p>
-<h1 id="其他组件"><a class="markdownIt-Anchor" href="#其他组件"></a> 其他组件</h1>
-<p>除了 Kubernetes 核心组件之外，还有许多第三方组件可以扩展和增强 Kubernetes 的功能。这些组件通常被称为“附加组件”或“扩展组件”，它们提供了各种功能，如网络、存储、监控、日志记录等。</p>
-<p>以下是一些常见的第三方组件，可以根据需求选择和部署：</p>
-<ol>
-<li>容器网络接口（Container Networking Interface，CNI）：CNI 是一个规范，用于定义容器和宿主机之间的网络连接。它允许不同的网络插件与 Kubernetes 集成，并提供容器之间的网络通信。</li>
-<li>存储插件：存储插件用于将外部存储系统与 Kubernetes 集群集成。这些插件可以提供持久化存储解决方案，如网络存储、分布式存储和块存储。</li>
-<li>监控和日志组件：监控和日志组件用于收集、分析和可视化 Kubernetes 集群的监控数据和日志。一些常见的监控和日志工具包括 Prometheus、Grafana、Elasticsearch 和 Fluentd。</li>
-<li>Ingress 控制器：Ingress 控制器是一个负载均衡器，用于将外部流量路由到 Kubernetes 集群内部的服务。它可以提供 HTTP 和 HTTPS 等应用层协议的路由功能。</li>
-<li>安全组件：安全组件用于增强 Kubernetes 集群的安全性。它们可以提供认证、授权、身份管理和访问控制等功能，以保护集群中的资源和敏感数据。</li>
-</ol>
-<h2 id="dns"><a class="markdownIt-Anchor" href="#dns"></a> DNS</h2>
-<p>集群中所有的 Pod 默认配置使用集群内部的 DNS 服务器。Pod 可以通过名称轻松查询集群内的服务，甚至是无头服务的 Pod IP 地址。</p>
-<p>DNS 服务的 Pod 通过 kube-dns 服务对外暴露，DNS 服务的 IP 地址在集群中每个容器的 <code>/etc/resolv.conf</code> 文件中都有定义。</p>
-<p>kube-dns Pod 利用 API 服务器的监控机制来订阅 Service 和 Endpoint 的变动，以及 DNS 记录的变更，从而确保客户端始终获取到最新的 DNS 信息。</p>
-<h2 id="ingress-控制器"><a class="markdownIt-Anchor" href="#ingress-控制器"></a> Ingress 控制器</h2>
-<p>Ingress 控制器运行一个反向代理服务器，类似于 Nginx。它根据集群中定义的 Ingress、Service 和 Endpoint 资源来配置该控制器。因此，需要订阅这些资源，并在发生变化时更新代理服务器的配置。</p>
-<p>尽管 Ingress 资源的定义指向一个 Service，但是 Ingress 控制器会直接将流量转发到服务的 Pod，而不经过服务的 IP。当外部客户端通过 Ingress 控制器连接时，会保存客户端的 IP，而 Service 本身无法实现这一点。</p>
 ]]></content>
       <categories>
         <category>Kubernets</category>
@@ -34435,6 +34698,279 @@ operator        <span class="token number">11</span><span aria-hidden="true" cla
       </categories>
   </entry>
   <entry>
+    <title>Vim 工具基本使用</title>
+    <url>/17877528/</url>
+    <content><![CDATA[<h1 id="vim-基础知识"><a class="markdownIt-Anchor" href="#vim-基础知识"></a> Vim 基础知识</h1>
+<p>Vim（Vi IMproved）是一款强大的文本编辑器，是 Linux 和其他类 Unix 系统中最常用的编辑器之一。它不仅支持简单的文本编辑，还有许多高级功能，例如自动完成、宏录制、拼写检查和代码高亮等。Vim 是一个模式化编辑器，有多种不同的模式，其中最常用的是命令模式、插入模式和可视模式。</p>
+<h2 id="vim-模式"><a class="markdownIt-Anchor" href="#vim-模式"></a> Vim 模式</h2>
+<p>vi 分为三种模式，一般模式、编辑模式与命令行模式：</p>
+<ul>
+<li>
+<p>一般指令模式（Command Mode）</p>
+<p>用 vi 打开一个文件就进入一般模式，可以使用方向键来移动光标，删除，复制与粘贴。</p>
+</li>
+<li>
+<p>编辑模式（Insert Mode）</p>
+<p>在一般模式中，按下 “i o a r” 任何一个按键之后才会进入编辑模式，左下角会显示 INSERT 或 REPLACE 等字样。按 Esc 键可以返回一般模式。</p>
+</li>
+<li>
+<p>命令行模式（Command-line Mode）</p>
+<p>在一般模式下，输入 “: / ?” 三个中的任何一个按键，可以将光标移动到最下面一行，在此模式可以查找数据，读取保存，大量替换等操作。</p>
+</li>
+</ul>
+<h2 id="界面介绍"><a class="markdownIt-Anchor" href="#界面介绍"></a> 界面介绍</h2>
+<p>使用 <code>vi</code> 打开一个已存在的文件后，显示如下所示：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> anaconda-ks.cfg 
+<span class="token comment">#version=DEVEL</span>
+<span class="token comment"># System authorization information</span>
+auth <span class="token parameter variable">--enableshadow</span> <span class="token parameter variable">--passalgo</span><span class="token operator">=</span>sha512
+<span class="token comment"># Use CDROM installation media</span>
+cdrom
+<span class="token comment"># Use graphical install</span>
+graphical
+<span class="token comment"># Run the Setup Agent on first boot</span>
+<span class="token string">"anaconda-ks.cfg"</span> 48L, 1260C<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最下面一行分别展示了：</p>
+<ul>
+<li>“anaconda-ks.cfg”：文件名；</li>
+<li>48L：文件有 48 行；</li>
+<li>1260C：文件有 1260 个字符，也就是 1260B 大小。</li>
+</ul>
+<p>按下 <code>i</code> 键后，进入到编辑模式，最左下角显示：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">-- INSERT --<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>此时可以自由输入文字。按下 <code>Esc</code> 键退回到一般模式，再输入 <code>:wq</code> 按回车可以保存并离开 <code>vi</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">:wq
+<span class="token string">"anaconda-ks.cfg"</span> 48L, 1260C written<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>如果文件权限只读，可以使用 <code>:wq!</code> 来强制写入。</p>
+<h2 id="恢复功能"><a class="markdownIt-Anchor" href="#恢复功能"></a> 恢复功能</h2>
+<p>恢复功能是指，当因为某些原因导致死机的情况下，能通过一些方法将之前未保存的数据找回来。</p>
+<p>在使用 <code>vim</code> 编辑文件时，<code>vim</code> 会在被编辑文件同目录下新建一个名为 <code>.filename.swp</code> 的交换文件。每当键入 200 个字符或有 4 秒没有键入内容时，交换文件都会自动地更新。</p>
+<p>例如用 <code>vi</code> 新建打开一个文件，在命令模式下按 <code>Ctrl+z</code> 中断，再查看 <code>.swp</code> 文件内容：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">vi</span> <span class="token number">1</span>.txt
+a
+b
+~
+
+<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>+  Stopped                 <span class="token function">vi</span> <span class="token number">1</span>.txt
+<span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">cat</span> .1.txt.swp 
+U3210<span class="token comment">#"! Utpad???</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到 <code>swp</code> 实时保存了我们输入的内容。</p>
+<p>再次打开文件时，会提示有 <code>swp</code> 临时文件存在：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">vim</span> <span class="token number">1</span>.txt 
+
+E325: ATTENTION
+Found a swap <span class="token function">file</span> by the name <span class="token string">".1.txt.swp"</span>
+          owned by: root   dated: Sat Sep <span class="token number">11</span> 03:44:17 <span class="token number">2021</span>
+         <span class="token function">file</span> name: ~root/4/1.txt
+          modified: YES
+         user name: root   <span class="token function">host</span> name: 101c7
+        process ID: <span class="token number">87510</span> <span class="token punctuation">(</span>still running<span class="token punctuation">)</span>
+While opening <span class="token function">file</span> <span class="token string">"1.txt"</span>
+             dated: Sat Sep <span class="token number">11</span> 03:44:11 <span class="token number">2021</span>
+
+<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> Another program may be editing the same file.  If this is the case,
+    be careful not to end up with two different instances of the same
+    <span class="token function">file</span> when making changes.  Quit, or <span class="token builtin class-name">continue</span> with caution.
+<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span> An edit session <span class="token keyword">for</span> this <span class="token function">file</span> crashed.
+    If this is the case, use <span class="token string">":recover"</span> or <span class="token string">"vim -r 1.txt"</span>
+    to recover the changes <span class="token punctuation">(</span>see <span class="token string">":help recovery"</span><span class="token punctuation">)</span>.
+    If you did this already, delete the swap <span class="token function">file</span> <span class="token string">".1.txt.swp"</span>
+    to avoid this message.
+
+Swap <span class="token function">file</span> <span class="token string">".1.txt.swp"</span> already exists<span class="token operator">!</span>
+<span class="token punctuation">[</span>O<span class="token punctuation">]</span>pen Read-Only, <span class="token punctuation">(</span>E<span class="token punctuation">)</span>dit anyway, <span class="token punctuation">(</span>R<span class="token punctuation">)</span>ecover, <span class="token punctuation">(</span>Q<span class="token punctuation">)</span>uit, <span class="token punctuation">(</span>A<span class="token punctuation">)</span>bort:<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>提示会说明出现这一情况的两种原因：</p>
+<ul>
+<li>此文件正被另一个程序所使用；</li>
+<li>文件在编辑过程中非正常退出。</li>
+</ul>
+<p>此时可以选择以哪种模式来打开：</p>
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>O</td>
+<td>以只读模式打开，显示内容为没有保存的内容；</td>
+</tr>
+<tr>
+<td>E</td>
+<td>以正常模式编辑文件，不会载入暂存文件内容；</td>
+</tr>
+<tr>
+<td>R</td>
+<td>加载暂存文件内容，恢复之前的作业。修改完毕后需要手动删除 <code>.swp</code> 文件；</td>
+</tr>
+<tr>
+<td>Q</td>
+<td>直接退出不进行操作；</td>
+</tr>
+<tr>
+<td>A</td>
+<td>等同于 Q，直接退出。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="环境设置"><a class="markdownIt-Anchor" href="#环境设置"></a> 环境设置</h2>
+<p>在使用 <code>vim</code> 编辑文件时，文件会继承上一次编辑时的状态，比如光标出现在最后一行。这个记录操作文件保存在 <code>~/.viminfo</code> 里面。</p>
+<p>在命令模式下用 <code>set</code> 修改的设置值保存在 <code>/etc/vimrc</code> 这个文件中，不建议动它。需要自定义设置可以新建 <code>~/.vimrc</code> 这个文件将希望设置的值写入。</p>
+<p>例如设置自动缩进和行号功能：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vim</span> ~/.vimrc
+<span class="token builtin class-name">set</span> nu          <span class="token string">"hanghao
+set autoindent  "</span>suojin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>再次打开 <code>vim</code> 即可生效：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vim</span> ~/.vimrc
+  <span class="token number">1</span> <span class="token builtin class-name">set</span> nu          <span class="token string">"hanghao
+  2 set autoindent  "</span>suojin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h1 id="vim-基本操作"><a class="markdownIt-Anchor" href="#vim-基本操作"></a> Vim 基本操作</h1>
+<p>下面记录一些 Vim 的基本操作。</p>
+<h2 id="一般模式"><a class="markdownIt-Anchor" href="#一般模式"></a> 一般模式</h2>
+<p>光标移动针对的是在一般模式下快速浏览/定位文件。</p>
+<h3 id="移动"><a class="markdownIt-Anchor" href="#移动"></a> 移动</h3>
+<p>可以使用方向键 <code>←</code> <code>↓</code> <code>↑</code> <code>→</code> 或 <code>h</code> <code>j</code> <code>k</code> <code>l</code> 操作光标左/右/下/上移一个字符。</p>
+<p>可使用数字组合，例如 <code>30k</code> 代表光标向上移 30 行。</p>
+<h3 id="翻页"><a class="markdownIt-Anchor" href="#翻页"></a> 翻页</h3>
+<p>使用快捷键 <code>Ctrl+f</code>/<code>Ctrl+b</code> 来控制屏幕向下/上移动一页，相当于 <code>PageDown</code>/<code>PageUp</code>。</p>
+<h3 id="跳转"><a class="markdownIt-Anchor" href="#跳转"></a> 跳转</h3>
+<p>输入 <code>nG</code>（n 为数字）将光标移动到第 n 行位置。</p>
+<h3 id="删除"><a class="markdownIt-Anchor" href="#删除"></a> 删除</h3>
+<p>使用 <code>x</code>/<code>X</code> 来删除当前光标后/前个字符。</p>
+<p>可以使用数字组合，例如 <code>9x</code> 代表删除光标后连续 9 个字符。</p>
+<h3 id="剪切"><a class="markdownIt-Anchor" href="#剪切"></a> 剪切</h3>
+<p>使用 <code>dd</code> 剪切光标所在行。</p>
+<p>可以使用数字组合，例如 <code>9dd</code> 代表向下删除 9 行。</p>
+<h3 id="复制"><a class="markdownIt-Anchor" href="#复制"></a> 复制</h3>
+<p>使用 <code>yy</code> 复制光标所在行。</p>
+<p>可以使用数字组合，例如 <code>9yy</code> 代表复制向下 9 行。</p>
+<p>按 <code>v</code> 键进入复制可视模式，在移动光标时高亮显示文本，选择完毕后按 <code>y</code> 复制选择内容。</p>
+<h3 id="粘贴"><a class="markdownIt-Anchor" href="#粘贴"></a> 粘贴</h3>
+<p>使用 <code>p</code>/<code>P</code> 来将剪贴板数据粘贴到光标下/上一行。</p>
+<h3 id="撤销"><a class="markdownIt-Anchor" href="#撤销"></a> 撤销</h3>
+<p>使用 <code>u</code> 来撤销上一次操作。</p>
+<h3 id="重做"><a class="markdownIt-Anchor" href="#重做"></a> 重做</h3>
+<p>使用 <code>Ctrl+r</code> 快捷键来反撤销操作。</p>
+<h3 id="块选择模式"><a class="markdownIt-Anchor" href="#块选择模式"></a> 块选择模式</h3>
+<p>按下<code>Ctrl+v</code>进入块选择模式，之后用方向键操作光标选择块：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">vi</span> c.log 
+c1  ass
+c2  bss
+c3  css
+~
+-- VISUAL BLOCK --  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>此模式下按<code>y</code>复制，按<code>d</code>删除。</p>
+<h2 id="编辑模式"><a class="markdownIt-Anchor" href="#编辑模式"></a> 编辑模式</h2>
+<p>进入编辑模式有两个方式：</p>
+<ul>
+<li>
+<p>按 i：进入到插入模式（Insert Mode）。</p>
+</li>
+<li>
+<p>按 r/R：进入到替换/连续替换模式（Replace Mode）。</p>
+</li>
+</ul>
+<p>在编辑模式中主要执行文本插入和修改操作。</p>
+<h2 id="命令模式"><a class="markdownIt-Anchor" href="#命令模式"></a> 命令模式</h2>
+<p>在命令行模式下，可以进行文件读写、保存、退出、搜索、替换等操作，按下冒号(:)即可进入命令行模式。</p>
+<h3 id="搜索"><a class="markdownIt-Anchor" href="#搜索"></a> 搜索</h3>
+<p>搜索功能在命令模式下完成：</p>
+<ul>
+<li>
+<p>/word：向下搜索字符串 <code>word</code>。</p>
+</li>
+<li>
+<p>?word：向上搜索字符串 <code>word</code>。</p>
+</li>
+</ul>
+<p>对搜索结果按键 <code>n/N</code> 进行向下/向上跳转。</p>
+<h3 id="替换"><a class="markdownIt-Anchor" href="#替换"></a> 替换</h3>
+<ul>
+<li>
+<p>替换表达式：<code>:&#123;作用范围&#125;s/&#123;搜索关键词&#125;/&#123;替换成关键词&#125;/&#123;替换标志&#125;</code></p>
+</li>
+<li>
+<p>作用范围：n1,n2：n1 和 n2 为数字，表示在 n1 和 n2 行之间搜寻关键词并替换。例如在 100 到 200 行之间搜索：<code>100,200s/XS/xs/g</code></p>
+<p>1,&amp;s：表示从第 1 行到最后一行。</p>
+</li>
+<li>
+<p>替换标志</p>
+<p>g：表示全部替换，否则只会替换找到的第一个结果。</p>
+<p>i/I：表示搜索不区分/区分大小写，默认是区分大小写。</p>
+<p>c：表示替换前提示确认。</p>
+</li>
+</ul>
+<h3 id="保存"><a class="markdownIt-Anchor" href="#保存"></a> 保存</h3>
+<p>:w 直接保存文件。</p>
+<p>:w! 强制保存文件，针对某些设为只读权限的文件可以强制写入。</p>
+<p>:w file2 另存为当前编辑的文件为<code>file2</code>。</p>
+<h3 id="读取"><a class="markdownIt-Anchor" href="#读取"></a> 读取</h3>
+<p>:r file1 读取文件<code>file1</code>，并将内容加到光标所在行后面。</p>
+<h3 id="退出"><a class="markdownIt-Anchor" href="#退出"></a> 退出</h3>
+<p>:q 直接退出。</p>
+<p>:q! 强制退出，针对修改了文件内容不想保存情况下退出。</p>
+<p>:wq! 强制保存并退出。</p>
+<p><code>ZZ</code> 保存后退出，等同于<code>:wq</code>。</p>
+<h3 id="设置"><a class="markdownIt-Anchor" href="#设置"></a> 设置</h3>
+<p>使用 :set all 查看所有配置。使用 :set 查看有更改过的参数。</p>
+<ul>
+<li>
+<p>行号：set nu 设置行号，默认设置 nonu 没有行号。</p>
+</li>
+<li>
+<p>自动缩进：set autoindent 设置自动缩进，默认设置 noautoindent 没有自动缩进。</p>
+</li>
+<li>
+<p>设置备份：set backup 设置自动保存备份文件，默认设置 nobackup 没有备份。</p>
+</li>
+<li>
+<p>语法高亮：syntax on 依据语法来显示不同颜色。默认设置 syntax off。</p>
+</li>
+<li>
+<p>跳转：输入数字 n 直接跳转到第 n 行。</p>
+</li>
+<li>
+<p>显示文件名：f 显示正在编辑的文件名等信息。</p>
+</li>
+<li>
+<p>执行命令：! command 暂时离开 vim 到命令行模式下执行命令并展示结果。</p>
+</li>
+</ul>
+<h3 id="多窗口模式"><a class="markdownIt-Anchor" href="#多窗口模式"></a> 多窗口模式</h3>
+<p>在命令模式下输入<code>:sp</code>可对当前文件切割成上下两个窗口显示：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token number">111</span>
+<span class="token number">11</span>
+<span class="token number">1</span>
+~
+~
+<span class="token number">1</span>.txt                                                                                    <span class="token number">3,1</span>            All
+<span class="token number">111</span>
+<span class="token number">11</span>
+<span class="token number">1</span>
+~
+<span class="token number">1</span>.txt                                                                                    <span class="token number">1,1</span>            All
+:sp<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>通过按键<code>Ctrl+w</code>来切换窗口。</p>
+<p>也可以用<code>:sp</code>指定文件名，这样上下窗口分别显示两个不同文件内容。</p>
+<h3 id="同时编辑模式"><a class="markdownIt-Anchor" href="#同时编辑模式"></a> 同时编辑模式</h3>
+<p>可以同时用<code>vim</code>打开多个文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">vi</span> <span class="token number">1</span>.txt <span class="token number">2</span>.txt
+<span class="token number">2</span> files to edit
+
+~
+~
+<span class="token string">"1.txt"</span> 0L, 0C                                                                           <span class="token number">0,0</span>-1         All<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>输入命令<code>:n</code>或<code>:N</code>来编辑下一个或上一个文件。</p>
+<p>输入命令<code>:files</code>列出目前打开的所有文件。</p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>3.脚本编程</category>
+      </categories>
+  </entry>
+  <entry>
     <title>正则表达式</title>
     <url>/794273428/</url>
     <content><![CDATA[<h1 id="基本定义"><a class="markdownIt-Anchor" href="#基本定义"></a> 基本定义</h1>
@@ -35115,279 +35651,6 @@ pwpolicy user <span class="token parameter variable">--minlen</span><span class=
 <h2 id="匹配数字千位"><a class="markdownIt-Anchor" href="#匹配数字千位"></a> 匹配数字千位</h2>
 <p>即在每三个数字后面添加一个逗号，例如将 1234567 匹配为 1,234,567。这个正则表达式使用了正向肯定零宽断言和正向零宽断言两个技巧。其中 <code>(?&lt;=\d)</code> 表示匹配前面是数字的位置，<code>(?=(\d\d\d)+$)</code> 表示匹配后面是 3 个数字的倍数并且后面没有其他字符的位置。这样，正则表达式会在满足这两个条件的位置上添加逗号。</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">(</span>?<span class="token operator">&lt;=</span><span class="token punctuation">\</span>d<span class="token punctuation">)</span><span class="token punctuation">(</span>?<span class="token operator">=</span><span class="token punctuation">(</span><span class="token punctuation">\</span>d<span class="token punctuation">\</span>d<span class="token punctuation">\</span>d<span class="token punctuation">)</span>+$<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>3.脚本编程</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>Vim 工具基本使用</title>
-    <url>/17877528/</url>
-    <content><![CDATA[<h1 id="vim-基础知识"><a class="markdownIt-Anchor" href="#vim-基础知识"></a> Vim 基础知识</h1>
-<p>Vim（Vi IMproved）是一款强大的文本编辑器，是 Linux 和其他类 Unix 系统中最常用的编辑器之一。它不仅支持简单的文本编辑，还有许多高级功能，例如自动完成、宏录制、拼写检查和代码高亮等。Vim 是一个模式化编辑器，有多种不同的模式，其中最常用的是命令模式、插入模式和可视模式。</p>
-<h2 id="vim-模式"><a class="markdownIt-Anchor" href="#vim-模式"></a> Vim 模式</h2>
-<p>vi 分为三种模式，一般模式、编辑模式与命令行模式：</p>
-<ul>
-<li>
-<p>一般指令模式（Command Mode）</p>
-<p>用 vi 打开一个文件就进入一般模式，可以使用方向键来移动光标，删除，复制与粘贴。</p>
-</li>
-<li>
-<p>编辑模式（Insert Mode）</p>
-<p>在一般模式中，按下 “i o a r” 任何一个按键之后才会进入编辑模式，左下角会显示 INSERT 或 REPLACE 等字样。按 Esc 键可以返回一般模式。</p>
-</li>
-<li>
-<p>命令行模式（Command-line Mode）</p>
-<p>在一般模式下，输入 “: / ?” 三个中的任何一个按键，可以将光标移动到最下面一行，在此模式可以查找数据，读取保存，大量替换等操作。</p>
-</li>
-</ul>
-<h2 id="界面介绍"><a class="markdownIt-Anchor" href="#界面介绍"></a> 界面介绍</h2>
-<p>使用 <code>vi</code> 打开一个已存在的文件后，显示如下所示：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> anaconda-ks.cfg 
-<span class="token comment">#version=DEVEL</span>
-<span class="token comment"># System authorization information</span>
-auth <span class="token parameter variable">--enableshadow</span> <span class="token parameter variable">--passalgo</span><span class="token operator">=</span>sha512
-<span class="token comment"># Use CDROM installation media</span>
-cdrom
-<span class="token comment"># Use graphical install</span>
-graphical
-<span class="token comment"># Run the Setup Agent on first boot</span>
-<span class="token string">"anaconda-ks.cfg"</span> 48L, 1260C<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>最下面一行分别展示了：</p>
-<ul>
-<li>“anaconda-ks.cfg”：文件名；</li>
-<li>48L：文件有 48 行；</li>
-<li>1260C：文件有 1260 个字符，也就是 1260B 大小。</li>
-</ul>
-<p>按下 <code>i</code> 键后，进入到编辑模式，最左下角显示：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">-- INSERT --<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>此时可以自由输入文字。按下 <code>Esc</code> 键退回到一般模式，再输入 <code>:wq</code> 按回车可以保存并离开 <code>vi</code>：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">:wq
-<span class="token string">"anaconda-ks.cfg"</span> 48L, 1260C written<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>如果文件权限只读，可以使用 <code>:wq!</code> 来强制写入。</p>
-<h2 id="恢复功能"><a class="markdownIt-Anchor" href="#恢复功能"></a> 恢复功能</h2>
-<p>恢复功能是指，当因为某些原因导致死机的情况下，能通过一些方法将之前未保存的数据找回来。</p>
-<p>在使用 <code>vim</code> 编辑文件时，<code>vim</code> 会在被编辑文件同目录下新建一个名为 <code>.filename.swp</code> 的交换文件。每当键入 200 个字符或有 4 秒没有键入内容时，交换文件都会自动地更新。</p>
-<p>例如用 <code>vi</code> 新建打开一个文件，在命令模式下按 <code>Ctrl+z</code> 中断，再查看 <code>.swp</code> 文件内容：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">vi</span> <span class="token number">1</span>.txt
-a
-b
-~
-
-<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>+  Stopped                 <span class="token function">vi</span> <span class="token number">1</span>.txt
-<span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">cat</span> .1.txt.swp 
-U3210<span class="token comment">#"! Utpad???</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以看到 <code>swp</code> 实时保存了我们输入的内容。</p>
-<p>再次打开文件时，会提示有 <code>swp</code> 临时文件存在：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">vim</span> <span class="token number">1</span>.txt 
-
-E325: ATTENTION
-Found a swap <span class="token function">file</span> by the name <span class="token string">".1.txt.swp"</span>
-          owned by: root   dated: Sat Sep <span class="token number">11</span> 03:44:17 <span class="token number">2021</span>
-         <span class="token function">file</span> name: ~root/4/1.txt
-          modified: YES
-         user name: root   <span class="token function">host</span> name: 101c7
-        process ID: <span class="token number">87510</span> <span class="token punctuation">(</span>still running<span class="token punctuation">)</span>
-While opening <span class="token function">file</span> <span class="token string">"1.txt"</span>
-             dated: Sat Sep <span class="token number">11</span> 03:44:11 <span class="token number">2021</span>
-
-<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> Another program may be editing the same file.  If this is the case,
-    be careful not to end up with two different instances of the same
-    <span class="token function">file</span> when making changes.  Quit, or <span class="token builtin class-name">continue</span> with caution.
-<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span> An edit session <span class="token keyword">for</span> this <span class="token function">file</span> crashed.
-    If this is the case, use <span class="token string">":recover"</span> or <span class="token string">"vim -r 1.txt"</span>
-    to recover the changes <span class="token punctuation">(</span>see <span class="token string">":help recovery"</span><span class="token punctuation">)</span>.
-    If you did this already, delete the swap <span class="token function">file</span> <span class="token string">".1.txt.swp"</span>
-    to avoid this message.
-
-Swap <span class="token function">file</span> <span class="token string">".1.txt.swp"</span> already exists<span class="token operator">!</span>
-<span class="token punctuation">[</span>O<span class="token punctuation">]</span>pen Read-Only, <span class="token punctuation">(</span>E<span class="token punctuation">)</span>dit anyway, <span class="token punctuation">(</span>R<span class="token punctuation">)</span>ecover, <span class="token punctuation">(</span>Q<span class="token punctuation">)</span>uit, <span class="token punctuation">(</span>A<span class="token punctuation">)</span>bort:<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>提示会说明出现这一情况的两种原因：</p>
-<ul>
-<li>此文件正被另一个程序所使用；</li>
-<li>文件在编辑过程中非正常退出。</li>
-</ul>
-<p>此时可以选择以哪种模式来打开：</p>
-<table>
-<thead>
-<tr>
-<th>按键</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>O</td>
-<td>以只读模式打开，显示内容为没有保存的内容；</td>
-</tr>
-<tr>
-<td>E</td>
-<td>以正常模式编辑文件，不会载入暂存文件内容；</td>
-</tr>
-<tr>
-<td>R</td>
-<td>加载暂存文件内容，恢复之前的作业。修改完毕后需要手动删除 <code>.swp</code> 文件；</td>
-</tr>
-<tr>
-<td>Q</td>
-<td>直接退出不进行操作；</td>
-</tr>
-<tr>
-<td>A</td>
-<td>等同于 Q，直接退出。</td>
-</tr>
-</tbody>
-</table>
-<h2 id="环境设置"><a class="markdownIt-Anchor" href="#环境设置"></a> 环境设置</h2>
-<p>在使用 <code>vim</code> 编辑文件时，文件会继承上一次编辑时的状态，比如光标出现在最后一行。这个记录操作文件保存在 <code>~/.viminfo</code> 里面。</p>
-<p>在命令模式下用 <code>set</code> 修改的设置值保存在 <code>/etc/vimrc</code> 这个文件中，不建议动它。需要自定义设置可以新建 <code>~/.vimrc</code> 这个文件将希望设置的值写入。</p>
-<p>例如设置自动缩进和行号功能：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vim</span> ~/.vimrc
-<span class="token builtin class-name">set</span> nu          <span class="token string">"hanghao
-set autoindent  "</span>suojin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>再次打开 <code>vim</code> 即可生效：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 ~<span class="token punctuation">]</span>$ <span class="token function">vim</span> ~/.vimrc
-  <span class="token number">1</span> <span class="token builtin class-name">set</span> nu          <span class="token string">"hanghao
-  2 set autoindent  "</span>suojin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h1 id="vim-基本操作"><a class="markdownIt-Anchor" href="#vim-基本操作"></a> Vim 基本操作</h1>
-<p>下面记录一些 Vim 的基本操作。</p>
-<h2 id="一般模式"><a class="markdownIt-Anchor" href="#一般模式"></a> 一般模式</h2>
-<p>光标移动针对的是在一般模式下快速浏览/定位文件。</p>
-<h3 id="移动"><a class="markdownIt-Anchor" href="#移动"></a> 移动</h3>
-<p>可以使用方向键 <code>←</code> <code>↓</code> <code>↑</code> <code>→</code> 或 <code>h</code> <code>j</code> <code>k</code> <code>l</code> 操作光标左/右/下/上移一个字符。</p>
-<p>可使用数字组合，例如 <code>30k</code> 代表光标向上移 30 行。</p>
-<h3 id="翻页"><a class="markdownIt-Anchor" href="#翻页"></a> 翻页</h3>
-<p>使用快捷键 <code>Ctrl+f</code>/<code>Ctrl+b</code> 来控制屏幕向下/上移动一页，相当于 <code>PageDown</code>/<code>PageUp</code>。</p>
-<h3 id="跳转"><a class="markdownIt-Anchor" href="#跳转"></a> 跳转</h3>
-<p>输入 <code>nG</code>（n 为数字）将光标移动到第 n 行位置。</p>
-<h3 id="删除"><a class="markdownIt-Anchor" href="#删除"></a> 删除</h3>
-<p>使用 <code>x</code>/<code>X</code> 来删除当前光标后/前个字符。</p>
-<p>可以使用数字组合，例如 <code>9x</code> 代表删除光标后连续 9 个字符。</p>
-<h3 id="剪切"><a class="markdownIt-Anchor" href="#剪切"></a> 剪切</h3>
-<p>使用 <code>dd</code> 剪切光标所在行。</p>
-<p>可以使用数字组合，例如 <code>9dd</code> 代表向下删除 9 行。</p>
-<h3 id="复制"><a class="markdownIt-Anchor" href="#复制"></a> 复制</h3>
-<p>使用 <code>yy</code> 复制光标所在行。</p>
-<p>可以使用数字组合，例如 <code>9yy</code> 代表复制向下 9 行。</p>
-<p>按 <code>v</code> 键进入复制可视模式，在移动光标时高亮显示文本，选择完毕后按 <code>y</code> 复制选择内容。</p>
-<h3 id="粘贴"><a class="markdownIt-Anchor" href="#粘贴"></a> 粘贴</h3>
-<p>使用 <code>p</code>/<code>P</code> 来将剪贴板数据粘贴到光标下/上一行。</p>
-<h3 id="撤销"><a class="markdownIt-Anchor" href="#撤销"></a> 撤销</h3>
-<p>使用 <code>u</code> 来撤销上一次操作。</p>
-<h3 id="重做"><a class="markdownIt-Anchor" href="#重做"></a> 重做</h3>
-<p>使用 <code>Ctrl+r</code> 快捷键来反撤销操作。</p>
-<h3 id="块选择模式"><a class="markdownIt-Anchor" href="#块选择模式"></a> 块选择模式</h3>
-<p>按下<code>Ctrl+v</code>进入块选择模式，之后用方向键操作光标选择块：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 audit<span class="token punctuation">]</span>$ <span class="token function">vi</span> c.log 
-c1  ass
-c2  bss
-c3  css
-~
--- VISUAL BLOCK --  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>此模式下按<code>y</code>复制，按<code>d</code>删除。</p>
-<h2 id="编辑模式"><a class="markdownIt-Anchor" href="#编辑模式"></a> 编辑模式</h2>
-<p>进入编辑模式有两个方式：</p>
-<ul>
-<li>
-<p>按 i：进入到插入模式（Insert Mode）。</p>
-</li>
-<li>
-<p>按 r/R：进入到替换/连续替换模式（Replace Mode）。</p>
-</li>
-</ul>
-<p>在编辑模式中主要执行文本插入和修改操作。</p>
-<h2 id="命令模式"><a class="markdownIt-Anchor" href="#命令模式"></a> 命令模式</h2>
-<p>在命令行模式下，可以进行文件读写、保存、退出、搜索、替换等操作，按下冒号(:)即可进入命令行模式。</p>
-<h3 id="搜索"><a class="markdownIt-Anchor" href="#搜索"></a> 搜索</h3>
-<p>搜索功能在命令模式下完成：</p>
-<ul>
-<li>
-<p>/word：向下搜索字符串 <code>word</code>。</p>
-</li>
-<li>
-<p>?word：向上搜索字符串 <code>word</code>。</p>
-</li>
-</ul>
-<p>对搜索结果按键 <code>n/N</code> 进行向下/向上跳转。</p>
-<h3 id="替换"><a class="markdownIt-Anchor" href="#替换"></a> 替换</h3>
-<ul>
-<li>
-<p>替换表达式：<code>:&#123;作用范围&#125;s/&#123;搜索关键词&#125;/&#123;替换成关键词&#125;/&#123;替换标志&#125;</code></p>
-</li>
-<li>
-<p>作用范围：n1,n2：n1 和 n2 为数字，表示在 n1 和 n2 行之间搜寻关键词并替换。例如在 100 到 200 行之间搜索：<code>100,200s/XS/xs/g</code></p>
-<p>1,&amp;s：表示从第 1 行到最后一行。</p>
-</li>
-<li>
-<p>替换标志</p>
-<p>g：表示全部替换，否则只会替换找到的第一个结果。</p>
-<p>i/I：表示搜索不区分/区分大小写，默认是区分大小写。</p>
-<p>c：表示替换前提示确认。</p>
-</li>
-</ul>
-<h3 id="保存"><a class="markdownIt-Anchor" href="#保存"></a> 保存</h3>
-<p>:w 直接保存文件。</p>
-<p>:w! 强制保存文件，针对某些设为只读权限的文件可以强制写入。</p>
-<p>:w file2 另存为当前编辑的文件为<code>file2</code>。</p>
-<h3 id="读取"><a class="markdownIt-Anchor" href="#读取"></a> 读取</h3>
-<p>:r file1 读取文件<code>file1</code>，并将内容加到光标所在行后面。</p>
-<h3 id="退出"><a class="markdownIt-Anchor" href="#退出"></a> 退出</h3>
-<p>:q 直接退出。</p>
-<p>:q! 强制退出，针对修改了文件内容不想保存情况下退出。</p>
-<p>:wq! 强制保存并退出。</p>
-<p><code>ZZ</code> 保存后退出，等同于<code>:wq</code>。</p>
-<h3 id="设置"><a class="markdownIt-Anchor" href="#设置"></a> 设置</h3>
-<p>使用 :set all 查看所有配置。使用 :set 查看有更改过的参数。</p>
-<ul>
-<li>
-<p>行号：set nu 设置行号，默认设置 nonu 没有行号。</p>
-</li>
-<li>
-<p>自动缩进：set autoindent 设置自动缩进，默认设置 noautoindent 没有自动缩进。</p>
-</li>
-<li>
-<p>设置备份：set backup 设置自动保存备份文件，默认设置 nobackup 没有备份。</p>
-</li>
-<li>
-<p>语法高亮：syntax on 依据语法来显示不同颜色。默认设置 syntax off。</p>
-</li>
-<li>
-<p>跳转：输入数字 n 直接跳转到第 n 行。</p>
-</li>
-<li>
-<p>显示文件名：f 显示正在编辑的文件名等信息。</p>
-</li>
-<li>
-<p>执行命令：! command 暂时离开 vim 到命令行模式下执行命令并展示结果。</p>
-</li>
-</ul>
-<h3 id="多窗口模式"><a class="markdownIt-Anchor" href="#多窗口模式"></a> 多窗口模式</h3>
-<p>在命令模式下输入<code>:sp</code>可对当前文件切割成上下两个窗口显示：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token number">111</span>
-<span class="token number">11</span>
-<span class="token number">1</span>
-~
-~
-<span class="token number">1</span>.txt                                                                                    <span class="token number">3,1</span>            All
-<span class="token number">111</span>
-<span class="token number">11</span>
-<span class="token number">1</span>
-~
-<span class="token number">1</span>.txt                                                                                    <span class="token number">1,1</span>            All
-:sp<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>通过按键<code>Ctrl+w</code>来切换窗口。</p>
-<p>也可以用<code>:sp</code>指定文件名，这样上下窗口分别显示两个不同文件内容。</p>
-<h3 id="同时编辑模式"><a class="markdownIt-Anchor" href="#同时编辑模式"></a> 同时编辑模式</h3>
-<p>可以同时用<code>vim</code>打开多个文件：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@101c7 <span class="token number">4</span><span class="token punctuation">]</span>$ <span class="token function">vi</span> <span class="token number">1</span>.txt <span class="token number">2</span>.txt
-<span class="token number">2</span> files to edit
-
-~
-~
-<span class="token string">"1.txt"</span> 0L, 0C                                                                           <span class="token number">0,0</span>-1         All<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>输入命令<code>:n</code>或<code>:N</code>来编辑下一个或上一个文件。</p>
-<p>输入命令<code>:files</code>列出目前打开的所有文件。</p>
 ]]></content>
       <categories>
         <category>Linux</category>
