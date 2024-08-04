@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://lib.baomitu.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://lib.baomitu.com/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://lib.baomitu.com/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://lib.baomitu.com/pace/1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://lib.baomitu.com/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="数据类型 数据类型指编译器、数据库和执行环境操作和处理数据的方式，Go 语言具有不多但够用的内置类型。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go 语言类型系统">
+<meta property="og:url" content="https://blog.x2b.net/3126418019/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="数据类型 数据类型指编译器、数据库和执行环境操作和处理数据的方式，Go 语言具有不多但够用的内置类型。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-03-09T08:12:58.000Z">
+<meta property="article:modified_time" content="2024-08-04T14:03:37.417Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python go">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/3126418019/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/3126418019/","path":"3126418019/","title":"Go 语言类型系统"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Go 语言类型系统 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">19</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">110</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text"> 数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E7%BD%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.1.</span> <span class="nav-text"> 内置类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%A0%E9%80%92%E6%96%B9%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text"> 传递方式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B%E6%A3%80%E6%B5%8B"><span class="nav-number">2.</span> <span class="nav-text"> 类型检测</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.1.</span> <span class="nav-text"> 静态类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B%E6%8E%A8%E6%96%AD"><span class="nav-number">2.2.</span> <span class="nav-text"> 类型推断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B%E6%96%AD%E8%A8%80"><span class="nav-number">2.3.</span> <span class="nav-text"> 类型断言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8D%E5%B0%84%E6%A3%80%E6%9F%A5"><span class="nav-number">2.4.</span> <span class="nav-text"> 反射检查</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2"><span class="nav-number">3.</span> <span class="nav-text"> 类型转换</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B%E5%88%AB%E5%90%8D"><span class="nav-number">4.</span> <span class="nav-text"> 类型别名</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B"><span class="nav-number">5.</span> <span class="nav-text"> 自定义类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">5.1.</span> <span class="nav-text"> 定义和初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E5%AE%9A%E4%B9%89"><span class="nav-number">5.2.</span> <span class="nav-text"> 方法定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%98%BE%E5%BC%8F%E8%BD%AC%E6%8D%A2"><span class="nav-number">5.3.</span> <span class="nav-text"> 显式转换</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">个人笔记</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">110</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/3126418019/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="个人笔记">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Go 语言类型系统 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Go 语言类型系统
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-03-09 16:12:58" itemprop="dateCreated datePublished" datetime="2024-03-09T16:12:58+08:00">2024-03-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-08-04 22:03:37" itemprop="dateModified" datetime="2024-08-04T22:03:37+08:00">2024-08-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Go/1-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">1.语言基础</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>10 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="数据类型"><a class="markdownIt-Anchor" href="#数据类型"></a> 数据类型</h1>
+<p>数据类型指编译器、数据库和执行环境操作和处理数据的方式，Go 语言具有不多但够用的内置类型。</p>
+<h2 id="内置类型"><a class="markdownIt-Anchor" href="#内置类型"></a> 内置类型</h2>
+<p>内置类型按照结构分为两类：基本类型和复合类型。基本数据类型是最简单的数据表示形式，而复合数据类型则是由一到多个基本类型（或复合类型）组成，用以构建更复杂的数据结构。</p>
+<p><strong>基本数据类型</strong>（原始类型）直接由编译器或解释器支持，包括下面几类：</p>
+<ul>
+<li><strong>整数型</strong>：支持无符号（unsigned）和带符号（signed）两种整数。8 位整型长度为 1 字节。</li>
+<li><strong>浮点型</strong>：支持单精度和双精度（默认）小数，分别精确到小数点后 7 位和 15 位。类型长度分别为 4 字节和 8 字节。由于 <code>math</code> 包中函数要求高精度，所以尽可能使用 <code>float64</code> 类型。</li>
+<li><strong>复数型</strong>：支持 64 位和 128 位复数值。类型长度分别为 8 字节和 16 字节。</li>
+<li><strong>布尔型</strong>：<code>true</code> 或 <code>false</code>。类型长度为 1 字节。</li>
+<li><strong>字符串</strong>：由单字节连接而成，默认使用 UTF-8 编码标识 Unicode 文本。</li>
+<li><strong>字符型</strong>：字符是 <code>int32</code> 的别名，用于表示一个 Unicode 码点。</li>
+<li><strong>字节型</strong>：字节是 <code>uint8</code> 的别名，用于表示 ASCII 字符或二进制数据。</li>
+</ul>
+<p><strong>复合数据类型</strong>（结构化类型）包括：</p>
+<ul>
+<li><strong>数组</strong>：固定长度的同类型元素序列。</li>
+<li><strong>切片</strong>：动态长度的数组引用。</li>
+<li><strong>映射</strong>：键值对集合。</li>
+<li><strong>结构体</strong>：将多个不同类型数据组合成一个复合类型的方式。</li>
+<li><strong>接口</strong>：方法集。</li>
+<li><strong>通道</strong>：消息传递管道。</li>
+<li><strong>指针</strong>：变量地址。</li>
+<li><strong>函数</strong>：函数的签名。</li>
+</ul>
+<h2 id="传递方式"><a class="markdownIt-Anchor" href="#传递方式"></a> 传递方式</h2>
+<p>在 Go 语言中，数据类型根据在内存中如何存储和传递，又分为两种：</p>
+<ul>
+<li><strong>值类型（Value Types）</strong>：包括<strong>基本数据类型、数组</strong>和<strong>结构体</strong>。值类型直接在栈上存储数据。当值类型变量在赋值操作或作为参数传递给函数时，实际上是传递原始数据的副本（值传递）。因此，修改副本不会影响原始数据。</li>
+<li><strong>引用类型（Reference Types）</strong>：包括<strong>切片</strong>、<strong>映射</strong>、<strong>通道</strong>、<strong>指针</strong>、<strong>函数</strong>和<strong>接口</strong>。引用类型存储数据的引用（即内存地址），而不是在堆上分配的数据。当引用类型变量赋值时，会复制内存地址副本（引用传递），多个变量实际指向相同的数据。因此，修改其中一个变量会影响所有引用到这些数据的变量。</li>
+</ul>
+<p>需要注意，尽管结构体是值类型，但结构体包含引用类型字段时，复制结构体会保持引用字段特性，即引用字段依然使用引用传递：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">type</span> Person <span class="token keyword">struct</span> <span class="token punctuation">&#123;</span>
+		Name <span class="token builtin">string</span>
+		Ages <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span>
+	<span class="token punctuation">&#125;</span>
+
+	p1 <span class="token operator">:=</span> Person<span class="token punctuation">&#123;</span>Name<span class="token punctuation">:</span> <span class="token string">"Alice"</span><span class="token punctuation">,</span> Ages<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">&#123;</span><span class="token number">30</span><span class="token punctuation">,</span> <span class="token number">31</span><span class="token punctuation">,</span> <span class="token number">32</span><span class="token punctuation">&#125;</span><span class="token punctuation">&#125;</span>
+	<span class="token comment">// 复制结构体 p1 给 p2</span>
+	p2 <span class="token operator">:=</span> p1
+	<span class="token comment">// Name 字段是值传递，修改不影响 p1</span>
+	p2<span class="token punctuation">.</span>Name <span class="token operator">=</span> <span class="token string">"Bob"</span>
+	<span class="token comment">// Ages 字段是引用传递，修改后 p1 跟着变</span>
+	p2<span class="token punctuation">.</span>Ages<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0</span>
+
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>p1<span class="token punctuation">.</span>Name<span class="token punctuation">)</span> <span class="token comment">// 输出 "Alice"</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>p1<span class="token punctuation">.</span>Ages<span class="token punctuation">)</span> <span class="token comment">// 输出 [0 31 32]</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="类型检测"><a class="markdownIt-Anchor" href="#类型检测"></a> 类型检测</h1>
+<p>类型检测（Type Checking）是指验证变量和表达式的数据类型是否符合预期，以避免运行时出现类型错误。Go 语言中大部分类型检查在编译时完成。</p>
+<h2 id="静态类型"><a class="markdownIt-Anchor" href="#静态类型"></a> 静态类型</h2>
+<p>在静态类型语言中，变量一经声明便拥有了确定类型，此后无法更改。而在动态类型语言中，类型转换在执行时进行，错误或异常直到运行时才会被发现。</p>
+<p>Go 语言属于静态类型编程语言，所有变量类型都必须在编译时确定，任何类型转换需要显式声明。</p>
+<p>通过对比静态和动态语言，展示两者主要区别。首先看一个 JavaScript 函数：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> <span class="token function-variable function">addition</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">a<span class="token punctuation">,</span> b</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> a <span class="token operator">+</span> b<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>函数 <code>addition</code> 本意接受两个数字参数，并返回两数之和。例如：<code>addition(1, 2)</code> 返回 <code>3</code>。但如果传递给函数一个数字和一个字符串，如 <code>addition(1, &quot;2&quot;)</code>，JavaScript 会将数字转换为字符串，然后进行字符串拼接，返回 <code>&quot;12&quot;</code>，而不是将 <code>&quot;2&quot;</code> 转为数字 <code>2</code> 再与数字 <code>1</code> 求和。</p>
+<p>然后看 Go 语言实现方式：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">func</span> <span class="token function">addition</span><span class="token punctuation">(</span>x <span class="token builtin">int</span><span class="token punctuation">,</span> y <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token builtin">int</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">return</span> x <span class="token operator">+</span> y
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token function">addition</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">// 输出: 3</span>
+	<span class="token comment">//fmt.Println(addition(1, "2")) // 编译错误：无法将 '"2"' (类型 string) 用作类型 int</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这段代码同样定义一个 <code>addition</code> 函数，函数接受两个整数参数并返回一个整数。然而第二个参数传入字符串时，编译器会报错：<code>cannot use &quot;2&quot; (type untyped string) as type int in argument to addition</code>。这种类型检查发生在编译时，而不是运行时，只有当错误被修正后才能继续编译。</p>
+<h2 id="类型推断"><a class="markdownIt-Anchor" href="#类型推断"></a> 类型推断</h2>
+<p>Go 语言支持类型推断，在声明变量，特别是短变量声明时，可以不显式指定类型，由编译器通过赋值来推断类型。一旦变量类型被推断出来，对变量的所有操作都必须符合其类型：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token comment">// 无类型常量时可以随意计算</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token number">1.0</span><span class="token operator">+</span><span class="token function">float64</span><span class="token punctuation">(</span><span class="token number">1.1</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">1.0</span><span class="token operator">+</span><span class="token function">int</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    
+	<span class="token comment">// 显式声明类型为整数</span>
+	<span class="token keyword">var</span> a <span class="token builtin">int</span> <span class="token operator">=</span> <span class="token number">1.0</span>
+
+	<span class="token comment">// 自动类型推断为浮点数</span>
+	b <span class="token operator">:=</span> <span class="token number">1.0</span>
+
+	<span class="token comment">// 使用 %T 动词打印类型，输出：int float64</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"%T %T"</span><span class="token punctuation">,</span> a<span class="token punctuation">,</span> b<span class="token punctuation">)</span>
+    
+	<span class="token comment">// 确定类型后，不能把 a 同浮点数计算，也不能再把 b 同整数计算</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>a<span class="token operator">+</span><span class="token function">float64</span><span class="token punctuation">(</span><span class="token number">1.1</span><span class="token punctuation">)</span><span class="token punctuation">,</span> b<span class="token operator">+</span><span class="token function">int</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>基础类型通过字面量默认推导出来的类型有：</p>
+<ul>
+<li><strong>整数</strong>：整数字面量默认被推导为 <code>int</code> 类型。</li>
+<li><strong>浮点数</strong>：包含小数字面量默认被推导为 <code>float64</code> 类型。</li>
+<li><strong>复数</strong>：复数字面量默认被推导为 <code>complex128</code> 类型。</li>
+<li><strong>布尔值</strong>：<code>true</code> 和 <code>false</code> 默认被推导为 <code>bool</code> 类型。</li>
+<li><strong>字符串</strong>：被双引号或反引号包围的文本默认被推导为 <code>string</code> 类型。</li>
+</ul>
+<p>其他数据类型如 <code>uint</code>, <code>float32</code>, <code>byte</code> 等都不能直接通过字面量推导。</p>
+<h2 id="类型断言"><a class="markdownIt-Anchor" href="#类型断言"></a> 类型断言</h2>
+<p>对于一个接口类型变量，可以在运行时使用类型断言获取具体类型：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">var</span> i any <span class="token operator">=</span> <span class="token string">"hello"</span>
+
+	<span class="token comment">// 单独断言要使用 ok 形式，否则可能会抛出 panic</span>
+	s<span class="token punctuation">,</span> ok <span class="token operator">:=</span> i<span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token builtin">string</span><span class="token punctuation">)</span>
+	<span class="token keyword">if</span> ok <span class="token punctuation">&#123;</span>
+		fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token comment">// 断言成功，输出: hello</span>
+	<span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+		fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"Not a string"</span><span class="token punctuation">)</span> <span class="token comment">// 断言失败，不会报错</span>
+	<span class="token punctuation">&#125;</span>
+
+	<span class="token comment">// 使用类型切换判断类型，可以在多个类型间进行选择</span>
+	<span class="token keyword">switch</span> v <span class="token operator">:=</span> i<span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token keyword">type</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">case</span> <span class="token builtin">int</span><span class="token punctuation">:</span>
+		fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"整数:"</span><span class="token punctuation">,</span> v<span class="token punctuation">)</span>
+	<span class="token keyword">case</span> <span class="token builtin">string</span><span class="token punctuation">:</span>
+		fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"字符串:"</span><span class="token punctuation">,</span> v<span class="token punctuation">)</span>
+	<span class="token keyword">default</span><span class="token punctuation">:</span>
+		fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"未知类型"</span><span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="反射检查"><a class="markdownIt-Anchor" href="#反射检查"></a> 反射检查</h2>
+<p>反射允许程序在运行时检查对象的类型和结构：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+	<span class="token string">"fmt"</span>
+	<span class="token string">"reflect"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>reflect<span class="token punctuation">.</span><span class="token function">TypeOf</span><span class="token punctuation">(</span><span class="token string">"hello"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>  <span class="token comment">// 输出：string</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>reflect<span class="token punctuation">.</span><span class="token function">TypeOf</span><span class="token punctuation">(</span><span class="token number">1.0</span><span class="token punctuation">)</span><span class="token punctuation">)</span>      <span class="token comment">// 输出：float64</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>reflect<span class="token punctuation">.</span><span class="token function">TypeOf</span><span class="token punctuation">(</span><span class="token function">int</span><span class="token punctuation">(</span><span class="token number">1.0</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">// 输出：int</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>虽然反射功能强大，但其运行时成本较高，通常用于更复杂的场景。</p>
+<h1 id="类型转换"><a class="markdownIt-Anchor" href="#类型转换"></a> 类型转换</h1>
+<p>Go 语言是静态类型语言，因此所有类型转换（Type Conversion）必须显式进行。由于复合类型之间不提供直接转换方法，因此类型转换一般指基本数据类型之间转换：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token function">targetType</span><span class="token punctuation">(</span>variable<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><code>targetType</code> 是希望转成的数据类型，而 <code>variable</code> 是不同类型的变量：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	intNumber <span class="token operator">:=</span> <span class="token number">123</span>
+
+	<span class="token comment">// 调用 float32 函数进行类型转换</span>
+	floatNumber <span class="token operator">:=</span> <span class="token function">float32</span><span class="token punctuation">(</span>intNumber<span class="token punctuation">)</span>
+
+	<span class="token comment">// 输出：整型值 123 转换为 float32 类型的结果为 123.000000</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"整型值 %d 转换为 float32 类型的结果为 %f\n"</span><span class="token punctuation">,</span> intNumber<span class="token punctuation">,</span> floatNumber<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>涉及数值类型时，转换过程中可能会产生值溢出或精度损失，需要小心进行：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+	<span class="token string">"fmt"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">var</span> a <span class="token builtin">int32</span> <span class="token operator">=</span> <span class="token number">65537</span>
+	<span class="token keyword">var</span> b <span class="token builtin">float32</span> <span class="token operator">=</span> <span class="token number">10.2</span>
+
+	<span class="token comment">// 将 int32 类型转为 int16 类型，导致数据溢出，因为 65537 大于 int16 的最大值 32767</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"int32 to int16, 溢出情况:"</span><span class="token punctuation">,</span> <span class="token function">int16</span><span class="token punctuation">(</span>a<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">// 发生数据溢出，输出：1</span>
+
+	<span class="token comment">// 将 float32 类型转换为 int16 类型，导致精度损失，因为浮点数 10.2 无法完全转换为整数</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"float32 to int16, 精度损失情况:"</span><span class="token punctuation">,</span> <span class="token function">int16</span><span class="token punctuation">(</span>b<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">// 发生精度损失，输出：10</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>字符串与字节或字符切片可以互相转换，但不能与数值型直接转换，需要使用 <code>strconv</code> 包中函数来进行。此外，指针类型变量间转换需要使用 <code>unsafe</code> 包，不推荐平时使用。</p>
+<h1 id="类型别名"><a class="markdownIt-Anchor" href="#类型别名"></a> 类型别名</h1>
+<p>类型别名（Type Alias）指为现有类型创建另一个名称，两者可以互换使用：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">type</span> MyAlias <span class="token operator">=</span> ExistingType<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><code>MyAlias</code> 在编译时被视为与 <code>ExistingType</code> 完全相同，任何接受 <code>ExistingType</code> 类型的函数或方法都可以接受 <code>MyAlias</code> 类型。</p>
+<p>类型别名常用于：</p>
+<ul>
+<li><strong>代码重构</strong>：需要重构一个广泛使用的类型时，可以在旧包中声明一个类型别名指向新包类型，帮助旧包逐渐迁移到新类型。</li>
+<li><strong>API 兼容性</strong>：在开发库或框架时，要想改变一个公开类型的名称，可以使用类型别名来帮助保持向后兼容性</li>
+<li><strong>简化名称</strong>：对于非常复杂的函数签名或结构体类型，可以使用类型别名简化名称。</li>
+</ul>
+<p>类型别名看起来类似自定义类型，但它们在语义上有重要区别：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+	<span class="token string">"fmt"</span>
+	<span class="token string">"reflect"</span>
+<span class="token punctuation">)</span>
+
+<span class="token comment">// 定义类型别名组，也可以单独定义类型别名，例如：type Boolean = bool</span>
+<span class="token keyword">type</span> <span class="token punctuation">(</span>
+	Boolean <span class="token operator">=</span> <span class="token builtin">bool</span> <span class="token comment">// Boolean 是 bool 的类型别名</span>
+	BoolExt <span class="token builtin">bool</span>   <span class="token comment">// BoolExt 是基于 bool 的新类型</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">var</span> boolAlias Boolean <span class="token operator">=</span> <span class="token boolean">true</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"boolAlias 值：%v，类型：%v\n"</span><span class="token punctuation">,</span> boolAlias<span class="token punctuation">,</span> reflect<span class="token punctuation">.</span><span class="token function">TypeOf</span><span class="token punctuation">(</span>boolAlias<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">// 输出实际类型：bool</span>
+
+	<span class="token keyword">var</span> customBool BoolExt <span class="token operator">=</span> <span class="token boolean">false</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"customBool 值：%v，类型：%v\n"</span><span class="token punctuation">,</span> customBool<span class="token punctuation">,</span> reflect<span class="token punctuation">.</span><span class="token function">TypeOf</span><span class="token punctuation">(</span>customBool<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">// 输出自定义类型：main.BoolExt</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用类型别名会使代码难以维护，应当在重构完成后逐步淘汰，以避免长期依赖于别名。</p>
+<h1 id="自定义类型"><a class="markdownIt-Anchor" href="#自定义类型"></a> 自定义类型</h1>
+<p>自定义类型（Custom Types）通过 <code>type</code> 关键字创建，允许基于已有的数据类型定义一个新类型：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">type</span> TypeName UnderlyingType<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<ul>
+<li><code>TypeName</code>：新类型名字。</li>
+<li><code>UnderlyingType</code>：已存在的类型，可以是任何有效数据类型。</li>
+</ul>
+<p>自定义类型不仅用来增强代码可读性和类型安全性，还可以在基本类型或复合类型之上添加额外方法。</p>
+<h2 id="定义和初始化"><a class="markdownIt-Anchor" href="#定义和初始化"></a> 定义和初始化</h2>
+<p>自定义类型可以基于基本类型，也可以基于复合类型定义：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token comment">// 基于基本类型</span>
+	<span class="token keyword">type</span> UserID <span class="token builtin">int</span>
+	<span class="token keyword">type</span> UserName <span class="token builtin">string</span>
+
+	<span class="token comment">// 基于复合类型</span>
+	<span class="token keyword">type</span> UserMap <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">]</span>UserName
+	<span class="token keyword">type</span> CallbackFunc <span class="token keyword">func</span><span class="token punctuation">(</span>UserID<span class="token punctuation">)</span> <span class="token builtin">bool</span>
+
+	<span class="token comment">// 声明变量</span>
+	<span class="token keyword">var</span> userID UserID
+	<span class="token keyword">var</span> userName UserName <span class="token operator">=</span> <span class="token string">"Alice"</span>
+	<span class="token keyword">var</span> userMap UserMap <span class="token operator">=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">]</span>UserName<span class="token punctuation">)</span>
+	<span class="token keyword">var</span> callback CallbackFunc <span class="token operator">=</span> <span class="token keyword">func</span><span class="token punctuation">(</span>n UserID<span class="token punctuation">)</span> <span class="token builtin">bool</span> <span class="token punctuation">&#123;</span>
+		<span class="token keyword">return</span> n <span class="token operator">&lt;</span> <span class="token number">100</span>
+	<span class="token punctuation">&#125;</span>
+
+	<span class="token comment">// 修改和访问，支持基本类型操作</span>
+	userID <span class="token operator">+=</span> <span class="token number">2</span>
+	userName <span class="token operator">+=</span> <span class="token string">"Bob"</span>
+	userMap<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">=</span> userName
+	userAdmin <span class="token operator">:=</span> <span class="token function">callback</span><span class="token punctuation">(</span>userID<span class="token punctuation">)</span>
+
+	<span class="token comment">// 输出：2 Bob map[2:Bob] true</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>userID<span class="token punctuation">,</span> userName<span class="token punctuation">,</span> userMap<span class="token punctuation">,</span> userAdmin<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>自定义类型不会引入额外性能开销。</p>
+<h2 id="方法定义"><a class="markdownIt-Anchor" href="#方法定义"></a> 方法定义</h2>
+<p>自定义类型的主要用途是为其绑定方法，有助于在数据操作上保持封装性和逻辑清晰：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">type</span> UserID <span class="token builtin">int</span>
+
+<span class="token keyword">func</span> <span class="token punctuation">(</span>id UserID<span class="token punctuation">)</span> <span class="token function">fix</span><span class="token punctuation">(</span><span class="token punctuation">)</span> UserID <span class="token punctuation">&#123;</span>
+	<span class="token keyword">return</span> id <span class="token operator">+</span> <span class="token number">1000</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">var</span> userId UserID <span class="token operator">=</span> <span class="token number">1</span>
+	fixedId <span class="token operator">:=</span> userId<span class="token punctuation">.</span><span class="token function">fix</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>fixedId<span class="token punctuation">)</span> <span class="token comment">// 输出: 1001</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>自定义类型也可以实现接口。</p>
+<h2 id="显式转换"><a class="markdownIt-Anchor" href="#显式转换"></a> 显式转换</h2>
+<p>自定义类型虽然基于某个类型，但在使用时不能直接与原始类型互转。即使底层类型相同，也必须进行显式类型转换：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">type</span> UserID <span class="token builtin">int</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">var</span> userId UserID <span class="token operator">=</span> <span class="token number">1</span>
+	<span class="token keyword">var</span> offset <span class="token operator">=</span> <span class="token number">1000</span>
+	
+	<span class="token comment">// 必须显式转换成同一类型，才能计算</span>
+	fixedId <span class="token operator">:=</span> userId <span class="token operator">+</span> <span class="token function">UserID</span><span class="token punctuation">(</span>offset<span class="token punctuation">)</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>fixedId<span class="token punctuation">)</span> <span class="token comment">// 输出: 1001</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这就是自定义类型安全性的体现，避免了不同类型数据混用可能导致的逻辑错误。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/3126418019/" title="Go 语言类型系统">https://blog.x2b.net/3126418019/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../2096879394/" rel="prev" title="Go 语言类型 映射">
+                  <i class="fa fa-chevron-left"></i> Go 语言类型 映射
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../872565161/" rel="next" title="Go 语言类型 数组">
+                  Go 语言类型 数组 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">327k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">18:08</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://lib.baomitu.com/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://lib.baomitu.com/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://lib.baomitu.com/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://lib.baomitu.com/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://lib.baomitu.com/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.4/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://lib.baomitu.com/KaTeX/0.16.4/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://lib.baomitu.com/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/3126418019/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://lib.baomitu.com/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://lib.baomitu.com/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
