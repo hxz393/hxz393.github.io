@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#922"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://fonts.cat.net" crossorigin>
+<link rel="preconnect" href="https://lib.baomitu.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="mask-icon" href="../images/favicon-32x32.png" color="#922">
+
+<link rel="stylesheet" href="../css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Monda:300,300italic,400,400italic,700,700italic%7CArvo:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://lib.baomitu.com/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://lib.baomitu.com/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://lib.baomitu.com/pace/1.2.4/themes/red/pace-theme-minimal.css">
+  <script src="https://lib.baomitu.com/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.x2b.net","root":"/","images":"../images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#922","save":"manual"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"../search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":true}}</script><script src="../js/config.js"></script>
+
+    <meta name="description" content="项目 使用 Go Modules 管理的项目，其结构可以相对简单且灵活，一切根据项目需求进行调整。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go 语言程序结构">
+<meta property="og:url" content="https://blog.x2b.net/814809577/index.html">
+<meta property="og:site_name" content="X to Bytes">
+<meta property="og:description" content="项目 使用 Go Modules 管理的项目，其结构可以相对简单且灵活，一切根据项目需求进行调整。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-02-27T02:01:18.000Z">
+<meta property="article:modified_time" content="2024-08-05T11:28:21.612Z">
+<meta property="article:author" content="assassing">
+<meta property="article:tag" content="docker k8s linux python go">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.x2b.net/814809577/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.x2b.net/814809577/","path":"814809577/","title":"Go 语言程序结构"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Go 语言程序结构 | X to Bytes</title>
+  
+
+  <script src="../js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?71ae334aaa654e1cd3ba0c9eb55f88a3"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="../css/noscript.css">
+  </noscript>
+<link rel="alternate" href="atom.xml" title="X to Bytes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">X to Bytes</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">19</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">111</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE"><span class="nav-number">1.</span> <span class="nav-text"> 项目</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E5%88%86%E7%B1%BB"><span class="nav-number">1.1.</span> <span class="nav-text"> 源码分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%96%87%E4%BB%B6"><span class="nav-number">1.2.</span> <span class="nav-text"> 基本文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%BB%93%E6%9E%84"><span class="nav-number">1.3.</span> <span class="nav-text"> 常用结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E7%A4%BA%E8%8C%83"><span class="nav-number">1.4.</span> <span class="nav-text"> 项目示范</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A8%A1%E5%9D%97"><span class="nav-number">2.</span> <span class="nav-text"> 模块</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E6%A8%A1%E5%9D%97"><span class="nav-number">2.1.</span> <span class="nav-text"> 初始化模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gomod"><span class="nav-number">2.2.</span> <span class="nav-text"> go.mod</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E4%BE%9D%E8%B5%96"><span class="nav-number">2.3.</span> <span class="nav-text"> 添加依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%A1%E7%90%86%E6%A8%A1%E5%9D%97"><span class="nav-number">2.4.</span> <span class="nav-text"> 管理模块</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8C%85"><span class="nav-number">3.</span> <span class="nav-text"> 包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%85%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="nav-number">3.1.</span> <span class="nav-text"> 包作用域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%85%E5%A3%B0%E6%98%8E"><span class="nav-number">3.2.</span> <span class="nav-text"> 包声明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%85%E5%AF%BC%E5%85%A5"><span class="nav-number">3.3.</span> <span class="nav-text"> 包导入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%85%E5%86%85%E5%AE%B9"><span class="nav-number">3.4.</span> <span class="nav-text"> 包内容</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="assassing"
+      src="../images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">assassing</p>
+  <div class="site-description" itemprop="description">个人笔记</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="../archives/">
+          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="../categories/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz393" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/hxz393" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;hxz393" rel="noopener me external nofollow noreferrer" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://www.discogs.com/user/assassing" title="https:&#x2F;&#x2F;www.discogs.com&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Discogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.last.fm/user/assassing" title="https:&#x2F;&#x2F;www.last.fm&#x2F;user&#x2F;assassing" rel="noopener external nofollow noreferrer" target="_blank">Last.fm</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://anidb.net/up795303" title="https:&#x2F;&#x2F;anidb.net&#x2F;up795303" rel="noopener external nofollow noreferrer" target="_blank">AniDB</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.x2b.net/814809577/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../images/avatar.jpg">
+      <meta itemprop="name" content="assassing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X to Bytes">
+      <meta itemprop="description" content="个人笔记">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Go 语言程序结构 | X to Bytes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Go 语言程序结构
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-02-27 10:01:18" itemprop="dateCreated datePublished" datetime="2024-02-27T10:01:18+08:00">2024-02-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-08-05 19:28:21" itemprop="dateModified" datetime="2024-08-05T19:28:21+08:00">2024-08-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="../categories/Go/1-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">1.语言基础</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>11 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="项目"><a class="markdownIt-Anchor" href="#项目"></a> 项目</h1>
+<p>使用 Go Modules 管理的项目，其结构可以相对简单且灵活，一切根据项目需求进行调整。</p>
+<h2 id="源码分类"><a class="markdownIt-Anchor" href="#源码分类"></a> 源码分类</h2>
+<p>Go 语言源代码根据用途可分为几类：</p>
+<ul>
+<li><strong>命令源文件</strong>：包含 <code>main</code> 函数，属于 <code>package main</code> 的代码文件，是程序入口点。通常存放在项目根目录下或 <code>cmd</code> 目录下子目录中，可用 <code>go build</code> 或 <code>go run</code> 命令编译为可执行程序。</li>
+<li><strong>库源文件</strong>：库文件指被设计为被外部导入重用的代码文件。库不包含 <code>main</code> 函数，而是提供函数、类型、变量等供其他程序使用。通常位于 <code>pkg</code> 目录下。</li>
+<li><strong>测试源文件</strong>：测试代码与被测试代码位于同一个目录，文件名以 <code>_test.go</code> 结尾。测试函数以 <code>Test</code> 开头，使用内置测试框架来编写测试用例。</li>
+<li><strong>内部源文件</strong>：内部源文件指放置在 <code>internal</code> 目录下的代码文件。作用和库文件一样，只不过作用域限于项目内部。</li>
+<li><strong>辅助工具</strong>：包括用于支持开发、构建、部署和维护的辅助脚本和工具。可能存到 <code>tools</code> 目录中。</li>
+</ul>
+<p>源文件默认使用 <code>UTF-8</code> 编码。</p>
+<h2 id="基本文件"><a class="markdownIt-Anchor" href="#基本文件"></a> 基本文件</h2>
+<p>项目根目录下 <code>go.mod</code> 和 <code>main.go</code> 文件，是一个可执行项目的最基础配置：</p>
+<ul>
+<li>
+<p><code>go.mod</code>： 项目核心文件，记录项目模块路径以及依赖关系。由 <code>go mod init</code> 命令自动生成，之后下载依赖包时会自动更新内容。</p>
+</li>
+<li>
+<p><code>main.go</code>：程序入口文件，包含 <code>main</code> 包和 <code>main</code> 函数。</p>
+</li>
+</ul>
+<p><code>main.go</code> 文件也可叫其他名字，但不推荐改名。</p>
+<h2 id="常用结构"><a class="markdownIt-Anchor" href="#常用结构"></a> 常用结构</h2>
+<p>关于项目必备目录，Go 语言没有强制要求和指导说明，下面是较常见的目录结构：</p>
+<ul>
+<li><code>cmd</code>：用于存放项目可执行文件入口点。如果项目生成多个二进制文件，可以用子目录划分不同应用程序。例如 <code>cmd/api/main.go</code> 和 <code>cmd/cli/main.go</code>，编译后会生成 <code>api.exe</code> 和 <code>cli.exe</code>。</li>
+<li><code>pkg</code>：用于存放可导出的库代码。</li>
+<li><code>internal</code>：存放不可导出的应用代码和库代码，只能项目内使用。</li>
+<li><code>config</code>：存放配置文件模板或默认配置。</li>
+<li><code>assets</code>：存放项目所需的媒体文件。</li>
+<li><code>scripts</code>：存放外部脚本和工具。</li>
+<li><code>test</code>：存放外部测试文件。</li>
+<li><code>api</code>：存放开放 API 的定义，例如 OpenAPI/Swagger 规格。</li>
+<li><code>docs</code>：文档目录，存放用户手册、开发者指南和 API 文档。</li>
+</ul>
+<p>规范参考来源于：<a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/golang-standards/project-layout">https://github.com/golang-standards/project-layout</a></p>
+<h2 id="项目示范"><a class="markdownIt-Anchor" href="#项目示范"></a> 项目示范</h2>
+<p>下面通过新建一个简单项目，来演示模块和包。</p>
+<p>首先新建目录 <code>awkgo</code>，代表项目名称。在 <code>awkgo</code> 路径下中初始化项目：</p>
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token function">PS</span> D:\Software\Programming\Go\awkgo> go mod init awkgo
+go: creating new go<span class="token punctuation">.</span>mod: module awkgo
+go: to add module requirements and sums:
+        go mod tidy<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这里仅作演示，所以没有初始化成一个代码仓库路径。继续在 <code>awkgo</code> 目录下新建 <code>echo</code> 目录，代表有一个本地包。在 <code>echo</code> 目录内新建文件 <code>text.go</code>，声明属于 <code>echo</code> 包，内容只有一个函数 <code>ToTitle</code>，用来转换字符串：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token comment">/*
+Package echo 包最顶部说明
+调用扩展库中实验功能
+*/</span>
+<span class="token keyword">package</span> echo
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+	<span class="token string">"golang.org/x/text/cases"</span>
+	<span class="token string">"golang.org/x/text/language"</span>
+<span class="token punctuation">)</span>
+
+<span class="token comment">// ToTitle 用于转换英语单词为首字母大小</span>
+<span class="token keyword">func</span> <span class="token function">ToTitle</span><span class="token punctuation">(</span>s <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token builtin">string</span> <span class="token punctuation">&#123;</span>
+	c <span class="token operator">:=</span> cases<span class="token punctuation">.</span><span class="token function">Title</span><span class="token punctuation">(</span>language<span class="token punctuation">.</span>English<span class="token punctuation">)</span>
+	<span class="token keyword">return</span> c<span class="token punctuation">.</span><span class="token function">String</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>代码中导入了外部包 <code>golang.org/x/text</code>，需要单独下载：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go">PS D<span class="token punctuation">:</span>\Software\Programming\Go\awkgo<span class="token operator">></span> <span class="token keyword">go</span> get golang<span class="token punctuation">.</span>org<span class="token operator">/</span>x<span class="token operator">/</span>text
+<span class="token keyword">go</span><span class="token punctuation">:</span> downloading golang<span class="token punctuation">.</span>org<span class="token operator">/</span>x<span class="token operator">/</span>text v0<span class="token punctuation">.</span><span class="token number">16.0</span>
+<span class="token keyword">go</span><span class="token punctuation">:</span> added golang<span class="token punctuation">.</span>org<span class="token operator">/</span>x<span class="token operator">/</span>text v0<span class="token punctuation">.</span><span class="token number">16.0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>下载完毕后，<code>go.mod</code> 文件内容会自动更新，不需要手动修改：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go">module awkgo
+
+<span class="token keyword">go</span> <span class="token number">1.22</span><span class="token number">.0</span>
+
+require golang<span class="token punctuation">.</span>org<span class="token operator">/</span>x<span class="token operator">/</span>text v0<span class="token punctuation">.</span><span class="token number">16.0</span> <span class="token comment">// indirect</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>然后在 <code>awkgo</code> 目录新建文件 <code>main.go</code> 作为程序入口，内容如下：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+	<span class="token string">"awkgo/echo"</span> <span class="token comment">// 导入本地包</span>
+	<span class="token string">"fmt"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>echo<span class="token punctuation">.</span><span class="token function">ToTitle</span><span class="token punctuation">(</span><span class="token string">"hello world = 世界你好"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>整个项目文件结构应该像下面这样，包内文件 <code>text.go</code> 命名没有规定，只要保证包名和目录名一致即可：</p>
+<pre class="line-numbers language-cmd" data-language="cmd"><code class="language-cmd">awkgo&#x2F;
+├── echo&#x2F;
+│   └── text.go
+├── go.mod
+├── main.go<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最后在项目路径下，使用 <code>go run</code> 或 <code>go build</code> 命令来编译运行项目：</p>
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token function">PS</span> D:\Software\Programming\Go\awkgo> go run <span class="token punctuation">.</span>
+Hello World = 世界你好
+<span class="token function">PS</span> D:\Software\Programming\Go\awkgo> go build
+<span class="token function">PS</span> D:\Software\Programming\Go\awkgo> <span class="token punctuation">.</span>\awkgo<span class="token punctuation">.</span>exe
+Hello World = 世界你好<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="模块"><a class="markdownIt-Anchor" href="#模块"></a> 模块</h1>
+<p>Go 模块（Module）在 Go 1.11 版本中引入，是 Go 语言包管理和依赖管理的基础。模块可以视为一组包的集合，通过 <code>go.mod</code> 文件来记录管理依赖：</p>
+<ul>
+<li><strong>模块</strong>：由一个根目录、一个 <code>go.mod</code> 文件以及多个 Go 包组成。</li>
+<li><strong>go.mod 文件</strong>：在模块根目录中，描述了模块属性、依赖项及其版本。</li>
+</ul>
+<p>简单来看，任何包含 <code>go.mod</code> 文件的代码目录都可以被称为模块。</p>
+<h2 id="初始化模块"><a class="markdownIt-Anchor" href="#初始化模块"></a> 初始化模块</h2>
+<p>在创建完项目目录后，第一件事就是使用 <code>go mod init</code> 命令来初始化新模块：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">go mod init <span class="token operator">&lt;</span>module-name<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>其中  <code>module-name</code>  为模块名字，一般用项目代码仓库路径，例如 ：<code>github.com/hxz393/projectname</code>，这样能保证模块名独一无二。</p>
+<p>初始化完成后，会在项目根目录自动创建 <code>go.mod</code> 文件。</p>
+<h2 id="gomod"><a class="markdownIt-Anchor" href="#gomod"></a> go.mod</h2>
+<p><code>go.mod</code> 文件是 Go 模块的核心，一个示例文件内容如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">module github.com&#x2F;hxz393&#x2F;myproject
+
+go 1.22.0
+
+require (
+    github.com&#x2F;gin-gonic&#x2F;gin v1.6.3
+    github.com&#x2F;mohae&#x2F;deepcopy v0.0.0-20170929034955-c48cc78d4826 &#x2F;&#x2F; indirect
+)
+
+replace (
+    github.com&#x2F;gin-gonic&#x2F;gin v1.6.3 &#x3D;&gt; github.com&#x2F;gin-gonic&#x2F;gin v1.8.0
+    github.com&#x2F;mohae&#x2F;deepcopy &#x3D;&gt; ..&#x2F;myproject&#x2F;deepcopy
+)
+
+exclude (
+    github.com&#x2F;gin-gonic&#x2F;gin v1.7.0
+)
+
+retract (
+    v0.0.1 &#x2F;&#x2F; 不再支持
+    v0.2.3 &#x2F;&#x2F; 有安全问题
+)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中必备字段会自动生成和更新：</p>
+<ul>
+<li><code>module</code>：声明模块名，也就是使用 <code>go mod init</code> 命令时输入的模块路径。</li>
+<li><code>go</code>：指定模块使用的 Go 语言版本，编译时不得低于指定版本。</li>
+<li><code>require</code>：列出依赖及其版本号。如果没有版本号，由仓库提交号代替。</li>
+</ul>
+<p>可选字段需要手动添加，用于特殊目的：</p>
+<ul>
+<li><code>replace</code>：替换依赖版本或替换为其他依赖。</li>
+<li><code>exclude</code>：指定排除特定依赖版本，避免代码缺陷或兼容问题。</li>
+<li><code>retract</code>：标记本模块的特定版本为弃用。</li>
+</ul>
+<p>一般 <code>go.sum</code> 文件和<code>go.mod</code> 文件成对出现，用于记录依赖版本哈希值，确保依赖未被非法篡改或损坏。</p>
+<h2 id="添加依赖"><a class="markdownIt-Anchor" href="#添加依赖"></a> 添加依赖</h2>
+<p>从 Go 1.17 版本开始，<code>go get</code> 命令用于添加和更新外部依赖，不再用来安装工具：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">go get <span class="token operator">&lt;</span>module-name<span class="token operator">></span><span class="token punctuation">[</span>@version<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<ul>
+<li><code>module-name</code>：和初始化模块时一样，<code>module-name</code> 为依赖仓库路径，除了 Git 也支持 Mercurial 和 Subversion 等版本控制系统。</li>
+<li><code>version</code>：版本号类似于 <code>vX.Y.Z</code> 格式。如果忽略则下载最新版本，否则会安装指定版本。也用于降级依赖版本。</li>
+</ul>
+<p>依赖在本地存放路径由 <code>GOMODCACHE</code> 环境变量决定，如果本地已存在依赖缓存，则不会重新下载安装。</p>
+<p><code>go get</code> 命令支持一些选项和参数：</p>
+<ul>
+<li><code>-d</code>：只下载不安装。</li>
+<li><code>-insecure</code>：允许使用 HTTP 协议下载，用于在内部仓库中下载依赖。</li>
+<li><code>-u</code>：更新依赖包。</li>
+<li><code>-v</code>：打印详细信息。</li>
+</ul>
+<p>比较常用的是 <code>-u</code> 更新选项，新增和更新依赖都会自动更新 <code>go.mod</code> 和 <code>go.sum</code> 文件。但升级模块时需要注意，一般不同主版本号会使用不同路径，表示新版本包含不向后兼容的更改。例如  <code>cloud.google.com/go</code> 大版本升级后地址变为 <code>cloud.google.com/go/v2</code>，在更新依赖和导入包时都需要调整地址。</p>
+<h2 id="管理模块"><a class="markdownIt-Anchor" href="#管理模块"></a> 管理模块</h2>
+<p>大多数时候，模块不需要手动管理，只需用 <code>go get</code> 命令来指定依赖就够了。少数情况下，可以使用 <code>go mod</code> 子命令来管理模块：</p>
+<ul>
+<li><strong>清理依赖</strong>：运行 <code>go mod tidy</code> 命令可以清理未使用的依赖。只会优化 <code>go.mod</code> 文件内容，不会删除实际依赖文件。</li>
+<li><strong>下载依赖</strong>：运行 <code>go mod download</code> 来一键下载 <code>go.mod</code> 中列出的所有依赖。</li>
+<li><strong>验证依赖</strong>：运行 <code>go mod verify</code> 验证当前依赖文件是否都符合哈希值。</li>
+</ul>
+<p>如果要查看当前模块所有依赖，包括依赖的依赖，可以使用 <code>go list</code> 命令列出：</p>
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token function">PS</span> D:\Software\Programming\Go\new> go list <span class="token operator">-</span>m all
+new
+cloud<span class="token punctuation">.</span>google<span class="token punctuation">.</span>com/go v0<span class="token punctuation">.</span>26<span class="token punctuation">.</span>0
+filippo<span class="token punctuation">.</span>io/edwards25519 v1<span class="token punctuation">.</span>1<span class="token punctuation">.</span>0
+github<span class="token punctuation">.</span>com/BurntSushi/toml v1<span class="token punctuation">.</span>4<span class="token punctuation">.</span>0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="包"><a class="markdownIt-Anchor" href="#包"></a> 包</h1>
+<p>Go 语言以包（Package）来封装、组织和重用代码，一个包就是一个目录，里面包含属于这个包的 <code>.go</code> 源文件。一个包结构通常包括三部分：包声明、包引入和包内容。</p>
+<p>Go 语言与大部分编译语言类似，当改动源文件时，必须重新编译该源文件及依赖包。但和其他语言比较，编译速度快得多，是以下特性在起作用：</p>
+<ul>
+<li>每个源文件在开头显式地列出所有依赖包，编译器可以快速读取依赖包列表。</li>
+<li>包之间禁止循环依赖，所以包可以被单独编译，也支持并行编译。</li>
+<li>每个包在编译后会缓存结果，当代码没变化时，编译器能重用之前缓存。</li>
+</ul>
+<h2 id="包作用域"><a class="markdownIt-Anchor" href="#包作用域"></a> 包作用域</h2>
+<p>不同包之间允许存在同名函数，调用时通过带上不同包名来消除歧义：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+	<span class="token string">"new/internal/config"</span>
+	<span class="token string">"new/internal/hello"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 同名函数，接受不同参数。调用带上包名</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Print</span><span class="token punctuation">(</span>hello<span class="token punctuation">.</span><span class="token function">Sum</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">&#123;</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Print</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">Sum</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>包级变量对属同一个包的所有文件可见，就像包所有源代码写在一个文件中。但包中一个源文件导入的外部包仅对该文件有效，包中其他文件如果需要相同包，也必须显式地进行导入。这是因为每个源文件都被设计为可独立编译，所以每个文件必须单独导入自己所依赖的包：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> hello
+
+<span class="token comment">// 需要独立导入依赖包</span>
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">func</span> <span class="token function">Hello</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token comment">// 调用 hello 包内其他文件中已定义函数 Sum，直接使用</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token function">Sum</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">&#123;</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="包声明"><a class="markdownIt-Anchor" href="#包声明"></a> 包声明</h2>
+<p>所有源文件必须在开头显式声明所属包，包声明格式如下：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> <span class="token operator">&lt;</span>pkgName<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>包名 <code>pkgName</code> 使用小写形式单词命名，每个 Go 文件都属于且仅属于一个包。一个包可以由多个 Go 文件组成，一个应用程序可以由多个包组成。</p>
+<p>属于同个包的源文件必须被一起编译，所以每个目录只能代表一个包。也不能把同个包的文件拆分到多个目录中，这样做编译器会强制拆分包。例如在 <code>config</code> 和 <code>hello</code> 目录中都有 <code>package hello</code> 声明，那么在其他包中导入时，要作为不同包对待：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+	<span class="token string">"fmt"</span>
+    
+    <span class="token comment">// 只当是同名包，导入需要用别名</span>
+	hello1 <span class="token string">"new/internal/config"</span>
+	hello2 <span class="token string">"new/internal/hello"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	hello2<span class="token punctuation">.</span><span class="token function">Sum</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">&#123;</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Print</span><span class="token punctuation">(</span>hello1<span class="token punctuation">.</span>MaxConnections<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="包导入"><a class="markdownIt-Anchor" href="#包导入"></a> 包导入</h2>
+<p>无论需要调用标准库包、本地包还是外部包，都要使用导入来使用。Go 语言中，使用关键字 <code>import</code> 来导入包中公开变量、常量和函数。导入包有三种模式：</p>
+<ul>
+<li><strong>正常模式</strong>：<code>import &lt;pkgName&gt;</code> 。导入 <code>pkgName</code> 之后，使用 <code>&lt;pkgName&gt;.&lt;funcName&gt;</code> 形式对包中函数或类型进行调用。</li>
+<li><strong>别名模式</strong>：<code>import aliasName &lt;pkgName&gt;</code>。导入包时，可能遇到包名相同或相近的情况，此时可以拟定包别名来进行区别。注意，一旦定义包别名，就不能再使用包原名来调用。</li>
+<li><strong>简便模式</strong>：<code>import .&lt;pkgName&gt;</code>。在简便模式中，可直接使用包内函数名进行调用，而不用带上包名。通常不会使用此导入方式。</li>
+</ul>
+<p>所有外部包导入路径以托管域名为前缀，例如：<code>github.com/go-sql-driver/mysql</code>，默认包名就是包导入路径的最后一段。本地包则通过 <code>path/&lt;pkgName&gt;</code> 来导入，计算相对路径要包括工作目录，路径分隔符统一使用斜杠 <code>/</code>。</p>
+<p>有多个导入包时，可以使用导入块来包装，并通过空行分隔进行分组。导入分组用来区分包来源是标准库、内部库还是第三方库：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token comment">// 导入块形式</span>
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+	<span class="token comment">// 标准库</span>
+	<span class="token string">"fmt"</span>
+	<span class="token string">"runtime"</span>
+
+	<span class="token comment">// 项目内部模块</span>
+	<span class="token string">"myproject/models"</span>
+	tools <span class="token string">"myproject/utils"</span>
+
+	<span class="token comment">// 第三方库</span>
+	<span class="token string">"github.com/gin-gonic/gin"</span>
+	<span class="token string">"golang.org/x/oauth2"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Go 语言中不允许导入包而不用，但可以将下划线 <code>_</code> 作为包别名来绕过匿名导入检查。这样做的唯一目的是触发包内初始化函数，初始化函数可能用于注册驱动或环境检查：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+	<span class="token string">"database/sql"</span>
+	<span class="token string">"fmt"</span>
+	<span class="token boolean">_</span> <span class="token string">"github.com/lib/pq"</span> <span class="token comment">// 注册 PostgreSQL 驱动</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	db<span class="token punctuation">,</span> <span class="token boolean">_</span> <span class="token operator">:=</span> sql<span class="token punctuation">.</span><span class="token function">Open</span><span class="token punctuation">(</span><span class="token string">"postgres"</span><span class="token punctuation">,</span> <span class="token string">"192.168.2.1"</span><span class="token punctuation">)</span>
+	db<span class="token punctuation">.</span><span class="token function">Close</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="包内容"><a class="markdownIt-Anchor" href="#包内容"></a> 包内容</h2>
+<p>在包导入之后就是包内容，包含普通 Go 程序代码。有几点需要说明：</p>
+<ul>
+<li>包级变量和常量最先执行初始化。</li>
+<li>包可以包含一到多个 <code>init</code> 函数，在首次被导入时自动执行。执行顺序和定义顺序一致。</li>
+<li><code>main</code> 包必须包含 <code>main</code> 函数作为程序运行入口。<code>main</code> 函数不能导出。</li>
+</ul>
+<p>下面是一个简单示例：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> cli
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+	<span class="token string">"fmt"</span>
+	<span class="token string">"runtime"</span>
+<span class="token punctuation">)</span>
+
+<span class="token comment">// 全局变量最先计算</span>
+<span class="token keyword">var</span> MaxUser <span class="token operator">=</span> runtime<span class="token punctuation">.</span><span class="token function">NumCPU</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token comment">// 初始化函数依次执行</span>
+<span class="token keyword">func</span> <span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"可支持最大用户：\t"</span><span class="token punctuation">,</span> MaxUser<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">func</span> <span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"操作系统：\t"</span><span class="token punctuation">,</span> runtime<span class="token punctuation">.</span>GOOS<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">func</span> <span class="token function">Client</span><span class="token punctuation">(</span>max <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"注册用户数：\t"</span><span class="token punctuation">,</span> max<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>干杯！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="../images/wechatpay.png" alt="assassing 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>assassing
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.x2b.net/814809577/" title="Go 语言程序结构">https://blog.x2b.net/814809577/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh" rel="noopener external nofollow noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎订阅</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="../atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="../355163610/" rel="prev" title="Go 语言类型 字符串">
+                  <i class="fa fa-chevron-left"></i> Go 语言类型 字符串
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="../2096879394/" rel="next" title="Go 语言类型 映射">
+                  Go 语言类型 映射 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">assassing</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">330k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">18:20</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener external nofollow noreferrer" target="_blank">NexT.Gemini</a> on Kubernetes
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hxz393" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener external nofollow noreferrer" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://lib.baomitu.com/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://lib.baomitu.com/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://lib.baomitu.com/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://lib.baomitu.com/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="../js/comments.js"></script><script src="../js/utils.js"></script><script src="../js/motion.js"></script><script src="../js/next-boot.js"></script><script src="../js/pjax.js"></script>
+
+  <script src="https://lib.baomitu.com/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="../js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="../js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.4/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://lib.baomitu.com/KaTeX/0.16.4/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="../js/third-party/math/katex.js"></script>
+
+
+  <script src="https://lib.baomitu.com/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":5000,"priority":true,"url":"https://blog.x2b.net/814809577/"}</script>
+  <script src="../js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://lib.baomitu.com/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hxz393","repo":"x2b.net-deploy","client_id":"26664aab919326dcf7e7","client_secret":"40882da22b7a77aea4a985ccd95a9363cfb7ba9a","admin_user":"hxz393","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://lib.baomitu.com/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d41d8cd98f00b204e9800998ecf8427e"}</script>
+<script src="../js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
