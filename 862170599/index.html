@@ -30,7 +30,7 @@
 <meta property="og:description" content="基本概念 切片（Slice）是对数组一个连续片段的引用，属于引用类型。它会生成一个指向数组的指针，并通过切片长度关联到底层数组部分或全部元素。切片长度和容量可以按需动态调整。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-04-12T02:03:37.000Z">
-<meta property="article:modified_time" content="2024-08-21T07:28:13.481Z">
+<meta property="article:modified_time" content="2024-08-30T10:39:47.398Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python go">
 <meta name="twitter:card" content="summary">
@@ -255,7 +255,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-08-21 15:28:13" itemprop="dateModified" datetime="2024-08-21T15:28:13+08:00">2024-08-21</time>
+      <time title="修改时间：2024-08-30 18:39:47" itemprop="dateModified" datetime="2024-08-30T18:39:47+08:00">2024-08-30</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -285,14 +285,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>4.6k</span>
+      <span>4.7k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>15 分钟</span>
+      <span>16 分钟</span>
     </span>
 </div>
 
@@ -314,14 +314,14 @@
 <p>切片结构包含三部分：</p>
 <ul>
 <li><strong>指针</strong>：指向底层数组中切片第一个元素的指针。</li>
-<li><strong>长度</strong>：切片中元素数量。</li>
+<li><strong>长度</strong>：切片中元素数量，不能超过切片容量。</li>
 <li><strong>容量</strong>：从切片起始元素到底层数组末尾元素的数量。</li>
 </ul>
 <p>在 64 位操作系统中，这些字段分别占用 8 个字节，因此传递切片非常高效。</p>
 <h1 id="创建切片"><a class="markdownIt-Anchor" href="#创建切片"></a> 创建切片</h1>
-<p>切片初始化时，会自动创建对应底层数组。</p>
+<p>切片初始化时，会自动创建对应底层数组。一个底层数组可以对应多个切片。</p>
 <h2 id="声明和初始化"><a class="markdownIt-Anchor" href="#声明和初始化"></a> 声明和初始化</h2>
-<p>声明和初始化切片常用 4 种方式：</p>
+<p>切片声明看起来像没有长度的数组，声明和初始化切片常用 4 种方式：</p>
 <pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
 
 <span class="token keyword">import</span> <span class="token string">"fmt"</span>
@@ -552,7 +552,7 @@ ok      <span class="token builtin">new</span>     <span class="token number">2<
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>由于循环内变量在多次循环中共享，所以 <code>v</code> 始终是同一个地址。但在 Go 1.22 版本中，每次循环会给循环变量 <code>v</code> 分配新的内存地址。</p>
 <h2 id="比较切片"><a class="markdownIt-Anchor" href="#比较切片"></a> 比较切片</h2>
-<p>切片只能与 <code>nil</code> 比较，不能直接比较两个切片内容：</p>
+<p>由于切片元素类型没有限制，实际场景复杂，所以切片只能与 <code>nil</code> 比较，不能直接比较两个切片内容。有需要可以自行实现切片比较逻辑：</p>
 <pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
 
 <span class="token keyword">import</span> <span class="token string">"fmt"</span>
@@ -570,7 +570,23 @@ ok      <span class="token builtin">new</span>     <span class="token number">2<
 	<span class="token keyword">if</span> a <span class="token operator">==</span> b <span class="token punctuation">&#123;</span>
 		fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"不能比较两个切片是否相等"</span><span class="token punctuation">)</span>
 	<span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+	<span class="token comment">// 自行实现浅比较</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"相等："</span><span class="token punctuation">,</span> <span class="token function">equal</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">&#123;</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// 最简单的比较函数，元素类型为 </span>
+<span class="token keyword">func</span> <span class="token function">equal</span><span class="token punctuation">(</span>x<span class="token punctuation">,</span> y <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token builtin">bool</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">if</span> <span class="token function">len</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token function">len</span><span class="token punctuation">(</span>y<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		<span class="token keyword">return</span> <span class="token boolean">false</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token keyword">range</span> x <span class="token punctuation">&#123;</span>
+		<span class="token keyword">if</span> x<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">!=</span> y<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
+			<span class="token keyword">return</span> <span class="token boolean">false</span>
+		<span class="token punctuation">&#125;</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token keyword">return</span> <span class="token boolean">true</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>要判断一个切片是否为空，一般检查长度是否为 <code>0</code>，很少与 <code>nil</code> 直接比较。</p>
 <h2 id="修改元素值"><a class="markdownIt-Anchor" href="#修改元素值"></a> 修改元素值</h2>
 <p>通过切片索引对元素值修改：</p>
@@ -786,7 +802,7 @@ ok      <span class="token builtin">new</span>     <span class="token number">2<
 	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"%p, %p, %p"</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>s<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>d<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>t<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h1 id="传递切片"><a class="markdownIt-Anchor" href="#传递切片"></a> 传递切片</h1>
-<p>切片是引用类型，因此在函数中有修改切片行为时，需要再三确认影响范围：</p>
+<p>切片是引用类型，将切片传给函数，等于在函数内部创建一个切片别名：</p>
 <pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
 
 <span class="token keyword">import</span> <span class="token string">"fmt"</span>
@@ -818,7 +834,7 @@ ok      <span class="token builtin">new</span>     <span class="token number">2<
 
 <span class="token keyword">import</span> <span class="token string">"fmt"</span>
 
-<span class="token comment">// modify 函数接受一个切片，返回修改后的新切片</span>
+<span class="token comment">// modify 函数接受一个切片，返回修改后的新切片，不影响原切片</span>
 <span class="token keyword">func</span> <span class="token function">modify</span><span class="token punctuation">(</span>s <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span> <span class="token punctuation">&#123;</span>
 	<span class="token comment">// 创建切片副本</span>
 	t <span class="token operator">:=</span> <span class="token function">append</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span> s<span class="token operator">...</span><span class="token punctuation">)</span>
@@ -982,7 +998,7 @@ ok      <span class="token builtin">new</span>     <span class="token number">2<
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">19:26</span>
+    <span title="站点阅读时长">19:27</span>
   </span>
 </div>
 <div class="busuanzi-count">
