@@ -30,7 +30,7 @@
 <meta property="og:description" content="基本概念 结构体（Struct）是一种自定义数据类型，由一系列相同或不同类型的数据组成，以实现较复杂的数据结构。Go 语言的结构体是值类型。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-03-08T03:16:22.000Z">
-<meta property="article:modified_time" content="2024-08-28T03:38:10.092Z">
+<meta property="article:modified_time" content="2024-09-10T03:09:54.714Z">
 <meta property="article:author" content="assassing">
 <meta property="article:tag" content="docker k8s linux python go">
 <meta name="twitter:card" content="summary">
@@ -94,7 +94,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">20</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">119</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-about"><a href="../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="../categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">21</span></a></li><li class="menu-item menu-item-archives"><a href="../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">120</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -160,13 +160,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="../archives/">
-          <span class="site-state-item-count">119</span>
+          <span class="site-state-item-count">120</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="../categories/">
-        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-count">21</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
@@ -255,7 +255,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-08-28 11:38:10" itemprop="dateModified" datetime="2024-08-28T11:38:10+08:00">2024-08-28</time>
+      <time title="修改时间：2024-09-10 11:09:54" itemprop="dateModified" datetime="2024-09-10T11:09:54+08:00">2024-09-10</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -285,14 +285,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>2.3k</span>
+      <span>2.2k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>8 分钟</span>
+      <span>7 分钟</span>
     </span>
 </div>
 
@@ -435,7 +435,7 @@
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>当结构体在极小作用域内使用时，可以使用匿名结构体来避免全局命名空间污染。</p>
 <h2 id="匿名字段"><a class="markdownIt-Anchor" href="#匿名字段"></a> 匿名字段</h2>
-<p>结构体可包含多个匿名字段，匿名字段只有类型没有命名，每种数据类型只能有一个匿名字段。匿名字段常用于嵌入其他结构体或接口，从而实现类似于继承的功能：</p>
+<p>结构体可包含多个匿名字段，匿名字段只有类型没有命名，匿名字段名隐式等于类型名（导出也由类型名决定），所以每种数据类型只能有一个匿名字段，否则会命名冲突。匿名字段常用于嵌入其他结构体或接口，从而实现类似于继承的功能：</p>
 <pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
 
 <span class="token keyword">import</span> <span class="token string">"fmt"</span>
@@ -450,20 +450,25 @@
 	Salary <span class="token builtin">int</span>
 <span class="token punctuation">&#125;</span>
 
+<span class="token comment">// 三种赋值方式</span>
 <span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token comment">// 命名字段赋值</span>
 	e <span class="token operator">:=</span> Employee<span class="token punctuation">&#123;</span>
 		Salary<span class="token punctuation">:</span> <span class="token number">5000</span><span class="token punctuation">,</span>
-		Person<span class="token punctuation">:</span> Person<span class="token punctuation">&#123;</span> <span class="token comment">// 匿名字段名等于类型名</span>
+		Person<span class="token punctuation">:</span> Person<span class="token punctuation">&#123;</span>
 			Name<span class="token punctuation">:</span> <span class="token string">"John"</span><span class="token punctuation">,</span>
 			Age<span class="token punctuation">:</span>  <span class="token number">30</span><span class="token punctuation">,</span>
 		<span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
 	<span class="token punctuation">&#125;</span>
+	
+	<span class="token comment">// 赋值时忽略字段名，要注意顺序</span>
+	e <span class="token operator">=</span> Employee<span class="token punctuation">&#123;</span>Person<span class="token punctuation">&#123;</span><span class="token string">"Cale"</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token number">6000</span><span class="token punctuation">&#125;</span>
 
 	<span class="token comment">// 直接访问修改匿名字段属性</span>
-    e<span class="token punctuation">.</span>Person<span class="token punctuation">.</span>Age <span class="token operator">=</span> <span class="token number">31</span>
-	e<span class="token punctuation">.</span>Age <span class="token operator">=</span> <span class="token number">32</span> <span class="token comment">// 可以直接访问匿名字段名</span>
+	e<span class="token punctuation">.</span>Age <span class="token operator">=</span> <span class="token number">32</span>
+	e<span class="token punctuation">.</span>Person<span class="token punctuation">.</span>Age <span class="token operator">=</span> <span class="token number">31</span> 
 	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span>Name<span class="token punctuation">,</span> e<span class="token punctuation">.</span>Age<span class="token punctuation">,</span> e<span class="token punctuation">.</span>Salary<span class="token punctuation">)</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>使用匿名字段可以简化调用名称。发生字段名冲突时，必须显式指定嵌入类型名来解决歧义：</p>
 <pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
 
@@ -562,7 +567,7 @@
 	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"%T %T"</span><span class="token punctuation">,</span> p1<span class="token punctuation">,</span> p2<span class="token punctuation">)</span> <span class="token comment">// 输出不同类型：main.Person main.Man</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="传递结构体"><a class="markdownIt-Anchor" href="#传递结构体"></a> 传递结构体</h2>
-<p>由于自定义结构体可以包含引用类型数据，因此传递结构体时并非传递数据完整副本，引用类型数据会保持引用特性，指向原始数据：</p>
+<p>由于结构体成员可以是引用类型数据，因此传递结构体时并非传递数据完整副本。值类型数据会创建副本，引用类型数据则保持引用特性，指向原始数据：</p>
 <pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
 
 <span class="token keyword">import</span> <span class="token string">"fmt"</span>
@@ -577,21 +582,20 @@
 	p1 <span class="token operator">:=</span> Person<span class="token punctuation">&#123;</span>Names<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">&#123;</span><span class="token string">"Alice"</span><span class="token punctuation">&#125;</span><span class="token punctuation">&#125;</span>
 	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"原始数据："</span><span class="token punctuation">,</span> p1<span class="token punctuation">)</span>
 
-	p2 <span class="token operator">:=</span> p1                 <span class="token comment">// 赋值时发生值传递</span>
-	p1<span class="token punctuation">.</span>ID <span class="token operator">=</span> <span class="token number">1</span>                <span class="token comment">// 修改值类型字段</span>
-	p1<span class="token punctuation">.</span>Names<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">"Malice"</span>   <span class="token comment">// 修改引用类型字段</span>
-	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"修改后："</span><span class="token punctuation">,</span> p1<span class="token punctuation">)</span>  <span class="token comment">// 两个字段都有修改</span>
-	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"副本数据："</span><span class="token punctuation">,</span> p2<span class="token punctuation">)</span> <span class="token comment">// 引用类型字段跟着修改</span>
+	p2 <span class="token operator">:=</span> p1                    <span class="token comment">// 赋值时发生值传递</span>
+	p1<span class="token punctuation">.</span>ID <span class="token operator">=</span> <span class="token number">1</span>                   <span class="token comment">// 修改值类型字段</span>
+	p1<span class="token punctuation">.</span>Names<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">"Malice"</span>      <span class="token comment">// 修改引用类型字段</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"原始数据修改后："</span><span class="token punctuation">,</span> p1<span class="token punctuation">)</span> <span class="token comment">// 两个字段都有修改</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"副本数据跟着变："</span><span class="token punctuation">,</span> p2<span class="token punctuation">)</span> <span class="token comment">// 值类型字段不受影响，引用类型字段跟着修改</span>
 
 	<span class="token comment">// 结构体指针类型</span>
 	p3 <span class="token operator">:=</span> <span class="token operator">&amp;</span>p1
 	p3<span class="token punctuation">.</span>ID <span class="token operator">=</span> <span class="token number">2</span> <span class="token comment">// 修改指针类型字段</span>
-	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"指针数据："</span><span class="token punctuation">,</span> p3<span class="token punctuation">)</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"指针副本数据："</span><span class="token punctuation">,</span> p3<span class="token punctuation">)</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>因此，在函数中需要修改带引用类型的结构体时，最好手动创建结构体完全副本，在副本上修改再返回，避免函数副作用。</p>
 <h2 id="结构体标签"><a class="markdownIt-Anchor" href="#结构体标签"></a> 结构体标签</h2>
-<p>结构体类型还能为结构体的字段添加元信息标签（tag），标签用于为数据交换格式（json、xml、yaml）提供序列化、反序列化、验证等信息。</p>
-<p>标签内容紧接字段定义后用反引号「`」括起来，一般是多个键值对，每个键值对以空格分隔，键和值之间用冒号分隔：</p>
+<p>结构体类型还能为结构体的字段添加元信息标签（tag），标签用于为数据交换格式（json、xml、yaml）提供序列化、反序列化、验证等信息。标签内容紧接字段定义后用反引号「`」括起来：</p>
 <pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
 
 <span class="token keyword">import</span> <span class="token punctuation">(</span>
@@ -600,23 +604,18 @@
 <span class="token punctuation">)</span>
 
 <span class="token keyword">type</span> Person <span class="token keyword">struct</span> <span class="token punctuation">&#123;</span>
-	Name <span class="token builtin">string</span> <span class="token string">`json:"name" validate:"required"`</span>
-	Age  <span class="token builtin">int</span>    <span class="token string">`json:"age" validate:"min=18"`</span>
+	Name <span class="token builtin">string</span> <span class="token string">`json:"name,omitempty"`</span>
+	Age  <span class="token builtin">int</span>    <span class="token string">`json:"age"`</span>
 <span class="token punctuation">&#125;</span>
 
 <span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
 	bob <span class="token operator">:=</span> Person<span class="token punctuation">&#123;</span><span class="token string">"bob"</span><span class="token punctuation">,</span> <span class="token number">11</span><span class="token punctuation">&#125;</span>
-    <span class="token comment">// 通过 Field 来索引结构体字段，获取 Tag 属性。输出：json:"name" validate:"required"</span>
-	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>reflect<span class="token punctuation">.</span><span class="token function">TypeOf</span><span class="token punctuation">(</span>bob<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Field</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">.</span>Tag<span class="token punctuation">)</span> 
+	<span class="token comment">// 通过 Field 来索引结构体字段，获取 Tag 属性。输出：json:"name,omitempty"</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>reflect<span class="token punctuation">.</span><span class="token function">TypeOf</span><span class="token punctuation">(</span>bob<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Field</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">.</span>Tag<span class="token punctuation">)</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>上面 <code>Name</code> 字段标签包含两个键值对：</p>
-<ul>
-<li><code>json:&quot;name&quot;</code>：用于指定在将结构体序列化为 JSON 格式时，使用 <code>name</code> 作为该字段的键名。</li>
-<li><code>validate:&quot;required&quot;</code>：用于验证结构体时，要求 <code>Name</code> 字段是必填项。</li>
-</ul>
-<p>同样，<code>Age</code> 字段标签也包含两个键值对。<code>validate:&quot;min=18&quot;</code> 用于验证结构体时，要求 <code>Age</code> 字段值最小为 <code>18</code>。</p>
+<p>上面 <code>Name</code> 字段标签指定转为 JSON 格式时，使用 <code>name</code> 作为该字段的键名，并且值为类型零值时忽略字段。</p>
 <h2 id="递归结构体"><a class="markdownIt-Anchor" href="#递归结构体"></a> 递归结构体</h2>
-<p>结构体可以在字段定义中引用自身，以表示更复杂的层次或树状数据结构，如单向链表结构：</p>
+<p>结构体可以在字段定义中引用自身（指针），以表示更复杂的层次或树状数据结构，如单向链表结构：</p>
 <pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
 
 <span class="token keyword">import</span> <span class="token string">"fmt"</span>
@@ -752,13 +751,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">350k</span>
+    <span title="站点总字数">354k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">19:27</span>
+    <span title="站点阅读时长">19:40</span>
   </span>
 </div>
 <div class="busuanzi-count">
